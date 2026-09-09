@@ -10,3 +10,64 @@
   .masthead nav { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; column-gap: 12px; row-gap: 6px; }
   .masthead nav a { justify-self: start; }
 }
+
+/* Editorial refinement: retain the original palette, artwork, and static layout. */
+.hero-copy .eyebrow { display: flex; align-items: center; gap: 15px; }
+.hero-copy .eyebrow::before { content: ''; width: 32px; height: 1px; background: var(--accent); }
+.hero-copy .intro { max-width: 43ch; }
+.hero-art { box-shadow: 10px 10px 0 var(--wash); }
+.hero-art::after { content: ''; position: absolute; inset: 14px; border: 1px solid rgba(246,243,235,.25); pointer-events: none; }
+.art-label { z-index: 1; }
+.masthead nav a { position: relative; }
+.masthead nav a::after { content: ''; position: absolute; inset: auto 0 6px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform .18s ease; }
+.masthead nav a:hover::after { transform: scaleX(1); }
+.identity-strip { margin-top: 10px; padding-block: 31px; }
+.identity-strip > a { border-left: 1px solid var(--line); padding-left: 23px; }
+.section-heading > p { max-width: 38ch; }
+.work-card { min-height: 240px; gap: 0; }
+.work-card h3 { font-size: 31px; line-height: 1.2; letter-spacing: -.025em; margin-bottom: 15px; }
+.work-card h3 a { display: flex; justify-content: space-between; gap: 20px; text-decoration: none; }
+.work-card h3 span { font-family: var(--sans); font-size: 20px; font-weight: 400; }
+.work-card h2 a > span, .work-card h3 a > span { flex-shrink: 0; transition: transform .18s ease; }
+.work-card:hover h2 a > span, .work-card:hover h3 a > span { transform: translate(3px,-3px); }
+.work-card > p { max-width: 49ch; }
+.featured-grid { grid-template-columns: 1.12fr 1fr; counter-reset: selected; }
+.featured-grid .work-card { counter-increment: selected; padding: 36px 38px 42px; min-height: 290px; }
+.featured-grid .category::before { content: counter(selected,decimal-leading-zero) ' / '; opacity: .65; }
+.featured-grid .card-top { margin-bottom: 44px; }
+.featured-grid h3 { font-size: clamp(1.9rem,3.1vw,2.75rem); max-width: 18ch; }
+.featured-grid .work-card:first-child { background: var(--green); color: var(--paper); }
+.featured-grid .work-card:first-child > p { color: #e0e6d9; }
+.featured-grid .work-card:first-child .status { color: #e0e6d9; border-color: #82968a; }
+.featured-grid .work-card:first-child a:hover { color: #fff; }
+.featured-grid .work-card:nth-child(4) { background: #efe8dc; }
+.research-band { border-top: 4px solid #b48b65; }
+.process-teaser { margin-left: auto; padding-left: 40px; border-left: 1px solid var(--line); margin-top: 80px; padding-top: 0; }
+.contribution { max-width: 72ch; font-size: 16px; color: var(--muted); line-height: 1.8; }
+.project-notes { max-width: 860px; margin-top: 26px; border-top: 1px solid var(--line); padding-top: 0; }
+.project-notes summary { color: var(--muted); font-size: 12px; font-weight: 500; letter-spacing: .025em; }
+.project-notes[open] { background: var(--wash); padding: 12px 22px 23px; border-top-color: #9aa998; }
+.project-notes .evidence { margin-top: 18px; }
+.project-links:empty { display: none; }
+.page-intro .intro { max-width: 66ch; }
+.prose { max-width: 730px; }
+.prose .opening { padding-left: 25px; border-left: 2px solid var(--accent); }
+@media (max-width: 760px) {
+  .masthead nav a { min-height: 44px; }
+  .hero-art { box-shadow: none; }
+  .identity-strip { margin-top: 0; }
+  .identity-strip > a { padding-left: 14px; }
+  .featured-grid { grid-template-columns: 1fr; }
+  .featured-grid .work-card { padding: 28px 25px 32px; min-height: 0; }
+  .featured-grid .card-top { margin-bottom: 27px; }
+  .featured-grid h3 { font-size: 32px; }
+  .process-teaser { margin-top: 50px; padding-left: 20px; padding-bottom: 50px; }
+  .contribution { font-size: 15px; }
+  .project-notes[open] { padding: 10px 17px 20px; }
+  .prose .opening { padding-left: 18px; }
+}
+@media print {
+  .featured-grid .work-card:first-child, .featured-grid .work-card:nth-child(4) { background: white; color: black; }
+  .featured-grid .work-card:first-child > p, .featured-grid .work-card:first-child .status { color: black; }
+  .process-teaser { margin-top: 25px; padding-left: 0; border-left: 0; }
+}

@@ -71,4 +71,32 @@ class SiteTests(unittest.TestCase):
     def test_output_cannot_be_source(self):
         with self.assertRaises(ValueError):build.build(build.ROOT,self.data)
 
+class EditorialTests(unittest.TestCase):
+    def setUp(self):
+        self.data=json.loads((build.ROOT/'content.json').read_text(encoding='utf-8'))
+        self.row=self.data['work'][0]
+    def test_compact_card_has_nested_heading(self):
+        text=build.card(self.row,compact=True)
+        self.assertIn('<h3>',text)
+        self.assertNotIn('<h2>',text)
+    def test_catalogue_card_keeps_summary_without_repeating_role(self):
+        text=build.card(self.row)
+        self.assertIn(build.E(self.row['summary']),text)
+        self.assertIn(build.E(self.row['status']),text)
+        self.assertNotIn('card-role',text)
+    def test_project_notes_preserve_evidence_and_limits(self):
+        text=build.project_detail(self.row)
+        self.assertIn('<details class="project-notes">',text)
+        self.assertNotIn('<details open',text)
+        for field in ('role','evidence','limitations'):
+            self.assertEqual(text.count(build.E(self.row[field])),1)
+    def test_project_note_text_is_escaped(self):
+        row=copy.deepcopy(self.row)
+        row['evidence']='<script>not executable</script>'
+        row['role']='<img src=x onerror=alert(1)>'
+        text=build.project_detail(row)
+        self.assertNotIn('<script>',text)
+        self.assertNotIn('<img',text)
+        self.assertIn('&lt;script&gt;',text)
+
 if __name__=='__main__':unittest.main()
