@@ -38,3 +38,28 @@ The site is static and deploys from `main:/docs` on GitHub Pages. No custom doma
 ## Credits
 
 See the site's `credits.html` and `process.html`. The city artwork and covers come from the existing M. Schauz author-site pack. They are concept/publication artwork, not game screenshots or photographs. Spire uses AI-assisted creative processes. This repository does not make a blanket license grant over the fiction, artwork, collaborators' work or third-party intellectual property.
+
+## Release checks
+
+`source/check.py` also inspects the declared static HTML/CSS/SVG surface. It rejects
+inline event handlers, active embeds, refresh redirects, remote loading resources,
+unreviewed inline styles, malformed manifests and out-of-tree manifest paths.
+The changed-input tests recompute hashes after mutations: a matching manifest alone
+must not turn an unsafe presentation change into a passing release.
+
+After deployment, compare every deployed file to a locally verified build:
+
+```sh
+python source/verify_deployment.py --root docs --base https://jacob-met.github.io/ --receipt ../private-receipts/deployment.json
+```
+
+Use a new receipt filename for each run. The verifier records hashes, HTTP status
+and content types rather than response bodies, uses no authentication, and reports
+redirects instead of following them. Its automated integration tests use only a
+local HTTP server. It is not run against the live host by the normal CI suite.
+
+These checks cover this site's declared static surface; they are not a general
+HTML sanitizer, a full JavaScript security analysis, an accessibility certification,
+or proof that arbitrary prose contains no private information. Keep the public
+record review and browser behavior checks alongside them. The design and existing
+published work records are unchanged by this release-check improvement.

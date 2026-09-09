@@ -5,6 +5,7 @@ import argparse, hashlib, json, re
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote,urlsplit
+from static_surface import check_surface, local_path
 
 class Page(HTMLParser):
     def __init__(self):
@@ -25,9 +26,14 @@ class Page(HTMLParser):
             if a.get('src'):self.links.append(a['src'])
 
 def check(root: Path,allow_missing_images: bool=False) -> dict:
-    root=root.resolve();failures=[];parsed={}
+    root=root.resolve();failures=check_surface(root,allow_missing_images);parsed={}
+    if any(p.is_symlink() for p in root.rglob('*')):
+        return {'passed':False,'html_pages':0,'files':0,'image_files_present':False,'failures':failures}
     for f in root.glob('*.html'):
-        p=Page();p.feed(f.read_text(encoding='utf-8'));parsed[f.name]=p
+        try: text=f.read_text(encoding='utf-8')
+        except (OSError,UnicodeError):
+            failures.append(f'{f.name}: unreadable HTML');continue
+        p=Page();p.feed(text);parsed[f.name]=p
     if len(parsed)!=12:failures.append('Expected twelve HTML routes')
     for name,p in parsed.items():
         if p.h1!=1:failures.append(f'{name}: expected one h1')
@@ -37,7 +43,9 @@ def check(root: Path,allow_missing_images: bool=False) -> dict:
         for img in p.images:
             if not img.get('alt') or not img.get('width') or not img.get('height'):failures.append(f'{name}: image needs alt/dimensions')
         for u in p.links:
-            ref=urlsplit(u)
+            try: ref=urlsplit(u)
+            except ValueError:
+                failures.append(f'{name}: malformed URL');continue
             if ref.scheme:
                 if ref.scheme!='https':failures.append(f'{name}: non-HTTPS link')
                 continue
@@ -52,10 +60,21 @@ def check(root: Path,allow_missing_images: bool=False) -> dict:
         for s in p.scripts:
             if s.get('src') and s['src']!='site.js':failures.append(f'{name}: unapproved executable script')
             if not s.get('src') and s.get('type')!='application/ld+json':failures.append(f'{name}: inline executable script')
-    manifest=json.loads((root/'build-manifest.json').read_text())['sha256']
+    try:
+        obj=json.loads((root/'build-manifest.json').read_text(encoding='utf-8'))
+        manifest=obj['sha256']
+        if not isinstance(manifest,dict): raise ValueError('Invalid manifest shape')
+    except (OSError,ValueError,KeyError,TypeError):
+        failures.append('Missing or malformed build manifest');manifest={}
     for name,sha in manifest.items():
-        f=(root/name)
-        if not f.is_file() or hashlib.sha256(f.read_bytes()).hexdigest()!=sha:failures.append(f'Hash mismatch {name}')
+        if (not isinstance(name,str) or not local_path(name) or '#' in name
+                or not isinstance(sha,str) or not re.fullmatch('[0-9a-f]{64}',sha)):
+            failures.append('Unsafe or malformed manifest entry');continue
+        f=root/name
+        if not f.resolve().is_relative_to(root) or f.is_symlink():
+            failures.append('Manifest entry escapes output');continue
+        if not f.is_file() or hashlib.sha256(f.read_bytes()).hexdigest()!=sha:
+            failures.append(f'Hash mismatch {name}')
     actual={str(f.relative_to(root)).replace('\\','/') for f in root.rglob('*') if f.is_file()}
     if actual!=set(manifest)|{'build-manifest.json'}:failures.append('Manifest does not cover all files')
     result={'passed':not failures,'html_pages':len(parsed),'files':len(actual),'image_files_present':all((root/'assets'/n).exists() for n in ['spire-hero.webp','seamwork.webp','reminder.webp']),'failures':failures}
