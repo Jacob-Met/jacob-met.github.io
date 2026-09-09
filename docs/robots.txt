@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://jacob-met.github.io/sitemap.xml

@@ -1,0 +1,243 @@
+{
+  "visibility": "public",
+  "name": "Jacob Metoyer",
+  "byline": "M. Schauz",
+  "updated": "2026-09-09",
+  "identities": [
+    {
+      "label": "GitHub",
+      "url": "https://github.com/Jacob-Met"
+    },
+    {
+      "label": "Cosplay",
+      "url": "https://www.instagram.com/tornadocos/"
+    },
+    {
+      "label": "MyAnimeList",
+      "url": "https://myanimelist.net/profile/TornadoZW"
+    },
+    {
+      "label": "LinkedIn",
+      "url": "https://www.linkedin.com/in/jacob-scott-metoyer-15b701352"
+    }
+  ],
+  "work": [
+    {
+      "id": "spire-world",
+      "title": "Spire of Octaves",
+      "category": "Fiction",
+      "status": "Ongoing world project",
+      "route": "spire.html",
+      "summary": "A writing-first fantasy world shaped by labor, infrastructure, obligation, and the cost of being useful.",
+      "role": "World creation, narrative and editorial direction, and AI-assisted creative development.",
+      "evidence": "Working manuscripts, lore and location material, editorial revisions, visual development, and an existing author-site pack.",
+      "limitations": "A large creative archive, not a claim that all drafts are published or that a complete game or anime exists.",
+      "links": [
+        {
+          "label": "Seamwork reader link",
+          "url": "https://www.royalroad.com/fiction/183255/seamwork"
+        }
+      ],
+      "visibility": "public",
+      "publication_approved": true
+    },
+    {
+      "id": "research-movement",
+      "title": "Movement & rehabilitation",
+      "category": "Research",
+      "status": "Research contribution · 2026",
+      "route": "research.html",
+      "summary": "Computational workflows for studying gait, rehabilitation, and fall-risk questions.",
+      "role": "Data preparation, Vicon labeling and analysis tooling, quality control, and participant-session support.",
+      "evidence": "Research records and software for motion-capture preprocessing, feature extraction and review; work connected to the Clinical Rehabilitation and Biomechanics / Gait Rehabilitation research teams.",
+      "limitations": "Contributions to collaborative research. No clinical accuracy, treatment effect, or independent medical qualification is claimed.",
+      "links": [],
+      "visibility": "public",
+      "publication_approved": true
+    },
+    {
+      "id": "capturesuite",
+      "title": "CaptureSuite",
+      "category": "Computing",
+      "status": "Public source",
+      "route": "computing.html",
+      "summary": "Windows-first software for multimodal research capture, worker plugins, and structured session packages.",
+      "role": "Architecture, product direction, and AI-assisted engineering, with upstream and collaborator credit retained.",
+      "evidence": "Public source describes a daemon, plugin contracts, a PySide6 operator interface, simulated capture, and downstream analysis workflows.",
+      "limitations": "Windows-specific current scope; current support, setup and qualification belong with the source documentation.",
+      "links": [
+        {
+          "label": "Source & documentation",
+          "url": "https://github.com/Jacob-Met/CaptureSuite"
+        }
+      ],
+      "visibility": "public",
+      "publication_approved": true
+    },
+    {
+      "id": "cosplay",
+      "title": "Cosplay & physical making",
+      "category": "Making",
+      "status": "Personal practice",
+      "route": "making.html",
+      "summary": "Character-inspired costumes, props, CAD studies, and 3D-printable parts.",
+      "role": "Cosplay, design iteration, modeling and fabrication exploration; shared as tornadocos.",
+      "evidence": "An existing cosplay account and a working archive of armor, prop, Blender and 3D-printing files.",
+      "limitations": "Design files are not proof of finished fabrication. Fan works retain the original creators’ character and franchise rights.",
+      "links": [
+        {
+          "label": "Cosplay · tornadocos",
+          "url": "https://www.instagram.com/tornadocos/"
+        }
+      ],
+      "visibility": "public",
+      "publication_approved": true
+    },
+    {
+      "id": "research-surgery",
+      "title": "Surgical ergonomics",
+      "category": "Research",
+      "status": "Research contribution · 2026",
+      "route": "research.html",
+      "summary": "Motion-tracking and multimodal data workflows for research into surgical movement and workload.",
+      "role": "Development of video-based motion-tracking workflows and support for physiological and sensor data capture and analysis.",
+      "evidence": "Collaborative urologic-surgery ergonomics work involving video, EMG, heart-rate and motion data.",
+      "limitations": "Research collaboration, not clinical practice or a validated surgical assessment product. No patient records or unpublished results are released here.",
+      "links": [],
+      "visibility": "public",
+      "publication_approved": true
+    },
+    {
+      "id": "research-proteins",
+      "title": "Proteins & molecular dynamics",
+      "category": "Research",
+      "status": "Research experience · 2025–26",
+      "route": "research.html",
+      "summary": "Dataset and trajectory workflows for studying protein motion and evaluating generated structural rollouts.",
+      "role": "Data acquisition and standardization, structural plausibility checks, and computational-biophysics literature synthesis.",
+      "evidence": "Project records describe trajectory handling and diagnostics including RMSD, radius of gyration, bond and geometry checks, and PCA/RMSF-style features.",
+      "limitations": "Computational research and prototype work. No drug-discovery success, biological efficacy, or clinical result is claimed.",
+      "links": [],
+      "visibility": "public",
+      "publication_approved": true
+    },
+    {
+      "id": "research-behavior",
+      "title": "Behavior & neurobiology",
+      "category": "Research",
+      "status": "Research experience · 2025",
+      "route": "research.html",
+      "summary": "Laboratory research connected to sex differences in brain and behavior.",
+      "role": "Behavioral video scoring with manual verification, analysis in GraphPad Prism, and laboratory support in the Tsai Lab at CSULB.",
+      "evidence": "Research experience recorded in the CV includes behavioral observation, mouse handling, genotyping workflows and tissue-collection support.",
+      "limitations": "Collaborative, supervised laboratory work. The lab retains its own research results and publication process.",
+      "links": [],
+      "visibility": "public",
+      "publication_approved": true
+    },
+    {
+      "id": "canvaspilot",
+      "title": "CanvasPilot",
+      "category": "Computing",
+      "status": "Public source",
+      "route": "computing.html",
+      "summary": "A Python CLI and MCP interface for working with an authorized Canvas LMS account.",
+      "role": "AI-assisted software development and integration tooling.",
+      "evidence": "Public source documents course and assignment tools, structured digests, fixture-based tests, and a local session broker or token authentication.",
+      "limitations": "Use only where institution and account policies permit. Write actions and quiz/submission operations are consequential and need appropriate authorization.",
+      "links": [
+        {
+          "label": "Source & responsible use",
+          "url": "https://github.com/Jacob-Met/canvaspilot"
+        }
+      ],
+      "visibility": "public",
+      "publication_approved": true
+    },
+    {
+      "id": "uma-sim",
+      "title": "uma-sim",
+      "category": "Computing",
+      "status": "Public source · unofficial",
+      "route": "computing.html",
+      "summary": "A Rust-based Umamusume career simulator with a web interface, CLI, API and optional wrappers.",
+      "role": "Simulation and software development using AI-assisted workflows.",
+      "evidence": "Public crates, scenario and scoring code, interface packages, test instructions and licensing notices.",
+      "limitations": "Unofficial fan software. No affiliation with the original game’s creators; simulator behavior is not asserted to reproduce every live-game mechanic.",
+      "links": [
+        {
+          "label": "Source & notice",
+          "url": "https://github.com/Jacob-Met/uma-sim"
+        }
+      ],
+      "visibility": "public",
+      "publication_approved": true
+    },
+    {
+      "id": "seamwork",
+      "title": "Seamwork",
+      "category": "Fiction",
+      "status": "Reader link available",
+      "route": "spire.html",
+      "summary": "Harl, a marriage cart, and a journey through the Greel. He means to stay boring; the road will not let him.",
+      "role": "M. Schauz: narrative and editorial direction with AI-assisted writing.",
+      "evidence": "An existing Royal Road reader link, working chapter sources and cover packaging.",
+      "limitations": "The reading platform establishes currently released chapters; local manuscript files do not imply a release schedule.",
+      "links": [
+        {
+          "label": "Read on Royal Road",
+          "url": "https://www.royalroad.com/fiction/183255/seamwork"
+        }
+      ],
+      "visibility": "public",
+      "publication_approved": true
+    },
+    {
+      "id": "veria",
+      "title": "Veria",
+      "category": "Fiction",
+      "status": "Working manuscript",
+      "route": "spire.html",
+      "summary": "A distinct long-form book project in the wider M. Schauz body of fiction.",
+      "role": "World and narrative development, editorial decisions and AI-assisted writing.",
+      "evidence": "Thirty-two numbered working chapter files in the inspected manuscript directory.",
+      "limitations": "A distinct book project with its own reading path. Currently presented as a working manuscript.",
+      "links": [],
+      "visibility": "public",
+      "publication_approved": true
+    },
+    {
+      "id": "cold-reminder",
+      "title": "A Cold Reminder",
+      "category": "Fiction",
+      "status": "Working manuscript",
+      "route": "spire.html",
+      "summary": "Kler climbs for a release, while the gates demand memory as toll.",
+      "role": "M. Schauz: story and editorial direction with AI-assisted creative work.",
+      "evidence": "Working manuscript, revision/export material and an existing cover from the author-site pack.",
+      "limitations": "In development. No release date is promised and a cover is not proof that the book is published.",
+      "links": [],
+      "visibility": "public",
+      "publication_approved": true
+    },
+    {
+      "id": "watching-reading",
+      "title": "Anime, manga & games",
+      "category": "Making",
+      "status": "Personal interests",
+      "route": "making.html",
+      "summary": "The stories, games, and characters I spend time with are part of this record too.",
+      "role": "Reader, viewer, player, and occasional builder of tools for these interests.",
+      "evidence": "My public MyAnimeList profile is TornadoZW. Follow the external profile for current lists.",
+      "limitations": "A personal record of reading, watching and playing, not a set of professional claims.",
+      "links": [
+        {
+          "label": "MyAnimeList · TornadoZW",
+          "url": "https://myanimelist.net/profile/TornadoZW"
+        }
+      ],
+      "visibility": "public",
+      "publication_approved": true
+    }
+  ]
+}

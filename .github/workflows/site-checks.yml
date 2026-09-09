@@ -1,0 +1,31 @@
+name: Verify public site
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - name: Test public-only content and generator
+        run: python -m unittest discover -s source -v
+      - name: Rebuild and verify the complete site
+        run: |
+          python source/build.py --out checked-site
+          python source/check.py checked-site
+          diff -qr docs checked-site
+      - name: Package the verified public site
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: public-site
+          path: checked-site/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14

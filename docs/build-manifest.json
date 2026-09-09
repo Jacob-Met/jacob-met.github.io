@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "date": "2026-09-09",
+  "sha256": {
+    ".nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "404.html": "fce3bfe04d8442b55b7b19c3481359f337f1bb431b9471300c22122b434662ef",
+    "about.html": "8feab088b305ba90bf7f5643a5cda23e75b238bfdac936aec3b3e3734282e343",
+    "assets/mark.svg": "a01f830f071fbe4c69f03d4fd08b01d899df2708c0fb8df44a7c59cefd5d6649",
+    "assets/reminder.webp": "5e77685fb8cec3cdf0e44a01d277a4b6fc6e19dcad20a90a570a7237de533e4f",
+    "assets/seamwork.webp": "d8c72e3513e82d08856470225e314e7317269e45358935b1e506cf68f3e0ef94",
+    "assets/spire-hero.webp": "b5e3129fde3282d75a2279b81d7f8a31d3e3a36c9b8c730d5490883ab3777ec5",
+    "computing.html": "fdbac43f3b9ee34c05dfa4e17d804fd4ff90771a66423c08939a9af0506511ef",
+    "credits.html": "0b46a1a282c4b89c2b1d44dfa7cfa35222189829397af7f828bdbca82e836d80",
+    "index.html": "27ac48aa4f1db56cd94aa0243ca95e7f54247dd2163d7961da52d4d1390e5d46",
+    "making.html": "4ac5b9983a6ba4a12b95a40653835163e45511879a5df1d56d9ee3ebeadefd8a",
+    "now.html": "ae73c6ae18ab8d72860c9549a3d296a355071e52365030fe283618a026cce062",
+    "privacy.html": "28bc97bae0de1e5c3cfaa5ba9d3a22b64ec748d347ffa13e1986605e0952f956",
+    "process.html": "aadf8fe7cbdf593fa02e192351cd6795532833e7145b3441990680674ae469ab",
+    "research.html": "cba30cede838366ed3a205ac0ea2b3e4a7d3d756a84375afb0267c702c71df1c",
+    "robots.txt": "b8e69e46de01e9b02e5e398f440d9ac15440f44f1cb6cd06cfd59398dbab7178",
+    "site.js": "4b57ae7376f52315fed131cae9a175d29d0510a35577514a8f10d479768895a5",
+    "sitemap.xml": "90640941b06c160cb45c664b1f848de357f5e1cb839eff45dbac337afc238ae2",
+    "spire.html": "21bb550b52a5fa031b23a4337aa95b261be9903c8e8b52159aef92d55c2d5fee",
+    "style.css": "7697e9bee1f8fe9c45319d95704b64f1257bae9c72102654d4601e7a1237d498",
+    "work.html": "301519fa05244a77d14d5d013e590c5b1515ca676d61322d46b60fa519f03fed",
+    "work.json": "ddd89275a8280cb223b5c06c43955c4fd637a1e1787dee5b0ea6aeffa89ec833"
+  }
+}
