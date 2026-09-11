@@ -108,7 +108,8 @@ def build(out: Path,data: dict|None=None) -> dict:
     pages['privacy.html']=('Privacy','Privacy notes for this static personal website.',body)
     pages['404.html']=('Not found','This page is not part of the current public record.',section_intro('404','That page is not here.','The work may have moved, or the link may be incomplete.')+'<p class="back-home"><a class="button" href="index.html">Return home →</a></p>')
     for name,(title,desc,body) in pages.items(): (out/name).write_text(layout(name,title,desc,body,data),encoding='utf-8',newline='\n')
-    for name in ['style.css','site.js']: shutil.copyfile(ROOT/name,out/name)
+    for name in ['style.css','site.js']:
+        (out/name).write_text((ROOT/name).read_text(encoding='utf-8'),encoding='utf-8',newline='\n')
     (out/'assets').mkdir(exist_ok=True); shutil.copyfile(ROOT/'assets'/'mark.svg',out/'assets'/'mark.svg')
     (out/'.nojekyll').write_text('',encoding='utf-8',newline='\n')
     (out/'CNAME').write_text('jacobmetoyer.com\n',encoding='utf-8',newline='\n')
