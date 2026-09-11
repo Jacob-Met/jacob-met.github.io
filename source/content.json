@@ -17,7 +17,7 @@
     },
     {
       "label": "LinkedIn",
-      "url": "https://www.linkedin.com/in/jacob-scott-metoyer-15b701352"
+      "url": "https://www.linkedin.com/in/jacob-metoyer-15b701352"
     }
   ],
   "work": [
@@ -39,9 +39,9 @@
       "id": "ai-systems-research",
       "title": "Independent AI systems research",
       "category": "Research",
-      "status": "Independent research â€” ongoing",
+      "status": "Independent research — ongoing",
       "route": "ai-systems.html",
-      "summary": "Independent experiments on humanâ€“AI collaboration, agentic systems, evaluation, and reusable workflows.",
+      "summary": "Independent experiments on human–AI collaboration, agentic systems, evaluation, and reusable workflows.",
       "role": "Experimental design, software and system construction, execution studies, failure analysis, and reproducibility.",
       "evidence": "Versioned experiments, execution receipts, evaluator results, failure records, and reusable tooling developed outside formal coursework.",
       "limitations": "Independent hobby research; not a peer-reviewed publication, institutional lab program, or completed client engagement.",
