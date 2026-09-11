@@ -117,7 +117,8 @@ def build(out: Path,data: dict|None=None) -> dict:
     sm='<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join(f'<url><loc>{BASE}/{"" if p=="index.html" else p}</loc><lastmod>{STAMP}</lastmod></url>' for p in pages if p!='404.html')+'</urlset>'
     (out/'sitemap.xml').write_text(sm,encoding='utf-8',newline='\n')
     (out/'work.json').write_text(json.dumps(data,indent=2,ensure_ascii=False)+'\n',encoding='utf-8',newline='\n')
-    manifest={str(f.relative_to(out)).replace('\\','/'):hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted(out.rglob('*')) if f.is_file() and f.name!='build-manifest.json'}
+    manifest_files=[f for f in out.rglob('*') if f.is_file() and f.name!='build-manifest.json']
+    manifest={f.relative_to(out).as_posix():hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted(manifest_files,key=lambda f:f.relative_to(out).as_posix())}
     (out/'build-manifest.json').write_text(json.dumps({'schema':1,'date':STAMP,'sha256':manifest},indent=2)+'\n',encoding='utf-8',newline='\n')
     return {'pages':len(pages),'public_work_entries':len(work),'output':str(out),'files':len(manifest)+1}
 
