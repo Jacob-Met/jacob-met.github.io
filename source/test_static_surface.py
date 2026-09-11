@@ -112,11 +112,12 @@ class SurfaceTests(unittest.TestCase):
         self.assertFalse(check(self.root)['passed'])
 
     def test_declared_missing_images_option_preserved(self):
+        page=self.root/'index.html'
+        page.write_text(page.read_text(encoding='utf-8').replace('</main>','<img src="assets/missing.webp" alt="x" width="1" height="1"></main>'),encoding='utf-8')
         manifest_path=self.root/'build-manifest.json'
         manifest=json.loads(manifest_path.read_text())
-        for path in (self.root/'assets').glob('*.webp'):
-            del manifest['sha256'][path.relative_to(self.root).as_posix()]
-            path.unlink()
+        import hashlib
+        manifest['sha256']['index.html']=hashlib.sha256(page.read_bytes()).hexdigest()
         manifest_path.write_text(json.dumps(manifest),encoding='utf-8')
         self.assertTrue(check(self.root,allow_missing_images=True)['passed'])
         self.assertFalse(check(self.root)['passed'])

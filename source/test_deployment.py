@@ -46,7 +46,8 @@ class DeploymentTests(unittest.TestCase):
     def test_all_expected_files_match(self):
         result = verify(self.root, self.base)
         self.assertTrue(result['passed'], result)
-        self.assertEqual(len(result['files']), 23)
+        self.assertEqual(len(result['files']), 21)
+        self.assertEqual((self.root/'CNAME').read_text(encoding='utf-8'), 'jacobmetoyer.com\n')
 
     def test_server_drift_is_not_success(self):
         with (self.served/'index.html').open('a', encoding='utf-8') as f: f.write('STALE')
