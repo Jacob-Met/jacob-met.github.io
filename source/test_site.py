@@ -57,6 +57,16 @@ class SiteTests(unittest.TestCase):
     def test_rebuild_is_deterministic(self):
         with tempfile.TemporaryDirectory() as t:
             p=Path(t)/'out';build.build(p,self.data);a=(p/'build-manifest.json').read_bytes();build.build(p,self.data);self.assertEqual(a,(p/'build-manifest.json').read_bytes())
+    def test_generated_text_assets_use_lf_newlines(self):
+        with tempfile.TemporaryDirectory() as t:
+            p=Path(t)/'out';build.build(p,self.data)
+            for name in ('style.css','site.js'):
+                self.assertNotIn(b'\r\n',(p/name).read_bytes())
+    def test_manifest_keys_have_platform_independent_order(self):
+        with tempfile.TemporaryDirectory() as t:
+            p=Path(t)/'out';build.build(p,self.data)
+            keys=list(json.loads((p/'build-manifest.json').read_text(encoding='utf-8'))['sha256'])
+            self.assertEqual(keys,sorted(keys))
     def test_unexpected_output_file_denied(self):
         with tempfile.TemporaryDirectory() as t:
             p=Path(t)/'out';p.mkdir();(p/'personal-notes.txt').write_text('must remain untouched')

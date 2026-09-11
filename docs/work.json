@@ -1,8 +1,7 @@
 {
   "visibility": "public",
   "name": "Jacob Metoyer",
-  "byline": "M. Schauz",
-  "updated": "2026-09-09",
+  "updated": "2026-09-10",
   "identities": [
     {
       "label": "GitHub",
@@ -23,25 +22,6 @@
   ],
   "work": [
     {
-      "id": "spire-world",
-      "title": "Spire of Octaves",
-      "category": "Fiction",
-      "status": "Ongoing world project",
-      "route": "spire.html",
-      "summary": "A writing-first fantasy world shaped by labor, infrastructure, obligation, and the cost of being useful.",
-      "role": "World creation, narrative and editorial direction, and AI-assisted creative development.",
-      "evidence": "Working manuscripts, lore and location material, editorial revisions, visual development, and an existing author-site pack.",
-      "limitations": "A large creative archive, not a claim that all drafts are published or that a complete game or anime exists.",
-      "links": [
-        {
-          "label": "Seamwork reader link",
-          "url": "https://www.royalroad.com/fiction/183255/seamwork"
-        }
-      ],
-      "visibility": "public",
-      "publication_approved": true
-    },
-    {
       "id": "research-movement",
       "title": "Movement & rehabilitation",
       "category": "Research",
@@ -56,13 +36,27 @@
       "publication_approved": true
     },
     {
+      "id": "ai-systems-research",
+      "title": "Independent AI systems research",
+      "category": "Research",
+      "status": "Independent research â€” ongoing",
+      "route": "ai-systems.html",
+      "summary": "Independent experiments on humanâ€“AI collaboration, agentic systems, evaluation, and reusable workflows.",
+      "role": "Experimental design, software and system construction, execution studies, failure analysis, and reproducibility.",
+      "evidence": "Versioned experiments, execution receipts, evaluator results, failure records, and reusable tooling developed outside formal coursework.",
+      "limitations": "Independent hobby research; not a peer-reviewed publication, institutional lab program, or completed client engagement.",
+      "links": [],
+      "visibility": "public",
+      "publication_approved": true
+    },
+    {
       "id": "capturesuite",
       "title": "CaptureSuite",
       "category": "Computing",
       "status": "Public source",
       "route": "computing.html",
       "summary": "Windows-first software for multimodal research capture, worker plugins, and structured session packages.",
-      "role": "Architecture, product direction, and AI-assisted engineering, with upstream and collaborator credit retained.",
+      "role": "Architecture, product direction, engineering, verification, and integration.",
       "evidence": "Public source describes a daemon, plugin contracts, a PySide6 operator interface, simulated capture, and downstream analysis workflows.",
       "limitations": "Windows-specific current scope; current support, setup and qualification belong with the source documentation.",
       "links": [
@@ -142,7 +136,7 @@
       "status": "Public source",
       "route": "computing.html",
       "summary": "A Python CLI and MCP interface for working with an authorized Canvas LMS account.",
-      "role": "AI-assisted software development and integration tooling.",
+      "role": "Software development, integration tooling, testing, and responsible-use constraints.",
       "evidence": "Public source documents course and assignment tools, structured digests, fixture-based tests, and a local session broker or token authentication.",
       "limitations": "Use only where institution and account policies permit. Write actions and quiz/submission operations are consequential and need appropriate authorization.",
       "links": [
@@ -161,7 +155,7 @@
       "status": "Public source · unofficial",
       "route": "computing.html",
       "summary": "A Rust-based Umamusume career simulator with a web interface, CLI, API and optional wrappers.",
-      "role": "Simulation and software development using AI-assisted workflows.",
+      "role": "Simulation design, software development, testing, and interface work.",
       "evidence": "Public crates, scenario and scoring code, interface packages, test instructions and licensing notices.",
       "limitations": "Unofficial fan software. No affiliation with the original game’s creators; simulator behavior is not asserted to reproduce every live-game mechanic.",
       "links": [
@@ -170,53 +164,6 @@
           "url": "https://github.com/Jacob-Met/uma-sim"
         }
       ],
-      "visibility": "public",
-      "publication_approved": true
-    },
-    {
-      "id": "seamwork",
-      "title": "Seamwork",
-      "category": "Fiction",
-      "status": "Reader link available",
-      "route": "spire.html",
-      "summary": "Harl, a marriage cart, and a journey through the Greel. He means to stay boring; the road will not let him.",
-      "role": "M. Schauz: narrative and editorial direction with AI-assisted writing.",
-      "evidence": "An existing Royal Road reader link, working chapter sources and cover packaging.",
-      "limitations": "The reading platform establishes currently released chapters; local manuscript files do not imply a release schedule.",
-      "links": [
-        {
-          "label": "Read on Royal Road",
-          "url": "https://www.royalroad.com/fiction/183255/seamwork"
-        }
-      ],
-      "visibility": "public",
-      "publication_approved": true
-    },
-    {
-      "id": "veria",
-      "title": "Veria",
-      "category": "Fiction",
-      "status": "Working manuscript",
-      "route": "spire.html",
-      "summary": "A distinct long-form book project in the wider M. Schauz body of fiction.",
-      "role": "World and narrative development, editorial decisions and AI-assisted writing.",
-      "evidence": "Thirty-two numbered working chapter files in the inspected manuscript directory.",
-      "limitations": "A distinct book project with its own reading path. Currently presented as a working manuscript.",
-      "links": [],
-      "visibility": "public",
-      "publication_approved": true
-    },
-    {
-      "id": "cold-reminder",
-      "title": "A Cold Reminder",
-      "category": "Fiction",
-      "status": "Working manuscript",
-      "route": "spire.html",
-      "summary": "Kler climbs for a release, while the gates demand memory as toll.",
-      "role": "M. Schauz: story and editorial direction with AI-assisted creative work.",
-      "evidence": "Working manuscript, revision/export material and an existing cover from the author-site pack.",
-      "limitations": "In development. No release date is promised and a cover is not proof that the book is published.",
-      "links": [],
       "visibility": "public",
       "publication_approved": true
     },

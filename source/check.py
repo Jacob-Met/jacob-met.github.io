@@ -77,7 +77,7 @@ def check(root: Path,allow_missing_images: bool=False) -> dict:
             failures.append(f'Hash mismatch {name}')
     actual={str(f.relative_to(root)).replace('\\','/') for f in root.rglob('*') if f.is_file()}
     if actual!=set(manifest)|{'build-manifest.json'}:failures.append('Manifest does not cover all files')
-    result={'passed':not failures,'html_pages':len(parsed),'files':len(actual),'image_files_present':all((root/'assets'/n).exists() for n in ['spire-hero.webp','seamwork.webp','reminder.webp']),'failures':failures}
+    result={'passed':not failures,'html_pages':len(parsed),'files':len(actual),'image_files_present':(root/'assets'/'mark.svg').exists(),'failures':failures}
     return result
 
 if __name__=='__main__':
