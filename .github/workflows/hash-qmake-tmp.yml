@@ -1,16 +1,18 @@
 name: hash-qmake-tmp
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'tmp/qmake_*.py'
       - '.github/workflows/hash-qmake-tmp.yml'
-  workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   hash:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: hash
+      - name: hash and write
         run: |
           python3 - <<'PY'
           import hashlib, json, pathlib
@@ -28,5 +30,4 @@ jobs:
           git config user.name 'hash-bot'
           git config user.email 'hash-bot@users.noreply.github.com'
           git add tmp/qmake_digests.json
-          git diff --cached --quiet || git commit -m 'tmp: qmake digests'
-          git push
+          git diff --cached --quiet || (git commit -m 'tmp: qmake digests' && git push)
