@@ -1,14 +1,26 @@
 {
-  "qmake_open.py": {
-    "sha256": "388fea9a31302490c8e339494ccb5f4224333fd1ee40d915c9e02e4c11f1913a",
-    "bytes": 3062
+  "green-package-result.json": {
+    "bytes": 307,
+    "sha256": "96d5f8e2cb7a7d0222f407cd52584806e3344062c6d156ec8f9d5181c312053a"
+  },
+  "green-qual-report.json": {
+    "bytes": 609,
+    "sha256": "c8c2fd6bdac2d8a2ee4340582f3b9e4f209bb3e4c90123305c90016b7ccc299c"
   },
   "qmake_closed.py": {
-    "sha256": "f26d55ac600ef40901bfb5239fe80955fa53bf82061f7339a93cae542a557a11",
-    "bytes": 3418
+    "bytes": 3418,
+    "sha256": "f26d55ac600ef40901bfb5239fe80955fa53bf82061f7339a93cae542a557a11"
+  },
+  "qmake_digests.json": {
+    "bytes": 383,
+    "sha256": "5235e4784eb3f11c405470cfadfef46b742bee59ad9cf55b4a82828f825feba9"
+  },
+  "qmake_open.py": {
+    "bytes": 3062,
+    "sha256": "388fea9a31302490c8e339494ccb5f4224333fd1ee40d915c9e02e4c11f1913a"
   },
   "qmake_test.py": {
-    "sha256": "c12f2d0718127bf62b0d6b1bcf8899593ec33a3bec91c74771d00ba33d02b4e3",
-    "bytes": 2022
+    "bytes": 2022,
+    "sha256": "c12f2d0718127bf62b0d6b1bcf8899593ec33a3bec91c74771d00ba33d02b4e3"
   }
 }
