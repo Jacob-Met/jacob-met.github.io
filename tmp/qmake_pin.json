@@ -1,0 +1,10 @@
+{
+  "pin_digest": "ed6ac4e94fc413063ade615fb9d11ea4366648af9b97e430a8c8e0d63e3e18bd",
+  "pin_blob_bytes": 1180,
+  "qual": "c8c2fd6bdac2d8a2ee4340582f3b9e4f209bb3e4c90123305c90016b7ccc299c",
+  "pkg": "96d5f8e2cb7a7d0222f407cd52584806e3344062c6d156ec8f9d5181c312053a",
+  "red": "388fea9a31302490c8e339494ccb5f4224333fd1ee40d915c9e02e4c11f1913a",
+  "green": "f26d55ac600ef40901bfb5239fe80955fa53bf82061f7339a93cae542a557a11",
+  "cand": "c12f2d0718127bf62b0d6b1bcf8899593ec33a3bec91c74771d00ba33d02b4e3",
+  "repair": "replace fail-open qmake/Qt native admission (qmake-generate-fail admit / qmake-native-build-fail admit / qmake-artifact-missing admit / qmake-shadow-isolation bypass) with fail-closed qmake/Qt native admission: refuse green when qmake .pro→Makefile generation fails, the native make/nmake build after qmake fails, the sealed Qt artifact is missing, or shadow/out-of-source qmake isolation is bypassed; require deterministic qmake/Qt native verify before green"
+}
