@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'tmp/qmake_*.py'
+      - 'tmp/**'
       - '.github/workflows/hash-qmake-tmp.yml'
 permissions:
   contents: write
@@ -18,16 +18,16 @@ jobs:
           import hashlib, json, pathlib
           root = pathlib.Path('tmp')
           out = {}
-          for name in ['qmake_open.py', 'qmake_closed.py', 'qmake_test.py']:
+          for name in sorted(p.name for p in root.iterdir() if p.is_file()):
               p = root / name
               data = p.read_bytes()
               out[name] = {'sha256': hashlib.sha256(data).hexdigest(), 'bytes': len(data)}
-          pathlib.Path('tmp/qmake_digests.json').write_text(json.dumps(out, indent=2) + '\n')
-          print(json.dumps(out, indent=2))
+          pathlib.Path('tmp/qmake_digests.json').write_text(json.dumps(out, indent=2, sort_keys=True) + '\n')
+          print(json.dumps(out, indent=2, sort_keys=True))
           PY
       - name: commit digests
         run: |
           git config user.name 'hash-bot'
           git config user.email 'hash-bot@users.noreply.github.com'
           git add tmp/qmake_digests.json
-          git diff --cached --quiet || (git commit -m 'tmp: qmake digests' && git push)
+          git diff --cached --quiet || (git commit -m 'tmp: qmake digests refresh' && git push)

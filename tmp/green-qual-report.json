@@ -1,0 +1,15 @@
+{
+  "adopted": false,
+  "carriers": {
+    "candidate": "c12f2d0718127bf62b0d6b1bcf8899593ec33a3bec91c74771d00ba33d02b4e3",
+    "green": "f26d55ac600ef40901bfb5239fe80955fa53bf82061f7339a93cae542a557a11",
+    "red": "388fea9a31302490c8e339494ccb5f4224333fd1ee40d915c9e02e4c11f1913a"
+  },
+  "failure_signature_id": "build.qmake.qt_native_build_fail.fail_open",
+  "method_id": "JIHADA-METHOD-TOOL-FAIL-QMAKE-BUILD-FAILCLOSED.v0",
+  "note": "SEED qual report stub \u2014 not QUALIFIED ladder rung",
+  "ok": true,
+  "qualified": false,
+  "schema": "jihada.foundry.tool_failure.qual_report.v0",
+  "stage": "SEED"
+}

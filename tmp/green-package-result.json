@@ -1,0 +1,9 @@
+{
+  "adopted": false,
+  "failure_signature_id": "build.qmake.qt_native_build_fail.fail_open",
+  "method_id": "JIHADA-METHOD-TOOL-FAIL-QMAKE-BUILD-FAILCLOSED.v0",
+  "note": "SEED package result stub \u2014 offline only",
+  "ok": true,
+  "package": "jihada-foundry-qmake-build-fail-seed",
+  "stage": "SEED"
+}
