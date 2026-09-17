@@ -4,7 +4,6 @@ on:
   push:
     paths:
       - 'tmp/**'
-      - '.github/workflows/hash-qmake-tmp.yml'
 permissions:
   contents: write
 jobs:
@@ -12,22 +11,50 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: hash and write
+      - name: hash pin and evidence
         run: |
           python3 - <<'PY'
           import hashlib, json, pathlib
-          root = pathlib.Path('tmp')
-          out = {}
-          for name in sorted(p.name for p in root.iterdir() if p.is_file()):
-              p = root / name
-              data = p.read_bytes()
-              out[name] = {'sha256': hashlib.sha256(data).hexdigest(), 'bytes': len(data)}
-          pathlib.Path('tmp/qmake_digests.json').write_text(json.dumps(out, indent=2, sort_keys=True) + '\n')
-          print(json.dumps(out, indent=2, sort_keys=True))
+          # Recompute pin the same way mine.py does (unicode arrow in predicate)
+          repair = (
+              "replace fail-open qmake/Qt native admission "
+              "(qmake-generate-fail admit / qmake-native-build-fail admit / qmake-artifact-missing admit / qmake-shadow-isolation bypass) "
+              "with fail-closed qmake/Qt native admission: refuse green when qmake .pro\u2192Makefile generation fails, "
+              "the native make/nmake build after qmake fails, the sealed Qt artifact is missing, "
+              "or shadow/out-of-source qmake isolation is bypassed; require deterministic qmake/Qt native verify before green"
+          )
+          # Use real unicode arrow
+          repair = repair.replace("\\u2192", "\u2192")
+          blob = {
+              "domain": "tool-failure-qmake-build-failclosed",
+              "failure_signature_id": "build.qmake.qt_native_build_fail.fail_open",
+              "foundry_consume_ref": "JIHADA-METHOD-EXACT-REUSE.v0",
+              "green_carrier_sha256": "f26d55ac600ef40901bfb5239fe80955fa53bf82061f7339a93cae542a557a11",
+              "method_id": "JIHADA-METHOD-TOOL-FAIL-QMAKE-BUILD-FAILCLOSED.v0",
+              "red_carrier_sha256": "388fea9a31302490c8e339494ccb5f4224333fd1ee40d915c9e02e4c11f1913a",
+              "repair_predicate": repair,
+              "green_candidate_sha256": "c12f2d0718127bf62b0d6b1bcf8899593ec33a3bec91c74771d00ba33d02b4e3",
+              "green_qual_report_sha256": "c8c2fd6bdac2d8a2ee4340582f3b9e4f209bb3e4c90123305c90016b7ccc299c",
+              "green_package_result_sha256": "96d5f8e2cb7a7d0222f407cd52584806e3344062c6d156ec8f9d5181c312053a",
+          }
+          raw = json.dumps(blob, sort_keys=True, separators=(",", ":")).encode("utf-8")
+          pin = hashlib.sha256(raw).hexdigest()
+          out = {
+              "pin_digest": pin,
+              "pin_blob_bytes": len(raw),
+              "qual": "c8c2fd6bdac2d8a2ee4340582f3b9e4f209bb3e4c90123305c90016b7ccc299c",
+              "pkg": "96d5f8e2cb7a7d0222f407cd52584806e3344062c6d156ec8f9d5181c312053a",
+              "red": "388fea9a31302490c8e339494ccb5f4224333fd1ee40d915c9e02e4c11f1913a",
+              "green": "f26d55ac600ef40901bfb5239fe80955fa53bf82061f7339a93cae542a557a11",
+              "cand": "c12f2d0718127bf62b0d6b1bcf8899593ec33a3bec91c74771d00ba33d02b4e3",
+              "repair": repair,
+          }
+          pathlib.Path('tmp/qmake_pin.json').write_text(json.dumps(out, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+          print(json.dumps(out, indent=2, ensure_ascii=False))
           PY
-      - name: commit digests
+      - name: commit
         run: |
           git config user.name 'hash-bot'
           git config user.email 'hash-bot@users.noreply.github.com'
-          git add tmp/qmake_digests.json
-          git diff --cached --quiet || (git commit -m 'tmp: qmake digests refresh' && git push)
+          git add tmp/qmake_pin.json
+          git diff --cached --quiet || (git commit -m 'tmp: qmake pin digest' && git push)
