@@ -1,7 +1,7 @@
 {
   "visibility": "public",
   "name": "Jacob Metoyer",
-  "updated": "2026-09-10",
+  "updated": "2026-09-19",
   "identities": [
     {
       "label": "GitHub",
@@ -21,6 +21,34 @@
     }
   ],
   "work": [
+    {
+      "id": "research-connectomics",
+      "title": "Connectomics & annotation QA",
+      "category": "Research",
+      "status": "Independent computational research · 2026",
+      "route": "research.html",
+      "summary": "Versioned, source-pinned analyses of connectome annotations, missing-data boundaries, and release drift.",
+      "role": "Designed reproducible comparison workflows with frozen cohorts, explicit uncertainty states, mismatch localization, version-to-version replay, and independent verification.",
+      "evidence": "Project records include independently reviewed FlyWire and BANC annotation-QA case studies covering model-vocabulary support, fixed-denominator abstention, and annotation-release stability.",
+      "limitations": "Descriptive annotation and reproducibility work. No biological neurotransmitter ground truth, causal circuit function, held-out classifier accuracy, clinical meaning, or publication novelty is claimed.",
+      "links": [],
+      "visibility": "public",
+      "publication_approved": true
+    },
+    {
+      "id": "research-structural-bioinformatics",
+      "title": "Structural bioinformatics & variant assays",
+      "category": "Research",
+      "status": "Independent computational research · 2026",
+      "route": "research.html",
+      "summary": "Preregistered structure-to-assay analyses built from public protein structures and variant-effect datasets.",
+      "role": "Public-source pinning, variant-to-structure mapping, structural feature extraction, rank-based statistics, permutation tests, negative controls, and independent reproduction.",
+      "evidence": "Project records include independently reviewed PTEN, NUDT15, TP53, and G6PD structure-assay studies, including negative results and assay-specific interpretation.",
+      "limitations": "Descriptive public-data analysis only. No pathogenicity, diagnosis, treatment, patient-risk, causal mechanism, universal structural law, or publication-priority claim is made.",
+      "links": [],
+      "visibility": "public",
+      "publication_approved": true
+    },
     {
       "id": "research-movement",
       "title": "Movement & rehabilitation",
