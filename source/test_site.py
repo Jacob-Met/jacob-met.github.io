@@ -101,6 +101,17 @@ class SiteTests(unittest.TestCase):
                     self.assertIn(f'<link rel="apple-touch-icon" href="{build.BASE}/apple-touch-icon.png">',text)
     def test_output_cannot_be_source(self):
         with self.assertRaises(ValueError):build.build(build.ROOT,self.data)
+    def test_repository_hygiene_and_minimal_workflow_permissions(self):
+        repo_root = build.ROOT.parent
+        self.assertFalse((repo_root / 'tmp').exists(), "tmp/ directory must not exist in repository")
+        gitignore = (repo_root / '.gitignore').read_text(encoding='utf-8')
+        self.assertIn('tmp/', gitignore.splitlines(), "tmp/ must be ignored in .gitignore")
+        workflows_dir = repo_root / '.github' / 'workflows'
+        if workflows_dir.is_dir():
+            for wf in workflows_dir.glob('*.yml'):
+                content = wf.read_text(encoding='utf-8')
+                self.assertNotIn('contents: write', content, f"{wf.name} must not grant contents: write permission")
+                self.assertIn('contents: read', content, f"{wf.name} must restrict to contents: read")
 
 class NotFoundPageTests(unittest.TestCase):
     """GitHub Pages serves 404.html at any missing path, e.g. /research/old-page."""
