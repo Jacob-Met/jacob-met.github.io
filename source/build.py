@@ -11,6 +11,11 @@ STAMP = '2026-09-19'
 NAV = [('work.html','Work'),('research.html','Academic research'),('ai-systems.html','AI systems'),('computing.html','Software'),('making.html','Making'),('about.html','About')]
 ALLOWED_HOSTS = {'github.com','www.instagram.com','myanimelist.net','www.linkedin.com','www.csulbtbp.org'}
 E = html.escape
+# W-12: GitHub Pages cannot send headers, so the policy ships as a meta tag. Every resource is
+# same-origin; the JSON-LD block is a data block and is never executed, so it needs no allowance.
+# Deliberately no upgrade-insecure-requests until HTTPS works on the custom domain (W-01).
+# frame-ancestors/report-uri/sandbox are ignored in meta, so they are not claimed here.
+CSP = "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'"
 
 def safe_url(value: str) -> str:
     if not isinstance(value,str) or len(value)>600 or any(c.isspace() for c in value): raise ValueError('Invalid URL')
@@ -75,7 +80,7 @@ def page_html(name: str,title: str,desc: str,body: str,data: dict) -> str:
     schema={'@context':'https://schema.org','@type':'Person','name':data['name'],'url':BASE,'sameAs':[x['url'] for x in data['identities']]}
     structured=json.dumps(schema,ensure_ascii=False).replace('<','\\u003c').replace('>','\\u003e')
     canonical=BASE+'/'+('' if name=='index.html' else name)
-    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="{CSP}"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{E(title)} · Jacob Metoyer</title><meta name="description" content="{E(desc,quote=True)}"><meta name="theme-color" content="#183c31"><meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="canonical" href="{canonical}"><link rel="icon" href="assets/mark.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css">
 <meta property="og:type" content="website"><meta property="og:title" content="{E(title,quote=True)} · Jacob Metoyer"><meta property="og:description" content="{E(desc,quote=True)}"><meta property="og:url" content="{canonical}">
