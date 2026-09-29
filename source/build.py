@@ -87,9 +87,9 @@ def page_html(name: str,title: str,desc: str,body: str,data: dict) -> str:
     canonical=BASE+'/'+('' if name=='index.html' else name)
     return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="{CSP}"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{E(title)} · Jacob Metoyer</title><meta name="description" content="{E(desc,quote=True)}"><meta name="theme-color" content="#183c31"><meta name="referrer" content="strict-origin-when-cross-origin">
-<link rel="canonical" href="{canonical}"><link rel="icon" href="assets/mark.svg" type="image/svg+xml"><link rel="icon" href="favicon.ico" sizes="48x48"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="stylesheet" href="style.css">
+<link rel="canonical" href="{canonical}"><link rel="icon" href="assets/mark.svg" type="image/svg+xml"><link rel="icon" href="favicon.ico" sizes="48x48"><link rel="apple-touch-icon" href="{BASE}/apple-touch-icon.png"><link rel="stylesheet" href="style.css">
 <meta property="og:type" content="website"><meta property="og:title" content="{E(title,quote=True)} · Jacob Metoyer"><meta property="og:description" content="{E(desc,quote=True)}"><meta property="og:url" content="{canonical}">
-<meta property="og:image" content="{BASE}/{SHARE_CARD}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="{E(SHARE_ALT,quote=True)}"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:image" content="{BASE}/{SHARE_CARD}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="{E(SHARE_ALT,quote=True)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="{BASE}/{SHARE_CARD}">
 <script type="application/ld+json">{structured}</script><script src="site.js" defer></script></head>
 <body><a class="skip" href="#main">Skip to content</a><header class="masthead"><a class="wordmark" href="index.html" aria-label="Jacob Metoyer home">Jacob <strong>Metoyer</strong><span class="wordmark-note">research / computation / making</span></a><nav aria-label="Main navigation">{nav}</nav></header>
 <main id="main">{body}</main>

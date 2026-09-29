@@ -97,7 +97,8 @@ class SiteTests(unittest.TestCase):
                 with self.subTest(page=page.name):
                     self.assertIn(f'<meta property="og:image" content="{build.BASE}/{build.SHARE_CARD}">',text)
                     self.assertIn('<meta name="twitter:card" content="summary_large_image">',text)
-                    self.assertIn('rel="apple-touch-icon"',text)
+                    self.assertIn(f'<meta name="twitter:image" content="{build.BASE}/{build.SHARE_CARD}">',text)
+                    self.assertIn(f'<link rel="apple-touch-icon" href="{build.BASE}/apple-touch-icon.png">',text)
     def test_output_cannot_be_source(self):
         with self.assertRaises(ValueError):build.build(build.ROOT,self.data)
 
