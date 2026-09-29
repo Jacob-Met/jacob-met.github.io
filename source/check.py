@@ -9,9 +9,11 @@ from static_surface import check_surface, local_path, rooted_ref, script_sources
 
 class Page(HTMLParser):
     def __init__(self):
-        super().__init__(); self.ids=[];self.links=[];self.images=[];self.h1=0;self.forms=0;self.frames=0;self.lang=None;self.scripts=[]
+        super().__init__(); self.ids=[];self.links=[];self.images=[];self.h1=0;self.forms=0;self.frames=0;self.lang=None;self.scripts=[];self.csp=[];self.head_order=[]
     def handle_starttag(self,tag,attrs):
         a=dict(attrs)
+        if tag in ('meta','link','script','title') and len(self.head_order)<3:self.head_order.append((tag,a.get('http-equiv','').lower()))
+        if tag=='meta' and a.get('http-equiv','').lower()=='content-security-policy':self.csp.append(a.get('content',''))
         if 'id' in a:self.ids.append(a['id'])
         if tag=='html':self.lang=a.get('lang')
         if tag=='h1':self.h1+=1
@@ -24,6 +26,22 @@ class Page(HTMLParser):
         if tag=='img':
             self.images.append(a)
             if a.get('src'):self.links.append(a['src'])
+
+# W-12: required directives of the meta Content-Security-Policy (GitHub Pages cannot send headers).
+CSP_REQUIRED={'default-src':"'none'",'script-src':"'self'",'style-src':"'self'",'img-src':"'self'",'base-uri':"'none'",'form-action':"'none'"}
+
+def csp_errors(p: 'Page') -> list[str]:
+    """One policy, before any resource tag, with every directive locked to the declared surface."""
+    if len(p.csp)!=1:return ['expected exactly one Content-Security-Policy meta']
+    if p.head_order[:2]!=[('meta',''),('meta','content-security-policy')]:return ['Content-Security-Policy must directly follow meta charset']
+    policy={}
+    for part in p.csp[0].split(';'):
+        bits=part.split()
+        if bits:policy[bits[0].lower()]=' '.join(bits[1:])
+    errors=[f'CSP {k} must be {v}' for k,v in CSP_REQUIRED.items() if policy.get(k)!=v]
+    extra=set(policy)-set(CSP_REQUIRED)
+    if extra:errors.append('CSP has undeclared directives: '+', '.join(sorted(extra)))
+    return errors
 
 def check(root: Path,allow_missing_images: bool=False) -> dict:
     root=root.resolve();failures=check_surface(root,allow_missing_images);parsed={}
@@ -39,6 +57,7 @@ def check(root: Path,allow_missing_images: bool=False) -> dict:
         if p.h1!=1:failures.append(f'{name}: expected one h1')
         if p.lang!='en':failures.append(f'{name}: missing language')
         if p.forms or p.frames:failures.append(f'{name}: unexpected collection or embed')
+        failures.extend(f'{name}: {e}' for e in csp_errors(p))
         if len(p.ids)!=len(set(p.ids)):failures.append(f'{name}: duplicate ids')
         for img in p.images:
             if not img.get('alt') or not img.get('width') or not img.get('height'):failures.append(f'{name}: image needs alt/dimensions')
