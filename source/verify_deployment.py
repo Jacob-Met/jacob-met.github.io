@@ -51,7 +51,7 @@ def verify(root: Path, base: str, timeout: float = 15) -> dict:
                 actual = response.read(len(expected)+1)
                 mime = response.headers.get_content_type()
                 wanted = {'.html': 'text/html', '.css': 'text/css', '.svg': 'image/svg+xml',
-                          '.webp': 'image/webp'}.get(path.suffix)
+                          '.webp': 'image/webp', '.png': 'image/png'}.get(path.suffix)
                 item.update(status=response.status, received_bytes=len(actual), mime=mime,
                             actual_sha256=hashlib.sha256(actual).hexdigest(),
                             bytes_match=actual == expected, mime_match=not wanted or mime == wanted)

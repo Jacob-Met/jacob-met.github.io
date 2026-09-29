@@ -80,6 +80,24 @@ class SiteTests(unittest.TestCase):
     def test_corrupted_output_is_detected(self):
         with tempfile.TemporaryDirectory() as t:
             p=Path(t)/'out';build.build(p,self.data);(p/'about.html').write_text('<h1>broken</h1>');self.assertFalse(check(p,True)['passed'])
+    def test_share_card_and_icons(self):
+        import struct
+        def png_size(b):
+            self.assertEqual(b[:8],b'\x89PNG\r\n\x1a\n');return struct.unpack('>II',b[16:24])
+        with tempfile.TemporaryDirectory() as t:
+            p=Path(t)/'out';build.build(p,self.data)
+            self.assertEqual(png_size((p/build.SHARE_CARD).read_bytes()),(1200,630))
+            self.assertEqual(png_size((p/'apple-touch-icon.png').read_bytes()),(180,180))
+            self.assertEqual((p/'favicon.ico').read_bytes()[:4],b'\x00\x00\x01\x00')
+            for name in (build.SHARE_CARD,'apple-touch-icon.png'):self.assertLess((p/name).stat().st_size,300_000)
+            manifest=json.loads((p/'build-manifest.json').read_text(encoding='utf-8'))['sha256']
+            for name in (build.SHARE_CARD,*build.ROOT_ICONS):self.assertIn(name,manifest)
+            for page in p.glob('*.html'):
+                text=page.read_text(encoding='utf-8')
+                with self.subTest(page=page.name):
+                    self.assertIn(f'<meta property="og:image" content="{build.BASE}/{build.SHARE_CARD}">',text)
+                    self.assertIn('<meta name="twitter:card" content="summary_large_image">',text)
+                    self.assertIn('rel="apple-touch-icon"',text)
     def test_output_cannot_be_source(self):
         with self.assertRaises(ValueError):build.build(build.ROOT,self.data)
 
