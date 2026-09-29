@@ -49,6 +49,10 @@
 .project-notes[open] { background: var(--wash); padding: 12px 22px 23px; border-top-color: #9aa998; }
 .project-notes .evidence { margin-top: 18px; }
 .project-links:empty { display: none; }
+.story { max-width: 68ch; font-size: 17px; line-height: 1.8; }
+.story p:first-child { font-size: 19px; line-height: 1.7; }
+.scope { max-width: 68ch; margin-top: 22px; font-size: 14px; line-height: 1.7; color: var(--muted); font-style: italic; }
+@media (max-width: 760px) { .story { font-size: 16px; } .story p:first-child { font-size: 17px; } .scope { font-size: 13px; } }
 .page-intro .intro { max-width: 66ch; }
 .prose { max-width: 730px; }
 .prose .opening { padding-left: 25px; border-left: 2px solid var(--accent); }

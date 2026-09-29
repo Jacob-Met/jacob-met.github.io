@@ -153,19 +153,61 @@ class EditorialTests(unittest.TestCase):
         self.assertIn(build.E(self.row['summary']),text)
         self.assertIn(build.E(self.row['status']),text)
         self.assertNotIn('card-role',text)
-    def test_project_notes_preserve_evidence_and_limits(self):
+    def test_detail_renders_story_as_paragraphs_and_scope_once(self):
         text=build.project_detail(self.row)
-        self.assertIn('<details class="project-notes">',text)
-        self.assertNotIn('<details open',text)
-        for field in ('role','evidence','limitations'):
-            self.assertEqual(text.count(build.E(self.row[field])),1)
-    def test_project_note_text_is_escaped(self):
+        for para in self.row['story']:
+            self.assertEqual(text.count(f'<p>{build.E(para)}</p>'),1)
+        self.assertEqual(text.count(build.E(self.row['limitations'])),1)
+        self.assertIn('<p class="scope">',text)
+    def test_detail_drops_field_list_layout(self):
+        text=build.project_detail(self.row)
+        for marker in ('<details','<dl','<dt>','What exists'):
+            self.assertNotIn(marker,text)
+    def test_story_text_is_escaped(self):
         row=copy.deepcopy(self.row)
-        row['evidence']='<script>not executable</script>'
-        row['role']='<img src=x onerror=alert(1)>'
+        row['story']=['<script>not executable</script>','<img src=x onerror=alert(1)>']
+        row['limitations']='<b>scope</b>'
         text=build.project_detail(row)
         self.assertNotIn('<script>',text)
         self.assertNotIn('<img',text)
+        self.assertNotIn('<b>',text)
         self.assertIn('&lt;script&gt;',text)
+    def test_every_public_entry_has_a_story(self):
+        for row in self.data['work']:
+            self.assertTrue(row['story'],row['id'])
+    def test_missing_story_denied(self):
+        del self.data['work'][0]['story']
+        with self.assertRaises(ValueError):build.validate(self.data)
+    def test_malformed_story_denied(self):
+        for bad in ([], 'a string, not a list', [''], [1], ['x']*7, ['x'*2001]):
+            with self.subTest(bad=bad):
+                data=copy.deepcopy(self.data);data['work'][0]['story']=bad
+                with self.assertRaises(ValueError):build.validate(data)
+
+class VoiceTests(unittest.TestCase):
+    """Guard against the stacked-disclaimer and stock-phrase style the rewrite removed."""
+    BANNED=('delve','tapestry','robust','leverage','seamless','is claimed','claim is made','not a claim','masquerad','spectacle','no clinical accuracy')
+    def setUp(self):
+        self.data=json.loads((build.ROOT/'content.json').read_text(encoding='utf-8'))
+    def rendered(self):
+        with tempfile.TemporaryDirectory() as t:
+            p=Path(t)/'out';build.build(p,self.data)
+            return {f.name:f.read_text(encoding='utf-8') for f in p.glob('*.html')}
+    def test_no_stock_phrases_in_visible_copy(self):
+        for name,text in self.rendered().items():
+            low=text.lower()
+            for phrase in self.BANNED:
+                with self.subTest(page=name,phrase=phrase):self.assertNotIn(phrase,low)
+    def test_scope_lines_are_single_sentences(self):
+        for row in self.data['work']:
+            with self.subTest(id=row['id']):
+                self.assertLessEqual(len(row['limitations']),140)
+                self.assertLessEqual(row['limitations'].count('. '),1)
+    def test_story_is_first_person_prose(self):
+        for row in self.data['work']:
+            with self.subTest(id=row['id']):
+                joined=' '.join(row['story'])
+                self.assertRegex(joined,r"\b(I|I'm|I've|My|my|me)\b")
+                self.assertNotIn(' — ',joined)
 
 if __name__=='__main__':unittest.main()

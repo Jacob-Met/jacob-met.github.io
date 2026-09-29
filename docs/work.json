@@ -27,10 +27,15 @@
       "category": "Research",
       "status": "Independent computational research · 2026",
       "route": "research.html",
-      "summary": "Versioned, source-pinned analyses of connectome annotations, missing-data boundaries, and release drift.",
+      "summary": "Checking how much you can trust the labels in a connectome, and what changes between releases.",
+      "story": [
+        "Connectome datasets like FlyWire and BANC come with annotations: cell types, predicted neurotransmitters, and other labels that people build analyses on top of. I wanted to know how stable those labels actually are, and what an honest answer looks like when the data runs out.",
+        "So I built comparisons I could rerun. Each one freezes its cohort, pins the exact release it reads from, and keeps an explicit \"unknown\" instead of quietly dropping cells that don't have a label. When two releases disagree, the workflow points at where. Every case study was checked again by an independent review before I counted it.",
+        "The findings are about the annotations and how reproducible they are. They say nothing about what a circuit does."
+      ],
       "role": "Designed reproducible comparison workflows with frozen cohorts, explicit uncertainty states, mismatch localization, version-to-version replay, and independent verification.",
       "evidence": "Project records include independently reviewed FlyWire and BANC annotation-QA case studies covering model-vocabulary support, fixed-denominator abstention, and annotation-release stability.",
-      "limitations": "Descriptive annotation and reproducibility work. No biological neurotransmitter ground truth, causal circuit function, held-out classifier accuracy, clinical meaning, or publication novelty is claimed.",
+      "limitations": "The findings are about annotation quality and reproducibility, not about what any circuit does.",
       "links": [],
       "visibility": "public",
       "publication_approved": true
@@ -41,10 +46,15 @@
       "category": "Research",
       "status": "Independent computational research · 2026",
       "route": "research.html",
-      "summary": "Preregistered structure-to-assay analyses built from public protein structures and variant-effect datasets.",
+      "summary": "Asking whether a protein's structure predicts what happens in a variant assay, and writing down the plan first.",
+      "story": [
+        "There are large public datasets that measure what happens when you change one amino acid in a protein, and there are public structures for many of those proteins. I wanted to see how far the structure alone gets you in explaining the assay results.",
+        "I worked through PTEN, NUDT15, TP53 and G6PD. For each one I wrote the analysis plan before looking at the outcome, mapped variants onto the structure, and used rank statistics, permutation tests and negative controls. Some of the results were negative, and those stayed in. What a result means also depends on the assay, so I read each one against its own measurement rather than pooling them.",
+        "This is analysis of public data. None of it is a statement about any patient or any diagnosis."
+      ],
       "role": "Public-source pinning, variant-to-structure mapping, structural feature extraction, rank-based statistics, permutation tests, negative controls, and independent reproduction.",
       "evidence": "Project records include independently reviewed PTEN, NUDT15, TP53, and G6PD structure-assay studies, including negative results and assay-specific interpretation.",
-      "limitations": "Descriptive public-data analysis only. No pathogenicity, diagnosis, treatment, patient-risk, causal mechanism, universal structural law, or publication-priority claim is made.",
+      "limitations": "This is analysis of public data; none of it is a claim about any patient, diagnosis or treatment.",
       "links": [],
       "visibility": "public",
       "publication_approved": true
@@ -55,10 +65,15 @@
       "category": "Research",
       "status": "Research contribution · 2026",
       "route": "research.html",
-      "summary": "Computational workflows for studying gait, rehabilitation, and fall-risk questions.",
+      "summary": "Motion-capture data for gait and fall-risk research, from the session to the analysis.",
+      "story": [
+        "Since March 2026 I've been a student researcher with gait rehabilitation research teams. Part of the work is helping during participant sessions while the Vicon system records. The rest happens afterward: labeling markers, organizing trials, and checking that the data is clean enough to analyze.",
+        "One piece I spent real time on was an older MATLAB gait-analysis workflow that had been ported to Python. Getting it right meant chasing unit mismatches, fixing how gait events were detected, and making the code fail loudly instead of returning a plausible wrong number. I checked the repaired version against representative trials before handing it off.",
+        "This is my part of a team's research. The clinical questions, and the results, belong to the lab."
+      ],
       "role": "Data preparation, Vicon labeling and analysis tooling, quality control, and participant-session support.",
       "evidence": "Research records and software for motion-capture preprocessing, feature extraction and review; work connected to the Clinical Rehabilitation and Biomechanics / Gait Rehabilitation research teams.",
-      "limitations": "Contributions to collaborative research. No clinical accuracy, treatment effect, or independent medical qualification is claimed.",
+      "limitations": "This is my contribution to a team's research. The clinical questions and results belong to the lab.",
       "links": [],
       "visibility": "public",
       "publication_approved": true
@@ -69,10 +84,15 @@
       "category": "Research",
       "status": "Independent research — ongoing",
       "route": "ai-systems.html",
-      "summary": "Independent experiments on human–AI collaboration, agentic systems, evaluation, and reusable workflows.",
+      "summary": "My own experiments on how people and AI systems work together, and when that actually helps.",
+      "story": [
+        "This started as a hobby and turned into something I run like research. I build systems where one or several AI models work on real tasks, then look closely at what happened: what they got right, where they failed, and whether the result was worth the extra coordination.",
+        "The habit I care about most is keeping the evidence. Tasks, tool actions, outputs and failures get saved, so a run can be checked later instead of remembered generously. I'm especially interested in when a piece of reasoning that worked once can become a procedure that works reliably.",
+        "It's independent work, done outside coursework and outside any lab, and none of it has been through peer review."
+      ],
       "role": "Experimental design, software and system construction, execution studies, failure analysis, and reproducibility.",
       "evidence": "Versioned experiments, execution receipts, evaluator results, failure records, and reusable tooling developed outside formal coursework.",
-      "limitations": "Independent hobby research; not a peer-reviewed publication, institutional lab program, or completed client engagement.",
+      "limitations": "Independent work, done outside coursework and outside any lab, and not peer reviewed.",
       "links": [],
       "visibility": "public",
       "publication_approved": true
@@ -83,10 +103,15 @@
       "category": "Computing",
       "status": "Public source",
       "route": "computing.html",
-      "summary": "Windows-first software for multimodal research capture, worker plugins, and structured session packages.",
+      "summary": "Research capture software for Windows, so a recording session can be trusted and picked up later.",
+      "story": [
+        "Multimodal recording means several devices, each with its own software, and a session that has to be stitched together afterward. I lead the architecture and direction of CaptureSuite, which is meant to be one place to run that kind of session and come out with a single sealed package.",
+        "A long-running daemon keeps the clock and the session state. Each device lives in a separate worker plugin, written in C++ or Python, so adding a new sensor doesn't mean touching the core. There's a desktop interface for the operator, a simulator so it can be developed without hardware, and analysis jobs for quality checks and features that read the sealed packages.",
+        "If you want to poke at it, the quality-check engine runs on a small synthetic session with no hardware at all."
+      ],
       "role": "Architecture, product direction, engineering, verification, and integration.",
       "evidence": "Public source describes a daemon, plugin contracts, a PySide6 operator interface, simulated capture, and downstream analysis workflows.",
-      "limitations": "Windows-specific current scope; current support, setup and qualification belong with the source documentation.",
+      "limitations": "Windows-only for now. The repository is the place for setup, licensing and current limits.",
       "links": [
         {
           "label": "Source & documentation",
@@ -102,10 +127,14 @@
       "category": "Making",
       "status": "Personal practice",
       "route": "making.html",
-      "summary": "Character-inspired costumes, props, CAD studies, and 3D-printable parts.",
+      "summary": "Costumes, armor and props based on existing characters, shared as tornadocos.",
+      "story": [
+        "I cosplay as tornadocos. A build starts from a character and quickly becomes a set of practical problems: how armor should sit on a real body, how a prop holds together, which parts are worth modeling in Blender and printing.",
+        "I keep a working archive of armor, prop and 3D-printing files. Not every file in it has become a finished piece. Instagram is where the finished work goes."
+      ],
       "role": "Cosplay, design iteration, modeling and fabrication exploration; shared as tornadocos.",
       "evidence": "An existing cosplay account and a working archive of armor, prop, Blender and 3D-printing files.",
-      "limitations": "Design files are not proof of finished fabrication. Fan works retain the original creators’ character and franchise rights.",
+      "limitations": "The characters and their designs belong to their original creators.",
       "links": [
         {
           "label": "Cosplay · tornadocos",
@@ -121,10 +150,14 @@
       "category": "Research",
       "status": "Research contribution · 2026",
       "route": "research.html",
-      "summary": "Motion-tracking and multimodal data workflows for research into surgical movement and workload.",
+      "summary": "Tracking how surgeons move and how hard they are working during urologic procedures.",
+      "story": [
+        "This is the same motion-capture question as the gait work, asked in a very different room. The collaboration studies ergonomics in urologic surgery: how surgeons hold their bodies over long procedures, and what that costs them physically.",
+        "My part was building video-based motion-tracking workflows and helping capture and analyze the other streams alongside them, including EMG, heart rate and motion sensors. Keeping those streams lined up so they describe the same moment is the same problem CaptureSuite works on."
+      ],
       "role": "Development of video-based motion-tracking workflows and support for physiological and sensor data capture and analysis.",
       "evidence": "Collaborative urologic-surgery ergonomics work involving video, EMG, heart-rate and motion data.",
-      "limitations": "Research collaboration, not clinical practice or a validated surgical assessment product. No patient records or unpublished results are released here.",
+      "limitations": "A research collaboration, not clinical practice. No patient data or unpublished results appear here.",
       "links": [],
       "visibility": "public",
       "publication_approved": true
@@ -135,10 +168,14 @@
       "category": "Research",
       "status": "Research experience · 2025–26",
       "route": "research.html",
-      "summary": "Dataset and trajectory workflows for studying protein motion and evaluating generated structural rollouts.",
+      "summary": "Pipelines for protein motion data, and checks on whether generated structures are physically believable.",
+      "story": [
+        "From September 2025 to April 2026 I worked remotely as a student researcher with the Joshi Laboratory at Georgetown. The work was mostly the plumbing that makes molecular-dynamics research possible: finding trajectories, cleaning them, and putting them into one consistent format.",
+        "On top of that I computed features like PCA and RMSF, and wrote checks for AI-generated protein rollouts. RMSD, radius of gyration and bond geometry catch a structure that looks fine at a glance and is physically wrong. I also turned papers from the field into concrete validation plans the group could test against."
+      ],
       "role": "Data acquisition and standardization, structural plausibility checks, and computational-biophysics literature synthesis.",
       "evidence": "Project records describe trajectory handling and diagnostics including RMSD, radius of gyration, bond and geometry checks, and PCA/RMSF-style features.",
-      "limitations": "Computational research and prototype work. No drug-discovery success, biological efficacy, or clinical result is claimed.",
+      "limitations": "Computational research and prototypes, not drug discovery or a biological result.",
       "links": [],
       "visibility": "public",
       "publication_approved": true
@@ -149,10 +186,14 @@
       "category": "Research",
       "status": "Research experience · 2025",
       "route": "research.html",
-      "summary": "Laboratory research connected to sex differences in brain and behavior.",
+      "summary": "My first lab: behavioral neuroscience in the Tsai Lab at CSULB.",
+      "story": [
+        "I joined the Tsai Lab at CSULB in January 2025 and stayed through September. The lab studies sex differences in brain and behavior.",
+        "Most of my time went into scoring behavior from video: automated tracking gave a first pass, and I verified it by hand. I analyzed results in GraphPad Prism and helped with mouse handling, genotyping and tissue collection."
+      ],
       "role": "Behavioral video scoring with manual verification, analysis in GraphPad Prism, and laboratory support in the Tsai Lab at CSULB.",
       "evidence": "Research experience recorded in the CV includes behavioral observation, mouse handling, genotyping workflows and tissue-collection support.",
-      "limitations": "Collaborative, supervised laboratory work. The lab retains its own research results and publication process.",
+      "limitations": "Supervised work in someone else's lab; the lab's results and publications are its own.",
       "links": [],
       "visibility": "public",
       "publication_approved": true
@@ -163,10 +204,14 @@
       "category": "Computing",
       "status": "Public source",
       "route": "computing.html",
-      "summary": "A Python CLI and MCP interface for working with an authorized Canvas LMS account.",
+      "summary": "A command line and MCP server for Canvas, built around the login students actually have.",
+      "story": [
+        "Most Canvas integrations assume a personal access token, and many schools don't let students create one. I wrote CanvasPilot to work with the login you already have: you sign in once in a real browser, including SSO and MFA, and a small local broker makes API calls through that session. The cookies stay in the browser profile.",
+        "It covers courses, assignments, modules, files, discussions, the calendar and more, as a CLI and as an MCP server, with digests like a cleaned-up assignment brief. The tests run entirely against fixtures, and there's an offline demo that needs no Canvas account at all."
+      ],
       "role": "Software development, integration tooling, testing, and responsible-use constraints.",
       "evidence": "Public source documents course and assignment tools, structured digests, fixture-based tests, and a local session broker or token authentication.",
-      "limitations": "Use only where institution and account policies permit. Write actions and quiz/submission operations are consequential and need appropriate authorization.",
+      "limitations": "Use it only where your school's policies allow. Submitting work and taking quizzes through it are real actions.",
       "links": [
         {
           "label": "Source & responsible use",
@@ -182,10 +227,14 @@
       "category": "Computing",
       "status": "Public source · unofficial",
       "route": "computing.html",
-      "summary": "A Rust-based Umamusume career simulator with a web interface, CLI, API and optional wrappers.",
+      "summary": "A fan-made career simulator for Umamusume, written in Rust.",
+      "story": [
+        "Umamusume's career mode has a lot of interacting systems, and I wanted to see them laid out as code. uma-sim is my unofficial Rust engine for runs, events, races and scoring, with a browser interface, a CLI, a REST API and an MCP wrapper.",
+        "The race physics lives in its own clean-room crate. Tests and a calibration script keep the numbers honest against the constants the engine loads."
+      ],
       "role": "Simulation design, software development, testing, and interface work.",
       "evidence": "Public crates, scenario and scoring code, interface packages, test instructions and licensing notices.",
-      "limitations": "Unofficial fan software. No affiliation with the original game’s creators; simulator behavior is not asserted to reproduce every live-game mechanic.",
+      "limitations": "Unofficial fan software with no connection to the game's creators, and it won't match every live-game mechanic.",
       "links": [
         {
           "label": "Source & notice",
@@ -201,10 +250,13 @@
       "category": "Making",
       "status": "Personal interests",
       "route": "making.html",
-      "summary": "The stories, games, and characters I spend time with are part of this record too.",
+      "summary": "Anime, manga and games: a lot of what I make and build starts here.",
+      "story": [
+        "I read, watch and play a lot, and my MyAnimeList (TornadoZW) is the running list. These interests show up elsewhere on this site too: in the characters I cosplay and in uma-sim."
+      ],
       "role": "Reader, viewer, player, and occasional builder of tools for these interests.",
       "evidence": "My public MyAnimeList profile is TornadoZW. Follow the external profile for current lists.",
-      "limitations": "A personal record of reading, watching and playing, not a set of professional claims.",
+      "limitations": "Just the things I enjoy.",
       "links": [
         {
           "label": "MyAnimeList · TornadoZW",
