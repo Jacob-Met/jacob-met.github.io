@@ -3,6 +3,7 @@ from pathlib import Path
 from urllib.parse import urljoin,urlsplit
 import build
 from check import check
+import check as check_module
 
 class SiteTests(unittest.TestCase):
     def setUp(self):self.data=json.loads((build.ROOT/'content.json').read_text(encoding='utf-8'))
@@ -79,6 +80,24 @@ class SiteTests(unittest.TestCase):
     def test_corrupted_output_is_detected(self):
         with tempfile.TemporaryDirectory() as t:
             p=Path(t)/'out';build.build(p,self.data);(p/'about.html').write_text('<h1>broken</h1>');self.assertFalse(check(p,True)['passed'])
+    def test_share_card_and_icons(self):
+        import struct
+        def png_size(b):
+            self.assertEqual(b[:8],b'\x89PNG\r\n\x1a\n');return struct.unpack('>II',b[16:24])
+        with tempfile.TemporaryDirectory() as t:
+            p=Path(t)/'out';build.build(p,self.data)
+            self.assertEqual(png_size((p/build.SHARE_CARD).read_bytes()),(1200,630))
+            self.assertEqual(png_size((p/'apple-touch-icon.png').read_bytes()),(180,180))
+            self.assertEqual((p/'favicon.ico').read_bytes()[:4],b'\x00\x00\x01\x00')
+            for name in (build.SHARE_CARD,'apple-touch-icon.png'):self.assertLess((p/name).stat().st_size,300_000)
+            manifest=json.loads((p/'build-manifest.json').read_text(encoding='utf-8'))['sha256']
+            for name in (build.SHARE_CARD,*build.ROOT_ICONS):self.assertIn(name,manifest)
+            for page in p.glob('*.html'):
+                text=page.read_text(encoding='utf-8')
+                with self.subTest(page=page.name):
+                    self.assertIn(f'<meta property="og:image" content="{build.BASE}/{build.SHARE_CARD}">',text)
+                    self.assertIn('<meta name="twitter:card" content="summary_large_image">',text)
+                    self.assertIn('rel="apple-touch-icon"',text)
     def test_output_cannot_be_source(self):
         with self.assertRaises(ValueError):build.build(build.ROOT,self.data)
 
@@ -139,6 +158,37 @@ class NotFoundPageTests(unittest.TestCase):
         manifest_path=self.root/'build-manifest.json';manifest=json.loads(manifest_path.read_text())
         manifest['sha256']['404.html']=hashlib.sha256(page.read_bytes()).hexdigest();manifest_path.write_text(json.dumps(manifest),encoding='utf-8')
         self.assertIn('404.html: missing gone.html',check(self.root)['failures'])
+
+class ContentSecurityPolicyTests(unittest.TestCase):
+    """W-12: GitHub Pages sends no CSP header, so every page carries the policy as a meta tag."""
+    def setUp(self):
+        self.data=json.loads((build.ROOT/'content.json').read_text(encoding='utf-8'))
+        self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup)
+        self.root=Path(self.temp.name)/'out';build.build(self.root,self.data)
+    def rewrite(self,name,old,new):
+        page=self.root/name;text=page.read_text(encoding='utf-8');self.assertIn(old,text)
+        page.write_text(text.replace(old,new),encoding='utf-8',newline='\n')
+        manifest_path=self.root/'build-manifest.json';manifest=json.loads(manifest_path.read_text())
+        manifest['sha256'][name]=hashlib.sha256(page.read_bytes()).hexdigest();manifest_path.write_text(json.dumps(manifest),encoding='utf-8')
+        return check(self.root)['failures']
+    def test_every_page_has_policy_first(self):
+        for page in sorted(self.root.glob('*.html')):
+            with self.subTest(page=page.name):
+                self.assertTrue(page.read_text(encoding='utf-8').startswith(f'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="{build.CSP}">'))
+    def test_policy_matches_declared_surface(self):
+        self.assertEqual(build.CSP,"; ".join(f'{k} {v}' for k,v in check_module.CSP_REQUIRED.items()))
+        self.assertNotIn('unsafe',build.CSP)
+    def test_missing_policy_detected(self):
+        self.assertIn('about.html: expected exactly one Content-Security-Policy meta',self.rewrite('about.html',f'<meta http-equiv="Content-Security-Policy" content="{build.CSP}">',''))
+    def test_weakened_policy_detected(self):
+        failures=self.rewrite('index.html',"script-src 'self'","script-src 'self' 'unsafe-inline'")
+        self.assertIn("index.html: CSP script-src must be 'self'",failures)
+    def test_undeclared_directive_detected(self):
+        failures=self.rewrite('404.html',"form-action 'none'","form-action 'none'; connect-src *")
+        self.assertIn('404.html: CSP has undeclared directives: connect-src',failures)
+    def test_policy_after_resources_detected(self):
+        failures=self.rewrite('work.html','<meta charset="utf-8"><meta http-equiv','<meta charset="utf-8"><link rel="stylesheet" href="style.css"><meta http-equiv')
+        self.assertIn('work.html: Content-Security-Policy must directly follow meta charset',failures)
 
 class EditorialTests(unittest.TestCase):
     def setUp(self):
