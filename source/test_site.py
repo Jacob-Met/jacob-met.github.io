@@ -252,7 +252,11 @@ class EditorialTests(unittest.TestCase):
 
 class VoiceTests(unittest.TestCase):
     """Guard against the stacked-disclaimer and stock-phrase style the rewrite removed."""
-    BANNED=('delve','tapestry','robust','leverage','seamless','is claimed','claim is made','not a claim','masquerad','spectacle','no clinical accuracy')
+    BANNED=('delve','tapestry','robust','leverage','seamless','is claimed','claim is made','not a claim','masquerad','spectacle','no clinical accuracy',
+            # 2026-09-29 Jacob: no faux-casual thesis packaging
+            'comes back to','common thread','keeps showing up','ties it together','through-line','the longer view','worth following','following a question','keeps turning into','the same job','up to you',
+            # 2026-09-29 Jacob: 'sounds like a list every time'; no LLM essay tics either
+            'passionate','journey','at its core','deeply','fascinat','intersection of','what drives me','i believe that')
     def setUp(self):
         self.data=json.loads((build.ROOT/'content.json').read_text(encoding='utf-8'))
     def rendered(self):
@@ -275,5 +279,92 @@ class VoiceTests(unittest.TestCase):
                 joined=' '.join(row['story'])
                 self.assertRegex(joined,r"\b(I|I'm|I've|My|my|me)\b")
                 self.assertNotIn(' — ',joined)
+
+    def test_homepage_is_prose_not_a_list(self):
+        home=self.rendered()['index.html']
+        main=home[home.index('<main'):home.index('</main>')]
+        for marker in ('<ul','<li','work-card','featured-grid','<dl'):
+            with self.subTest(marker=marker):self.assertNotIn(marker,main)
+        self.assertGreaterEqual(main.count('<p>'),5)
+    def home_main(self):
+        home=self.rendered()['index.html']
+        return home[home.index('<main'):home.index('</main>')]
+    def test_homepage_is_not_a_statement_of_purpose(self):
+        # 2026-09-29 Jacob: the homepage read like his statement of purpose. Credentials, dates and
+        # career goals belong in the About biography, not the front door.
+        main=self.home_main()
+        for marker in ('MD/PhD','BUILD Scholar','2025','2026','biology minor','minor in biology','medicine'):
+            with self.subTest(marker=marker):self.assertNotIn(marker,main)
+    # 2026-09-29 Jacob (draft 5): "its my portfolio website why is there stories in the first place".
+    # The homepage is a scannable overview: every public project once, grouped by lane, a title and a
+    # one- or two-sentence summary each, linking to the full write-up. No case studies on the front door.
+    def test_homepage_is_a_scannable_overview(self):
+        ids=[i for *_,items in build.HOME_OVERVIEW for i,_,_ in items]
+        self.assertEqual(sorted(ids),sorted(r['id'] for r in self.data['work']))  # every public project, once
+        for *_,items in build.HOME_OVERVIEW:
+            for ident,tag,summary in items:
+                with self.subTest(id=ident):
+                    self.assertLessEqual(len(summary),260)
+                    self.assertLessEqual(len(re.findall(r'[.!?](\s|$)',summary)),2)
+                    self.assertNotIn(' \u2014 ',summary)
+        main=self.home_main()
+        self.assertNotIn('class="story"',main)
+        self.assertLess(len(re.sub(r'<[^>]+>',' ',main).split()),520)
+    def test_homepage_keeps_lab_work_apart_from_public_work(self):
+        order=[sid for sid,*_ in build.HOME_OVERVIEW]
+        self.assertEqual(order,['home-academic','home-software','home-independent','home-making'])
+        rows={r['id']:r for r in self.data['work']}
+        lanes=dict((sid,[rows[i] for i,_,_ in items]) for sid,_,_,items in build.HOME_OVERVIEW)
+        self.assertTrue(all(r['category']=='Research' and r['id']!='ai-systems-research' for r in lanes['home-academic']))
+        self.assertTrue(all(r['category']=='Computing' for r in lanes['home-software']))
+        main=self.home_main()
+        self.assertIn('stay with the labs',main)
+        self.assertIn('Unpublished',main)
+    def test_homepage_links_land_on_real_sections(self):
+        pages=self.rendered()
+        for href in re.findall(r'href="([a-z-]+\.html)#([a-z0-9-]+)"',self.home_main()):
+            page,frag=href
+            with self.subTest(href=href):self.assertIn(f'id="{frag}"',pages[page])
+    def test_towerops_is_a_public_simulation_not_operational_atc(self):
+        pages=self.rendered()
+        rows={r['id']:r for r in self.data['work']}
+        row=rows['towerops']
+        self.assertEqual(row['links'][0]['url'],'https://github.com/Jacob-Met/TowerOps')
+        self.assertIn('synthetic',row['summary'])
+        self.assertIn('not operational',row['limitations'])
+        self.assertIn('computing.html#towerops',pages['index.html'])
+        self.assertIn('id="towerops"',pages['computing.html'])
+        self.assertIn('TowerOps source and simulation limits',pages['credits.html'])
+        self.assertNotIn('TowerOps',pages['research.html'])
+    def test_about_is_a_chronological_biography(self):
+        about=' '.join(build.ABOUT)
+        order=[about.index(k) for k in ('Cal State Long Beach','Tsai Lab','Joshi','gait rehabilitation','MD/PhD')]
+        self.assertEqual(order,sorted(order))
+        self.assertIn('Jacob Metoyer',build.SHORT_BIO)
+        page=self.rendered()['about.html']
+        for para in build.ABOUT:
+            with self.subTest(para=para[:40]):self.assertIn(build.E(para),page)
+    # 2026-09-29 Jacob: say what he did, is working on, knows and plans, not the equipment; and
+    # much of his personal research (software, AI) should not be public.
+    TOOL_NAMES=('Vicon','MATLAB','Python','GraphPad','Prism','Unity','Blender','Rust','EMG','RMSD','PCA','RMSF','PySide','MCP','CLI')
+    PRIVATE_MARKERS=('Hamon','Togishi','Jihada','Habaki','Shinogi','FlyWire','BANC','connectome','PTEN','NUDT15','TP53','G6PD','Spire','Schauz','client')
+    def front_copy(self):
+        pages=self.rendered()
+        out={}
+        for name in ('index.html','about.html'):
+            page=pages[name]; out[name]=page[page.index('<main'):page.index('</main>')]
+        return out
+    def test_home_and_about_skip_tool_names(self):
+        for name,main in self.front_copy().items():
+            for word in self.TOOL_NAMES:
+                with self.subTest(page=name,word=word):self.assertNotRegex(main,r'\b'+re.escape(word)+r'\b')
+    def test_home_and_about_keep_private_work_private(self):
+        for name,main in self.front_copy().items():
+            for word in self.PRIVATE_MARKERS:
+                with self.subTest(page=name,word=word):self.assertNotIn(word.lower(),main.lower())
+    def test_about_says_what_stays_off_the_site(self):
+        about=' '.join(build.ABOUT)
+        self.assertIn('belong to the labs',about)
+        self.assertIn('isn\u2019t published',about)
 
 if __name__=='__main__':unittest.main()
