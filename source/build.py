@@ -57,7 +57,17 @@ def project_detail(row: dict) -> str:
     links=' '.join(link(x['url'],x['label']) for x in row['links'])
     return f'<article id="{E(row["id"])}" class="project-detail"><div class="detail-label"><p class="eyebrow">{E(row["category"])}</p><span class="status">{E(row["status"])}</span></div><div class="detail-body"><h2>{E(row["title"])}</h2><p class="lead">{E(row["summary"])}</p><p class="contribution">{E(row["role"])}</p><div class="project-links">{links}</div><details class="project-notes"><summary>Project notes &amp; scope</summary><dl class="evidence"><dt>What exists</dt><dd>{E(row["evidence"])}</dd><dt>Scope</dt><dd>{E(row["limitations"])}</dd></dl></details></div></article>'
 
+ROOTED_PAGES={'404.html'}  # served by the host at arbitrary missing paths, e.g. /research/old/
+
+def root_links(name: str,markup: str) -> str:
+    """Anchor local href/src values to the site root for pages served at any depth."""
+    if name not in ROOTED_PAGES: return markup
+    return re.sub(r'(\s(?:href|src)=")(?![a-z][a-z0-9+.-]*:|/|#)',r'\1/',markup)
+
 def layout(name: str,title: str,desc: str,body: str,data: dict) -> str:
+    return root_links(name,page_html(name,title,desc,body,data))
+
+def page_html(name: str,title: str,desc: str,body: str,data: dict) -> str:
     nav=''.join(f'<a href="{p}"'+(' aria-current="page"' if name==p else '')+f'>{E(t)}</a>' for p,t in NAV)
     schema={'@context':'https://schema.org','@type':'Person','name':data['name'],'url':BASE,'sameAs':[x['url'] for x in data['identities']]}
     structured=json.dumps(schema,ensure_ascii=False).replace('<','\\u003c').replace('>','\\u003e')

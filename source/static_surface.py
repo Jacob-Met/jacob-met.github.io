@@ -12,6 +12,23 @@ from urllib.parse import unquote, urlsplit
 from xml.etree import ElementTree as ET
 
 
+# Pages the host serves at arbitrary missing paths (GitHub Pages 404). Only these
+# may use root-relative ("/style.css") references; every other page stays relative.
+ROOT_RELATIVE_PAGES = frozenset({'404.html'})
+
+
+def rooted_ref(page: str, value: str) -> str | None:
+    """Return the root-relative remainder of a single-slash ref on a rooted page."""
+    if page in ROOT_RELATIVE_PAGES and value.startswith('/') and not value.startswith(('//', '/\\')):
+        return value[1:]
+    return None
+
+
+def script_sources(page: str) -> frozenset:
+    """The one reviewed script, spelled as that page is allowed to reference it."""
+    return frozenset({'site.js', '/site.js'} if page in ROOT_RELATIVE_PAGES else {'site.js'})
+
+
 def local_path(value: str) -> bool:
     """Reject ambiguous/remote asset paths before resolving or reading them."""
     try:
@@ -28,8 +45,9 @@ def local_path(value: str) -> bool:
 
 class Surface(HTMLParser):
     """Inspect rendered HTML without executing it."""
-    def __init__(self) -> None:
+    def __init__(self, page: str = '') -> None:
         super().__init__(convert_charrefs=True)
+        self.scripts = script_sources(page)
         self.errors: list[str] = []
         self.resources: list[str] = []
         self.script_type: str | None = None
@@ -56,7 +74,7 @@ class Surface(HTMLParser):
         if tag == 'script':
             self.script_type = data.get('type', '')
             self.script_text = []
-            if data.get('src') not in {None, 'site.js'}:
+            if data.get('src') is not None and data['src'] not in self.scripts:
                 self.errors.append('script: unsupported source')
             if not data.get('src') and self.script_type != 'application/ld+json':
                 self.errors.append('script: executable inline body')
@@ -125,7 +143,7 @@ def check_surface(root: Path, allow_missing_images: bool = False) -> list[str]:
         except (OSError, UnicodeError):
             failures.append(f'{relative}: unreadable UTF-8'); continue
         if path.suffix == '.html':
-            parser = Surface(); parser.feed(text); parser.close()
+            parser = Surface(relative); parser.feed(text); parser.close()
             errors, resources = parser.errors, parser.resources
         elif path.suffix == '.css':
             errors, resources = css_surface(text)
@@ -133,10 +151,12 @@ def check_surface(root: Path, allow_missing_images: bool = False) -> list[str]:
             errors, resources = svg_surface(text)
         failures.extend(f'{relative}: {error}' for error in errors)
         for value in resources:
+            rooted = rooted_ref(relative, value)
+            value, base = (rooted, root) if rooted is not None else (value, path.parent)
             if not local_path(value):
                 failures.append(f'{relative}: nonlocal or ambiguous resource')
                 continue
-            target = path.parent / unquote(urlsplit(value).path)
+            target = base / unquote(urlsplit(value).path)
             if not target.resolve().is_relative_to(root) or target.is_symlink():
                 failures.append(f'{relative}: escaped resource')
             elif not target.is_file() and not (allow_missing_images and target.suffix == '.webp'):

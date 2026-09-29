@@ -1,5 +1,6 @@
-import copy,json,tempfile,unittest
+import copy,hashlib,json,re,tempfile,unittest
 from pathlib import Path
+from urllib.parse import urljoin,urlsplit
 import build
 from check import check
 
@@ -80,6 +81,64 @@ class SiteTests(unittest.TestCase):
             p=Path(t)/'out';build.build(p,self.data);(p/'about.html').write_text('<h1>broken</h1>');self.assertFalse(check(p,True)['passed'])
     def test_output_cannot_be_source(self):
         with self.assertRaises(ValueError):build.build(build.ROOT,self.data)
+
+class NotFoundPageTests(unittest.TestCase):
+    """GitHub Pages serves 404.html at any missing path, e.g. /research/old-page."""
+    def setUp(self):
+        self.data=json.loads((build.ROOT/'content.json').read_text(encoding='utf-8'))
+        self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup)
+        self.root=Path(self.temp.name)/'out';build.build(self.root,self.data)
+    def local_refs(self,name):
+        text=(self.root/name).read_text(encoding='utf-8')
+        return [v for v in re.findall(r'\s(?:href|src)="([^"]*)"',text) if not re.match(r'[a-z][a-z0-9+.-]*:',v)]
+    def test_404_local_references_are_root_relative(self):
+        refs=self.local_refs('404.html')
+        for needed in ('/style.css','/site.js','/assets/mark.svg','/index.html','/work.html'):self.assertIn(needed,refs)
+        bad=[v for v in refs if not v.startswith(('/','#')) or v.startswith('//')]
+        self.assertEqual(bad,[],'404 page must resolve assets from the site root at any depth')
+        self.assertIn('#main',refs,'same-page skip link stays a fragment')
+    def test_404_resolves_from_nested_missing_path(self):
+        for ref in self.local_refs('404.html'):
+            if ref.startswith('#'):continue
+            with self.subTest(ref=ref):
+                resolved=urljoin('https://jacobmetoyer.com/research/old-page/deeper',ref)
+                path=urlsplit(resolved).path.lstrip('/') or 'index.html'
+                self.assertTrue((self.root/path).is_file(),resolved)
+    def test_other_pages_stay_relative(self):
+        for name in ('index.html','work.html','about.html','now.html'):
+            with self.subTest(name=name):
+                self.assertFalse([v for v in self.local_refs(name) if v.startswith('/')])
+    def test_root_relative_link_rejected_outside_404(self):
+        page=self.root/'about.html'
+        page.write_text(page.read_text(encoding='utf-8').replace('href="style.css"','href="/style.css"'),encoding='utf-8',newline='\n')
+        manifest_path=self.root/'build-manifest.json';manifest=json.loads(manifest_path.read_text())
+        manifest['sha256']['about.html']=hashlib.sha256(page.read_bytes()).hexdigest();manifest_path.write_text(json.dumps(manifest),encoding='utf-8')
+        self.assertFalse(check(self.root)['passed'])
+    def test_root_relative_script_rejected_outside_404(self):
+        page=self.root/'about.html'
+        page.write_text(page.read_text(encoding='utf-8').replace('src="site.js"','src="/site.js"'),encoding='utf-8',newline='\n')
+        manifest_path=self.root/'build-manifest.json';manifest=json.loads(manifest_path.read_text())
+        manifest['sha256']['about.html']=hashlib.sha256(page.read_bytes()).hexdigest();manifest_path.write_text(json.dumps(manifest),encoding='utf-8')
+        result=check(self.root)
+        self.assertFalse(result['passed']);self.assertIn('about.html: unapproved executable script',result['failures'])
+    def test_404_other_rooted_script_rejected(self):
+        page=self.root/'404.html'
+        page.write_text(page.read_text(encoding='utf-8').replace('src="/site.js"','src="/style.css"'),encoding='utf-8',newline='\n')
+        manifest_path=self.root/'build-manifest.json';manifest=json.loads(manifest_path.read_text())
+        manifest['sha256']['404.html']=hashlib.sha256(page.read_bytes()).hexdigest();manifest_path.write_text(json.dumps(manifest),encoding='utf-8')
+        self.assertIn('404.html: unapproved executable script',check(self.root)['failures'])
+    def test_404_remote_or_scheme_relative_still_rejected(self):
+        page=self.root/'404.html'
+        page.write_text(page.read_text(encoding='utf-8').replace('href="/style.css"','href="//example.invalid/style.css"'),encoding='utf-8',newline='\n')
+        manifest_path=self.root/'build-manifest.json';manifest=json.loads(manifest_path.read_text())
+        manifest['sha256']['404.html']=hashlib.sha256(page.read_bytes()).hexdigest();manifest_path.write_text(json.dumps(manifest),encoding='utf-8')
+        self.assertFalse(check(self.root)['passed'])
+    def test_404_missing_rooted_target_detected(self):
+        page=self.root/'404.html'
+        page.write_text(page.read_text(encoding='utf-8').replace('href="/now.html"','href="/gone.html"'),encoding='utf-8',newline='\n')
+        manifest_path=self.root/'build-manifest.json';manifest=json.loads(manifest_path.read_text())
+        manifest['sha256']['404.html']=hashlib.sha256(page.read_bytes()).hexdigest();manifest_path.write_text(json.dumps(manifest),encoding='utf-8')
+        self.assertIn('404.html: missing gone.html',check(self.root)['failures'])
 
 class EditorialTests(unittest.TestCase):
     def setUp(self):

@@ -5,7 +5,7 @@ import argparse, hashlib, json, re
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote,urlsplit
-from static_surface import check_surface, local_path
+from static_surface import check_surface, local_path, rooted_ref, script_sources
 
 class Page(HTMLParser):
     def __init__(self):
@@ -51,6 +51,8 @@ def check(root: Path,allow_missing_images: bool=False) -> dict:
                 continue
             if ref.netloc:failures.append(f'{name}: scheme-relative URL');continue
             path=unquote(ref.path)
+            rooted=rooted_ref(name,path)
+            if rooted is not None:path=rooted or 'index.html'
             target=(root/(path or name)).resolve()
             if not target.is_relative_to(root):failures.append(f'{name}: escaped path');continue
             if not target.exists():
@@ -58,7 +60,7 @@ def check(root: Path,allow_missing_images: bool=False) -> dict:
             if ref.fragment and target.name in parsed and ref.fragment not in parsed[target.name].ids:
                 failures.append(f'{name}: missing anchor {u}')
         for s in p.scripts:
-            if s.get('src') and s['src']!='site.js':failures.append(f'{name}: unapproved executable script')
+            if s.get('src') and s['src'] not in script_sources(name):failures.append(f'{name}: unapproved executable script')
             if not s.get('src') and s.get('type')!='application/ld+json':failures.append(f'{name}: inline executable script')
     try:
         obj=json.loads((root/'build-manifest.json').read_text(encoding='utf-8'))
