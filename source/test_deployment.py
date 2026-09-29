@@ -46,7 +46,8 @@ class DeploymentTests(unittest.TestCase):
     def test_all_expected_files_match(self):
         result = verify(self.root, self.base)
         self.assertTrue(result['passed'], result)
-        self.assertEqual(len(result['files']), 24)
+        self.assertEqual(len(result['files']), 25)
+        self.assertIn('collaborate.html', {item['path'] for item in result['files']})
         self.assertEqual((self.root/'CNAME').read_text(encoding='utf-8'), 'jacobmetoyer.com\n')
 
     def test_server_drift_is_not_success(self):

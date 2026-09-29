@@ -98,6 +98,22 @@ class SiteTests(unittest.TestCase):
                     self.assertIn(f'<meta property="og:image" content="{build.BASE}/{build.SHARE_CARD}">',text)
                     self.assertIn('<meta name="twitter:card" content="summary_large_image">',text)
                     self.assertIn('rel="apple-touch-icon"',text)
+    def test_collaboration_entry_point(self):
+        with tempfile.TemporaryDirectory() as t:
+            p=Path(t)/'out';build.build(p,self.data)
+            page=(p/'collaborate.html').read_text(encoding='utf-8')
+            self.assertIn('Have a workflow worth untangling?',page)
+            self.assertIn('A small, testable pilot',page)
+            self.assertIn('href="https://www.linkedin.com/in/jacob-metoyer-15b701352"',page)
+            self.assertIn('sample or redacted material',page)
+            self.assertNotIn('production client deployment',page)
+            self.assertIn('<a href="collaborate.html" aria-current="page">Collaborate</a>',page)
+            for other in p.glob('*.html'):
+                target='/collaborate.html' if other.name=='404.html' else 'collaborate.html'
+                self.assertIn(f'href="{target}"',other.read_text(encoding='utf-8'))
+            sitemap=(p/'sitemap.xml').read_text(encoding='utf-8')
+            self.assertIn(f'{build.BASE}/collaborate.html',sitemap)
+            self.assertIn('collaborate.html',json.loads((p/'build-manifest.json').read_text())['sha256'])
     def test_output_cannot_be_source(self):
         with self.assertRaises(ValueError):build.build(build.ROOT,self.data)
 

@@ -52,7 +52,7 @@ def check(root: Path,allow_missing_images: bool=False) -> dict:
         except (OSError,UnicodeError):
             failures.append(f'{f.name}: unreadable HTML');continue
         p=Page();p.feed(text);parsed[f.name]=p
-    if len(parsed)!=12:failures.append('Expected twelve HTML routes')
+    if len(parsed)!=13:failures.append('Expected thirteen HTML routes')
     for name,p in parsed.items():
         if p.h1!=1:failures.append(f'{name}: expected one h1')
         if p.lang!='en':failures.append(f'{name}: missing language')
