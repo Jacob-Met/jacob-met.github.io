@@ -1,0 +1,26 @@
+name: Live deployment check
+on:
+  schedule:
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - name: Verify live deployment against checked docs
+        run: python source/verify_deployment.py --root docs --base https://jacobmetoyer.com --receipt deployment-receipt.json
+      - name: Package verification receipt
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: deployment-receipt
+          path: deployment-receipt.json
+          if-no-files-found: ignore
+          retention-days: 14
