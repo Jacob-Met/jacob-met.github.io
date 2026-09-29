@@ -4,3 +4,4 @@ __pycache__/
 checked-site/
 private/
 raw-inputs/
+tmp/
