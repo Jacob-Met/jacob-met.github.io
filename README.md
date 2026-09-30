@@ -6,6 +6,8 @@ A one-page, type-driven CV for Jacob Metoyer, rebuilt from scratch on 2026-09-30
 
 Public repositories and dated snapshots document the work described. A link to Jacob's earlier site is evidence of his prior public account, **not independent verification** of lab duties or education. Those lines are labelled **self-reported** on the page and in the record; the BUILD program link establishes the program's existence, not his membership. Lab results, participant data, unpublished work and personal interests stay off the site.
 
+A cold read before publication narrowed the introduction's blanket evidence promise, labelled education as self-reported, and replaced a claim that every project had a runnable demo and direct license link with an accurate description of the linked artifacts.
+
 ## Layout
 
 - `source/content.json`: the whole public record. The builder refuses any claim without a source link and any link outside the approved host set.
