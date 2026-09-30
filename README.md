@@ -4,7 +4,7 @@ A one-page, type-driven CV for Jacob Metoyer, rebuilt from scratch on 2026-09-30
 
 ## Rule of the site
 
-Every line links to something a reader can check: a public repository, a dated snapshot, or an institutional page. Lines that rest on Jacob's own account of his work are labelled **self-reported** in the record and on the page, together with the dated snapshot they were taken from. Lab results, participant data, unpublished work and personal interests stay off the site.
+Public repositories and dated snapshots document the work described. A link to Jacob's earlier site is evidence of his prior public account, **not independent verification** of lab duties or education. Those lines are labelled **self-reported** on the page and in the record; the BUILD program link establishes the program's existence, not his membership. Lab results, participant data, unpublished work and personal interests stay off the site.
 
 ## Layout
 

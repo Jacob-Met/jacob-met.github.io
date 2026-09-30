@@ -131,6 +131,11 @@ class ContentTests(Built):
             with self.subTest(entry=re.sub(r'<[^>]+>', ' ', e)[:60]): self.assertIn('href="https://', e)
     def test_self_reported_lines_are_labelled(self):
         m = self.main()
+        self.assertEqual(self.data['education']['basis'], 'self-reported')
+        match = re.search(r'<section id="education".*?</section>', m, re.S)
+        assert match is not None
+        self.assertIn('<span class="basis">self-reported</span>', match.group())
+        self.assertIn('institutional program page describes the program, not my membership', m)
         for row in self.data['research'] + self.data['current'] + [self.data['independent']]:
             if row['basis'].startswith('self-reported'):
                 with self.subTest(row=row.get('id') or row['text'][:30]):

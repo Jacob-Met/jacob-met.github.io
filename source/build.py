@@ -64,8 +64,9 @@ def validate(data: dict) -> None:
     for p in data['summary']: text(p)
     check_links(data['identities'])
     edu = data['education']
-    if not isinstance(edu, dict) or set(edu) != {'institution', 'degrees', 'program', 'sources'}: raise ValueError('Unexpected education field')
+    if not isinstance(edu, dict) or set(edu) != {'institution', 'degrees', 'program', 'basis', 'sources'}: raise ValueError('Unexpected education field')
     for k in ('institution', 'degrees', 'program'): text(edu[k], 200)
+    if edu['basis'] != 'self-reported': raise ValueError('Education details must be labelled self-reported')
     check_links(edu['sources'])
     for key in ('current', 'projects', 'research', 'verified_research', 'verified_writing'):
         if not isinstance(data[key], list): raise ValueError(f'{key} must be a list')
@@ -144,7 +145,7 @@ def cv_body(data: dict) -> str:
     toc = '<nav class="toc" aria-label="Sections">' + ''.join(f'<a href="#{i}">{E(t)}</a>' for i, t in SECTIONS) + '</nav>'
     now = ''.join(entry('', '', r['text'], sources(r['sources'], r['basis'])) for r in data['current'])
     edu = data['education']
-    education = entry(E(edu['institution']), edu['program'], edu['degrees'], sources(edu['sources']))
+    education = entry(E(edu['institution']), edu['program'], edu['degrees'], sources(edu['sources'], edu['basis']))
     research = ''.join(entry(E(r['title']), f'{r["org"]} · {r["period"]}', r['role'], sources(r['sources'], r['basis']), r['id']) for r in data['research'])
     projects = ''.join(entry(link(r['artifacts'][0]['url'], r['title']), f'{r["kind"]} · {r["facts"]}', r['summary'],
                              sources(r['artifacts'], word='Artifact'), r['id']) for r in data['projects'])
@@ -160,7 +161,7 @@ def cv_body(data: dict) -> str:
             + section('now', 'Now', now)
             + section('education', 'Education', education)
             + section('research', 'Research experience', research, 'Team projects in university labs. I describe my part; the data and results belong to the labs.')
-            + section('projects', 'Projects', projects, 'Public repositories. Each links to source, a runnable demo and its license.')
+            + section('projects', 'Projects', projects, 'Public repositories and demo source. Each entry links to the artifacts available for inspection; these are not claims of production deployment.')
             + section('independent', 'Independent research', independent)
             + slot('verified_research', data['verified_research'])
             + slot('verified_writing', data['verified_writing'])

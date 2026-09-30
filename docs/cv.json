@@ -5,7 +5,7 @@
   "headline": "Undergraduate researcher at Cal State Long Beach. Computer science and physics, minor in biology.",
   "summary": [
     "I work with research data in university labs, write research software, and run my own experiments on how well AI systems do real work.",
-    "Every line on this page links to something you can check: a public repository, a dated snapshot, or an institutional page. Where a line rests on my own account of my work, it says so."
+    "Public repositories and dated snapshots document the work described here. Lab roles and education details drawn from my own account are marked self-reported; an institutional program page describes the program, not my membership."
   ],
   "identities": [
     {
@@ -21,6 +21,7 @@
     "institution": "California State University, Long Beach",
     "degrees": "B.S. Computer Science and B.A. Physics, minor in Biology",
     "program": "BUILD Scholar",
+    "basis": "self-reported",
     "sources": [
       {
         "label": "CSULB BUILD Scholars Program",
