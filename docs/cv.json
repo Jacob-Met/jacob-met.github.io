@@ -8,8 +8,14 @@
     "Public repositories and dated snapshots document the work described here. Lab roles and education details drawn from my own account are marked self-reported; an institutional program page describes the program, not my membership."
   ],
   "identities": [
-    {"label": "GitHub", "url": "https://github.com/Jacob-Met"},
-    {"label": "LinkedIn", "url": "https://www.linkedin.com/in/jacob-metoyer-15b701352"}
+    {
+      "label": "GitHub",
+      "url": "https://github.com/Jacob-Met"
+    },
+    {
+      "label": "LinkedIn",
+      "url": "https://www.linkedin.com/in/jacob-metoyer-15b701352"
+    }
   ],
   "education": {
     "institution": "California State University, Long Beach",
@@ -17,20 +23,36 @@
     "program": "BUILD Scholar",
     "basis": "self-reported",
     "sources": [
-      {"label": "CSULB BUILD Scholars Program", "url": "https://www.csulb.edu/building-infrastructure-leading-to-diversity/build-scholars-program"},
-      {"label": "public GitHub profile, 2026-09-11", "url": "https://github.com/Jacob-Met/Jacob-Met/blob/521ff61b07876b54ab0687b4deda546667f2ff30/README.md"}
+      {
+        "label": "CSULB BUILD Scholars Program",
+        "url": "https://www.csulb.edu/building-infrastructure-leading-to-diversity/build-scholars-program"
+      },
+      {
+        "label": "public GitHub profile, 2026-09-11",
+        "url": "https://github.com/Jacob-Met/Jacob-Met/blob/521ff61b07876b54ab0687b4deda546667f2ff30/README.md"
+      }
     ]
   },
   "current": [
     {
       "text": "Student researcher on gait rehabilitation research teams since March 2026: participant sessions in the motion-capture room, marker labeling, trial organization and data checks before analysis.",
       "basis": "self-reported",
-      "sources": [{"label": "previous site record, 2026-09-29", "url": "https://github.com/Jacob-Met/jacob-met.github.io/blob/954ef094e473a65b8b14a2cca9420230324fe340/source/content.json"}]
+      "sources": [
+        {
+          "label": "previous site record, 2026-09-29",
+          "url": "https://github.com/Jacob-Met/jacob-met.github.io/blob/954ef094e473a65b8b14a2cca9420230324fe340/source/content.json"
+        }
+      ]
     },
     {
       "text": "CaptureSuite, a multi-device research capture platform, in active development; last public push 2026-09-29.",
       "basis": "public repository",
-      "sources": [{"label": "CaptureSuite commit history", "url": "https://github.com/Jacob-Met/CaptureSuite/commits/main"}]
+      "sources": [
+        {
+          "label": "CaptureSuite commit history",
+          "url": "https://github.com/Jacob-Met/CaptureSuite/commits/main"
+        }
+      ]
     }
   ],
   "projects": [
@@ -41,9 +63,18 @@
       "summary": "Windows-first multimodal research capture. A daemon owns the clock and session state, each device runs as a versioned worker plugin in C++ or Python, and a session is sealed into one package for quality checks and analysis. A simulator and a Lab Streaming Layer bridge let it run without vendor hardware.",
       "facts": "Python and C++. GPL-3.0. Repository created 2026-09-03, last push 2026-09-29.",
       "artifacts": [
-        {"label": "Source and README", "url": "https://github.com/Jacob-Met/CaptureSuite"},
-        {"label": "Synthetic QC demo, no hardware", "url": "https://github.com/Jacob-Met/CaptureSuite/blob/main/tools/demo_qc.py"},
-        {"label": "License", "url": "https://github.com/Jacob-Met/CaptureSuite/blob/main/LICENSE"}
+        {
+          "label": "Source and README",
+          "url": "https://github.com/Jacob-Met/CaptureSuite"
+        },
+        {
+          "label": "Synthetic QC demo, no hardware",
+          "url": "https://github.com/Jacob-Met/CaptureSuite/blob/main/tools/demo_qc.py"
+        },
+        {
+          "label": "License",
+          "url": "https://github.com/Jacob-Met/CaptureSuite/blob/main/LICENSE"
+        }
       ]
     },
     {
@@ -53,8 +84,14 @@
       "summary": "A Canvas LMS command-line tool and MCP server for schools that disable API tokens: one login in a real browser, then a local session broker makes the REST calls. Fixture mode runs the tests offline.",
       "facts": "Python. MIT. Repository created 2026-09-05, last push 2026-09-29.",
       "artifacts": [
-        {"label": "Source and README", "url": "https://github.com/Jacob-Met/canvaspilot"},
-        {"label": "Offline demo", "url": "https://github.com/Jacob-Met/canvaspilot/blob/main/src/canvaspilot/offline_demo.py"}
+        {
+          "label": "Source and README",
+          "url": "https://github.com/Jacob-Met/canvaspilot"
+        },
+        {
+          "label": "Offline demo",
+          "url": "https://github.com/Jacob-Met/canvaspilot/blob/main/src/canvaspilot/offline_demo.py"
+        }
       ]
     },
     {
@@ -64,8 +101,14 @@
       "summary": "A synthetic air-traffic decision-support demo built for the AWS Agents for Humans challenge. An agent may propose an advisory; deterministic code checks conflict projection, state freshness, approval and readback before the simulated state changes, and writes a hash-chained audit log. Not operational ATC software and not connected to live aircraft.",
       "facts": "Python, Strands Agents. MIT. Repository created 2026-09-14, last push 2026-09-15.",
       "artifacts": [
-        {"label": "Source and README", "url": "https://github.com/Jacob-Met/TowerOps"},
-        {"label": "Deterministic demo", "url": "https://github.com/Jacob-Met/TowerOps/blob/main/demo.py"}
+        {
+          "label": "Source and README",
+          "url": "https://github.com/Jacob-Met/TowerOps"
+        },
+        {
+          "label": "Deterministic demo",
+          "url": "https://github.com/Jacob-Met/TowerOps/blob/main/demo.py"
+        }
       ]
     }
   ],
@@ -77,7 +120,12 @@
       "period": "March 2026 to present",
       "role": "Participant-session support, motion-capture marker labeling, trial organization and data quality checks. Repaired a gait-analysis workflow ported from MATLAB to Python: unit mismatches, gait event detection, and errors instead of wrong numbers.",
       "basis": "self-reported",
-      "sources": [{"label": "previous site record, 2026-09-29", "url": "https://github.com/Jacob-Met/jacob-met.github.io/blob/954ef094e473a65b8b14a2cca9420230324fe340/source/content.json"}]
+      "sources": [
+        {
+          "label": "previous site record, 2026-09-29",
+          "url": "https://github.com/Jacob-Met/jacob-met.github.io/blob/954ef094e473a65b8b14a2cca9420230324fe340/source/content.json"
+        }
+      ]
     },
     {
       "id": "surgical-ergonomics",
@@ -86,7 +134,12 @@
       "period": "2026",
       "role": "Video-based motion-tracking workflows; support for EMG, heart-rate and motion-sensor data capture and analysis.",
       "basis": "self-reported",
-      "sources": [{"label": "previous site record, 2026-09-29", "url": "https://github.com/Jacob-Met/jacob-met.github.io/blob/954ef094e473a65b8b14a2cca9420230324fe340/source/content.json"}]
+      "sources": [
+        {
+          "label": "previous site record, 2026-09-29",
+          "url": "https://github.com/Jacob-Met/jacob-met.github.io/blob/954ef094e473a65b8b14a2cca9420230324fe340/source/content.json"
+        }
+      ]
     },
     {
       "id": "joshi",
@@ -96,8 +149,14 @@
       "role": "Located, cleaned and standardized molecular-dynamics trajectories; computed PCA and RMSF features; wrote physical-plausibility checks (RMSD, radius of gyration, bond geometry) for AI-generated protein structures; turned field literature into validation plans.",
       "basis": "self-reported; lab is public",
       "sources": [
-        {"label": "Joshi Lab", "url": "https://www.joshilab.org/"},
-        {"label": "previous site record, 2026-09-29", "url": "https://github.com/Jacob-Met/jacob-met.github.io/blob/954ef094e473a65b8b14a2cca9420230324fe340/source/content.json"}
+        {
+          "label": "Joshi Lab",
+          "url": "https://www.joshilab.org/"
+        },
+        {
+          "label": "previous site record, 2026-09-29",
+          "url": "https://github.com/Jacob-Met/jacob-met.github.io/blob/954ef094e473a65b8b14a2cca9420230324fe340/source/content.json"
+        }
       ]
     },
     {
@@ -108,15 +167,26 @@
       "role": "Scored mouse behavior from video (automated tracking, then checked by hand), analyzed data in GraphPad Prism, and supported mouse handling, genotyping and tissue collection.",
       "basis": "self-reported; lab is public",
       "sources": [
-        {"label": "CSULB BUILD mentor profile, Dr. Houng-Wei Tsai", "url": "https://www.csulb.edu/building-infrastructure-leading-to-diversity/article/build-mentor-spotlight-for-april-2019-dr-houng"},
-        {"label": "previous site record, 2026-09-29", "url": "https://github.com/Jacob-Met/jacob-met.github.io/blob/954ef094e473a65b8b14a2cca9420230324fe340/source/content.json"}
+        {
+          "label": "CSULB BUILD mentor profile, Dr. Houng-Wei Tsai",
+          "url": "https://www.csulb.edu/building-infrastructure-leading-to-diversity/article/build-mentor-spotlight-for-april-2019-dr-houng"
+        },
+        {
+          "label": "previous site record, 2026-09-29",
+          "url": "https://github.com/Jacob-Met/jacob-met.github.io/blob/954ef094e473a65b8b14a2cca9420230324fe340/source/content.json"
+        }
       ]
     }
   ],
   "independent": {
     "text": "Independent research on human-AI collaboration and agentic systems: setups where one or several AI models do real tasks, with the task, the actions and the failures recorded so a result can be checked later. Outside school and any lab, not peer reviewed, and with no public artifact yet.",
     "basis": "self-reported",
-    "sources": [{"label": "public GitHub profile, 2026-09-11", "url": "https://github.com/Jacob-Met/Jacob-Met/blob/521ff61b07876b54ab0687b4deda546667f2ff30/README.md"}]
+    "sources": [
+      {
+        "label": "public GitHub profile, 2026-09-11",
+        "url": "https://github.com/Jacob-Met/Jacob-Met/blob/521ff61b07876b54ab0687b4deda546667f2ff30/README.md"
+      }
+    ]
   },
   "verified_research": [],
   "verified_writing": [
@@ -124,13 +194,23 @@
       "title": "CaptureSuite timing model",
       "venue": "Technical design note · public repository",
       "date": "2026",
-      "links": [{"label": "Read the timing model", "url": "https://github.com/Jacob-Met/CaptureSuite/blob/main/docs/design/TIMING.md"}]
+      "links": [
+        {
+          "label": "Read the timing model",
+          "url": "https://github.com/Jacob-Met/CaptureSuite/blob/main/docs/design/TIMING.md"
+        }
+      ]
     },
     {
       "title": "TowerOps architecture",
       "venue": "Research-demo architecture note · synthetic state only",
       "date": "2026",
-      "links": [{"label": "Read the architecture note", "url": "https://github.com/Jacob-Met/TowerOps/blob/main/ARCHITECTURE.md"}]
+      "links": [
+        {
+          "label": "Read the architecture note",
+          "url": "https://github.com/Jacob-Met/TowerOps/blob/main/ARCHITECTURE.md"
+        }
+      ]
     }
   ]
 }

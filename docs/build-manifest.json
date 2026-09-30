@@ -1,30 +1,18 @@
 {
   "schema": 1,
-  "date": "2026-09-29",
+  "date": "2026-09-30",
   "sha256": {
     ".nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "404.html": "f1ebd6fcc8f656d1f3067646913b5b99f79425a9b39d941e82819ce040091c9f",
+    "404.html": "958c19f97d1d91257c734c604762f589320d20cc8fc0e2380f97b07c0160db6b",
     "CNAME": "7e89b4b8e0d23220fae91b16a6c40497117ef427d16ca984e7a8c720f14d8527",
-    "about.html": "888ce9e8e691c2a9787438c998ce256f8d27ba4d476f8ba937203f9fc4cc518f",
-    "ai-systems.html": "8117d301d2cde2e114f1ab0975ef4badf28e631a593caa10d90ced4d2d98304d",
     "apple-touch-icon.png": "c5046a3bc7b2e5fb86861c4ed1193b14edfb5caae8d490f323828d5d8b1f0314",
     "assets/mark.svg": "a01f830f071fbe4c69f03d4fd08b01d899df2708c0fb8df44a7c59cefd5d6649",
-    "assets/og-card.png": "5b8c781a6339f502586a94e3cadc1fb1c65bae6ca3a6338a431979c9eafa830d",
-    "collaborate.html": "afdab63eb2b4b9c104a521a0dd60606a9aa8dbbc2e4eddad263257c8c72a1237",
-    "computing.html": "fd21ca453da2f984d0d0378348a20764de26b8e8fc8b476d5151f46a84cacf30",
-    "credits.html": "f998394a8493ca08f293e47d2700a55282986b6f236ad256e485f991ec54b565",
+    "assets/og-card.png": "20326fd35fcde40702ec32c808a5d53f8eafbbaa19721d8e62793b4df54e9e76",
+    "cv.json": "fc6449f826b922fa734aa3e4de83c88ac88212bb0f6dab52b96bd12afd32ff75",
     "favicon.ico": "4110458ca2ba52607cd0810132f5e6f4f8f60ff7ad0254eee7cdb8f8c88a979b",
-    "index.html": "d8ffb655be7260c6156a5eaa05630dcf38e0cf86b4f916a156fde4392bfdaeac",
-    "making.html": "dc38156b689b83812ca7c720bc7bd2c09aed4746154a99e1c6e6ac2d323861a6",
-    "now.html": "514acf3533df5cdb6e849ebe84ecd44746352335838539c128140cecbde885e3",
-    "privacy.html": "1bed9b50f7aed660bf8b5b65a302d236fe5d47de7139906290e35e5361feeb3b",
-    "process.html": "9e1738fdb09cd7428208e76d34933c939368aaf6d2a541ffa0349b20a98df79f",
-    "research.html": "43e72fa1455aeb684773dd0a55967a4c7a71696122ff84aa7082e6dcb68cf546",
+    "index.html": "b89c62809bae75039b1e73ac82dbc7eb239730e4a65c09ae0f88c78ab5280b33",
     "robots.txt": "60d463caa67aaa008b827bdec75236dcec7a9c82c49f529ad1da2de1c847c47e",
-    "site.js": "4b57ae7376f52315fed131cae9a175d29d0510a35577514a8f10d479768895a5",
-    "sitemap.xml": "7c11df6256e16164a29e805cc2de137adadec949a868237c5830ead85fb861d0",
-    "style.css": "c77e158ba52e6e13b81d91843479ba342aecd4380b964ada30c007480ee5b615",
-    "work.html": "cced157fba4ce49e629f37ea1af4ee2ed2418d913c7e86eca62b41dba76356b7",
-    "work.json": "0a919136475c59ecda76e65c948a75fcdb33a71d2cdd63d79dbc9d47d10e47ff"
+    "sitemap.xml": "c297af805fe37583315b425aa3253879df4dbb8f899b58c09cc57c2a1823e91a",
+    "style.css": "d538146dc784ce22dc97000dcb2458ae26e95d45b536cae8aa84e5fb580c07fd"
   }
 }
