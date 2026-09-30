@@ -1,0 +1,35 @@
+name: Bootstrap site review branch
+on:
+  push:
+    branches: [shinogi/site-rebuild]
+    paths: [.github/workflows/site-bootstrap.yml]
+permissions:
+  contents: write
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: true
+      - name: Download and verify source snapshot
+        run: |
+          set -euo pipefail
+          curl --retry 3 --connect-timeout 10 --max-time 90 -fsSL 'https://hamon-thinkpad.tail2f596c.ts.net:8443/site-rebuild-source.tgz' -o "$RUNNER_TEMP/site-source.tgz"
+          printf '%s  %s\n' '981e2e7a671ef017ec562c092b6846111f18fa8a00e7cdc68ee439f118f70cfc' "$RUNNER_TEMP/site-source.tgz" | sha256sum -c -
+      - name: Apply snapshot, regenerate and test
+        run: |
+          set -euo pipefail
+          rm -rf source docs README.md
+          tar -xzf "$RUNNER_TEMP/site-source.tgz" -C .
+          python source/build.py --out docs
+          python -m unittest discover -s source -q
+          python source/check.py docs
+          python source/build.py --out checked-site
+          diff -qr docs checked-site
+          rm -rf checked-site source/__pycache__
+          git rm -f .github/workflows/site-bootstrap.yml
+          git add -A
+          git -c user.name=Shinogi -c user.email=shinogi@hamon.estate commit -m 'Rebuild jacobmetoyer.com as a sourced one-page research CV'
+          git push origin HEAD:shinogi/site-rebuild
