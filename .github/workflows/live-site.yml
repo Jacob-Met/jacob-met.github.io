@@ -2,6 +2,10 @@ name: Verify live public site
 on:
   schedule:
     - cron: '17 11 * * *'
+  pull_request:
+    paths:
+      - 'source/verify_deployment.py'
+      - '.github/workflows/live-site.yml'
   workflow_dispatch:
 permissions:
   contents: read
@@ -9,6 +13,9 @@ jobs:
   verify-live:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
@@ -20,6 +27,10 @@ jobs:
           python source/check.py checked-site
           diff -qr docs checked-site
       - name: Verify HTTPS deployment byte-for-byte
+        id: verify
+        # Non-blocking on pull requests (live state may legitimately differ from a
+        # branch); blocking on schedule/dispatch so the run fails and alerts.
+        continue-on-error: ${{ github.event_name == 'pull_request' }}
         run: |
           python source/verify_deployment.py \
             --root checked-site \
@@ -33,3 +44,16 @@ jobs:
           path: ${{ runner.temp }}/site-live-receipt.json
           if-no-files-found: ignore
           retention-days: 14
+      - name: Alert on scheduled failure
+        if: failure() && github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="Live site verification failed"
+          url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          n=$(gh issue list --state open --search "$title in:title" --json number --jq '.[0].number')
+          if [ -n "$n" ]; then
+            gh issue comment "$n" --body "Still failing: $url"
+          else
+            gh issue create --title "$title" --body "Scheduled byte-for-byte check of https://jacobmetoyer.com failed: $url"
+          fi
