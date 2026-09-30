@@ -1,0 +1,30 @@
+name: Apply cold-read corrections
+on:
+  push:
+    branches: [shinogi/site-rebuild]
+    paths: [.github/workflows/site-bootstrap.yml]
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Read back verified source and apply corrections
+        run: |
+          set -euo pipefail
+          curl --retry 3 --connect-timeout 10 --max-time 90 -fsSL 'https://hamon-thinkpad.tail2f596c.ts.net:8443/site-rebuild-source-v2.tgz' -o "$RUNNER_TEMP/site-source.tgz"
+          printf '%s  %s\n' '8edded055f84919a29af8e945bc7848c56d7f685b8cdc185ca582e532df19e6b' "$RUNNER_TEMP/site-source.tgz" | sha256sum -c -
+          rm -rf source docs README.md
+          tar -xzf "$RUNNER_TEMP/site-source.tgz" -C .
+          python source/build.py --out docs
+          python -m unittest discover -s source -q
+          python source/check.py docs
+          python source/build.py --out checked-site
+          diff -qr docs checked-site
+          rm -rf checked-site source/__pycache__
+          git rm -f .github/workflows/site-bootstrap.yml
+          git add -A
+          git -c user.name=Shinogi -c user.email=shinogi@hamon.estate commit -m 'Label education as self-reported and narrow evidence claims'
+          git push origin HEAD:shinogi/site-rebuild
