@@ -1,17 +1,25 @@
-# Jacob Metoyer — research and selected work
+# jacobmetoyer.com
 
-A small, self-contained public site for academic research, independent AI-systems research, software, and making.
+A one-page, type-driven CV for Jacob Metoyer, rebuilt from scratch on 2026-09-30. Static HTML, one stylesheet, no scripts, no tracking, no imagery beyond the monogram icon and share card.
 
-## Structure
+## Rule of the site
 
-- `source/content.json`: explicitly public work records and identity links.
-- `source/build.py`: static page generator and reviewed editorial copy.
-- `source/style.css`, `source/site.js`: local presentation and progressive filtering; no external scripts or tracking.
-- `source/assets/`: deliberately minimal site-owned assets.
-- `source/check.py`, tests, and deployment verifier: output, link, static-surface, determinism, and readback checks.
-- `docs/`: the built deployment tree served by GitHub Pages.
+Every line links to something a reader can check: a public repository, a dated snapshot, or an institutional page. Lines that rest on Jacob's own account of his work are labelled **self-reported** in the record and on the page, together with the dated snapshot they were taken from. Lab results, participant data, unpublished work and personal interests stay off the site.
 
-## Rebuild and check
+## Layout
+
+- `source/content.json`: the whole public record. The builder refuses any claim without a source link and any link outside the approved host set.
+- `source/build.py`: generator. Renders `index.html` and `404.html`, copies the stylesheet and icons, writes `cv.json`, `sitemap.xml`, `robots.txt` and `build-manifest.json`.
+- `source/check.py`: offline checks on the built tree: declared surface (no scripts, embeds, images, remote resources), link and anchor integrity, CSP meta, manifest hashes.
+- `source/verify_deployment.py`: byte-for-byte comparison of a checked build against the HTTPS deployment.
+- `source/make_images.py`: regenerates the share card and icons (Pillow; not part of CI).
+- `docs/`: the built tree served by GitHub Pages from `main:/docs`.
+
+## Reserved slots
+
+`verified_research` remains empty: the inventory found no publicly shared research output. `verified_writing` contains two technical notes in public repositories, checked against Otama's 2026-09-30 inventory and read directly. Entries appear only with a working public link; an empty slot renders a visible placeholder. Private Notion research pages are not linked.
+
+## Build and check
 
 ```sh
 python -m unittest discover -s source -v
@@ -19,26 +27,4 @@ python source/build.py --out docs
 python source/check.py docs
 ```
 
-The CI workflow rebuilds from source, checks the declared deployment tree, compares it with committed output, and packages verified public files. These checks validate the site's declared presentation/build behavior—not the scientific quality of the work it describes.
-
-## Editorial boundary
-
-The site distinguishes collaborative academic research, independent hobby research, public software, and personal making. Independent AI-systems work is described as independent research without implying university sponsorship, peer review, a funded lab, or client engagements that do not exist.
-
-Public authorship claims should match the level of detail relevant to the work. Project-, platform-, publication-, collaboration-, and research-specific disclosure requirements take precedence over generic wording.
-
-## Add or revise work
-
-Update the explicit public record, then the relevant page. Keep contribution, current status, evidence, limitations, approved links, and publication status reviewable. Do not put confidential drafts, participant data, unrestricted personal inventories, authentication information, or private research systems in this repository.
-
-Keep dates honest. A dated `now.html` page is a snapshot, not an activity feed. Public source does not imply clinical validation, institutional endorsement, or customer value.
-
-## Hosting
-
-The site is static and currently deploys from `main:/docs` on GitHub Pages. The generator does not change domain, account, billing, security, or hosting settings.
-
-## Release checks
-
-The static-surface checks reject unreviewed active embeds, redirects, remote-loading resources, unsafe paths, malformed manifests, and output-tree drift. The deployment verifier compares published bytes, status, and content types against a locally qualified build.
-
-These controls are deliberately narrower than a complete security review, accessibility certification, or scientific review. Their purpose is to make the claims they *do* support reproducible.
+CI (`site-checks.yml`) runs the tests, rebuilds, checks, and diffs against the committed `docs/`. `live-site.yml` verifies the HTTPS deployment byte-for-byte every day. These checks establish what the site claims about its own build; they say nothing about the scientific quality of the work described.
