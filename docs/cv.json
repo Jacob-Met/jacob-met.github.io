@@ -82,7 +82,7 @@
       "title": "CanvasPilot",
       "kind": "Student tooling",
       "summary": "A Canvas LMS command-line tool and MCP server for schools that disable API tokens: one login in a real browser, then a local session broker makes the REST calls. Fixture mode runs the tests offline.",
-      "facts": "Python. MIT. Repository created 2026-09-05, last push 2026-09-29.",
+      "facts": "Python. MIT. Repository created 2026-09-05, last push 2026-10-01.",
       "artifacts": [
         {
           "label": "Source and README",
