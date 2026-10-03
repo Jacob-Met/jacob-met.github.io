@@ -30,3 +30,17 @@ python source/check.py docs
 ```
 
 CI (`site-checks.yml`) runs the tests, rebuilds, checks, and diffs against the committed `docs/`. `live-site.yml` verifies the HTTPS deployment byte-for-byte every day. These checks establish what the site claims about its own build; they say nothing about the scientific quality of the work described.
+
+## Contributor discipline: docs/ is generated
+
+Never hand-edit `docs/` — it is built from `source/`. After changing `source/content.json` (or the builder), regenerate and commit both together:
+
+```sh
+python source/build.py --out docs
+```
+
+Committing a source change without the regenerated `docs/` reproduces issue #11: the Verify public site workflow fails by design on generated-artifact drift. To have git enforce this locally, enable the pre-commit hook once per clone:
+
+```sh
+git config core.hooksPath .githooks
+```
