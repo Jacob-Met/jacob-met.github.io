@@ -29,6 +29,14 @@ python source/build.py --out docs
 python source/check.py docs
 ```
 
+`docs/` is a committed build artifact, not source: after editing
+`source/content.json` (or the builder), always rerun
+`python source/build.py --out docs` and commit the rebuilt `docs/` together
+with the source change. CI (`site-checks.yml`) rebuilds into a scratch
+directory and fails on any drift between the fresh build and the committed
+`docs/` — a content edit without a rebuild breaks the build by design
+(run #48, issue #11).
+
 CI (`site-checks.yml`) runs the tests, rebuilds, checks, and diffs against the committed `docs/`. `live-site.yml` verifies the HTTPS deployment byte-for-byte every day. These checks establish what the site claims about its own build; they say nothing about the scientific quality of the work described.
 
 ## Contributor discipline: docs/ is generated
