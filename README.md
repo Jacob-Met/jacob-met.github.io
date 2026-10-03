@@ -52,3 +52,5 @@ Committing a source change without the regenerated `docs/` reproduces issue #11:
 ```sh
 git config core.hooksPath .githooks
 ```
+
+The hook validates the *staged* (indexed) source and `docs/`, not the working tree, so unstaged edits never block a commit and a staged `source/` change is never committed with stale `docs/`.
