@@ -13,7 +13,7 @@ from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parent
 BASE = 'https://jacobmetoyer.com'
-STAMP = '2026-09-30'
+STAMP = '2026-10-01'
 ALLOWED_HOSTS = {'github.com', 'www.linkedin.com', 'www.csulb.edu', 'www.joshilab.org'}
 E = html.escape
 # GitHub Pages cannot send headers, so the policy ships as a meta tag. There is no script on
