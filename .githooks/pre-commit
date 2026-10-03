@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# pre-commit: block generated-artifact drift in jacob-met.github.io
+#
+# Reproduces the "Verify public site" CI guard locally (see issue #11):
+#   python3 source/build.py --out <tmp> && python3 source/check.py <tmp> && diff -qr docs <tmp>
+# Run #48 failed CI because commit 94a00330 edited source/content.json without
+# regenerating docs/. This hook fails the commit in that situation, naming the fix.
+#
+# Behavior:
+#   - Fast-pass when neither source/ nor docs/ has staged changes.
+#   - If python3 is missing, warn and pass (CI still catches drift).
+#   - Skip entirely: SITE_HOOK_SKIP=1 git commit ...
+set -u
+
+if [ "${SITE_HOOK_SKIP:-}" = "1" ]; then
+  echo "[site-hook] skipped (SITE_HOOK_SKIP=1)"
+  exit 0
+fi
+
+repo="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+cd "$repo" || exit 0
+
+staged="$(git diff --cached --name-only -- source/ docs/)" || exit 0
+[ -z "$staged" ] && exit 0
+
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "[site-hook] WARNING: python3 not found; skipping docs-drift check (CI will still catch it)."
+  exit 0
+fi
+
+tmp="$(mktemp -d "${TMPDIR:-/tmp}/site-hook.XXXXXX")" || exit 0
+trap 'rm -rf "$tmp"' EXIT
+
+if ! python3 source/build.py --out "$tmp/checked-site" >/dev/null 2>&1; then
+  echo "[site-hook] ERROR: 'python3 source/build.py --out' failed — fix the build before committing."
+  exit 1
+fi
+
+if ! python3 source/check.py "$tmp/checked-site" >/dev/null 2>&1; then
+  echo "[site-hook] ERROR: 'python3 source/check.py' failed on a fresh build — fix before committing."
+  exit 1
+fi
+
+if ! diff -qr docs "$tmp/checked-site" >/dev/null 2>&1; then
+  echo "[site-hook] BLOCKED: docs/ has drifted from source/ (the failure that broke CI in run #48)."
+  echo "[site-hook] Fix: python3 source/build.py --out docs   then commit source/ and docs/ together."
+  exit 1
+fi
+
+exit 0
