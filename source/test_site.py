@@ -56,7 +56,12 @@ class RecordTests(unittest.TestCase):
         with self.assertRaises(ValueError): build.validate(data)
     def test_factual_paragraph_without_link_denied(self):
         data = copy.deepcopy(self.data)
-        data['copy_markdown'] = data['copy_markdown'].replace(' ([demo code](https://github.com/Jacob-Met/CaptureSuite/blob/main/tools/demo_qc.py); [limits](https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md))', '')
+        marker = '[quality-control demo](https://github.com/Jacob-Met/CaptureSuite/blob/main/tools/demo_qc.py)'
+        self.assertIn(marker, data['copy_markdown'])
+        paragraph = next(p for p in data['copy_markdown'].split('\n\n') if marker in p)
+        unlinked = build.LINK_RE.sub(lambda m: m.group(1), paragraph)
+        self.assertNotIn('](https://', unlinked)
+        data['copy_markdown'] = data['copy_markdown'].replace(paragraph, unlinked)
         with self.assertRaises(ValueError): build.validate(data)
     def test_bad_urls_denied(self):
         for url in ('javascript:alert(1)', 'https://me:pw@github.com/x', 'https://github.com.evil.example/x', 'https://github.com/x?token=1',
@@ -147,7 +152,8 @@ class ContentTests(Built):
         })
     def test_escaping(self):
         data = copy.deepcopy(self.data)
-        marker = 'Flags billing exceptions'
+        marker = 'See which bills need a closer look'
+        self.assertIn(marker, data['copy_markdown'])
         data['copy_markdown'] = data['copy_markdown'].replace(marker, '<script>x</script> ' + marker)
         build.build(self.root, data)
         self.assertNotIn('<script>x', self.page())
