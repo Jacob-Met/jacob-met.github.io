@@ -127,6 +127,27 @@
           "url": "https://github.com/Jacob-Met/workflow-checks/tree/main/freight_packets"
         }
       ]
+    },
+    {
+      "id": "this-site",
+      "title": "jacobmetoyer.com",
+      "kind": "This site's source",
+      "summary": "The source of this one-page CV: a type-driven static generator reads a single content record, refuses any claim without a public source link, and writes the built tree (HTML, stylesheet, icons, build manifest). Offline checks verify the declared surface (no scripts, embeds or remote resources), link and anchor integrity, and manifest hashes; a pre-commit hook and a Pages workflow both fail when the served docs/ drifts from a fresh build.",
+      "facts": "Python, pytest. Repository created 2026-09-09, last push 2026-10-04.",
+      "artifacts": [
+        {
+          "label": "Source and README",
+          "url": "https://github.com/Jacob-Met/jacob-met.github.io"
+        },
+        {
+          "label": "The generator (build.py)",
+          "url": "https://github.com/Jacob-Met/jacob-met.github.io/blob/main/source/build.py"
+        },
+        {
+          "label": "The content record (content.json)",
+          "url": "https://github.com/Jacob-Met/jacob-met.github.io/blob/main/source/content.json"
+        }
+      ]
     }
   ],
   "research": [
