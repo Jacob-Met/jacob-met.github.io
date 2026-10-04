@@ -44,3 +44,5 @@ Committing a source change without the regenerated `docs/` reproduces issue #11:
 ```sh
 git config core.hooksPath .githooks
 ```
+
+The hook validates the staged tree (what the commit will record), not just the working tree: staging a source change while leaving the regenerated `docs/` unstaged fails the commit.

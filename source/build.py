@@ -10,7 +10,7 @@ Contributor discipline (issue #11): docs/ is generated output, not source. After
 editing source/content.json, run `python source/build.py --out docs` and commit
 the source change together with the regenerated docs/; the Verify public site
 workflow fails by design when docs/ drifts from a fresh build. .githooks/pre-commit
-enforces this locally (enable with `git config core.hooksPath .githooks`).
+enforces this locally by validating the staged tree (enable with `git config core.hooksPath .githooks`).
 """
 from __future__ import annotations
 import argparse, hashlib, html, json, re, shutil
