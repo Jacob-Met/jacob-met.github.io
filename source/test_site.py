@@ -1,4 +1,4 @@
-import copy, hashlib, json, re, tempfile, unittest
+import copy, hashlib, json, re, shutil, subprocess, sys, tempfile, unittest
 from pathlib import Path
 from urllib.parse import urljoin, urlsplit
 import build
@@ -559,6 +559,77 @@ class BuildHygieneTests(Built):
             'no workflow may declare contents: write:\n' + '\n'.join(violations)
             + '\n\npermissions checked:\n' + '\n'.join(checked),
         )
+
+
+class PrecommitHookTests(unittest.TestCase):
+    """Regression tests for .githooks/pre-commit (issue #11 follow-up).
+
+    The hook must validate the STAGED tree, not the working tree (review
+    finding on PR #14): staging a source change without the regenerated
+    docs/ must block the commit even when the working tree is consistent.
+    Each test builds a scratch git repo from the checked-in source/ and
+    .githooks/ and runs the real hook script against it.
+    """
+
+    def setUp(self):
+        self.repo_root = build.ROOT.parent
+        self.tmp = tempfile.TemporaryDirectory(); self.addCleanup(self.tmp.cleanup)
+        self.work = Path(self.tmp.name) / 'site'
+        shutil.copytree(self.repo_root / 'source', self.work / 'source')
+        shutil.copytree(self.repo_root / '.githooks', self.work / '.githooks')
+        self.git('init', '-q')
+        self.git('config', 'user.email', 'hook-test@example')
+        self.git('config', 'user.name', 'hook-test')
+        self.rebuild()
+        self.git('add', '-A')
+        self.git('commit', '-qm', 'baseline')
+
+    def git(self, *args):
+        r = subprocess.run(['git', *args], cwd=self.work,
+                           capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        return r
+
+    def rebuild(self):
+        subprocess.run([sys.executable, 'source/build.py', '--out', 'docs'],
+                       cwd=self.work, check=True, capture_output=True, text=True)
+
+    def edit_content(self):
+        p = self.work / 'source' / 'content.json'
+        data = json.loads(p.read_text(encoding='utf-8'))
+        data['updated'] = '2099-01-01'
+        p.write_text(json.dumps(data, indent=2) + '\n', encoding='utf-8')
+
+    def hook(self):
+        r = subprocess.run(['sh', '.githooks/pre-commit'], cwd=self.work,
+                           capture_output=True, text=True)
+        return r.returncode, r.stderr
+
+    def test_staged_source_without_docs_blocks(self):
+        # The PR #14 review finding: working tree rebuilt and consistent,
+        # but only source/ staged -> the commit would reintroduce drift.
+        self.edit_content(); self.rebuild()
+        self.git('add', 'source/content.json')
+        code, err = self.hook()
+        self.assertEqual(code, 1)
+        self.assertIn('staged docs/', err)
+
+    def test_staged_source_with_rebuilt_docs_passes(self):
+        self.edit_content(); self.rebuild()
+        self.git('add', 'source/content.json', 'docs')
+        code, _ = self.hook()
+        self.assertEqual(code, 0)
+
+    def test_clean_tree_passes(self):
+        code, _ = self.hook()
+        self.assertEqual(code, 0)
+
+    def test_unstaged_changes_only_pass(self):
+        # Fast path: nothing staged -> hook validates nothing, working tree
+        # edits are irrelevant to the pending commit.
+        self.edit_content()
+        code, _ = self.hook()
+        self.assertEqual(code, 0)
 
 
 if __name__ == '__main__': unittest.main()
