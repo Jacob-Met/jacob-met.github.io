@@ -1,18 +1,18 @@
 {
-  "schema": 1,
-  "date": "2026-09-30",
+  "schema": 2,
+  "date": "2026-10-04",
   "sha256": {
     ".nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "404.html": "958c19f97d1d91257c734c604762f589320d20cc8fc0e2380f97b07c0160db6b",
+    "404.html": "3ded2443f9c3e9ac163c35089d82e964ccd430c881dce93bee3afcee8051f601",
     "CNAME": "7e89b4b8e0d23220fae91b16a6c40497117ef427d16ca984e7a8c720f14d8527",
-    "apple-touch-icon.png": "c5046a3bc7b2e5fb86861c4ed1193b14edfb5caae8d490f323828d5d8b1f0314",
-    "assets/mark.svg": "a01f830f071fbe4c69f03d4fd08b01d899df2708c0fb8df44a7c59cefd5d6649",
-    "assets/og-card.png": "20326fd35fcde40702ec32c808a5d53f8eafbbaa19721d8e62793b4df54e9e76",
-    "cv.json": "4a2560cda38fb8d5b9ce2a79afc4ebaea51883eb59cdfa4d379feceeb78a086c",
-    "favicon.ico": "4110458ca2ba52607cd0810132f5e6f4f8f60ff7ad0254eee7cdb8f8c88a979b",
-    "index.html": "bfacc12ac38622103b067ef21ab735a8bd95bcadde45d408af3855561868650f",
+    "apple-touch-icon.png": "5a2993e068253c477c30b602e1473f2e69ba6542010c71e2244d61973af162ce",
+    "assets/mark.svg": "dc43350880713c6339d0cc0ba613ebdb368ab8894f4245d90534b9fd7620c213",
+    "assets/og-card.png": "e710418a926f63e02fa14bfb92f261ed7d9217c654743c7a50bd5ea764137567",
+    "cv.json": "0c58ac460be9b41b0585d3bbc98e0ff0e0c56f5908269f585a0ab640106cb4f1",
+    "favicon.ico": "3bb69fae4f7f05bd04208fb84bcd04d8d0e9270ed3761dbd2a40cb0fd1224e13",
+    "index.html": "5adc8b5e5115dbf2f1a14c4cacd8f805a367a6d708d98b228599001f4b0e7e66",
     "robots.txt": "60d463caa67aaa008b827bdec75236dcec7a9c82c49f529ad1da2de1c847c47e",
-    "sitemap.xml": "c297af805fe37583315b425aa3253879df4dbb8f899b58c09cc57c2a1823e91a",
-    "style.css": "d538146dc784ce22dc97000dcb2458ae26e95d45b536cae8aa84e5fb580c07fd"
+    "sitemap.xml": "bac4b2b79e2406f040610b226f93548bfb18997f58ec58a03e5eb31d207ff015",
+    "style.css": "77f6198946e6f021edda92040a57fed56c87c3ddbc189ad61a9ec751015c818c"
   }
 }

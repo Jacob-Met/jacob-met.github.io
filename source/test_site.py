@@ -7,7 +7,9 @@ from check import check
 
 
 def record():
-    return json.loads((build.ROOT / 'content.json').read_text(encoding='utf-8'))
+    data = json.loads((build.ROOT / 'content.json').read_text(encoding='utf-8'))
+    data['copy_markdown'] = (build.ROOT / data['copy_path']).read_text(encoding='utf-8')
+    return data
 
 
 class Built(unittest.TestCase):
@@ -43,29 +45,23 @@ class RecordTests(unittest.TestCase):
         self.data['private_notes'] = 'no'
         with self.assertRaises(ValueError): build.validate(self.data)
     def test_claim_without_source_denied(self):
-        for key in ('current', 'research'):
-            data = copy.deepcopy(self.data); data[key][0]['sources'] = []
-            with self.subTest(key=key), self.assertRaises(ValueError): build.validate(data)
-        data = copy.deepcopy(self.data); data['projects'][0]['artifacts'] = []
+        data = copy.deepcopy(self.data); data['claims'][1]['sources'] = []
         with self.assertRaises(ValueError): build.validate(data)
-        data = copy.deepcopy(self.data); data['education']['sources'] = []
+    def test_duplicate_claim_id_denied(self):
+        data = copy.deepcopy(self.data); data['claims'][1]['id'] = data['claims'][0]['id']
         with self.assertRaises(ValueError): build.validate(data)
-    def test_unknown_basis_denied(self):
-        self.data['research'][0]['basis'] = 'verified by nobody'
-        with self.assertRaises(ValueError): build.validate(self.data)
-    def test_duplicate_id_denied(self):
-        self.data['research'][0]['id'] = self.data['projects'][0]['id']
-        with self.assertRaises(ValueError): build.validate(self.data)
+    def test_copy_url_must_be_in_source_map(self):
+        data = copy.deepcopy(self.data)
+        data['copy_markdown'] = data['copy_markdown'].replace('https://github.com/Jacob-Met/workflow-checks)', 'https://github.com/Other-User/Other-Repo)')
+        with self.assertRaises(ValueError): build.validate(data)
+    def test_factual_paragraph_without_link_denied(self):
+        data = copy.deepcopy(self.data)
+        data['copy_markdown'] = data['copy_markdown'].replace(' ([documented limits](https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md))', '')
+        with self.assertRaises(ValueError): build.validate(data)
     def test_bad_urls_denied(self):
         for url in ('javascript:alert(1)', 'https://me:pw@github.com/x', 'https://github.com.evil.example/x', 'https://github.com/x?token=1',
                     'http://github.com/Jacob-Met', 'https://www.instagram.com/tornadocos/', 'https://myanimelist.net/profile/TornadoZW'):
             with self.subTest(url=url), self.assertRaises(ValueError): build.safe_url(url)
-    def test_slot_entries_need_links(self):
-        self.data['verified_writing'] = [{'title': 'x', 'venue': 'y', 'date': '2026', 'links': []}]
-        with self.assertRaises(ValueError): build.validate(self.data)
-    def test_slot_entry_shape(self):
-        self.data['verified_research'] = [{'title': 'x', 'venue': 'y', 'date': '2026', 'links': [{'label': 'repo', 'url': 'https://github.com/Jacob-Met'}]}]
-        build.validate(self.data)
 
 
 class BuildTests(Built):
@@ -97,76 +93,66 @@ class BuildTests(Built):
         self.assertEqual((self.root / 'favicon.ico').read_bytes()[:4], b'\x00\x00\x01\x00')
         self.assertIn(f'<meta property="og:image" content="{build.BASE}/{build.SHARE_CARD}">', self.page())
     def test_cv_json_is_the_record(self):
-        self.assertEqual(json.loads((self.root / 'cv.json').read_text(encoding='utf-8')), self.data)
+        expected = dict(self.data)
+        expected['copy_sha256'] = hashlib.sha256(expected['copy_markdown'].encode('utf-8')).hexdigest()
+        self.assertEqual(json.loads((self.root / 'cv.json').read_text(encoding='utf-8')), expected)
     def test_sitemap_has_only_the_front_page(self):
         sm = (self.root / 'sitemap.xml').read_text(encoding='utf-8')
         self.assertEqual(sm.count('<loc>'), 1); self.assertIn(f'<loc>{build.BASE}/</loc>', sm)
 
 
 class ContentTests(Built):
-    """Rebuild rules: no anime/cosplay-era content, no imagery, every claim sourced, slots visible."""
-    BANNED = ('anime', 'manga', 'cosplay', 'tornadocos', 'myanimelist', 'instagram', 'umamusume', 'uma-sim', 'schauz', 'spire',
-              'hamon', 'togishi', 'otama', 'shinogi', 'jihada', 'client', 'delve', 'passionate', 'journey', 'leverage', 'robust')
-    def test_no_old_era_content(self):
-        low = self.page().lower()
+    """The public copy is source-mapped, work-first, and uses no prohibited old-profile references."""
+    BANNED = ('anime', 'manga', 'cosplay', 'tornadocos', 'myanimelist', 'umamusume', 'uma-sim', 'schauz', 'spire',
+              'hamon', 'togishi', 'otama', 'shinogi', 'jihada', 'passionate', 'journey', 'leverage', 'robust', 'ai-assistance', 'ai-written')
+    def test_no_old_profile_or_ai_assistance_copy(self):
+        low = (self.page() + json.dumps(self.data)).lower()
         for word in self.BANNED:
             with self.subTest(word=word): self.assertNotIn(word, low)
-    def test_no_imagery_or_scripts_in_body(self):
+    def test_no_imagery_or_executable_scripts_in_body(self):
         m = self.main()
-        for tag in ('<img', '<picture', '<figure', '<svg', '<video', '<script', '<iframe', '<form'):
+        for tag in ('<img', '<picture', '<figure', '<svg', '<video', '<script', '<iframe', '<form', '<canvas', '<object', '<embed'):
             with self.subTest(tag=tag): self.assertNotIn(tag, m)
         self.assertNotIn('<script src', self.page())
-    def test_one_page_cv_sections_in_order(self):
-        m = self.main(); pos = [m.index(f'<section id="{i}"') for i, _ in build.SECTIONS]
+    def test_work_first_sections_and_one_identity_heading(self):
+        m = self.main()
+        pos = [m.index(f'<section id="{i}"') for i, _ in build.SECTIONS]
         self.assertEqual(pos, sorted(pos))
-        self.assertEqual(m.count('<h1>'), 1)
-    def test_toc_links_land_on_sections(self):
-        for frag in re.findall(r'<nav class="toc"[^>]*>(.*?)</nav>', self.main())[0].split('href="#')[1:]:
-            ident = frag.split('"')[0]
-            with self.subTest(id=ident): self.assertIn(f'<section id="{ident}"', self.main())
-    def test_every_entry_has_a_source_link(self):
+        self.assertEqual(self.page().count('<h1>'), 1)
+        self.assertIn('<a class="skip" href="#main">Skip to content</a>', self.page())
+    def test_every_factual_paragraph_has_a_source_link(self):
+        paragraphs = re.findall(r'<p(?:\s[^>]*)?>(.*?)</p>', self.main(), re.S)
+        self.assertGreaterEqual(len(paragraphs), 10)
+        for paragraph in paragraphs:
+            with self.subTest(paragraph=re.sub(r'<[^>]+>', ' ', paragraph)[:80]):
+                self.assertIn('href="https://', paragraph)
+    def test_six_work_entries_each_link_to_sources(self):
         entries = re.findall(r'<article class="entry"[^>]*>(.*?)</article>', self.main(), re.S)
-        self.assertGreaterEqual(len(entries), 10)
-        for e in entries:
-            with self.subTest(entry=re.sub(r'<[^>]+>', ' ', e)[:60]): self.assertIn('href="https://', e)
-    def test_self_reported_lines_are_labelled(self):
-        m = self.main()
-        self.assertEqual(self.data['education']['basis'], 'self-reported')
-        match = re.search(r'<section id="education".*?</section>', m, re.S)
-        assert match is not None
-        self.assertIn('<span class="basis">self-reported</span>', match.group())
-        self.assertIn('institutional program page describes the program, not my membership', m)
-        for row in self.data['research'] + self.data['current'] + [self.data['independent']]:
-            if row['basis'].startswith('self-reported'):
-                with self.subTest(row=row.get('id') or row['text'][:30]):
-                    self.assertIn(f'<span class="basis">{build.E(row["basis"])}</span>', m)
-    def test_projects_link_to_real_artifacts(self):
-        for p in self.data['projects']:
-            with self.subTest(id=p['id']):
-                self.assertTrue(p['artifacts'][0]['url'].startswith('https://github.com/Jacob-Met/'))
-                self.assertGreaterEqual(len(p['artifacts']), 2)
-                self.assertIn(f'id="{p["id"]}"', self.main())
-    def test_inventory_slots_are_visible_and_marked(self):
-        m = self.main()
-        for key in ('verified_research', 'verified_writing'):
-            with self.subTest(slot=key):
-                self.assertIn(f'<section id="{key.replace("_", "-")}"', m)
-                if self.data[key]:
-                    self.assertNotIn(f'<!-- slot:{key} empty', m)
-                    for row in self.data[key]:
-                        self.assertIn(build.E(row['title']), m)
-                        self.assertIn(row['links'][0]['url'], m)
-                else:
-                    self.assertIn(f'<!-- slot:{key} empty', m)
-                    self.assertIn('class="placeholder"', m)
-    def test_slot_entries_render_when_present(self):
-        self.data['verified_writing'] = [{'title': 'A note', 'venue': 'GitHub', 'date': '2026-09', 'links': [{'label': 'read', 'url': 'https://github.com/Jacob-Met'}]}]
-        build.build(self.root, self.data); m = self.main()
-        self.assertNotIn('<!-- slot:verified_writing empty', m); self.assertIn('A note', m)
+        self.assertEqual(len(entries), 6)
+        for entry in entries:
+            with self.subTest(entry=re.sub(r'<[^>]+>', ' ', entry)[:60]):
+                self.assertIn('href="https://', entry)
+    def test_copy_link_sequence_is_in_claim_source_map(self):
+        mapped = {source['url'] for claim in self.data['claims'] for source in claim['sources']}
+        pairs = re.findall(r'<a href="(https://[^"]+)" rel="noopener">([^<]*)</a>', self.page())
+        rendered = [(label, url) for url, label in pairs]
+        expected = build.LINK_RE.findall(self.data['copy_markdown'])
+        copy_links = {url for _, url in expected}
+        self.assertEqual(rendered, expected)
+        self.assertTrue(copy_links <= mapped)
+    def test_copy_has_no_raw_html_and_claim_ids_are_preserved(self):
+        self.assertNotRegex(self.data['copy_markdown'], r'<\s*/?\s*[a-zA-Z]')
+        self.assertEqual({c['id'] for c in self.data['claims']}, {
+            'ID-01', 'WC-01', 'WC-02', 'WC-03', 'WC-04', 'WC-05', 'WC-06', 'CS-01', 'CP-01', 'TO-01', 'RS-01', 'CS-02', 'WC-07'
+        })
     def test_escaping(self):
-        row = copy.deepcopy(self.data['research'][0]); row['title'] = '<script>x</script>'; row['role'] = '<img src=x onerror=alert(1)>'
-        self.data['research'][0] = row; build.build(self.root, self.data)
-        self.assertNotIn('<script>x', self.page()); self.assertNotIn('<img src=x', self.page()); self.assertTrue(check(self.root)['passed'])
+        data = copy.deepcopy(self.data)
+        marker = 'Billing exceptions flagged'
+        data['copy_markdown'] = data['copy_markdown'].replace(marker, '<script>x</script> ' + marker)
+        build.build(self.root, data)
+        self.assertNotIn('<script>x', self.page())
+        self.assertIn('&lt;script&gt;x&lt;/script&gt;', self.page())
+        self.assertTrue(check(self.root)['passed'])
     def test_external_hosts_are_only_verifiable_ones(self):
         hosts = {urlsplit(u).hostname for u in re.findall(r'href="(https://[^"]+)"', self.main())}
         self.assertTrue(hosts <= build.ALLOWED_HOSTS, hosts)
@@ -229,7 +215,7 @@ class NotFoundTests(Built):
     def test_index_stays_relative(self):
         self.assertFalse([v for v in self.refs('index.html') if v.startswith('/')])
     def test_root_relative_outside_404_rejected(self):
-        self.assertIn('index.html: unsafe local link /index.html', self.rewrite('index.html', 'href="index.html"', 'href="/index.html"'))
+        self.assertIn('index.html: unsafe local link /style.css', self.rewrite('index.html', 'href="style.css"', 'href="/style.css"'))
 
 
 # ---------------------------------------------------------------------------

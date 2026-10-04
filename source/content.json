@@ -2,147 +2,181 @@
   "visibility": "public",
   "name": "Jacob Metoyer",
   "updated": "2026-10-04",
-  "headline": "Undergraduate researcher at Cal State Long Beach. Computer science and physics, minor in biology.",
-  "summary": [
-    "I work with research data in university labs, write research software, and run my own experiments on how well AI systems do real work.",
-    "Public repositories and dated snapshots document the work described here. Lab roles and education details drawn from my own account are marked self-reported; an institutional program page describes the program, not my membership."
-  ],
-  "identities": [
-    {"label": "GitHub", "url": "https://github.com/Jacob-Met"},
-    {"label": "LinkedIn", "url": "https://www.linkedin.com/in/jacob-metoyer-15b701352"}
-  ],
-  "education": {
-    "institution": "California State University, Long Beach",
-    "degrees": "B.S. Computer Science and B.A. Physics, minor in Biology",
-    "program": "BUILD Scholar",
-    "basis": "self-reported",
-    "sources": [
-      {"label": "CSULB BUILD Scholars Program", "url": "https://www.csulb.edu/building-infrastructure-leading-to-diversity/build-scholars-program"},
-      {"label": "public GitHub profile, 2026-09-11", "url": "https://github.com/Jacob-Met/Jacob-Met/blob/521ff61b07876b54ab0687b4deda546667f2ff30/README.md"}
-    ]
-  },
-  "current": [
+  "copy_path": "content.md",
+  "claims": [
     {
-      "text": "Student researcher on gait rehabilitation research teams since March 2026: participant sessions in the motion-capture room, marker labeling, trial organization and data checks before analysis.",
-      "basis": "self-reported",
-      "sources": [{"label": "previous site record, 2026-09-29", "url": "https://github.com/Jacob-Met/jacob-met.github.io/blob/954ef094e473a65b8b14a2cca9420230324fe340/source/content.json"}]
-    },
-    {
-      "text": "CaptureSuite, a multi-device research capture platform, in active development; last public push 2026-09-29.",
-      "basis": "public repository",
-      "sources": [{"label": "CaptureSuite commit history", "url": "https://github.com/Jacob-Met/CaptureSuite/commits/main"}]
-    }
-  ],
-  "projects": [
-    {
-      "id": "capturesuite",
-      "title": "CaptureSuite",
-      "kind": "Research software",
-      "summary": "Windows-first multimodal research capture. A daemon owns the clock and session state, each device runs as a versioned worker plugin in C++ or Python, and a session is sealed into one package for quality checks and analysis. A simulator and a Lab Streaming Layer bridge let it run without vendor hardware.",
-      "facts": "Python and C++. GPL-3.0. Repository created 2026-09-03, last push 2026-09-29.",
-      "artifacts": [
-        {"label": "Source and README", "url": "https://github.com/Jacob-Met/CaptureSuite"},
-        {"label": "Synthetic QC demo, no hardware", "url": "https://github.com/Jacob-Met/CaptureSuite/blob/main/tools/demo_qc.py"},
-        {"label": "License", "url": "https://github.com/Jacob-Met/CaptureSuite/blob/main/LICENSE"}
-      ]
-    },
-    {
-      "id": "canvaspilot",
-      "title": "CanvasPilot",
-      "kind": "Student tooling",
-      "summary": "A Canvas LMS command-line tool and MCP server for schools that disable API tokens: one login in a real browser, then a local session broker makes the REST calls. Fixture mode runs the tests offline.",
-      "facts": "Python. MIT. Repository created 2026-09-05, last push 2026-10-01.",
-      "artifacts": [
-        {"label": "Source and README", "url": "https://github.com/Jacob-Met/canvaspilot"},
-        {"label": "Offline demo", "url": "https://github.com/Jacob-Met/canvaspilot/blob/main/src/canvaspilot/offline_demo.py"}
-      ]
-    },
-    {
-      "id": "towerops",
-      "title": "TowerOps",
-      "kind": "Research demo",
-      "summary": "A synthetic air-traffic decision-support demo built for the AWS Agents for Humans challenge. An agent may propose an advisory; deterministic code checks conflict projection, state freshness, approval and readback before the simulated state changes, and writes a hash-chained audit log. Not operational ATC software and not connected to live aircraft.",
-      "facts": "Python, Strands Agents. MIT. Repository created 2026-09-14, last push 2026-09-15.",
-      "artifacts": [
-        {"label": "Source and README", "url": "https://github.com/Jacob-Met/TowerOps"},
-        {"label": "Deterministic demo", "url": "https://github.com/Jacob-Met/TowerOps/blob/main/demo.py"}
-      ]
-    }
-,
-    {
-      "id": "workflow-checks",
-      "title": "Workflow checks",
-      "kind": "Demo",
-      "summary": "Three small proofs of concept for verification-first back-office checks: detention and chargeback evidence packets with a carrier invoice, rate confirmation and proof-of-delivery match; a physical-therapy authorization and visit-limit tracker; and a utility bill exception checker. Deterministic rules decide, anything uncertain goes to a person, and every decision is logged with file and row evidence. Synthetic data only; not deployed in any real operation.",
-      "facts": "Python standard library, pytest. Repository created 2026-10-04.",
-      "artifacts": [
-        {"label": "Source and README", "url": "https://github.com/Jacob-Met/workflow-checks"},
-        {"label": "Freight packet demo", "url": "https://github.com/Jacob-Met/workflow-checks/tree/main/freight_packets"}
-      ]
-    }
-  ],
-  "research": [
-    {
-      "id": "gait",
-      "title": "Gait rehabilitation research",
-      "org": "Clinical rehabilitation and biomechanics research teams",
-      "period": "March 2026 to present",
-      "role": "Participant-session support, motion-capture marker labeling, trial organization and data quality checks. Repaired a gait-analysis workflow ported from MATLAB to Python: unit mismatches, gait event detection, and errors instead of wrong numbers.",
-      "basis": "self-reported",
-      "sources": [{"label": "previous site record, 2026-09-29", "url": "https://github.com/Jacob-Met/jacob-met.github.io/blob/954ef094e473a65b8b14a2cca9420230324fe340/source/content.json"}]
-    },
-    {
-      "id": "surgical-ergonomics",
-      "title": "Surgical ergonomics collaboration",
-      "org": "Study of surgeon ergonomics in urologic surgery",
-      "period": "2026",
-      "role": "Video-based motion-tracking workflows; support for EMG, heart-rate and motion-sensor data capture and analysis.",
-      "basis": "self-reported",
-      "sources": [{"label": "previous site record, 2026-09-29", "url": "https://github.com/Jacob-Met/jacob-met.github.io/blob/954ef094e473a65b8b14a2cca9420230324fe340/source/content.json"}]
-    },
-    {
-      "id": "joshi",
-      "title": "Protein molecular dynamics",
-      "org": "Joshi Laboratory, Georgetown University, remote",
-      "period": "September 2025 to April 2026",
-      "role": "Located, cleaned and standardized molecular-dynamics trajectories; computed PCA and RMSF features; wrote physical-plausibility checks (RMSD, radius of gyration, bond geometry) for AI-generated protein structures; turned field literature into validation plans.",
-      "basis": "self-reported; lab is public",
+      "id": "ID-01",
+      "description": "Public identity/name.",
       "sources": [
-        {"label": "Joshi Lab", "url": "https://www.joshilab.org/"},
-        {"label": "previous site record, 2026-09-29", "url": "https://github.com/Jacob-Met/jacob-met.github.io/blob/954ef094e473a65b8b14a2cca9420230324fe340/source/content.json"}
+        {
+          "label": "GitHub profile",
+          "url": "https://github.com/Jacob-Met"
+        }
       ]
     },
     {
-      "id": "tsai",
-      "title": "Behavioral neuroscience",
-      "org": "Tsai Lab, CSULB, sex differences in brain and behavior",
-      "period": "January to September 2025",
-      "role": "Scored mouse behavior from video (automated tracking, then checked by hand), analyzed data in GraphPad Prism, and supported mouse handling, genotyping and tissue collection.",
-      "basis": "self-reported; lab is public",
+      "id": "WC-01",
+      "description": "workflow-checks contains three Python standard-library demos for utilities, freight, and PT authorizations; sample data is synthetic and no real-world client/savings/accuracy claim is made.",
       "sources": [
-        {"label": "CSULB BUILD mentor profile, Dr. Houng-Wei Tsai", "url": "https://www.csulb.edu/building-infrastructure-leading-to-diversity/article/build-mentor-spotlight-for-april-2019-dr-houng"},
-        {"label": "previous site record, 2026-09-29", "url": "https://github.com/Jacob-Met/jacob-met.github.io/blob/954ef094e473a65b8b14a2cca9420230324fe340/source/content.json"}
+        {
+          "label": "workflow-checks README",
+          "url": "https://github.com/Jacob-Met/workflow-checks/blob/main/README.md"
+        },
+        {
+          "label": "Jacob-authored demo commit",
+          "url": "https://github.com/Jacob-Met/workflow-checks/commit/fd74a02"
+        },
+        {
+          "label": "workflow-checks repository",
+          "url": "https://github.com/Jacob-Met/workflow-checks"
+        },
+        {
+          "label": "sample outputs",
+          "url": "https://jacobmetoyer.com/workflow-checks/"
+        }
       ]
-    }
-  ],
-  "independent": {
-    "text": "Independent research on human-AI collaboration and agentic systems: setups where one or several AI models do real tasks, with the task, the actions and the failures recorded so a result can be checked later. Outside school and any lab, not peer reviewed, and with no public artifact yet.",
-    "basis": "self-reported",
-    "sources": [{"label": "public GitHub profile, 2026-09-11", "url": "https://github.com/Jacob-Met/Jacob-Met/blob/521ff61b07876b54ab0687b4deda546667f2ff30/README.md"}]
-  },
-  "verified_research": [],
-  "verified_writing": [
-    {
-      "title": "CaptureSuite timing model",
-      "venue": "Technical design note · public repository",
-      "date": "2026",
-      "links": [{"label": "Read the timing model", "url": "https://github.com/Jacob-Met/CaptureSuite/blob/main/docs/design/TIMING.md"}]
     },
     {
-      "title": "TowerOps architecture",
-      "venue": "Research-demo architecture note · synthetic state only",
-      "date": "2026",
-      "links": [{"label": "Read the architecture note", "url": "https://github.com/Jacob-Met/TowerOps/blob/main/ARCHITECTURE.md"}]
+      "id": "WC-02",
+      "description": "utility_watch flags billing exceptions and queues clean unpaid bills for approval with evidence rows; it does not issue payments.",
+      "sources": [
+        {
+          "label": "utility demo README",
+          "url": "https://github.com/Jacob-Met/workflow-checks/blob/main/utility_watch/README.md"
+        },
+        {
+          "label": "utility demo source",
+          "url": "https://github.com/Jacob-Met/workflow-checks/tree/main/utility_watch"
+        }
+      ]
+    },
+    {
+      "id": "WC-03",
+      "description": "freight_packets creates draft detention/invoice packets with calculations and evidence timelines; missing or uncertain evidence is held for human review and nothing is sent or invoiced.",
+      "sources": [
+        {
+          "label": "freight demo README",
+          "url": "https://github.com/Jacob-Met/workflow-checks/blob/main/freight_packets/README.md"
+        },
+        {
+          "label": "freight demo source",
+          "url": "https://github.com/Jacob-Met/workflow-checks/tree/main/freight_packets"
+        }
+      ]
+    },
+    {
+      "id": "WC-04",
+      "description": "pt_auth builds a prioritized authorization/visit worklist with submit-by dates and checklists; sample patients and payer rules are synthetic/placeholders and nothing is submitted.",
+      "sources": [
+        {
+          "label": "PT demo README",
+          "url": "https://github.com/Jacob-Met/workflow-checks/blob/main/pt_auth/README.md"
+        },
+        {
+          "label": "PT demo source",
+          "url": "https://github.com/Jacob-Met/workflow-checks/tree/main/pt_auth"
+        }
+      ]
+    },
+    {
+      "id": "WC-05",
+      "description": "Workflow decisions carry file:row evidence pointers; unresolved cases go to a person rather than a guess.",
+      "sources": [
+        {
+          "label": "workflow-checks README",
+          "url": "https://github.com/Jacob-Met/workflow-checks/blob/main/README.md"
+        }
+      ]
+    },
+    {
+      "id": "WC-06",
+      "description": "A future scoped pilot would use redacted exports, the client's real rules, and a manual baseline; any claim is limited to the measured comparison.",
+      "sources": [
+        {
+          "label": "workflow-checks pilot scope",
+          "url": "https://github.com/Jacob-Met/workflow-checks/blob/main/README.md"
+        },
+        {
+          "label": "utility pilot requirements",
+          "url": "https://github.com/Jacob-Met/workflow-checks/blob/main/utility_watch/README.md"
+        }
+      ]
+    },
+    {
+      "id": "CS-01",
+      "description": "CaptureSuite is Windows-first multimodal research capture with daemon, worker plugins, and sealed session packages; its offline QC demo is synthetic and does not establish hardware performance or clinical validity.",
+      "sources": [
+        {
+          "label": "CaptureSuite README",
+          "url": "https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md"
+        },
+        {
+          "label": "offline QC demo",
+          "url": "https://github.com/Jacob-Met/CaptureSuite/blob/main/tools/demo_qc.py"
+        }
+      ]
+    },
+    {
+      "id": "CP-01",
+      "description": "CanvasPilot is a Canvas LMS MCP server and CLI with a local browser-session broker; its offline demo is synthetic and does not validate live school authentication or student outcomes.",
+      "sources": [
+        {
+          "label": "CanvasPilot README",
+          "url": "https://github.com/Jacob-Met/canvaspilot/blob/main/README.md"
+        },
+        {
+          "label": "offline demo",
+          "url": "https://github.com/Jacob-Met/canvaspilot/blob/main/src/canvaspilot/offline_demo.py"
+        }
+      ]
+    },
+    {
+      "id": "TO-01",
+      "description": "TowerOps is synthetic air-traffic decision support gated before a simulated transition; it is not operational ATC and is not connected to aircraft.",
+      "sources": [
+        {
+          "label": "TowerOps README",
+          "url": "https://github.com/Jacob-Met/TowerOps/blob/main/README.md"
+        },
+        {
+          "label": "TowerOps demo",
+          "url": "https://github.com/Jacob-Met/TowerOps/blob/main/demo.py"
+        }
+      ]
+    },
+    {
+      "id": "RS-01",
+      "description": "Self-reported: undergraduate at CSULB (CS and physics, minor biology), preparing for MD/PhD training. The BUILD Scholars page describes the program, not Jacob's membership or the MD/PhD goal.",
+      "sources": [
+        {
+          "label": "CSULB BUILD Scholars Program",
+          "url": "https://github.com/Jacob-Met"
+        }
+      ]
+    },
+    {
+      "id": "CS-02",
+      "description": "CaptureSuite timing model design note is in the public repository.",
+      "sources": [
+        {
+          "label": "CaptureSuite timing model",
+          "url": "https://github.com/Jacob-Met/CaptureSuite/blob/main/docs/design/TIMING.md"
+        }
+      ]
+    },
+    {
+      "id": "WC-07",
+      "description": "workflow-checks repository root and sample-output site.",
+      "sources": [
+        {
+          "label": "workflow-checks repository",
+          "url": "https://github.com/Jacob-Met/workflow-checks"
+        },
+        {
+          "label": "sample outputs",
+          "url": "https://jacobmetoyer.com/workflow-checks/"
+        }
+      ]
     }
   ]
 }
