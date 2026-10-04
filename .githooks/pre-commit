@@ -1,10 +1,19 @@
 #!/bin/sh
 # Pre-commit guard: docs/ is generated output, never hand-edit it.
 #
-# Rebuilds the site into a temp dir and fails the commit when the working
-# tree's docs/ differs from a fresh build. This blocks the exact failure
-# class behind jacob-met.github.io#11 (editing source/content.json without
-# regenerating docs/, which the Verify public site workflow then rejects).
+# Validates the STAGED tree (what the commit will actually contain), not the
+# working tree: it materializes the index into a temp dir with
+# `git checkout-index`, rebuilds the site from the staged source/, and fails
+# the commit when the staged docs/ differs from a fresh build. This blocks the
+# exact failure class behind jacob-met.github.io#11 (committing a source
+# change without the regenerated docs/, which the Verify public site
+# workflow then rejects).
+#
+# Validating the working tree instead would let staged-but-unrebuilt docs/
+# slip through: e.g. edit source/content.json, rebuild docs/, then stage only
+# source/ — the working tree looks consistent while the commit reintroduces
+# drift. (Review finding on PR #14; regression-tested in
+# source/test_site.py::PrecommitHookTests.)
 #
 # Enable once per clone:
 #   git config core.hooksPath .githooks
@@ -17,17 +26,30 @@ SCRATCH="$(mktemp -d 2>/dev/null)" || {
 }
 trap 'rm -rf "$SCRATCH"' EXIT INT TERM
 
-if ! python3 "$REPO_ROOT/source/build.py" --out "$SCRATCH/checked-site" \
+# Fast path: nothing staged under source/ or docs/ -> nothing to validate.
+if git -C "$REPO_ROOT" diff --cached --quiet -- source docs; then
+    exit 0
+fi
+
+# Materialize the staged tree exactly as the commit will contain it.
+# This never touches the working tree (no stash), so unstaged edits are
+# irrelevant to the check, and a checkout failure blocks the commit.
+mkdir -p "$SCRATCH/staged"
+if ! git -C "$REPO_ROOT" checkout-index -a --prefix="$SCRATCH/staged/"; then
+    echo "pre-commit: could not materialize the staged tree; refusing to commit" >&2
+    exit 1
+fi
+
+if ! python3 "$SCRATCH/staged/source/build.py" --out "$SCRATCH/checked-site" \
         >"$SCRATCH/build.log" 2>&1; then
-    echo "pre-commit: site build failed; fix the build errors before committing" >&2
+    echo "pre-commit: site build failed on the staged source/; fix the build errors before committing" >&2
     tail -5 "$SCRATCH/build.log" >&2 || true
     exit 1
 fi
 
-if ! diff -qr "$REPO_ROOT/docs" "$SCRATCH/checked-site" >/dev/null 2>&1; then
-    echo "pre-commit: docs/ differs from a fresh build of source/" >&2
-    echo "pre-commit: after editing source/content.json, run:" >&2
-    echo "pre-commit:   python3 source/build.py --out docs && git add docs" >&2
+if ! diff -qr "$SCRATCH/staged/docs" "$SCRATCH/checked-site" >/dev/null 2>&1; then
+    echo "pre-commit: staged docs/ differs from a fresh build of the staged source/" >&2
+    echo "pre-commit: run 'python3 source/build.py --out docs && git add docs'" >&2
     echo "pre-commit: then commit the source change and regenerated docs/ together" >&2
     exit 1
 fi
