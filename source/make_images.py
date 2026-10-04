@@ -12,7 +12,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parent
-GREEN, PAPER, ACCENT, SOFT = '#183c31', '#f6f3eb', '#955235', '#b9c6bd'
+BLUE, PAPER, ACCENT, SOFT, INK, RULE = '#183be5', '#f5f5ef', '#b93819', '#595447', '#20252c', '#b7bac2'
 SERIF_CANDIDATES = [
     '/usr/share/fonts/truetype/liberation/LiberationSerif-Regular.ttf',
     '/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf',
@@ -38,7 +38,7 @@ def monogram(size: int, radius_ratio: float = 8 / 64) -> Image.Image:
     s = size * 4
     img = Image.new('RGBA', (s, s), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    d.rounded_rectangle((0, 0, s - 1, s - 1), radius=round(s * radius_ratio), fill=GREEN)
+    d.rounded_rectangle((0, 0, s - 1, s - 1), radius=round(s * radius_ratio), fill=BLUE)
     f = font(SERIF_CANDIDATES, round(s * 33 / 64))
     # SVG places the baseline at y=44/64 with the text centred horizontally.
     d.text((s / 2, s * 44 / 64), 'JM', font=f, fill=PAPER, anchor='ms')
@@ -46,24 +46,28 @@ def monogram(size: int, radius_ratio: float = 8 / 64) -> Image.Image:
 
 
 def share_card() -> Image.Image:
+    """Share card repeats the approved tagline and the docket-spine motif."""
     w, h = 1200, 630
-    img = Image.new('RGB', (w, h), GREEN)
+    img = Image.new('RGB', (w, h), PAPER)
     d = ImageDraw.Draw(img)
-    pad = 88
-    d.rectangle((pad, pad, pad + 64, pad + 6), fill=ACCENT)
-    d.text((pad, 150), 'RESEARCH / SOFTWARE', font=font(SANS_CANDIDATES, 28), fill=SOFT)
-    d.text((pad, 205), 'Jacob Metoyer', font=font(SERIF_CANDIDATES, 112), fill=PAPER)
-    body = font(SANS_CANDIDATES, 34)
-    d.text((pad, 360), 'Undergraduate researcher, Cal State Long Beach.', font=body, fill=PAPER)
-    d.text((pad, 408), 'Computer science and physics. Research data and research software.', font=body, fill=PAPER)
-    d.line((pad, h - pad - 40, w - pad, h - pad - 40), fill='#2f5a4b', width=2)
-    d.text((pad, h - pad), 'jacobmetoyer.com', font=font(SANS_CANDIDATES, 30), fill=SOFT, anchor='ls')
-    mark = monogram(120, radius_ratio=0.14)
-    # Paper-coloured frame so the mark reads against the same green background.
-    frame = Image.new('RGBA', (132, 132), (0, 0, 0, 0))
-    ImageDraw.Draw(frame).rounded_rectangle((0, 0, 131, 131), radius=20, fill=PAPER)
+    rail = 190
+    d.rectangle((0, 0, rail, h), fill=BLUE)
+    d.line((rail - 3, 0, rail - 3, h), fill=ACCENT, width=6)
+    # Perforations echo the docket spine used by the page layout.
+    for y in range(48, h - 24, 48):
+        d.ellipse((34, y, 50, y + 16), fill=PAPER)
+    x = 270
+    d.text((x, 108), 'Jacob Metoyer', font=font(SERIF_CANDIDATES, 62), fill=INK)
+    d.rectangle((x, 205, x + 136, 213), fill=ACCENT)
+    d.text((x, 260), 'Less hand-waving.', font=font(SERIF_CANDIDATES, 78), fill=BLUE)
+    d.text((x, 355), 'More receipts.', font=font(SERIF_CANDIDATES, 78), fill=INK)
+    d.line((x, 492, w - 88, 492), fill=RULE, width=2)
+    d.text((x, 548), 'jacobmetoyer.com', font=font(SANS_CANDIDATES, 28), fill=SOFT, anchor='ls')
+    mark = monogram(104, radius_ratio=0.14)
+    frame = Image.new('RGBA', (116, 116), (0, 0, 0, 0))
+    ImageDraw.Draw(frame).rounded_rectangle((0, 0, 115, 115), radius=18, fill=PAPER)
     frame.alpha_composite(mark, (6, 6))
-    img.paste(frame, (w - pad - 132, pad), frame)
+    img.paste(frame, (w - 88 - 116, 48), frame)
     return img
 
 
