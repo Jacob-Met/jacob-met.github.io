@@ -1,7 +1,7 @@
 {
   "visibility": "public",
   "name": "Jacob Metoyer",
-  "updated": "2026-09-30",
+  "updated": "2026-10-04",
   "headline": "Undergraduate researcher at Cal State Long Beach. Computer science and physics, minor in biology.",
   "summary": [
     "I work with research data in university labs, write research software, and run my own experiments on how well AI systems do real work.",
@@ -66,6 +66,18 @@
       "artifacts": [
         {"label": "Source and README", "url": "https://github.com/Jacob-Met/TowerOps"},
         {"label": "Deterministic demo", "url": "https://github.com/Jacob-Met/TowerOps/blob/main/demo.py"}
+      ]
+    }
+,
+    {
+      "id": "workflow-checks",
+      "title": "Workflow checks",
+      "kind": "Demo",
+      "summary": "Three small proofs of concept for verification-first back-office checks: detention and chargeback evidence packets with a carrier invoice, rate confirmation and proof-of-delivery match; a physical-therapy authorization and visit-limit tracker; and a utility bill exception checker. Deterministic rules decide, anything uncertain goes to a person, and every decision is logged with file and row evidence. Synthetic data only; not deployed in any real operation.",
+      "facts": "Python standard library, pytest. Repository created 2026-10-04.",
+      "artifacts": [
+        {"label": "Source and README", "url": "https://github.com/Jacob-Met/workflow-checks"},
+        {"label": "Freight packet demo", "url": "https://github.com/Jacob-Met/workflow-checks/tree/main/freight_packets"}
       ]
     }
   ],

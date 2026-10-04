@@ -157,7 +157,7 @@ def cv_body(data: dict) -> str:
                              sources(r['artifacts'], word='Artifact'), r['id']) for r in data['projects'])
     ind = data['independent']
     independent = entry('', '', ind['text'], sources(ind['sources'], ind['basis']))
-    contact = entry('', '', '', '<p>Research collaboration, software questions or a scoped pilot: send a short note on '
+    contact = entry('', '', '', '<p>Research collaboration, software questions or a scoped pilot on your own redacted exports: send a short note on '
                     + link('https://www.linkedin.com/in/jacob-metoyer-15b701352', 'LinkedIn')
                     + ' or open an issue on the relevant repository. Do not send participant data, credentials or confidential files.</p>')
     colophon = (f'<p class="colophon">Revised {E(data["updated"])}. Static HTML generated from <a href="cv.json">one public record</a>; no scripts, no tracking, no third-party requests. '
