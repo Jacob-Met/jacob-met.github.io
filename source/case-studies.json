@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "case_studies": [
+    {
+      "id": "multi-agent-fanout-engine",
+      "visibility": "public",
+      "title": "Multi-agent Fan-out Engine",
+      "category": "Independent systems research",
+      "summary": "A small, sanitized Python reference core for planning independent work, recording dispatches, and routing by requested effort.",
+      "question": "How can a multi-part task be planned and dispatched while keeping dependencies, idempotency, and uncertain outcomes explicit?",
+      "approach": [
+        "Represent work as a validated dependency graph so downstream parts stay queued until prerequisites complete.",
+        "Record each dispatch, stable idempotency key, route, state change, and reconciliation evidence in SQLite.",
+        "Park an ambiguous submission as outcome_unknown and require external evidence before resolving it; do not replay it.",
+        "Keep transport and authentication outside the reference core behind a Hub adapter protocol."
+      ],
+      "boundary": "The tests use an in-memory SQLite ledger and local fake adapter. The package makes no model-provider calls, remote-worker calls, production-capacity claim, dispatch-volume claim, or benchmark-scale claim.",
+      "disclosure": "The code and documentation were developed iteratively with AI assistance, then manually reviewed and exercised with the repository tests and local demo.",
+      "language": "Python",
+      "language_reason": "The public reference core and tests are Python; it uses the standard library and requires Python 3.10+.",
+      "source_revision": "53c9d83",
+      "artifacts": [
+        {
+          "label": "Public repository",
+          "url": "https://github.com/Jacob-Met/multi-agent-fanout-engine"
+        },
+        {
+          "label": "README and scope limits",
+          "url": "https://github.com/Jacob-Met/multi-agent-fanout-engine/blob/main/README.md"
+        },
+        {
+          "label": "Test suite",
+          "url": "https://github.com/Jacob-Met/multi-agent-fanout-engine/tree/main/tests"
+        }
+      ]
+    }
+  ]
+}

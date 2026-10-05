@@ -69,6 +69,59 @@ class RecordTests(unittest.TestCase):
             with self.subTest(url=url), self.assertRaises(ValueError): build.safe_url(url)
 
 
+class CaseStudyDataTests(unittest.TestCase):
+    """Case-study cards are schema-complete and each public item links to evidence."""
+    REQUIRED = {
+        'id', 'visibility', 'title', 'category', 'summary', 'question', 'approach',
+        'boundary', 'disclosure', 'language', 'language_reason', 'source_revision', 'artifacts',
+    }
+
+    def setUp(self):
+        self.data = json.loads((build.ROOT / 'case-studies.json').read_text(encoding='utf-8'))
+
+    def test_case_studies_use_versioned_schema_and_unique_public_ids(self):
+        self.assertEqual(set(self.data), {'schema', 'case_studies'})
+        self.assertEqual(self.data['schema'], 1)
+        cases = self.data['case_studies']
+        self.assertIsInstance(cases, list)
+        self.assertTrue(cases)
+        ids = [case['id'] for case in cases]
+        self.assertEqual(len(ids), len(set(ids)))
+        for case in cases:
+            with self.subTest(case=case.get('id')):
+                self.assertEqual(set(case), self.REQUIRED)
+                self.assertEqual(case['visibility'], 'public')
+                self.assertTrue(case['id'])
+                self.assertTrue(case['title'])
+                self.assertTrue(case['summary'])
+                self.assertTrue(case['question'])
+                self.assertTrue(case['approach'])
+                self.assertTrue(case['boundary'])
+                self.assertTrue(case['language'])
+                self.assertTrue(case['language_reason'])
+                self.assertTrue(case['source_revision'])
+
+    def test_each_case_has_repository_readback_links_and_limitations(self):
+        for case in self.data['case_studies']:
+            with self.subTest(case=case['id']):
+                artifacts = case['artifacts']
+                self.assertIsInstance(artifacts, list)
+                self.assertGreaterEqual(len(artifacts), 2)
+                for item in artifacts:
+                    self.assertEqual(set(item), {'label', 'url'})
+                    self.assertTrue(item['label'])
+                    url = urlsplit(item['url'])
+                    self.assertEqual(url.scheme, 'https')
+                    self.assertEqual(url.hostname, 'github.com')
+                    self.assertTrue(url.path.startswith('/Jacob-Met/'))
+                    self.assertFalse(url.query)
+                primary = urlsplit(artifacts[0]['url'])
+                repository_path = '/' + '/'.join(primary.path.strip('/').split('/')[:2])
+                self.assertTrue(all(urlsplit(item['url']).path.startswith(repository_path)
+                                    for item in artifacts))
+                self.assertIn('no ', case['boundary'].lower())
+
+
 class BuildTests(Built):
     def test_output_passes_checks(self): self.assertTrue(check(self.root)['passed'], check(self.root))
     def test_deterministic(self):
