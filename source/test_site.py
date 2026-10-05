@@ -205,7 +205,7 @@ class ContentTests(Built):
         })
     def test_escaping(self):
         data = copy.deepcopy(self.data)
-        marker = 'See which bills need a closer look'
+        marker = 'The demo flags records such as'
         self.assertIn(marker, data['copy_markdown'])
         data['copy_markdown'] = data['copy_markdown'].replace(marker, '<script>x</script> ' + marker)
         build.build(self.root, data)

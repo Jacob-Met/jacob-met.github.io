@@ -1,51 +1,51 @@
 # [Jacob Metoyer](https://github.com/Jacob-Met)
 
-## I build the tools I wish my research already had.
+## Research software for the work between data and a decision.
 
-I study computer science and physics at Cal State Long Beach, with a minor in biology. I'm working toward MD/PhD training. [More about me](https://github.com/Jacob-Met).
+I study computer science and physics at Cal State Long Beach, with a minor in biology, and I’m preparing for MD/PhD training. Those education and training details are self-reported ([public profile](https://github.com/Jacob-Met)).
 
-I'm interested in what happens between a useful idea and a tool someone can actually use. Lately that's meant [CaptureSuite](https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md): recording motion and physiological data, then making sure the [timing](https://github.com/Jacob-Met/CaptureSuite/blob/main/docs/design/TIMING.md) lines up. The projects below are open to explore. Their READMEs explain what's working and what's still being built ([scope and limits](https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md)).
+I build tools for difficult handoffs: recording a research session, keeping evidence beside a check, or making a simulated decision reviewable before anything changes. My public work includes [CaptureSuite](https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md), [CanvasPilot](https://github.com/Jacob-Met/canvaspilot/blob/main/README.md), [TowerOps](https://github.com/Jacob-Met/TowerOps/blob/main/README.md), and [workflow-checks](https://github.com/Jacob-Met/workflow-checks). Each project links to its source and states what its demo does not establish.
 
-## Projects
+## Research tools, built to inspect.
 
 ### [CaptureSuite](https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md)
 
-When several sensors record the same experiment, keeping their data together is its own problem. I'm building CaptureSuite around that: Windows recording tools, plugins for different streams, and a session package that travels with the recording ([project scope](https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md)).
+CaptureSuite is a Windows-first platform for multimodal research capture. A daemon owns session timing and state; versioned C++ and Python workers connect individual devices; the session is sealed into a package for quality checks and analysis ([project scope](https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md)).
 
-The [quality-control demo](https://github.com/Jacob-Met/CaptureSuite/blob/main/tools/demo_qc.py) walks through a generated recording; no hardware needed. It's a way to explore the pipeline, not a performance benchmark ([limits](https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md)).
+The repository includes a simulator and a Lab Streaming Layer bridge for running without vendor hardware. Its [quality-control demo](https://github.com/Jacob-Met/CaptureSuite/blob/main/tools/demo_qc.py) uses generated data; it is not a hardware benchmark or evidence of clinical validity ([documented limits](https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md)).
 
 ### [CanvasPilot](https://github.com/Jacob-Met/canvaspilot/blob/main/README.md)
 
-Canvas has useful information spread across a lot of screens. CanvasPilot gives it a command-line and MCP interface, with a local browser-session bridge for gaps in the API ([project scope](https://github.com/Jacob-Met/canvaspilot/blob/main/README.md)).
+CanvasPilot gives Canvas LMS a command-line and MCP interface. A local browser-session broker can bridge API gaps where schools disable API tokens; the repository describes the implementation, not a verified live school login or student outcome ([project scope](https://github.com/Jacob-Met/canvaspilot/blob/main/README.md)).
 
-The offline demo is synthetic and needs no Canvas account ([demo code](https://github.com/Jacob-Met/canvaspilot/blob/main/src/canvaspilot/offline_demo.py); [limits](https://github.com/Jacob-Met/canvaspilot/blob/main/README.md)).
+The [offline demo](https://github.com/Jacob-Met/canvaspilot/blob/main/src/canvaspilot/offline_demo.py) runs on synthetic fixtures without a Canvas account. It does not validate real school authentication or student results ([documented limits](https://github.com/Jacob-Met/canvaspilot/blob/main/README.md)).
 
 ### [TowerOps](https://github.com/Jacob-Met/TowerOps/blob/main/README.md)
 
-A small air-traffic simulation for exploring a simple question: what should a system check before it acts? TowerOps makes those checks explicit. It's a toy environment, not an operational ATC system ([project scope](https://github.com/Jacob-Met/TowerOps/blob/main/README.md); [demo code](https://github.com/Jacob-Met/TowerOps/blob/main/demo.py)).
+TowerOps is a synthetic air-traffic decision-support demo. Before its simulated state changes, deterministic checks project conflicts, check freshness, require approval, and verify readback; it is not operational ATC software and is not connected to aircraft ([project scope](https://github.com/Jacob-Met/TowerOps/blob/main/README.md); [demo code](https://github.com/Jacob-Met/TowerOps/blob/main/demo.py)).
 
-## Workflow checks
+## Workflow checks: synthetic records, visible evidence.
 
-I also built [workflow-checks](https://github.com/Jacob-Met/workflow-checks) for the little things that get buried in paperwork: a utility bill that looks off, a freight charge worth checking, or a PT authorization deadline. Three small Python programs, each with a [sample you can explore](https://jacobmetoyer.com/workflow-checks/). The records are made up; the [README](https://github.com/Jacob-Met/workflow-checks/blob/main/README.md) explains how the demos work.
+[workflow-checks](https://github.com/Jacob-Met/workflow-checks) contains three Python standard-library demos for utility bills, freight billing, and physical-therapy authorizations. The records are generated; the [README](https://github.com/Jacob-Met/workflow-checks/blob/main/README.md) describes scope and limits, and the [sample outputs](https://jacobmetoyer.com/workflow-checks/) can be inspected directly.
 
 ### [Utility bills](https://github.com/Jacob-Met/workflow-checks/blob/main/utility_watch/README.md)
 
-See which bills need a closer look and which are ready for approval, with the supporting rows beside them. Review only; it doesn't issue payments ([utility demo](https://github.com/Jacob-Met/workflow-checks/blob/main/utility_watch/README.md)).
+The demo flags records such as mismatched payments, duplicate bills, overlapping service periods, missing bills, and unusual usage. It keeps the source rows with each check and queues clean unpaid bills for human approval; it does not issue payments ([utility demo](https://github.com/Jacob-Met/workflow-checks/blob/main/utility_watch/README.md)).
 
-[See a sample](https://jacobmetoyer.com/workflow-checks/) · [Read the code](https://github.com/Jacob-Met/workflow-checks/tree/main/utility_watch)
+[See the generated sample](https://jacobmetoyer.com/workflow-checks/) · [Inspect the code](https://github.com/Jacob-Met/workflow-checks/tree/main/utility_watch)
 
 ### [Freight packets](https://github.com/Jacob-Met/workflow-checks/blob/main/freight_packets/README.md)
 
-Pull the calculation, timeline and missing details into a detention packet someone can review. It prepares a draft, not an invoice or an outbound message ([freight demo](https://github.com/Jacob-Met/workflow-checks/blob/main/freight_packets/README.md)).
+The freight demo drafts detention packets and invoice flags with calculations and evidence timelines. Missing or uncertain tracking evidence is held for a person; nothing is sent or invoiced ([freight demo](https://github.com/Jacob-Met/workflow-checks/blob/main/freight_packets/README.md)).
 
-[See a sample](https://jacobmetoyer.com/workflow-checks/) · [Read the code](https://github.com/Jacob-Met/workflow-checks/tree/main/freight_packets)
+[See the generated sample](https://jacobmetoyer.com/workflow-checks/) · [Inspect the code](https://github.com/Jacob-Met/workflow-checks/tree/main/freight_packets)
 
 ### [PT authorizations](https://github.com/Jacob-Met/workflow-checks/blob/main/pt_auth/README.md)
 
-Put authorizations, visits and upcoming deadlines in one worklist. The sample uses invented patients and placeholder payer rules; it doesn't submit anything ([PT demo](https://github.com/Jacob-Met/workflow-checks/blob/main/pt_auth/README.md)).
+The PT demo turns synthetic authorizations and visits into a prioritized worklist with reason codes, submit-by dates, and payer checklists. The patients are invented and payer rules are placeholders; it does not submit anything ([PT demo](https://github.com/Jacob-Met/workflow-checks/blob/main/pt_auth/README.md)).
 
-[See a sample](https://jacobmetoyer.com/workflow-checks/) · [Read the code](https://github.com/Jacob-Met/workflow-checks/tree/main/pt_auth)
+[See the generated sample](https://jacobmetoyer.com/workflow-checks/) · [Inspect the code](https://github.com/Jacob-Met/workflow-checks/tree/main/pt_auth)
 
-## Want to try one on your paperwork?
+## A scoped pilot starts with a baseline.
 
-Let's start with one small, redacted export and the rules you actually use. We can compare its output with a manual review, see where it helps, and fix where it doesn't. The demos aren't evidence of savings on your data ([how a pilot would work](https://github.com/Jacob-Met/workflow-checks/blob/main/README.md); [utility requirements](https://github.com/Jacob-Met/workflow-checks/blob/main/utility_watch/README.md)).
+If a workflow-checks pilot makes sense, start with redacted exports, the rules actually in use, and a manual review baseline. Compare only that period and dataset, then limit any claim to the measured result; the synthetic demos are not evidence of savings or accuracy on someone else’s data ([pilot scope](https://github.com/Jacob-Met/workflow-checks/blob/main/README.md); [utility requirements](https://github.com/Jacob-Met/workflow-checks/blob/main/utility_watch/README.md)).
