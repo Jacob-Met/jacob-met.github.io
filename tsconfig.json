@@ -13,5 +13,5 @@
     "rootDir": "source",
     "outDir": "source/compiled"
   },
-  "include": ["source/sample-ui.ts"]
+  "include": ["source/sample-ui.ts", "source/bid-inbox.ts", "source/demos.ts"]
 }

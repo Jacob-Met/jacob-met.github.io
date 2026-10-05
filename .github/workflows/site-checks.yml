@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: '20'
           cache: npm
-      - name: Install, compile, and test the local sample UI
+      - name: Install, compile, and test the local browser modules
         run: |
           npm ci --ignore-scripts --no-audit
           npm test

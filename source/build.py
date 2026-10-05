@@ -15,10 +15,12 @@ import shutil
 from pathlib import Path
 from urllib.parse import urlsplit
 
+from site_demos import render_bid_inbox, render_demo_gallery, render_legacy_notice, validate_bid_data
+
 ROOT = Path(__file__).resolve().parent
 BASE = 'https://jacobmetoyer.com'
-TITLE = 'Jacob Metoyer | Research software and scientific tools'
-DESC = 'Source-linked research software, synthetic workflow demos, and an interactive sample. Explore what each project demonstrates—and its documented limits.'
+TITLE = 'Jacob Metoyer | Research-minded software and browser demos'
+DESC = 'A source-linked portfolio of research tools and browser-first prototypes, with synthetic scenarios and visible boundaries.'
 SHARE_ALT = 'Jacob Metoyer — research software for inspectable work.'
 ALLOWED_HOSTS = {'github.com', 'jacobmetoyer.com'}
 CSP = "default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'"
@@ -28,15 +30,27 @@ ID_RE = re.compile(r'[A-Z][A-Z0-9-]{1,31}')
 CASE_ID_RE = re.compile(r'[a-z0-9]+(?:-[a-z0-9]+)*')
 LINK_RE = re.compile(r'\[([^\]]+)\]\((https://[^)\s]+)\)')
 DATE_RE = re.compile(r'\d{4}-\d{2}-\d{2}')
-SECTIONS = (('intro', 'Introduction'), ('research', 'Research and projects'), ('workflow-checks', 'Workflow checks'), ('pilot', 'Workflow-checks pilots'))
+SECTIONS = (('intro', 'Introduction'), ('research', 'Selected work'), ('demos', 'Try a demo'), ('method', 'Method'))
 SAMPLE_ROUTE = 'sample-ui/index.html'
 SAMPLE_CSS = 'sample-ui/sample-ui.css'
 SAMPLE_JS = 'sample-ui/sample-ui.js'
 SAMPLE_DATA = ROOT / 'sample-ui.json'
 SAMPLE_COMPILED_JS = ROOT / 'compiled' / 'sample-ui.js'
 SAMPLE_CSP = CSP + "; script-src 'self'; connect-src 'none'"
-SAMPLE_TITLE = 'Utility review desk · interactive synthetic sample'
-SAMPLE_DESC = 'Explore generated utility-bill flags with local search, category filters, and record details. Synthetic data only; no payments, messages, or submissions.'
+DEMO_CSP = SAMPLE_CSP
+DEMO_GALLERY_ROUTE = 'demos/index.html'
+BID_ROUTE = 'demos/bid-inbox/index.html'
+BID_CSS = 'demos/bid-inbox/bid-inbox.css'
+BID_JS = 'demos/bid-inbox/bid-inbox.js'
+BID_DATA = ROOT / 'bid-inbox.json'
+BID_COMPILED_JS = ROOT / 'compiled' / 'bid-inbox.js'
+SITE_REDESIGN_CSS = 'site-redesign.css'
+BID_TITLE = 'Bid Inbox · synthetic package desk'
+BID_DESC = 'A browser-only synthetic subcontractor package desk. Inspect the sample index and compare fixture records; no bid data leaves this page.'
+GALLERY_TITLE = 'Demo gallery · Jacob Metoyer'
+GALLERY_DESC = 'Browser-first prototypes with invented scenarios, source links, and explicit limits.'
+SAMPLE_TITLE = 'Sample route moved · Jacob Metoyer'
+SAMPLE_DESC = 'The former utility sample is archived. Open the current synthetic Bid Inbox demo.'
 
 
 def text(value: str, limit: int = 1000) -> str:
@@ -215,8 +229,8 @@ def markdown_blocks(markdown: str) -> list[tuple[str, str]]:
         raise ValueError('Copy must begin with exactly one h1')
     if sum(kind == 'h2' for kind, _ in blocks) != 4:
         raise ValueError('Copy must contain four approved sections')
-    if sum(kind == 'h3' for kind, _ in blocks) != 6:
-        raise ValueError('Copy must contain six source-backed work entries')
+    if sum(kind == 'h3' for kind, _ in blocks) != 4:
+        raise ValueError('Copy must contain four source-backed work entries')
     return blocks
 
 
@@ -263,7 +277,7 @@ def validate(data: dict) -> None:
             raise ValueError('Every work-entry heading must link to its source')
     if not copy_urls or not copy_urls <= source_urls:
         raise ValueError('Copy contains a URL missing from the claim-to-source map')
-    required = {'ID-01', 'WC-01', 'WC-02', 'WC-03', 'WC-04', 'WC-05', 'WC-06', 'CS-01', 'CP-01', 'TO-01', 'UI-01'}
+    required = {'ID-01', 'RS-01', 'CS-01', 'CP-01', 'TO-01', 'DEMO-01', 'DEMO-02'}
     if not required <= ids:
         raise ValueError('Required claim-to-source entries are missing')
 
@@ -287,9 +301,9 @@ def inline(markdown: str) -> str:
 
 NAV_ITEMS = (
     ('Selected work', '#research'),
-    ('Case studies', '#case-studies'),
-    ('Demos', '#workflow-checks'),
-    ('Pilot approach', '#pilot'),
+    ('Field notes', '#case-studies'),
+    ('Demo gallery', '#demos'),
+    ('Method', '#method'),
     ('Contact', '#contact'),
 )
 PROFILE_URL = 'https://github.com/Jacob-Met'
@@ -483,9 +497,9 @@ def render_copy(markdown: str, case_studies: list[dict]) -> str:
             elif section_index == 2:
                 ident, klass = 'research', 'index'
             elif section_index == 3:
-                ident, klass = 'workflow-checks', 'index'
+                ident, klass = 'demos', 'index demos'
             elif section_index == 4:
-                ident, klass = 'pilot', 'closing'
+                ident, klass = 'method', 'closing'
             else:
                 raise ValueError('Unexpected section count')
             content.append(f'<section id="{ident}" class="{klass}" aria-labelledby="{ident}-h">')
@@ -508,12 +522,12 @@ def render_copy(markdown: str, case_studies: list[dict]) -> str:
         else:
             raise ValueError(f'Unsupported copy block {kind!r}')
     close_section()
-    if section_index != 4 or ticket != 6 or not masthead:
+    if section_index != 4 or ticket != 4 or not masthead:
         raise ValueError('Copy structure incomplete')
     footer = (
         '<footer id="contact" class="site-footer" aria-labelledby="contact-title">'
-        '<div class="site-footer-inner"><h2 id="contact-title">Follow the work back to source.</h2>'
-        '<p>Project READMEs describe scope, demo behavior, and limits. '
+        '<div class="site-footer-inner"><h2 id="contact-title">Follow each prototype back to its source.</h2>'
+        '<p>Every public project pairs the interface with its evidence, scenario, and limitations. '
         + link(PROFILE_URL, 'Browse the public GitHub profile') + '</p>'
         '<a class="back-to-top" href="#main">Back to top <span aria-hidden="true">↑</span></a>'
         '</div></footer>'
@@ -543,14 +557,18 @@ def page_html(
         canonical = BASE + '/'
     elif name == SAMPLE_ROUTE:
         canonical = BASE + '/sample-ui/'
+    elif name == DEMO_GALLERY_ROUTE:
+        canonical = BASE + '/demos/'
+    elif name == BID_ROUTE:
+        canonical = BASE + '/demos/bid-inbox/'
     else:
         canonical = BASE + '/' + name
-    prefix = '/' if name == SAMPLE_ROUTE else ''
+    prefix = '/' if name in (SAMPLE_ROUTE, DEMO_GALLERY_ROUTE, BID_ROUTE) else ''
     stylesheet = f'<link rel="stylesheet" href="{prefix}style.css">'
     stylesheet += ''.join(f'<link rel="stylesheet" href="{html.escape(path, quote=True)}">' for path in extra_styles)
     jsonld = f'<script type="application/ld+json">{structured}</script>' if include_jsonld else ''
     return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="{html.escape(csp, quote=True)}"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{html.escape(title)}</title><meta name="description" content="{html.escape(desc, quote=True)}"><meta name="theme-color" content="#F3F0E7"><meta name="referrer" content="strict-origin-when-cross-origin">
+<title>{html.escape(title)}</title><meta name="description" content="{html.escape(desc, quote=True)}"><meta name="theme-color" content="#F2EFE7"><meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="canonical" href="{canonical}"><link rel="icon" href="{prefix}assets/mark.svg" type="image/svg+xml"><link rel="icon" href="{prefix}favicon.ico" sizes="48x48"><link rel="apple-touch-icon" href="{prefix}apple-touch-icon.png">{stylesheet}
 <meta property="og:type" content="website"><meta property="og:title" content="{html.escape(title, quote=True)}"><meta property="og:description" content="{html.escape(desc, quote=True)}"><meta property="og:url" content="{canonical}">
 <meta property="og:image" content="{BASE}/{SHARE_CARD}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="{html.escape(SHARE_ALT, quote=True)}"><meta name="twitter:card" content="summary_large_image">
@@ -570,15 +588,18 @@ def build(out: Path, data: dict | None = None) -> dict:
         record['copy_markdown'] = (ROOT / record.get('copy_path', 'content.md')).read_text(encoding='utf-8')
     validate(record)
     case_studies = load_case_studies()
-    sample_data = load_sample_data()
-    if not SAMPLE_COMPILED_JS.is_file():
-        raise ValueError('Compiled sample UI module is missing; run npm run build:sample-ui first')
-    if not (ROOT / 'sample-ui.css').is_file():
-        raise ValueError('Sample UI stylesheet is missing')
+    bid_data = json.loads(BID_DATA.read_text(encoding='utf-8'))
+    validate_bid_data(bid_data)
+    if not BID_COMPILED_JS.is_file():
+        raise ValueError('Compiled Bid Inbox module is missing; run npm test first')
+    if not (ROOT / 'bid-inbox.css').is_file() or not (ROOT / SITE_REDESIGN_CSS).is_file():
+        raise ValueError('A required site or demo stylesheet is missing')
     out = out.resolve()
     if out == ROOT or ROOT.is_relative_to(out):
         raise ValueError('Output must not replace source')
-    allowed = {'index.html', '404.html', SAMPLE_ROUTE, SAMPLE_CSS, SAMPLE_JS, 'style.css', '.nojekyll', 'CNAME', 'robots.txt', 'sitemap.xml', 'cv.json', 'build-manifest.json', 'assets/mark.svg', SHARE_CARD, *ROOT_ICONS}
+    allowed = {'index.html', '404.html', SAMPLE_ROUTE, DEMO_GALLERY_ROUTE, BID_ROUTE, SAMPLE_CSS, SAMPLE_JS,
+               BID_CSS, BID_JS, 'style.css', SITE_REDESIGN_CSS, '.nojekyll', 'CNAME', 'robots.txt',
+               'sitemap.xml', 'cv.json', 'build-manifest.json', 'assets/mark.svg', SHARE_CARD, *ROOT_ICONS}
     if out.exists():
         for f in out.rglob('*'):
             if f.is_symlink() or (f.is_file() and f.relative_to(out).as_posix() not in allowed):
@@ -586,7 +607,9 @@ def build(out: Path, data: dict | None = None) -> dict:
     out.mkdir(parents=True, exist_ok=True)
     pages = {
         'index.html': (TITLE, DESC, render_copy(record['copy_markdown'], case_studies)),
-        SAMPLE_ROUTE: (SAMPLE_TITLE, SAMPLE_DESC, render_sample_ui(sample_data)),
+        SAMPLE_ROUTE: (SAMPLE_TITLE, SAMPLE_DESC, render_legacy_notice()),
+        DEMO_GALLERY_ROUTE: (GALLERY_TITLE, GALLERY_DESC, render_demo_gallery()),
+        BID_ROUTE: (BID_TITLE, BID_DESC, render_bid_inbox(bid_data)),
         '404.html': (
             'Not found · Jacob Metoyer',
             'Nothing here. Back to the work.',
@@ -594,28 +617,39 @@ def build(out: Path, data: dict | None = None) -> dict:
         ),
     }
     for name, (title, desc, body) in pages.items():
-        if name == SAMPLE_ROUTE:
-            markup = page_html(name, title, desc, body, record, csp=SAMPLE_CSP,
-                               extra_styles=('/sample-ui/sample-ui.css',), include_jsonld=False)
+        if name == BID_ROUTE:
+            markup = page_html(name, title, desc, body, record, csp=DEMO_CSP,
+                               extra_styles=('/site-redesign.css', '/demos/bid-inbox/bid-inbox.css'), include_jsonld=False)
+        elif name in (SAMPLE_ROUTE, DEMO_GALLERY_ROUTE):
+            markup = page_html(name, title, desc, body, record,
+                               extra_styles=('/site-redesign.css',), include_jsonld=False)
+        elif name == 'index.html':
+            markup = page_html(name, title, desc, body, record, extra_styles=(SITE_REDESIGN_CSS,))
         else:
             markup = page_html(name, title, desc, body, record)
         (out / name).parent.mkdir(parents=True, exist_ok=True)
         (out / name).write_text(root_links(name, markup), encoding='utf-8', newline='\n')
     (out / 'style.css').write_text((ROOT / 'style.css').read_text(encoding='utf-8'), encoding='utf-8', newline='\n')
+    shutil.copyfile(ROOT / SITE_REDESIGN_CSS, out / SITE_REDESIGN_CSS)
     (out / 'assets').mkdir(exist_ok=True)
     shutil.copyfile(ROOT / 'assets' / 'mark.svg', out / 'assets' / 'mark.svg')
     shutil.copyfile(ROOT / SHARE_CARD, out / SHARE_CARD)
     for name in ROOT_ICONS:
         shutil.copyfile(ROOT / 'assets' / name, out / name)
-    (out / 'sample-ui').mkdir(exist_ok=True)
-    shutil.copyfile(ROOT / 'sample-ui.css', out / SAMPLE_CSS)
-    shutil.copyfile(SAMPLE_COMPILED_JS, out / SAMPLE_JS)
+    for stale in (out / SAMPLE_CSS, out / SAMPLE_JS):
+        if stale.is_file():
+            stale.unlink()
+    demo_dir = out / BID_CSS
+    demo_dir.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(ROOT / 'bid-inbox.css', demo_dir)
+    shutil.copyfile(BID_COMPILED_JS, out / BID_JS)
     (out / '.nojekyll').write_text('', encoding='utf-8', newline='\n')
     (out / 'CNAME').write_text('jacobmetoyer.com\n', encoding='utf-8', newline='\n')
     (out / 'robots.txt').write_text(f'User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n', encoding='utf-8', newline='\n')
     sitemap_entries = (
         (BASE + '/', record['updated']),
-        (BASE + '/sample-ui/', record['updated']),
+        (BASE + '/demos/', record['updated']),
+        (BASE + '/demos/bid-inbox/', record['updated']),
     )
     sitemap_urls = ''.join(
         f'<url><loc>{html.escape(url)}</loc><lastmod>{lastmod}</lastmod></url>'
@@ -630,7 +664,7 @@ def build(out: Path, data: dict | None = None) -> dict:
     (out / 'build-manifest.json').write_text(json.dumps({'schema': 2, 'date': record['updated'], 'sha256': manifest}, indent=2) + '\n', encoding='utf-8', newline='\n')
     return {
         'pages': len(pages), 'claims': len(record['claims']),
-        'case_studies': len(case_studies), 'sample_records': len(sample_data['records']),
+        'case_studies': len(case_studies), 'bid_records': len(bid_data['records']),
         'output': str(out), 'files': len(manifest) + 1,
     }
 

@@ -8,192 +8,54 @@
       "id": "ID-01",
       "description": "Public identity/name.",
       "sources": [
-        {
-          "label": "GitHub profile",
-          "url": "https://github.com/Jacob-Met"
-        }
-      ]
-    },
-    {
-      "id": "WC-01",
-      "description": "workflow-checks contains three Python standard-library demos for utilities, freight, and PT authorizations; sample data is synthetic and no real-world client/savings/accuracy claim is made.",
-      "sources": [
-        {
-          "label": "workflow-checks README",
-          "url": "https://github.com/Jacob-Met/workflow-checks/blob/main/README.md"
-        },
-        {
-          "label": "Jacob-authored demo commit",
-          "url": "https://github.com/Jacob-Met/workflow-checks/commit/fd74a02"
-        },
-        {
-          "label": "workflow-checks repository",
-          "url": "https://github.com/Jacob-Met/workflow-checks"
-        },
-        {
-          "label": "sample outputs",
-          "url": "https://jacobmetoyer.com/workflow-checks/"
-        }
-      ]
-    },
-    {
-      "id": "WC-02",
-      "description": "utility_watch flags billing exceptions and queues clean unpaid bills for approval with evidence rows; it does not issue payments.",
-      "sources": [
-        {
-          "label": "utility demo README",
-          "url": "https://github.com/Jacob-Met/workflow-checks/blob/main/utility_watch/README.md"
-        },
-        {
-          "label": "utility demo source",
-          "url": "https://github.com/Jacob-Met/workflow-checks/tree/main/utility_watch"
-        }
-      ]
-    },
-    {
-      "id": "WC-03",
-      "description": "freight_packets creates draft detention/invoice packets with calculations and evidence timelines; missing or uncertain evidence is held for human review and nothing is sent or invoiced.",
-      "sources": [
-        {
-          "label": "freight demo README",
-          "url": "https://github.com/Jacob-Met/workflow-checks/blob/main/freight_packets/README.md"
-        },
-        {
-          "label": "freight demo source",
-          "url": "https://github.com/Jacob-Met/workflow-checks/tree/main/freight_packets"
-        }
-      ]
-    },
-    {
-      "id": "WC-04",
-      "description": "pt_auth builds a prioritized authorization/visit worklist with submit-by dates and checklists; sample patients and payer rules are synthetic/placeholders and nothing is submitted.",
-      "sources": [
-        {
-          "label": "PT demo README",
-          "url": "https://github.com/Jacob-Met/workflow-checks/blob/main/pt_auth/README.md"
-        },
-        {
-          "label": "PT demo source",
-          "url": "https://github.com/Jacob-Met/workflow-checks/tree/main/pt_auth"
-        }
-      ]
-    },
-    {
-      "id": "WC-05",
-      "description": "Workflow decisions carry file:row evidence pointers; unresolved cases go to a person rather than a guess.",
-      "sources": [
-        {
-          "label": "workflow-checks README",
-          "url": "https://github.com/Jacob-Met/workflow-checks/blob/main/README.md"
-        }
-      ]
-    },
-    {
-      "id": "WC-06",
-      "description": "A future scoped pilot would use redacted exports, the client's real rules, and a manual baseline; any claim is limited to the measured comparison.",
-      "sources": [
-        {
-          "label": "workflow-checks pilot scope",
-          "url": "https://github.com/Jacob-Met/workflow-checks/blob/main/README.md"
-        },
-        {
-          "label": "utility pilot requirements",
-          "url": "https://github.com/Jacob-Met/workflow-checks/blob/main/utility_watch/README.md"
-        }
-      ]
-    },
-    {
-      "id": "CS-01",
-      "description": "CaptureSuite is Windows-first multimodal research capture with daemon, worker plugins, and sealed session packages; its offline QC demo is synthetic and does not establish hardware performance or clinical validity.",
-      "sources": [
-        {
-          "label": "CaptureSuite README",
-          "url": "https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md"
-        },
-        {
-          "label": "offline QC demo",
-          "url": "https://github.com/Jacob-Met/CaptureSuite/blob/main/tools/demo_qc.py"
-        }
-      ]
-    },
-    {
-      "id": "CP-01",
-      "description": "CanvasPilot is a Canvas LMS MCP server and CLI with a local browser-session broker; its offline demo is synthetic and does not validate live school authentication or student outcomes.",
-      "sources": [
-        {
-          "label": "CanvasPilot README",
-          "url": "https://github.com/Jacob-Met/canvaspilot/blob/main/README.md"
-        },
-        {
-          "label": "offline demo",
-          "url": "https://github.com/Jacob-Met/canvaspilot/blob/main/src/canvaspilot/offline_demo.py"
-        }
-      ]
-    },
-    {
-      "id": "TO-01",
-      "description": "TowerOps is synthetic air-traffic decision support gated before a simulated transition; it is not operational ATC and is not connected to aircraft.",
-      "sources": [
-        {
-          "label": "TowerOps README",
-          "url": "https://github.com/Jacob-Met/TowerOps/blob/main/README.md"
-        },
-        {
-          "label": "TowerOps demo",
-          "url": "https://github.com/Jacob-Met/TowerOps/blob/main/demo.py"
-        }
+        {"label": "Public GitHub profile", "url": "https://github.com/Jacob-Met"}
       ]
     },
     {
       "id": "RS-01",
-      "description": "Self-reported: undergraduate at CSULB (CS and physics, minor biology), preparing for MD/PhD training. The BUILD Scholars page describes the program, not Jacob's membership or the MD/PhD goal.",
+      "description": "Self-reported CS/physics study, biology minor, and preparation for MD/PhD training.",
       "sources": [
-        {
-          "label": "CSULB BUILD Scholars Program",
-          "url": "https://github.com/Jacob-Met"
-        }
+        {"label": "Public profile", "url": "https://github.com/Jacob-Met"}
       ]
     },
     {
-      "id": "CS-02",
-      "description": "CaptureSuite timing model design note is in the public repository.",
+      "id": "CS-01",
+      "description": "CaptureSuite is a Windows-first research capture platform; its simulator and offline QC use generated data and do not establish hardware performance or clinical validity.",
       "sources": [
-        {
-          "label": "CaptureSuite timing model",
-          "url": "https://github.com/Jacob-Met/CaptureSuite/blob/main/docs/design/TIMING.md"
-        }
+        {"label": "CaptureSuite README", "url": "https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md"},
+        {"label": "Offline QC demo", "url": "https://github.com/Jacob-Met/CaptureSuite/blob/main/tools/demo_qc.py"}
       ]
     },
     {
-      "id": "WC-07",
-      "description": "workflow-checks repository root and sample-output site.",
+      "id": "CP-01",
+      "description": "CanvasPilot includes an offline sample using synthetic fixtures; no live school login or student outcome is claimed.",
       "sources": [
-        {
-          "label": "workflow-checks repository",
-          "url": "https://github.com/Jacob-Met/workflow-checks"
-        },
-        {
-          "label": "sample outputs",
-          "url": "https://jacobmetoyer.com/workflow-checks/"
-        }
+        {"label": "CanvasPilot README", "url": "https://github.com/Jacob-Met/canvaspilot/blob/main/README.md"},
+        {"label": "Offline sample", "url": "https://github.com/Jacob-Met/canvaspilot/blob/main/src/canvaspilot/offline_demo.py"}
       ]
     },
     {
-      "id": "UI-01",
-      "description": "A local browser-only interface filters, sorts, and inspects rows from the published synthetic utility sample without network calls or state changes.",
+      "id": "TO-01",
+      "description": "TowerOps is a synthetic air-traffic decision-support study that is not operational software and is not connected to aircraft.",
       "sources": [
-        {
-          "label": "interactive synthetic sample UI",
-          "url": "https://jacobmetoyer.com/sample-ui/"
-        },
-        {
-          "label": "generated sample outputs",
-          "url": "https://jacobmetoyer.com/workflow-checks/"
-        },
-        {
-          "label": "workflow-checks source scope",
-          "url": "https://github.com/Jacob-Met/workflow-checks/blob/main/README.md"
-        }
+        {"label": "TowerOps README", "url": "https://github.com/Jacob-Met/TowerOps/blob/main/README.md"},
+        {"label": "TowerOps demo", "url": "https://github.com/Jacob-Met/TowerOps/blob/main/demo.py"}
+      ]
+    },
+    {
+      "id": "DEMO-01",
+      "description": "Bid Inbox is a browser-only interface over invented subcontractor bid records; it filters, inspects, and compares two fixture records without upload or award actions.",
+      "sources": [
+        {"label": "Live synthetic demo", "url": "https://jacobmetoyer.com/demos/bid-inbox/"},
+        {"label": "Bid Inbox TypeScript", "url": "https://github.com/Jacob-Met/jacob-met.github.io/blob/main/source/bid-inbox.ts"},
+        {"label": "Bid Inbox synthetic fixtures", "url": "https://github.com/Jacob-Met/jacob-met.github.io/blob/main/source/bid-inbox.json"}
+      ]
+    },
+    {
+      "id": "DEMO-02",
+      "description": "Commercial and contest demos follow a separate-route, synthetic-data, local-only publishing standard.",
+      "sources": [
+        {"label": "Demo publishing standard", "url": "https://github.com/Jacob-Met/jacob-met.github.io/blob/main/source/demo-authoring.md"}
       ]
     }
   ]

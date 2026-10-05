@@ -1,0 +1,117 @@
+{
+  "schema": 1,
+  "snapshot_date": "2026-10-05",
+  "synthetic": true,
+  "records": [
+    {
+      "id": "bid-101",
+      "reference": "BID-101",
+      "project": "Project Lantern (synthetic)",
+      "contractor": "Bidder Aster (synthetic)",
+      "trade": "Electrical",
+      "received": "05 Oct · 09:12",
+      "received_order": 5,
+      "due": "07 Oct · 15:00",
+      "amount_cents": 18450000,
+      "stage": "review",
+      "signal": "Exclusions list not present",
+      "summary": "The package index has no exclusions list; clarify scope before comparing totals.",
+      "documents": [
+        {"label": "Bid form", "present": true},
+        {"label": "Scope matrix", "present": true},
+        {"label": "Schedule", "present": true},
+        {"label": "Exclusions list", "present": false},
+        {"label": "Addendum log", "present": true}
+      ],
+      "notes": ["Exclusions list is not in the synthetic package index.", "This is a review prompt, not a bid evaluation or award recommendation."]
+    },
+    {
+      "id": "bid-102",
+      "reference": "BID-102",
+      "project": "Project Glasshouse (synthetic)",
+      "contractor": "Bidder Birch (synthetic)",
+      "trade": "Glazing",
+      "received": "05 Oct · 08:44",
+      "received_order": 4,
+      "due": "07 Oct · 15:00",
+      "amount_cents": 9680000,
+      "stage": "hold",
+      "signal": "Schedule attachment missing",
+      "summary": "The schedule field is blank; hold this package for a human completeness check.",
+      "documents": [
+        {"label": "Bid form", "present": true},
+        {"label": "Scope matrix", "present": true},
+        {"label": "Schedule", "present": false},
+        {"label": "Exclusions list", "present": true},
+        {"label": "Addendum log", "present": true}
+      ],
+      "notes": ["No schedule attachment is represented in the fixture.", "The reason for the missing item is unknown; ask a person rather than infer it."]
+    },
+    {
+      "id": "bid-103",
+      "reference": "BID-103",
+      "project": "Project Lantern (synthetic)",
+      "contractor": "Bidder Cedar (synthetic)",
+      "trade": "Mechanical",
+      "received": "05 Oct · 08:10",
+      "received_order": 3,
+      "due": "07 Oct · 15:00",
+      "amount_cents": 21200000,
+      "stage": "ready",
+      "signal": "Package index complete",
+      "summary": "All five checklist labels are present in this fixture; scope and pricing still need human review.",
+      "documents": [
+        {"label": "Bid form", "present": true},
+        {"label": "Scope matrix", "present": true},
+        {"label": "Schedule", "present": true},
+        {"label": "Exclusions list", "present": true},
+        {"label": "Addendum log", "present": true}
+      ],
+      "notes": ["Package index is complete only against the five labels in this sample.", "Completeness is not a quality score, price validation, or selection decision."]
+    },
+    {
+      "id": "bid-104",
+      "reference": "BID-104",
+      "project": "Project Nightjar (synthetic)",
+      "contractor": "Bidder Dune (synthetic)",
+      "trade": "Electrical",
+      "received": "04 Oct · 16:32",
+      "received_order": 2,
+      "due": "07 Oct · 15:00",
+      "amount_cents": 17825000,
+      "stage": "review",
+      "signal": "Addendum acknowledgement unclear",
+      "summary": "The addendum log is present but its acknowledgement field is marked unknown.",
+      "documents": [
+        {"label": "Bid form", "present": true},
+        {"label": "Scope matrix", "present": true},
+        {"label": "Schedule", "present": true},
+        {"label": "Exclusions list", "present": true},
+        {"label": "Addendum log", "present": true}
+      ],
+      "notes": ["A present document can still contain an unresolved field.", "Confirm the acknowledgement with a person; this page does not contact anyone."]
+    },
+    {
+      "id": "bid-105",
+      "reference": "BID-105",
+      "project": "Project Glasshouse (synthetic)",
+      "contractor": "Bidder Ember (synthetic)",
+      "trade": "Flooring",
+      "received": "04 Oct · 15:05",
+      "received_order": 1,
+      "due": "07 Oct · 15:00",
+      "amount_cents": 7490000,
+      "stage": "ready",
+      "signal": "Package index complete",
+      "summary": "The five sample checklist labels are present; compare like-for-like scope with a person.",
+      "documents": [
+        {"label": "Bid form", "present": true},
+        {"label": "Scope matrix", "present": true},
+        {"label": "Schedule", "present": true},
+        {"label": "Exclusions list", "present": true},
+        {"label": "Addendum log", "present": true}
+      ],
+      "notes": ["All names and values on this page are invented.", "The interface does not compute a winner or submit a bid."]
+    }
+  ]
+}

@@ -1,51 +1,31 @@
 # [Jacob Metoyer](https://github.com/Jacob-Met)
 
-## Research software for the work between data and a decision.
+## Research-minded software for the moment evidence changes a decision.
 
-I study computer science and physics at Cal State Long Beach, with a minor in biology, and I’m preparing for MD/PhD training. Those education and training details are self-reported ([public profile](https://github.com/Jacob-Met)).
+I study computer science and physics at Cal State Long Beach, with a minor in biology, and am preparing for MD/PhD training. Those education details are self-reported ([public profile](https://github.com/Jacob-Met)).
 
-I build tools for difficult handoffs: recording a research session, keeping evidence beside a check, or making a simulated decision reviewable before anything changes. My public work includes [CaptureSuite](https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md), [CanvasPilot](https://github.com/Jacob-Met/canvaspilot/blob/main/README.md), [TowerOps](https://github.com/Jacob-Met/TowerOps/blob/main/README.md), and [workflow-checks](https://github.com/Jacob-Met/workflow-checks). Each project links to its source and states what its demo does not establish.
+I build tools for work that crosses a boundary: a research session becomes a package, a signal keeps its evidence attached, or a reviewer can try a workflow before installing anything ([selected public projects](https://github.com/Jacob-Met)).
 
-## Research tools, built to inspect.
+## Systems that keep evidence in reach.
 
 ### [CaptureSuite](https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md)
 
-CaptureSuite is a Windows-first platform for multimodal research capture. A daemon owns session timing and state; versioned C++ and Python workers connect individual devices; the session is sealed into a package for quality checks and analysis ([project scope](https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md)).
-
-The repository includes a simulator and a Lab Streaming Layer bridge for running without vendor hardware. Its [quality-control demo](https://github.com/Jacob-Met/CaptureSuite/blob/main/tools/demo_qc.py) uses generated data; it is not a hardware benchmark or evidence of clinical validity ([documented limits](https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md)).
+A Windows-first research-capture platform joins session timing, device workers, and sealed data packages. Its simulator and generated quality-control sample can be explored without vendor hardware; they do not establish hardware performance or clinical validity ([project scope](https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md); [offline QC source](https://github.com/Jacob-Met/CaptureSuite/blob/main/tools/demo_qc.py)).
 
 ### [CanvasPilot](https://github.com/Jacob-Met/canvaspilot/blob/main/README.md)
 
-CanvasPilot gives Canvas LMS a command-line and MCP interface. A local browser-session broker can bridge API gaps where schools disable API tokens; the repository describes the implementation, not a verified live school login or student outcome ([project scope](https://github.com/Jacob-Met/canvaspilot/blob/main/README.md)).
-
-The [offline demo](https://github.com/Jacob-Met/canvaspilot/blob/main/src/canvaspilot/offline_demo.py) runs on synthetic fixtures without a Canvas account. It does not validate real school authentication or student results ([documented limits](https://github.com/Jacob-Met/canvaspilot/blob/main/README.md)).
+A Canvas LMS command-line and MCP interface includes an offline sample built from synthetic fixtures. The repository describes implementation; it is not evidence of a live school login or student outcome ([project scope](https://github.com/Jacob-Met/canvaspilot/blob/main/README.md); [offline sample](https://github.com/Jacob-Met/canvaspilot/blob/main/src/canvaspilot/offline_demo.py)).
 
 ### [TowerOps](https://github.com/Jacob-Met/TowerOps/blob/main/README.md)
 
-TowerOps is a synthetic air-traffic decision-support demo. Before its simulated state changes, deterministic checks project conflicts, check freshness, require approval, and verify readback; it is not operational ATC software and is not connected to aircraft ([project scope](https://github.com/Jacob-Met/TowerOps/blob/main/README.md); [demo code](https://github.com/Jacob-Met/TowerOps/blob/main/demo.py)).
+A synthetic air-traffic decision-support study checks freshness, projected conflicts, approval, and readback before changing simulated state. It is not operational air-traffic software and is not connected to aircraft ([project scope](https://github.com/Jacob-Met/TowerOps/blob/main/README.md); [demo source](https://github.com/Jacob-Met/TowerOps/blob/main/demo.py)).
 
-## Workflow checks: synthetic records, visible evidence.
+## Prototypes you can use in a browser.
 
-[workflow-checks](https://github.com/Jacob-Met/workflow-checks) contains three Python standard-library demos for utility bills, freight billing, and physical-therapy authorizations. The records are generated; try the [interactive sample UI](https://jacobmetoyer.com/sample-ui/), inspect the [full output pages](https://jacobmetoyer.com/workflow-checks/), and read the [README](https://github.com/Jacob-Met/workflow-checks/blob/main/README.md) for scope and limits.
+### [Bid Inbox — a synthetic package desk](https://jacobmetoyer.com/demos/bid-inbox/)
 
-### [Utility bills](https://github.com/Jacob-Met/workflow-checks/blob/main/utility_watch/README.md)
+Inspect invented subcontractor bid packages, filter by trade or review state, open the evidence index, and compare two fixture records side by side. The page bundles its data and runs locally in the browser; it does not upload files, contact bidders, choose a winner, or make an award ([TypeScript interface](https://github.com/Jacob-Met/jacob-met.github.io/blob/main/source/bid-inbox.ts); [fixture data](https://github.com/Jacob-Met/jacob-met.github.io/blob/main/source/bid-inbox.json)).
 
-The demo flags records such as mismatched payments, duplicate bills, overlapping service periods, missing bills, and unusual usage. It keeps the source rows with each check and queues clean unpaid bills for human approval; it does not issue payments ([utility demo](https://github.com/Jacob-Met/workflow-checks/blob/main/utility_watch/README.md)).
+## Scope is part of the interface.
 
-[Try the interactive sample](https://jacobmetoyer.com/sample-ui/) · [Full generated outputs](https://jacobmetoyer.com/workflow-checks/) · [Inspect the code](https://github.com/Jacob-Met/workflow-checks/tree/main/utility_watch)
-
-### [Freight packets](https://github.com/Jacob-Met/workflow-checks/blob/main/freight_packets/README.md)
-
-The freight demo drafts detention packets and invoice flags with calculations and evidence timelines. Missing or uncertain tracking evidence is held for a person; nothing is sent or invoiced ([freight demo](https://github.com/Jacob-Met/workflow-checks/blob/main/freight_packets/README.md)).
-
-[Try the interactive sample](https://jacobmetoyer.com/sample-ui/) · [Full generated outputs](https://jacobmetoyer.com/workflow-checks/) · [Inspect the code](https://github.com/Jacob-Met/workflow-checks/tree/main/freight_packets)
-
-### [PT authorizations](https://github.com/Jacob-Met/workflow-checks/blob/main/pt_auth/README.md)
-
-The PT demo turns synthetic authorizations and visits into a prioritized worklist with reason codes, submit-by dates, and payer checklists. The patients are invented and payer rules are placeholders; it does not submit anything ([PT demo](https://github.com/Jacob-Met/workflow-checks/blob/main/pt_auth/README.md)).
-
-[Try the interactive sample](https://jacobmetoyer.com/sample-ui/) · [Full generated outputs](https://jacobmetoyer.com/workflow-checks/) · [Inspect the code](https://github.com/Jacob-Met/workflow-checks/tree/main/pt_auth)
-
-## A scoped pilot starts with a baseline.
-
-If a workflow-checks pilot makes sense, start with redacted exports, the rules actually in use, and a manual review baseline. Compare only that period and dataset, then limit any claim to the measured result; the synthetic demos are not evidence of savings or accuracy on someone else’s data ([pilot scope](https://github.com/Jacob-Met/workflow-checks/blob/main/README.md); [utility requirements](https://github.com/Jacob-Met/workflow-checks/blob/main/utility_watch/README.md)).
+Each prototype names its source, scenario, and boundary before its output is shown. New commercial and contest demos use separate synthetic fixtures and target-specific briefs; they remain in the existing static-site build and do not imply contact, contest eligibility, measured savings, or a production result ([demo publishing standard](https://github.com/Jacob-Met/jacob-met.github.io/blob/main/source/demo-authoring.md)).

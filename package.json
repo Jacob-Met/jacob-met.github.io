@@ -3,9 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:sample-ui": "tsc --project tsconfig.json",
+    "build:browser-ui": "tsc --project tsconfig.json",
     "test:sample-ui": "node --test tests/sample-ui.test.mjs",
-    "test": "npm run build:sample-ui && npm run test:sample-ui"
+    "test:bid-inbox": "node --test tests/bid-inbox.test.mjs",
+    "test": "npm run build:browser-ui && npm run test:sample-ui && npm run test:bid-inbox"
   },
   "devDependencies": {
     "typescript": "5.7.3"

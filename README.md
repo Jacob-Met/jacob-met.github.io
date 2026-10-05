@@ -1,21 +1,18 @@
 # jacobmetoyer.com
 
-A small static site that puts the work up front: [workflow-checks](https://github.com/Jacob-Met/workflow-checks), its [synthetic sample outputs](https://jacobmetoyer.com/workflow-checks/), and supporting research software. The site links each factual line to a project README, commit, or demo artifact.
-
-The three workflow checks use synthetic input data; the repositories make no real-client savings or accuracy claims ([scope and limits](https://github.com/Jacob-Met/workflow-checks/blob/main/README.md)).
+A source-linked personal site for research software, systems work, and browser-first prototypes. Pages are generated into `docs/` and use the existing GitHub Pages deployment path.
 
 ## Source and build
 
-- [`source/content.md`](source/content.md) is the exact landing-page copy.
-- [`source/content.json`](source/content.json) holds the public identity, update date, and claim-to-source map. The builder checks each copy URL against that map and an explicit HTTPS host set.
-- [`source/case-studies.json`](source/case-studies.json) holds explicitly public, repository-backed case records with the question, approach, disclosure, language choice, and scope limits; the builder renders them through one reusable card template.
-- [`source/sample-ui.json`](source/sample-ui.json) holds the dated synthetic utility snapshot; [`source/sample-ui.ts`](source/sample-ui.ts) provides local search, filtering, sorting, and record details for `/sample-ui/`.
-- `package.json` / `tsconfig.json` pin the TypeScript build tool; `npm test` compiles the local module and runs its pure filter/sort tests.
-- [`source/build.py`](source/build.py) renders the homepage, interactive sample, 404 route, metadata, and build manifest.
-- [`source/style.css`](source/style.css) contains the shared visual system; [`source/sample-ui.css`](source/sample-ui.css) styles only the sample route. Both honor reduced-motion settings.
-- [`source/check.py`](source/check.py) verifies the generated static surface, local links/assets, CSP, and manifest hashes.
-- [`source/verify_deployment.py`](source/verify_deployment.py) compares a checked local build with the HTTPS deployment.
-- `docs/` is generated output served by GitHub Pages from `main:/docs`; do not hand-edit it.
+- [`source/content.md`](source/content.md) is the landing-page copy. [`source/content.json`](source/content.json) maps factual copy to allowed HTTPS sources.
+- [`source/case-studies.json`](source/case-studies.json) contains public, repository-backed case records with boundaries and artifacts.
+- [`source/bid-inbox.json`](source/bid-inbox.json) holds invented bid-package fixtures. [`source/bid-inbox.ts`](source/bid-inbox.ts) provides local filtering, sorting, details, and side-by-side comparison for `/demos/bid-inbox/`.
+- [`source/demo-authoring.md`](source/demo-authoring.md) is the lane-qualified authoring and release pattern for commercial and contest demos.
+- `package.json` / `tsconfig.json` pin the TypeScript build. `npm test` compiles the browser modules and runs their unit tests.
+- [`source/build.py`](source/build.py) generates the homepage, demo gallery, interactive demo, legacy-path notice, 404, metadata, and build manifest. [`source/check.py`](source/check.py) verifies routes, links, CSP, script surface, local assets, and file hashes.
+- [`source/site-redesign.css`](source/site-redesign.css) and [`source/bid-inbox.css`](source/bid-inbox.css) define the portfolio and demo systems. No remote fonts, scripts, analytics, or demo API are used.
+- [`source/verify_deployment.py`](source/verify_deployment.py) compares a verified local build with the live HTTPS site byte-for-byte.
+- `docs/` is generated output served by GitHub Pages from `main:/docs`; never edit it by hand.
 
 Build and verify locally:
 
@@ -27,4 +24,4 @@ python source/build.py --out docs
 python source/check.py docs
 ```
 
-The homepage has no executable script. `/sample-ui/` loads one local compiled TypeScript module; it filters static synthetic rows in-browser and makes no network calls, persistence writes, payments, or submissions. There are no analytics, remote fonts, or third-party page resources; [`source/check.py`](source/check.py) rejects unexpected scripts and network-capable APIs.
+The Bid Inbox demo contains synthetic data embedded in the static page. Search, filtering, sorting, package details, and two-record comparison run in the browser; no files are uploaded and no message, payment, selection, or submission is sent. `/sample-ui/` is retained as a small migration page linking to the new demo, not as the old utility sample.
