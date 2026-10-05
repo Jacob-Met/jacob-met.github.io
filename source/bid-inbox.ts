@@ -186,10 +186,10 @@ export function mountBidInbox(root: HTMLElement): void {
     setText(detail, '#detail-due', bid.due);
     setText(detail, '#detail-signal', bid.signal);
     setText(detail, '#detail-summary', bid.summary);
-    detailDocuments.replaceChildren(...bid.documents.map((document) => {
+    detailDocuments.replaceChildren(...bid.documents.map((doc) => {
       const item = document.createElement('li');
-      item.className = document.present ? 'document-present' : 'document-missing';
-      item.textContent = `${document.present ? 'Listed in fixture' : 'Not listed'} · ${document.label}`;
+      item.className = doc.present ? 'document-present' : 'document-missing';
+      item.textContent = `${doc.present ? 'Listed in fixture' : 'Not listed'} · ${doc.label}`;
       return item;
     }));
     detailNotes.replaceChildren(...bid.notes.map((note) => {

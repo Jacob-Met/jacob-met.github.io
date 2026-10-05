@@ -191,7 +191,7 @@ def render_demo_gallery() -> str:
 def render_legacy_notice() -> str:
     return (
         '<a class="skip" href="#legacy-main">Skip to notice</a>'
-        '<header class="masthead"><div class="brand-lockup"><span class="registration" aria-hidden="true"></span><h1><a href="/">Jacob Metoyer</a></h1></div>'
+        '<header class="masthead"><p class="gallery-brand"><a href="/">Jacob Metoyer</a></p>'
         '<nav class="primary-nav" aria-label="Primary"><a href="/demos/">Demo gallery</a><a href="/">Home</a></nav></header>'
         '<main id="legacy-main" class="legacy-page"><p class="gallery-kicker">Route note / archived sample</p><h1>This sample moved.</h1>'
         '<p>The former utility review sample is no longer the featured demo. The current browser-only prototype is Bid Inbox, with invented records and no backend.</p>'

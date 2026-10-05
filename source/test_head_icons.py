@@ -15,7 +15,7 @@ class HeadIconTests(Built):
         page = self.page()
         self.assertIn(f'<title>{build.TITLE}</title>', page)
         self.assertIn(f'<meta name="description" content="{build.DESC}">', page)
-        self.assertIn('<meta name="theme-color" content="#F3F0E7">', page)
+        self.assertIn('<meta name="theme-color" content="#F2EFE7">', page)
         self.assertIn(f'<link rel="canonical" href="{build.BASE}/">', page)
         self.assertNotIn('🐴', page)
 

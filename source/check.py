@@ -11,12 +11,12 @@ from pathlib import Path, PurePosixPath
 from urllib.parse import unquote, urlsplit
 from xml.etree import ElementTree as ET
 
-ROOT_RELATIVE_PAGES = frozenset({'404.html', 'sample-ui/index.html'})
+ROOT_RELATIVE_PAGES = frozenset({'404.html', 'sample-ui/index.html', 'demos/index.html', 'demos/bid-inbox/index.html'})
 CSP_REQUIRED = {'default-src': "'none'", 'style-src': "'self'", 'img-src': "'self'", 'base-uri': "'none'", 'form-action': "'none'"}
 SAMPLE_CSP_REQUIRED = {**CSP_REQUIRED, 'script-src': "'self'", 'connect-src': "'none'"}
-SAMPLE_SCRIPT = 'sample-ui/sample-ui.js'
+BID_SCRIPT = 'demos/bid-inbox/bid-inbox.js'
 JS_FORBIDDEN = re.compile(r'\b(?:eval|Function)\s*\(|\b(?:fetch|XMLHttpRequest|WebSocket|EventSource)\b|document\.write|\.innerHTML\b|localStorage|sessionStorage|document\.cookie|sendBeacon', re.I)
-EXPECTED_HTML = {'index.html', '404.html', 'sample-ui/index.html'}
+EXPECTED_HTML = {'index.html', '404.html', 'sample-ui/index.html', 'demos/index.html', 'demos/bid-inbox/index.html'}
 
 
 def rooted_ref(page: str, value: str) -> str | None:
@@ -62,13 +62,13 @@ class Page(HTMLParser):
             self.script_type = a.get('type', ''); self.script_text = []
             src = a.get('src')
             is_schema = src is None and self.script_type == 'application/ld+json'
-            is_sample_module = (
-                self.name == 'sample-ui/index.html'
+            is_bid_module = (
+                self.name == 'demos/bid-inbox/index.html'
                 and self.script_type == 'module'
-                and src == '/sample-ui/sample-ui.js'
+                and src == '/demos/bid-inbox/bid-inbox.js'
                 and 'async' not in a
             )
-            if not (is_schema or is_sample_module): self.errors.append('script: outside the declared JSON-LD/module surface')
+            if not (is_schema or is_bid_module): self.errors.append('script: outside the declared JSON-LD/module surface')
 
     def handle_data(self, data):
         if self.script_type is not None: self.script_text.append(data)
@@ -91,7 +91,7 @@ def csp_errors(p: Page, page_name: str) -> list[str]:
     for part in p.csp[0].split(';'):
         bits = part.split()
         if bits: policy[bits[0].lower()] = ' '.join(bits[1:])
-    required = SAMPLE_CSP_REQUIRED if page_name == 'sample-ui/index.html' else CSP_REQUIRED
+    required = SAMPLE_CSP_REQUIRED if page_name == 'demos/bid-inbox/index.html' else CSP_REQUIRED
     errors = [f'CSP {k} must be {v}' for k, v in required.items() if policy.get(k) != v]
     extra = set(policy) - set(required)
     if extra: errors.append('CSP has undeclared directives: ' + ', '.join(sorted(extra)))
@@ -156,7 +156,7 @@ def check(root: Path) -> dict:
         elif f.suffix == '.js':
             try: text = f.read_text(encoding='utf-8')
             except (OSError, UnicodeError): failures.append(f'{rel}: unreadable UTF-8'); continue
-            if rel != SAMPLE_SCRIPT: failures.append(f'{rel}: JavaScript outside the declared sample module')
+            if rel != BID_SCRIPT: failures.append(f'{rel}: JavaScript outside the declared Bid Inbox module')
             if JS_FORBIDDEN.search(text): failures.append(f'{rel}: network, dynamic-code, storage, or HTML-injection API')
     if set(parsed) != EXPECTED_HTML: failures.append(f'Expected HTML routes {sorted(EXPECTED_HTML)}, found {sorted(parsed)}')
     for name, p in parsed.items():

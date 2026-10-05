@@ -52,11 +52,11 @@ class RecordTests(unittest.TestCase):
         with self.assertRaises(ValueError): build.validate(data)
     def test_copy_url_must_be_in_source_map(self):
         data = copy.deepcopy(self.data)
-        data['copy_markdown'] = data['copy_markdown'].replace('https://github.com/Jacob-Met/workflow-checks)', 'https://github.com/Other-User/Other-Repo)')
+        data['copy_markdown'] = data['copy_markdown'].replace('https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md)', 'https://github.com/Other-User/Other-Repo)')
         with self.assertRaises(ValueError): build.validate(data)
     def test_factual_paragraph_without_link_denied(self):
         data = copy.deepcopy(self.data)
-        marker = '[quality-control demo](https://github.com/Jacob-Met/CaptureSuite/blob/main/tools/demo_qc.py)'
+        marker = '[offline QC source](https://github.com/Jacob-Met/CaptureSuite/blob/main/tools/demo_qc.py)'
         self.assertIn(marker, data['copy_markdown'])
         paragraph = next(p for p in data['copy_markdown'].split('\n\n') if marker in p)
         unlinked = build.LINK_RE.sub(lambda m: m.group(1), paragraph)
@@ -244,18 +244,32 @@ class BuildTests(Built):
                 self.assertIn(case['disclosure'], page)
                 self.assertIn(case['artifacts'][0]['url'], page)
 
-    def test_interactive_sample_is_a_declared_local_only_route(self):
-        page = self.page('sample-ui/index.html')
-        self.assertIn('<main id="main" class="sample-shell sample-page" data-sample-ui', page)
-        self.assertIn('<title>Utility review desk · interactive synthetic sample</title>', page)
-        self.assertIn('<link rel="canonical" href="https://jacobmetoyer.com/sample-ui/">', page)
+    def test_bid_inbox_is_the_declared_local_only_demo_route(self):
+        page = self.page('demos/bid-inbox/index.html')
+        self.assertIn('data-bid-inbox', page)
+        self.assertIn('<title>Bid Inbox · synthetic package desk</title>', page)
+        self.assertIn('<link rel="canonical" href="https://jacobmetoyer.com/demos/bid-inbox/">', page)
         self.assertIn('script-src &#x27;self&#x27;; connect-src &#x27;none&#x27;', page)
-        self.assertIn('<script type="module" src="/sample-ui/sample-ui.js"></script>', page)
-        self.assertIn('It makes no payments, sends no messages, files nothing', page)
-        self.assertIn('data-open-record=', page)
-        self.assertIn('href="https://jacobmetoyer.com/workflow-checks/"', page)
-        self.assertTrue((self.root / 'sample-ui' / 'sample-ui.css').is_file())
-        self.assertTrue((self.root / 'sample-ui' / 'sample-ui.js').is_file())
+        self.assertIn('<script type="module" src="/demos/bid-inbox/bid-inbox.js"></script>', page)
+        self.assertIn('All names, amounts, packages and dates are invented.', page)
+        self.assertIn('data-open-bid=', page)
+        self.assertIn('data-select-bid=', page)
+        self.assertTrue((self.root / 'demos' / 'bid-inbox' / 'bid-inbox.css').is_file())
+        self.assertTrue((self.root / 'demos' / 'bid-inbox' / 'bid-inbox.js').is_file())
+        legacy = self.page('sample-ui/index.html')
+        self.assertIn('This sample moved.', legacy)
+        self.assertIn('href="/demos/bid-inbox/"', legacy)
+        gallery = self.page('demos/index.html')
+        self.assertIn('href="/demos/bid-inbox/"', gallery)
+
+    def test_bid_fixture_is_schema_valid_and_explicitly_synthetic(self):
+        data = json.loads((build.ROOT / 'bid-inbox.json').read_text(encoding='utf-8'))
+        build.validate_bid_data(data)
+        self.assertTrue(data['synthetic'])
+        self.assertEqual(len(data['records']), 5)
+        self.assertTrue(all('(synthetic)' in row['project'] and '(synthetic)' in row['contractor']
+                            for row in data['records']))
+        self.assertTrue(all(row['documents'] for row in data['records']))
 
     def test_additional_public_case_study_uses_the_same_card_template(self):
         cases = build.load_case_studies()
@@ -275,7 +289,9 @@ class BuildTests(Built):
         files = {f.relative_to(self.root).as_posix() for f in self.root.rglob('*') if f.is_file()}
         self.assertEqual(files, set(m) | {'build-manifest.json'})
     def test_lf_newlines(self):
-        for name in ('index.html', '404.html', 'style.css', 'cv.json', 'sample-ui/index.html', 'sample-ui/sample-ui.css', 'sample-ui/sample-ui.js'):
+        for name in ('index.html', '404.html', 'style.css', 'site-redesign.css', 'cv.json', 'sample-ui/index.html',
+                     'demos/index.html', 'demos/bid-inbox/index.html', 'demos/bid-inbox/bid-inbox.css',
+                     'demos/bid-inbox/bid-inbox.js'):
             self.assertNotIn(b'\r\n', (self.root / name).read_bytes())
     def test_unexpected_output_file_refused(self):
         with tempfile.TemporaryDirectory() as t:
@@ -284,9 +300,10 @@ class BuildTests(Built):
             self.assertEqual((p / 'notes.txt').read_text(), 'keep')
     def test_output_cannot_be_source(self):
         with self.assertRaises(ValueError): build.build(build.ROOT, self.data)
-    def test_declared_html_routes_include_the_interactive_sample(self):
+    def test_declared_html_routes_include_the_gallery_and_bid_inbox(self):
         routes = {f.relative_to(self.root).as_posix() for f in self.root.rglob('*.html')}
-        self.assertEqual(routes, {'index.html', '404.html', 'sample-ui/index.html'})
+        self.assertEqual(routes, {'index.html', '404.html', 'sample-ui/index.html',
+                                  'demos/index.html', 'demos/bid-inbox/index.html'})
     def test_icons_and_share_card(self):
         import struct
         def png_size(b): self.assertEqual(b[:8], b'\x89PNG\r\n\x1a\n'); return struct.unpack('>II', b[16:24])
@@ -298,11 +315,13 @@ class BuildTests(Built):
         expected = dict(self.data)
         expected['copy_sha256'] = hashlib.sha256(expected['copy_markdown'].encode('utf-8')).hexdigest()
         self.assertEqual(json.loads((self.root / 'cv.json').read_text(encoding='utf-8')), expected)
-    def test_sitemap_lists_only_pages_generated_from_this_source(self):
+    def test_sitemap_lists_only_current_pages_generated_from_this_source(self):
         sm = (self.root / 'sitemap.xml').read_text(encoding='utf-8')
-        self.assertEqual(sm.count('<loc>'), 2)
+        self.assertEqual(sm.count('<loc>'), 3)
         self.assertIn(f'<loc>{build.BASE}/</loc>', sm)
-        self.assertIn(f'<loc>{build.BASE}/sample-ui/</loc>', sm)
+        self.assertIn(f'<loc>{build.BASE}/demos/</loc>', sm)
+        self.assertIn(f'<loc>{build.BASE}/demos/bid-inbox/</loc>', sm)
+        self.assertNotIn(f'<loc>{build.BASE}/sample-ui/</loc>', sm)
         self.assertNotIn(f'<loc>{build.BASE}/workflow-checks/</loc>', sm)
 
 
@@ -331,9 +350,9 @@ class ContentTests(Built):
         for paragraph in paragraphs:
             with self.subTest(paragraph=re.sub(r'<[^>]+>', ' ', paragraph)[:80]):
                 self.assertIn('href="https://', paragraph)
-    def test_six_work_entries_each_link_to_sources(self):
+    def test_four_work_entries_each_link_to_sources(self):
         entries = re.findall(r'<article class="entry"[^>]*>(.*?)</article>', self.main(), re.S)
-        self.assertEqual(len(entries), 6)
+        self.assertEqual(len(entries), 4)
         for entry in entries:
             with self.subTest(entry=re.sub(r'<[^>]+>', ' ', entry)[:60]):
                 self.assertIn('href="https://', entry)
@@ -348,11 +367,11 @@ class ContentTests(Built):
     def test_copy_has_no_raw_html_and_claim_ids_are_preserved(self):
         self.assertNotRegex(self.data['copy_markdown'], r'<\s*/?\s*[a-zA-Z]')
         self.assertEqual({c['id'] for c in self.data['claims']}, {
-            'ID-01', 'WC-01', 'WC-02', 'WC-03', 'WC-04', 'WC-05', 'WC-06', 'CS-01', 'CP-01', 'TO-01', 'RS-01', 'CS-02', 'WC-07', 'UI-01'
+            'ID-01', 'RS-01', 'CS-01', 'CP-01', 'TO-01', 'DEMO-01', 'DEMO-02'
         })
     def test_escaping(self):
         data = copy.deepcopy(self.data)
-        marker = 'The demo flags records such as'
+        marker = 'Inspect invented subcontractor bid packages'
         self.assertIn(marker, data['copy_markdown'])
         data['copy_markdown'] = data['copy_markdown'].replace(marker, '<script>x</script> ' + marker)
         build.build(self.root, data)
@@ -392,21 +411,21 @@ class CheckerTests(Built):
                 (self.root / 'style.css').write_text(css, encoding='utf-8')
                 mp = self.root / 'build-manifest.json'; m = json.loads(mp.read_text()); m['sha256']['style.css'] = hashlib.sha256((self.root / 'style.css').read_bytes()).hexdigest(); mp.write_text(json.dumps(m))
                 self.assertFalse(check(self.root)['passed'])
-    def test_sample_route_only_allows_the_local_module(self):
-        failures = self.rewrite('sample-ui/index.html',
-                                'src="/sample-ui/sample-ui.js"',
+    def test_bid_route_only_allows_the_local_module(self):
+        failures = self.rewrite('demos/bid-inbox/index.html',
+                                'src="/demos/bid-inbox/bid-inbox.js"',
                                 'src="https://example.invalid/remote.js"')
         self.assertTrue(any('script:' in item or 'resource' in item for item in failures), failures)
 
-    def test_sample_module_rejects_network_and_html_injection_apis(self):
-        script = self.root / 'sample-ui' / 'sample-ui.js'
+    def test_bid_module_rejects_network_and_html_injection_apis(self):
+        script = self.root / 'demos' / 'bid-inbox' / 'bid-inbox.js'
         script.write_text(script.read_text(encoding='utf-8') + '\nfetch("https://example.invalid");\n', encoding='utf-8')
         manifest = self.root / 'build-manifest.json'
         data = json.loads(manifest.read_text(encoding='utf-8'))
-        data['sha256']['sample-ui/sample-ui.js'] = hashlib.sha256(script.read_bytes()).hexdigest()
+        data['sha256']['demos/bid-inbox/bid-inbox.js'] = hashlib.sha256(script.read_bytes()).hexdigest()
         manifest.write_text(json.dumps(data), encoding='utf-8')
         failures = check(self.root)['failures']
-        self.assertIn('sample-ui/sample-ui.js: network, dynamic-code, storage, or HTML-injection API', failures)
+        self.assertIn('demos/bid-inbox/bid-inbox.js: network, dynamic-code, storage, or HTML-injection API', failures)
 
     def test_svg_surface(self):
         for fragment in ('<script>void(0)</script>', '<image href="https://example.invalid/p"/>', '<g onload="void(0)"/>', '<foreignObject/>'):
