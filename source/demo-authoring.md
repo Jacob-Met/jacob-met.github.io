@@ -5,7 +5,7 @@ This repository serves the existing GitHub Pages site for `jacobmetoyer.com` fro
 ## Route and source ownership
 
 - Use a lane-qualified route: `demos/commercial/<target-slug>/` for one commercial target, or `demos/contests/<event-slug>/` for one named contest. Never reuse a target's data or a contest entry's visual identity for another.
-- Keep the source under `source/demos/<lane>/<slug>/`: `data.json` (synthetic fixtures only), `index.html` (static accessible shell), `ui.ts` (browser interactions), `ui.css` (page-specific visuals), and focused tests. Add the route metadata and source revision to the gallery manifest. `docs/` is generated; never edit it by hand.
+- Keep new source under `source/demos/<lane>/<slug>/`: `data.json` (synthetic fixtures only), `index.html` (static accessible shell), `ui.ts` (browser interactions), `ui.css` (page-specific visuals), and focused tests. The first example keeps its files at `source/bid-inbox.*`. Register each new renderer/route in `source/site_demos.py` and `source/build.py`, then extend the route, CSP, and script allowlists in `source/check.py`; add the route to the gallery and sitemap. `docs/` is generated; never edit it by hand.
 - Make the demo answer one concrete question for that audience. Design the visible workflow for the real target/event, not a generic dashboard; include at least one meaningful interaction, a clear evidence/detail view, empty/error states, and a purposeful mobile layout.
 
 ## Safety and truth bar
