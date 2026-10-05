@@ -1,16 +1,16 @@
-/* A quiet, paper-toned research portfolio. System fonts; no remote assets. */
+/* Near-black research portfolio with restrained amber accents; no remote assets. */
 :root {
-  color-scheme: light;
-  --bg: #f7f6f2;
-  --ink: #252b2c;
-  --text: #41494f;
-  --mute: #626d73;
-  --rule: #d9ded9;
-  --acc: #416986;
-  --acc-strong: #31536d;
-  --warm: #9b5c49;
-  --ticket-bg: #eef2f3;
-  --ticket-rule: #cbd7de;
+  color-scheme: dark;
+  --bg: #000000;
+  --ink: #ededea;
+  --text: #d4d4cf;
+  --mute: #a3a39e;
+  --rule: #2a2a28;
+  --acc: #d8b15a;
+  --acc-strong: #edc975;
+  --warm: #d28e52;
+  --ticket-bg: #17140d;
+  --ticket-rule: #725a2a;
   --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
@@ -72,7 +72,7 @@ h1 a:hover { color: var(--acc-strong); }
   flex-shrink: 0;
   border-radius: 50%;
   background: var(--acc);
-  box-shadow: 0 0 0 4px rgb(65 105 134 / 12%);
+  box-shadow: 0 0 0 4px rgb(216 177 90 / 16%);
 }
 section { position: relative; }
 h2,
@@ -143,7 +143,7 @@ h3 {
 }
 h3 a {
   color: var(--ink);
-  text-decoration-color: #c5d0d8;
+  text-decoration-color: var(--acc);
   text-decoration-thickness: 1px;
   text-underline-offset: .16em;
 }
