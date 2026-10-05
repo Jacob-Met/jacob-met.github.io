@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Regenerate the raster share card and icons in source/assets/ (W-10).
+"""Regenerate the raster share card and icons in source/assets/ (dark docket).
 
 Not part of the CI build: build.py only copies the committed PNG/ICO files, so the
 site still builds with the standard library alone. Run this by hand (needs Pillow and
 a serif TTF, e.g. Debian's fonts-liberation) when the mark or card copy changes, then
-rebuild and commit the results. Colours and the "JM" monogram follow assets/mark.svg.
+rebuild and commit the results. Colours follow the dark palette in source/style.css
+(--bg, --ink, --mute, --rule, --acc); the "JM" monogram and docket-spine motif
+follow assets/mark.svg.
 """
 from __future__ import annotations
 import argparse
@@ -12,17 +14,23 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parent
-BLUE, PAPER, ACCENT, SOFT, INK, RULE = '#183be5', '#f5f5ef', '#b93819', '#595447', '#20252c', '#b7bac2'
+BLACK, INK, MUTE, ACCENT, RULE = '#000000', '#ededea', '#a3a39e', '#d8b15a', '#2a2a28'
 SERIF_CANDIDATES = [
     '/usr/share/fonts/truetype/liberation/LiberationSerif-Regular.ttf',
     '/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf',
     'C:/Windows/Fonts/georgia.ttf',
     '/System/Library/Fonts/Supplemental/Georgia.ttf',
 ]
-SANS_CANDIDATES = [
-    '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf',
-    '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
-    'C:/Windows/Fonts/segoeui.ttf',
+SERIF_ITALIC_CANDIDATES = [
+    '/usr/share/fonts/truetype/liberation/LiberationSerif-Italic.ttf',
+    '/usr/share/fonts/truetype/dejavu/DejaVuSerif-Italic.ttf',
+    'C:/Windows/Fonts/georgiai.ttf',
+    '/System/Library/Fonts/Supplemental/Georgia Italic.ttf',
+]
+MONO_CANDIDATES = [
+    '/usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf',
+    '/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf',
+    'C:/Windows/Fonts/consola.ttf',
 ]
 
 
@@ -38,34 +46,34 @@ def monogram(size: int, radius_ratio: float = 8 / 64) -> Image.Image:
     s = size * 4
     img = Image.new('RGBA', (s, s), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    d.rounded_rectangle((0, 0, s - 1, s - 1), radius=round(s * radius_ratio), fill=BLUE)
+    d.rounded_rectangle((0, 0, s - 1, s - 1), radius=round(s * radius_ratio), fill=ACCENT)
     f = font(SERIF_CANDIDATES, round(s * 33 / 64))
     # SVG places the baseline at y=44/64 with the text centred horizontally.
-    d.text((s / 2, s * 44 / 64), 'JM', font=f, fill=PAPER, anchor='ms')
+    d.text((s / 2, s * 44 / 64), 'JM', font=f, fill=BLACK, anchor='ms')
     return img.resize((size, size), Image.Resampling.LANCZOS)
 
 
 def share_card() -> Image.Image:
     """Share card repeats the approved tagline and the docket-spine motif."""
     w, h = 1200, 630
-    img = Image.new('RGB', (w, h), PAPER)
+    img = Image.new('RGB', (w, h), BLACK)
     d = ImageDraw.Draw(img)
     rail = 190
-    d.rectangle((0, 0, rail, h), fill=BLUE)
-    d.line((rail - 3, 0, rail - 3, h), fill=ACCENT, width=6)
+    d.rectangle((0, 0, rail, h), fill=ACCENT)
+    d.line((rail - 3, 0, rail - 3, h), fill=BLACK, width=6)
     # Perforations echo the docket spine used by the page layout.
     for y in range(48, h - 24, 48):
-        d.ellipse((34, y, 50, y + 16), fill=PAPER)
+        d.ellipse((34, y, 50, y + 16), fill=BLACK)
     x = 270
-    d.text((x, 108), 'Jacob Metoyer', font=font(SERIF_CANDIDATES, 62), fill=INK)
-    d.rectangle((x, 205, x + 136, 213), fill=ACCENT)
-    d.text((x, 260), 'Less hand-waving.', font=font(SERIF_CANDIDATES, 78), fill=BLUE)
-    d.text((x, 355), 'More receipts.', font=font(SERIF_CANDIDATES, 78), fill=INK)
+    d.text((x, 108), 'Jacob Metoyer', font=font(MONO_CANDIDATES, 40), fill=MUTE)
+    d.rectangle((x, 190, x + 136, 198), fill=ACCENT)
+    d.text((x, 248), 'Less hand-waving.', font=font(SERIF_ITALIC_CANDIDATES, 84), fill=INK)
+    d.text((x, 352), 'More receipts.', font=font(SERIF_ITALIC_CANDIDATES, 84), fill=INK)
     d.line((x, 492, w - 88, 492), fill=RULE, width=2)
-    d.text((x, 548), 'jacobmetoyer.com', font=font(SANS_CANDIDATES, 28), fill=SOFT, anchor='ls')
+    d.text((x, 548), 'jacobmetoyer.com', font=font(MONO_CANDIDATES, 30), fill=MUTE, anchor='ls')
     mark = monogram(104, radius_ratio=0.14)
     frame = Image.new('RGBA', (116, 116), (0, 0, 0, 0))
-    ImageDraw.Draw(frame).rounded_rectangle((0, 0, 115, 115), radius=18, fill=PAPER)
+    ImageDraw.Draw(frame).rounded_rectangle((0, 0, 115, 115), radius=18, fill=BLACK)
     frame.alpha_composite(mark, (6, 6))
     img.paste(frame, (w - 88 - 116, 48), frame)
     return img
