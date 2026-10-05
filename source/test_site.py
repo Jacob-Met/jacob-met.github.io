@@ -122,6 +122,66 @@ class CaseStudyDataTests(unittest.TestCase):
                 self.assertIn('no ', case['boundary'].lower())
 
 
+class ColorContrastTests(unittest.TestCase):
+    """Keep every small-text color and focus accent at WCAG AA on its surfaces."""
+    @classmethod
+    def setUpClass(cls):
+        css = (build.ROOT / 'style.css').read_text(encoding='utf-8')
+        cls.colors = dict(re.findall(r'^\s*(--[a-z0-9-]+):\s*(#[0-9A-Fa-f]{6})\s*;', css, re.M))
+
+    @staticmethod
+    def luminance(hex_color):
+        values = [int(hex_color[i:i + 2], 16) / 255 for i in (1, 3, 5)]
+        linear = [value / 12.92 if value <= .04045 else ((value + .055) / 1.055) ** 2.4
+                  for value in values]
+        return sum(value * weight for value, weight in zip(linear, (.2126, .7152, .0722)))
+
+    @classmethod
+    def contrast(cls, foreground, background):
+        first, second = sorted((cls.luminance(foreground), cls.luminance(background)), reverse=True)
+        return (first + .05) / (second + .05)
+
+    def require_ratio(self, foreground, background, minimum, purpose):
+        self.assertIn(foreground, self.colors)
+        self.assertIn(background, self.colors)
+        ratio = self.contrast(self.colors[foreground], self.colors[background])
+        self.assertGreaterEqual(ratio, minimum,
+                                f'{purpose}: {foreground} on {background} is {ratio:.2f}:1')
+
+    def test_body_muted_link_and_focus_colors_meet_aa(self):
+        backgrounds = ('--canvas', '--surface', '--surface-inset', '--surface-warm')
+        for foreground in ('--ink', '--text', '--mute', '--accent-primary',
+                           '--accent-primary-strong', '--accent-secondary',
+                           '--accent-secondary-strong', '--accent-focus'):
+            for background in backgrounds:
+                with self.subTest(foreground=foreground, background=background):
+                    self.require_ratio(foreground, background, 4.5, 'normal text/focus color')
+        self.require_ratio('--accent-primary-strong', '--accent-primary-soft', 4.5, 'ticket text')
+
+    def test_cta_text_meets_aa_on_both_primary_accents(self):
+        for background in ('--accent-primary', '--accent-primary-strong',
+                           '--accent-secondary', '--accent-secondary-strong', '--ink'):
+            with self.subTest(background=background):
+                self.require_ratio('--surface', background, 4.5, 'light CTA text')
+
+    def test_structural_rules_meet_nontext_contrast(self):
+        for background in ('--canvas', '--surface', '--surface-inset', '--surface-warm'):
+            with self.subTest(background=background):
+                self.require_ratio('--rule', background, 3, 'visible boundary')
+
+    def test_skip_link_keeps_a_contrasting_surface_when_focused(self):
+        css = (build.ROOT / 'style.css').read_text(encoding='utf-8')
+        self.assertIn('.skip:focus-visible { background: var(--ink); color: var(--surface); }', css)
+        self.require_ratio('--surface', '--ink', 4.5, 'keyboard skip-link text')
+
+    def test_accent_range_used_for_card_borders_meets_nontext_contrast(self):
+        backgrounds = ('--canvas', '--surface', '--surface-inset', '--surface-warm')
+        for foreground in ('--accent-primary-mid', '--accent-secondary-mid', '--accent-focus'):
+            for background in backgrounds:
+                with self.subTest(foreground=foreground, background=background):
+                    self.require_ratio(foreground, background, 3, 'accent border')
+
+
 class BuildTests(Built):
     def test_output_passes_checks(self): self.assertTrue(check(self.root)['passed'], check(self.root))
     def test_deterministic(self):
