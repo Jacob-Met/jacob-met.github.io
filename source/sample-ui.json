@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "snapshot_date": "2026-09-28",
+  "synthetic": true,
+  "counts": {
+    "source_bills": 274,
+    "accounts": 31,
+    "flags": 12,
+    "exceptions": 2,
+    "approval_queue": 12
+  },
+  "sources": {
+    "outputs": "https://jacobmetoyer.com/workflow-checks/",
+    "repository": "https://github.com/Jacob-Met/workflow-checks",
+    "readme": "https://github.com/Jacob-Met/workflow-checks/blob/main/README.md",
+    "utility_readme": "https://github.com/Jacob-Met/workflow-checks/blob/main/utility_watch/README.md"
+  },
+  "records": [
+    {
+      "id": "bayou-late-fee-electric",
+      "category": "payment",
+      "property": "Bayou Flats (synthetic)",
+      "utility": "Electric",
+      "account": "SYN-7005",
+      "signal": "LATE_FEE_OR_PAST_DUE",
+      "summary": "Late fee $179.02; prior balance $3,222.36 on the bill.",
+      "evidence": ["bills.csv:88"]
+    },
+    {
+      "id": "bayou-payment-mismatch-water",
+      "category": "payment",
+      "property": "Bayou Flats (synthetic)",
+      "utility": "Water",
+      "account": "SYN-7007",
+      "signal": "PAYMENT_MISMATCH",
+      "summary": "Owed $4,232.12; two payments total $8,464.24.",
+      "evidence": ["bills.csv:126", "payments.csv:120", "payments.csv:121"]
+    },
+    {
+      "id": "cypress-usage-spike-gas",
+      "category": "usage",
+      "property": "Cypress Court (synthetic)",
+      "utility": "Gas",
+      "account": "SYN-7002",
+      "signal": "USAGE_SPIKE",
+      "summary": "92.7 therm/day vs 49.4 the same month last year (x1.88).",
+      "evidence": ["bills.csv:33", "bills.csv:21"]
+    },
+    {
+      "id": "bayou-period-overlap-gas",
+      "category": "period",
+      "property": "Bayou Flats (synthetic)",
+      "utility": "Gas",
+      "account": "SYN-7006",
+      "signal": "PERIOD_OVERLAP",
+      "summary": "The 2026-06-22..2026-07-31 service period overlaps prior bill B50106; 9 days may be billed twice.",
+      "evidence": ["bills.csv:108", "bills.csv:107"]
+    },
+    {
+      "id": "gaylord-duplicate-trash",
+      "category": "integrity",
+      "property": "Gaylord Ridge (synthetic)",
+      "utility": "Trash",
+      "account": "SYN-7012",
+      "signal": "DUPLICATE_BILL",
+      "summary": "Same invoice number as B50212 (HAUL-50212); hold and do not pay twice.",
+      "evidence": ["bills.csv:214", "bills.csv:213"]
+    },
+    {
+      "id": "gaylord-missing-bill-gas",
+      "category": "integrity",
+      "property": "Gaylord Ridge (synthetic)",
+      "utility": "Gas",
+      "account": "SYN-7009",
+      "signal": "MISSING_BILL",
+      "summary": "No bill for service month 2026-04; check the vendor portal or mail before a late fee lands.",
+      "evidence": ["accounts.csv:10"]
+    }
+  ]
+}

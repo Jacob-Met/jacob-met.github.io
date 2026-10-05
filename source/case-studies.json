@@ -33,6 +33,43 @@
           "url": "https://github.com/Jacob-Met/multi-agent-fanout-engine/tree/main/tests"
         }
       ]
+    },
+    {
+      "id": "capturesuite-offline-qc",
+      "visibility": "public",
+      "title": "CaptureSuite offline QC path",
+      "category": "Research software · synthetic offline demo",
+      "summary": "An offline quality-control path runs over a copy of a bundled synthetic EMG/IMU mini-session and emits inspectable reports and a receipt without capture hardware or patient data.",
+      "question": "How can a reviewer inspect a quality-control workflow before connecting a device or personal dataset?",
+      "approach": [
+        "Copy the bundled synthetic mini-session to a caller-chosen new output directory.",
+        "Check original-fixture and copied raw-source hashes before and after the QC run.",
+        "Refuse an existing output path or output inside the source fixture rather than overwriting it.",
+        "Emit HTML and JSON reports plus DEMO-RECEIPT.json with hashes and synthetic-fixture classification."
+      ],
+      "boundary": "The README states that this synthetic demo does not establish hardware performance, clinical validity, or full product readiness; CaptureSuite v1.0 targets Windows 10 21H2+ x64. No hardware performance or clinical validity is claimed here; this case summarizes public source behavior, not an independent test.",
+      "disclosure": "The repository describes CaptureSuite as independent research software, not an official university-lab product unless separately stated.",
+      "language": "Python · offline QC",
+      "language_reason": "The offline quality-control demo and analysis path are Python; the wider capture platform also supports C++ and Python worker plugins.",
+      "source_revision": "742dd7dc0455cc8c060db06123c8432d919e93eb",
+      "artifacts": [
+        {
+          "label": "Public repository",
+          "url": "https://github.com/Jacob-Met/CaptureSuite"
+        },
+        {
+          "label": "README and platform limits",
+          "url": "https://github.com/Jacob-Met/CaptureSuite/blob/742dd7dc0455cc8c060db06123c8432d919e93eb/README.md"
+        },
+        {
+          "label": "Synthetic QC demo source",
+          "url": "https://github.com/Jacob-Met/CaptureSuite/blob/742dd7dc0455cc8c060db06123c8432d919e93eb/tools/demo_qc.py"
+        },
+        {
+          "label": "Offline demo assertions",
+          "url": "https://github.com/Jacob-Met/CaptureSuite/blob/742dd7dc0455cc8c060db06123c8432d919e93eb/tests/analysis/test_offline_demo.py"
+        }
+      ]
     }
   ]
 }

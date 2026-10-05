@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Offline integrity checks for the generated site: declared surface, links, anchors, manifest.
 
-The site has no executable script at all. Any <script> other than a JSON-LD data block, any
-inline handler, form, frame, remote resource or non-HTTPS link is a failure.
+The homepage has no executable code. One local ES module is permitted only on the synthetic sample route;
+remote scripts/APIs, dynamic code, persistence, inline handlers, forms, frames, and ambiguous paths fail.
 """
 from __future__ import annotations
 import argparse, hashlib, json, re
@@ -11,9 +11,12 @@ from pathlib import Path, PurePosixPath
 from urllib.parse import unquote, urlsplit
 from xml.etree import ElementTree as ET
 
-ROOT_RELATIVE_PAGES = frozenset({'404.html'})
+ROOT_RELATIVE_PAGES = frozenset({'404.html', 'sample-ui/index.html'})
 CSP_REQUIRED = {'default-src': "'none'", 'style-src': "'self'", 'img-src': "'self'", 'base-uri': "'none'", 'form-action': "'none'"}
-EXPECTED_HTML = {'index.html', '404.html'}
+SAMPLE_CSP_REQUIRED = {**CSP_REQUIRED, 'script-src': "'self'", 'connect-src': "'none'"}
+SAMPLE_SCRIPT = 'sample-ui/sample-ui.js'
+JS_FORBIDDEN = re.compile(r'\b(?:eval|Function)\s*\(|\b(?:fetch|XMLHttpRequest|WebSocket|EventSource)\b|document\.write|\.innerHTML\b|localStorage|sessionStorage|document\.cookie|sendBeacon', re.I)
+EXPECTED_HTML = {'index.html', '404.html', 'sample-ui/index.html'}
 
 
 def rooted_ref(page: str, value: str) -> str | None:
@@ -32,8 +35,9 @@ def local_path(value: str) -> bool:
 
 
 class Page(HTMLParser):
-    def __init__(self):
+    def __init__(self, name: str = ''):
         super().__init__(convert_charrefs=True)
+        self.name = name
         self.ids = []; self.links = []; self.resources = []; self.errors = []
         self.h1 = 0; self.lang = None; self.csp = []; self.head_order = []
         self.script_type = None; self.script_text = []; self.text = []
@@ -56,7 +60,15 @@ class Page(HTMLParser):
         if a.get('src'): self.resources.append(a['src'])
         if tag == 'script':
             self.script_type = a.get('type', ''); self.script_text = []
-            if a.get('src') is not None or self.script_type != 'application/ld+json': self.errors.append('script: executable script')
+            src = a.get('src')
+            is_schema = src is None and self.script_type == 'application/ld+json'
+            is_sample_module = (
+                self.name == 'sample-ui/index.html'
+                and self.script_type == 'module'
+                and src == '/sample-ui/sample-ui.js'
+                and 'async' not in a
+            )
+            if not (is_schema or is_sample_module): self.errors.append('script: outside the declared JSON-LD/module surface')
 
     def handle_data(self, data):
         if self.script_type is not None: self.script_text.append(data)
@@ -64,20 +76,24 @@ class Page(HTMLParser):
 
     def handle_endtag(self, tag):
         if tag == 'script' and self.script_type is not None:
-            try: json.loads(''.join(self.script_text))
-            except (ValueError, TypeError): self.errors.append('script: invalid JSON-LD')
+            if self.script_type == 'application/ld+json':
+                try: json.loads(''.join(self.script_text))
+                except (ValueError, TypeError): self.errors.append('script: invalid JSON-LD')
+            elif self.script_type == 'module' and self.script_text:
+                self.errors.append('script: inline module content is not allowed')
             self.script_type = None
 
 
-def csp_errors(p: Page) -> list[str]:
+def csp_errors(p: Page, page_name: str) -> list[str]:
     if len(p.csp) != 1: return ['expected exactly one Content-Security-Policy meta']
     if p.head_order[:2] != [('meta', ''), ('meta', 'content-security-policy')]: return ['Content-Security-Policy must directly follow meta charset']
     policy = {}
     for part in p.csp[0].split(';'):
         bits = part.split()
         if bits: policy[bits[0].lower()] = ' '.join(bits[1:])
-    errors = [f'CSP {k} must be {v}' for k, v in CSP_REQUIRED.items() if policy.get(k) != v]
-    extra = set(policy) - set(CSP_REQUIRED)
+    required = SAMPLE_CSP_REQUIRED if page_name == 'sample-ui/index.html' else CSP_REQUIRED
+    errors = [f'CSP {k} must be {v}' for k, v in required.items() if policy.get(k) != v]
+    extra = set(policy) - set(required)
     if extra: errors.append('CSP has undeclared directives: ' + ', '.join(sorted(extra)))
     return errors
 
@@ -118,7 +134,7 @@ def check(root: Path) -> dict:
         if f.suffix == '.html':
             try: text = f.read_text(encoding='utf-8')
             except (OSError, UnicodeError): failures.append(f'{rel}: unreadable HTML'); continue
-            p = Page(); p.feed(text); p.close(); parsed[rel] = p
+            p = Page(rel); p.feed(text); p.close(); parsed[rel] = p
             failures.extend(f'{rel}: {e}' for e in p.errors)
             for value in p.resources:
                 rooted = rooted_ref(rel, value)
@@ -137,11 +153,16 @@ def check(root: Path) -> dict:
                 if not local_path(value): failures.append(f'{rel}: nonlocal or ambiguous resource'); continue
                 target = f.parent / unquote(urlsplit(value).path)
                 if not target.resolve().is_relative_to(root) or target.is_symlink() or not target.is_file(): failures.append(f'{rel}: missing or escaped resource')
+        elif f.suffix == '.js':
+            try: text = f.read_text(encoding='utf-8')
+            except (OSError, UnicodeError): failures.append(f'{rel}: unreadable UTF-8'); continue
+            if rel != SAMPLE_SCRIPT: failures.append(f'{rel}: JavaScript outside the declared sample module')
+            if JS_FORBIDDEN.search(text): failures.append(f'{rel}: network, dynamic-code, storage, or HTML-injection API')
     if set(parsed) != EXPECTED_HTML: failures.append(f'Expected HTML routes {sorted(EXPECTED_HTML)}, found {sorted(parsed)}')
     for name, p in parsed.items():
         if p.h1 != 1: failures.append(f'{name}: expected one h1')
         if p.lang != 'en': failures.append(f'{name}: missing language')
-        failures.extend(f'{name}: {e}' for e in csp_errors(p))
+        failures.extend(f'{name}: {e}' for e in csp_errors(p, name))
         if len(p.ids) != len(set(p.ids)): failures.append(f'{name}: duplicate ids')
         for u in p.links:
             try: ref = urlsplit(u)

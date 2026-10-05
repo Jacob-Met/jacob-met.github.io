@@ -26,25 +26,25 @@ TowerOps is a synthetic air-traffic decision-support demo. Before its simulated 
 
 ## Workflow checks: synthetic records, visible evidence.
 
-[workflow-checks](https://github.com/Jacob-Met/workflow-checks) contains three Python standard-library demos for utility bills, freight billing, and physical-therapy authorizations. The records are generated; the [README](https://github.com/Jacob-Met/workflow-checks/blob/main/README.md) describes scope and limits, and the [sample outputs](https://jacobmetoyer.com/workflow-checks/) can be inspected directly.
+[workflow-checks](https://github.com/Jacob-Met/workflow-checks) contains three Python standard-library demos for utility bills, freight billing, and physical-therapy authorizations. The records are generated; try the [interactive sample UI](https://jacobmetoyer.com/sample-ui/), inspect the [full output pages](https://jacobmetoyer.com/workflow-checks/), and read the [README](https://github.com/Jacob-Met/workflow-checks/blob/main/README.md) for scope and limits.
 
 ### [Utility bills](https://github.com/Jacob-Met/workflow-checks/blob/main/utility_watch/README.md)
 
 The demo flags records such as mismatched payments, duplicate bills, overlapping service periods, missing bills, and unusual usage. It keeps the source rows with each check and queues clean unpaid bills for human approval; it does not issue payments ([utility demo](https://github.com/Jacob-Met/workflow-checks/blob/main/utility_watch/README.md)).
 
-[See the generated sample](https://jacobmetoyer.com/workflow-checks/) · [Inspect the code](https://github.com/Jacob-Met/workflow-checks/tree/main/utility_watch)
+[Try the interactive sample](https://jacobmetoyer.com/sample-ui/) · [Full generated outputs](https://jacobmetoyer.com/workflow-checks/) · [Inspect the code](https://github.com/Jacob-Met/workflow-checks/tree/main/utility_watch)
 
 ### [Freight packets](https://github.com/Jacob-Met/workflow-checks/blob/main/freight_packets/README.md)
 
 The freight demo drafts detention packets and invoice flags with calculations and evidence timelines. Missing or uncertain tracking evidence is held for a person; nothing is sent or invoiced ([freight demo](https://github.com/Jacob-Met/workflow-checks/blob/main/freight_packets/README.md)).
 
-[See the generated sample](https://jacobmetoyer.com/workflow-checks/) · [Inspect the code](https://github.com/Jacob-Met/workflow-checks/tree/main/freight_packets)
+[Try the interactive sample](https://jacobmetoyer.com/sample-ui/) · [Full generated outputs](https://jacobmetoyer.com/workflow-checks/) · [Inspect the code](https://github.com/Jacob-Met/workflow-checks/tree/main/freight_packets)
 
 ### [PT authorizations](https://github.com/Jacob-Met/workflow-checks/blob/main/pt_auth/README.md)
 
 The PT demo turns synthetic authorizations and visits into a prioritized worklist with reason codes, submit-by dates, and payer checklists. The patients are invented and payer rules are placeholders; it does not submit anything ([PT demo](https://github.com/Jacob-Met/workflow-checks/blob/main/pt_auth/README.md)).
 
-[See the generated sample](https://jacobmetoyer.com/workflow-checks/) · [Inspect the code](https://github.com/Jacob-Met/workflow-checks/tree/main/pt_auth)
+[Try the interactive sample](https://jacobmetoyer.com/sample-ui/) · [Full generated outputs](https://jacobmetoyer.com/workflow-checks/) · [Inspect the code](https://github.com/Jacob-Met/workflow-checks/tree/main/pt_auth)
 
 ## A scoped pilot starts with a baseline.
 

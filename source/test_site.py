@@ -135,6 +135,30 @@ class CaseStudyDataTests(unittest.TestCase):
                 build.validate_case_studies(data)
 
 
+class SampleDataTests(unittest.TestCase):
+    """The interactive UI is only seeded by explicitly synthetic, evidence-linked records."""
+    def setUp(self):
+        self.data = json.loads((build.ROOT / 'sample-ui.json').read_text(encoding='utf-8'))
+
+    def test_sample_dataset_is_valid_and_marked_synthetic(self):
+        build.validate_sample_data(self.data)
+        self.assertTrue(self.data['synthetic'])
+        self.assertEqual(self.data['counts']['source_bills'], 274)
+        self.assertEqual(self.data['counts']['accounts'], 31)
+        self.assertEqual(self.data['counts']['flags'], 12)
+        self.assertEqual(len(self.data['records']), 6)
+        self.assertTrue(all('(synthetic)' in row['property'] for row in self.data['records']))
+        self.assertTrue(all(row['evidence'] for row in self.data['records']))
+
+    def test_sample_dataset_rejects_real_or_unmapped_source_records(self):
+        data = copy.deepcopy(self.data)
+        data['synthetic'] = False
+        with self.assertRaises(ValueError): build.validate_sample_data(data)
+        data = copy.deepcopy(self.data)
+        data['sources']['readme'] = 'https://example.invalid/workflow-checks/README.md'
+        with self.assertRaises(ValueError): build.validate_sample_data(data)
+
+
 class ColorContrastTests(unittest.TestCase):
     """Keep every small-text color and focus accent at WCAG AA on its surfaces."""
     @classmethod
@@ -220,14 +244,27 @@ class BuildTests(Built):
                 self.assertIn(case['disclosure'], page)
                 self.assertIn(case['artifacts'][0]['url'], page)
 
+    def test_interactive_sample_is_a_declared_local_only_route(self):
+        page = self.page('sample-ui/index.html')
+        self.assertIn('<main id="main" class="sample-shell sample-page" data-sample-ui', page)
+        self.assertIn('<title>Utility review desk · interactive synthetic sample</title>', page)
+        self.assertIn('<link rel="canonical" href="https://jacobmetoyer.com/sample-ui/">', page)
+        self.assertIn('script-src &#x27;self&#x27;; connect-src &#x27;none&#x27;', page)
+        self.assertIn('<script type="module" src="/sample-ui/sample-ui.js"></script>', page)
+        self.assertIn('It makes no payments, sends no messages, files nothing', page)
+        self.assertIn('data-open-record=', page)
+        self.assertIn('href="https://jacobmetoyer.com/workflow-checks/"', page)
+        self.assertTrue((self.root / 'sample-ui' / 'sample-ui.css').is_file())
+        self.assertTrue((self.root / 'sample-ui' / 'sample-ui.js').is_file())
+
     def test_additional_public_case_study_uses_the_same_card_template(self):
         cases = build.load_case_studies()
         additional = copy.deepcopy(cases[0])
         additional['id'] = 'case-study-slot-fixture'
         additional['title'] = 'Local slot fixture'
         rendered = build.render_case_studies(cases + [additional])
-        self.assertEqual(rendered.count('<article class="case-study"'), 2)
-        self.assertEqual(rendered.count('<ol class="case-approach">'), 2)
+        self.assertEqual(rendered.count('<article class="case-study"'), 3)
+        self.assertEqual(rendered.count('<ol class="case-approach">'), 3)
         self.assertIn('data-case-id="case-study-slot-fixture"', rendered)
     def test_deterministic(self):
         a = (self.root / 'build-manifest.json').read_bytes(); build.build(self.root, self.data)
@@ -238,7 +275,8 @@ class BuildTests(Built):
         files = {f.relative_to(self.root).as_posix() for f in self.root.rglob('*') if f.is_file()}
         self.assertEqual(files, set(m) | {'build-manifest.json'})
     def test_lf_newlines(self):
-        for name in ('index.html', '404.html', 'style.css', 'cv.json'): self.assertNotIn(b'\r\n', (self.root / name).read_bytes())
+        for name in ('index.html', '404.html', 'style.css', 'cv.json', 'sample-ui/index.html', 'sample-ui/sample-ui.css', 'sample-ui/sample-ui.js'):
+            self.assertNotIn(b'\r\n', (self.root / name).read_bytes())
     def test_unexpected_output_file_refused(self):
         with tempfile.TemporaryDirectory() as t:
             p = Path(t) / 'out'; p.mkdir(); (p / 'notes.txt').write_text('keep')
@@ -246,8 +284,9 @@ class BuildTests(Built):
             self.assertEqual((p / 'notes.txt').read_text(), 'keep')
     def test_output_cannot_be_source(self):
         with self.assertRaises(ValueError): build.build(build.ROOT, self.data)
-    def test_only_two_html_routes(self):
-        self.assertEqual({f.name for f in self.root.glob('*.html')}, {'index.html', '404.html'})
+    def test_declared_html_routes_include_the_interactive_sample(self):
+        routes = {f.relative_to(self.root).as_posix() for f in self.root.rglob('*.html')}
+        self.assertEqual(routes, {'index.html', '404.html', 'sample-ui/index.html'})
     def test_icons_and_share_card(self):
         import struct
         def png_size(b): self.assertEqual(b[:8], b'\x89PNG\r\n\x1a\n'); return struct.unpack('>II', b[16:24])
@@ -259,9 +298,12 @@ class BuildTests(Built):
         expected = dict(self.data)
         expected['copy_sha256'] = hashlib.sha256(expected['copy_markdown'].encode('utf-8')).hexdigest()
         self.assertEqual(json.loads((self.root / 'cv.json').read_text(encoding='utf-8')), expected)
-    def test_sitemap_has_only_the_front_page(self):
+    def test_sitemap_lists_only_pages_generated_from_this_source(self):
         sm = (self.root / 'sitemap.xml').read_text(encoding='utf-8')
-        self.assertEqual(sm.count('<loc>'), 1); self.assertIn(f'<loc>{build.BASE}/</loc>', sm)
+        self.assertEqual(sm.count('<loc>'), 2)
+        self.assertIn(f'<loc>{build.BASE}/</loc>', sm)
+        self.assertIn(f'<loc>{build.BASE}/sample-ui/</loc>', sm)
+        self.assertNotIn(f'<loc>{build.BASE}/workflow-checks/</loc>', sm)
 
 
 class ContentTests(Built):
@@ -306,7 +348,7 @@ class ContentTests(Built):
     def test_copy_has_no_raw_html_and_claim_ids_are_preserved(self):
         self.assertNotRegex(self.data['copy_markdown'], r'<\s*/?\s*[a-zA-Z]')
         self.assertEqual({c['id'] for c in self.data['claims']}, {
-            'ID-01', 'WC-01', 'WC-02', 'WC-03', 'WC-04', 'WC-05', 'WC-06', 'CS-01', 'CP-01', 'TO-01', 'RS-01', 'CS-02', 'WC-07'
+            'ID-01', 'WC-01', 'WC-02', 'WC-03', 'WC-04', 'WC-05', 'WC-06', 'CS-01', 'CP-01', 'TO-01', 'RS-01', 'CS-02', 'WC-07', 'UI-01'
         })
     def test_escaping(self):
         data = copy.deepcopy(self.data)
@@ -338,17 +380,34 @@ class CheckerTests(Built):
                 build.build(self.root, self.data)
     def test_csp_enforced(self):
         self.assertEqual(build.CSP, '; '.join(f'{k} {v}' for k, v in check_module.CSP_REQUIRED.items()))
-        self.assertIn('index.html: expected exactly one Content-Security-Policy meta', self.rewrite('index.html', f'<meta http-equiv="Content-Security-Policy" content="{build.CSP}">', ''))
+        csp_meta = f'<meta http-equiv="Content-Security-Policy" content="{build.html.escape(build.CSP, quote=True)}">'
+        self.assertIn('index.html: expected exactly one Content-Security-Policy meta', self.rewrite('index.html', csp_meta, ''))
         build.build(self.root, self.data)
-        self.assertIn("index.html: CSP default-src must be 'none'", self.rewrite('index.html', "default-src 'none'", "default-src *"))
+        self.assertIn("index.html: CSP default-src must be 'none'", self.rewrite('index.html', "default-src &#x27;none&#x27;", "default-src *"))
         build.build(self.root, self.data)
-        self.assertIn('404.html: CSP has undeclared directives: script-src', self.rewrite('404.html', "form-action 'none'", "form-action 'none'; script-src 'self'"))
+        self.assertIn('404.html: CSP has undeclared directives: script-src', self.rewrite('404.html', "form-action &#x27;none&#x27;", "form-action &#x27;none&#x27;; script-src &#x27;self&#x27;"))
     def test_css_surface(self):
         for css in ('@import "https://example.invalid/a.css";', 'body{background:url(https://example.invalid/p)}', '@font-face{font-family:x;src:url(x.woff2)}', 'a{behavior:url(l.htc)}'):
             with self.subTest(css=css):
                 (self.root / 'style.css').write_text(css, encoding='utf-8')
                 mp = self.root / 'build-manifest.json'; m = json.loads(mp.read_text()); m['sha256']['style.css'] = hashlib.sha256((self.root / 'style.css').read_bytes()).hexdigest(); mp.write_text(json.dumps(m))
                 self.assertFalse(check(self.root)['passed'])
+    def test_sample_route_only_allows_the_local_module(self):
+        failures = self.rewrite('sample-ui/index.html',
+                                'src="/sample-ui/sample-ui.js"',
+                                'src="https://example.invalid/remote.js"')
+        self.assertTrue(any('script:' in item or 'resource' in item for item in failures), failures)
+
+    def test_sample_module_rejects_network_and_html_injection_apis(self):
+        script = self.root / 'sample-ui' / 'sample-ui.js'
+        script.write_text(script.read_text(encoding='utf-8') + '\nfetch("https://example.invalid");\n', encoding='utf-8')
+        manifest = self.root / 'build-manifest.json'
+        data = json.loads(manifest.read_text(encoding='utf-8'))
+        data['sha256']['sample-ui/sample-ui.js'] = hashlib.sha256(script.read_bytes()).hexdigest()
+        manifest.write_text(json.dumps(data), encoding='utf-8')
+        failures = check(self.root)['failures']
+        self.assertIn('sample-ui/sample-ui.js: network, dynamic-code, storage, or HTML-injection API', failures)
+
     def test_svg_surface(self):
         for fragment in ('<script>void(0)</script>', '<image href="https://example.invalid/p"/>', '<g onload="void(0)"/>', '<foreignObject/>'):
             with self.subTest(fragment=fragment):

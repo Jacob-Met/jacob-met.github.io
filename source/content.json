@@ -177,6 +177,24 @@
           "url": "https://jacobmetoyer.com/workflow-checks/"
         }
       ]
+    },
+    {
+      "id": "UI-01",
+      "description": "A local browser-only interface filters, sorts, and inspects rows from the published synthetic utility sample without network calls or state changes.",
+      "sources": [
+        {
+          "label": "interactive synthetic sample UI",
+          "url": "https://jacobmetoyer.com/sample-ui/"
+        },
+        {
+          "label": "generated sample outputs",
+          "url": "https://jacobmetoyer.com/workflow-checks/"
+        },
+        {
+          "label": "workflow-checks source scope",
+          "url": "https://github.com/Jacob-Met/workflow-checks/blob/main/README.md"
+        }
+      ]
     }
   ]
 }
