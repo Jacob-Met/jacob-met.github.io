@@ -18,7 +18,7 @@
       "disclosure": "The code and documentation were developed iteratively with AI assistance, then manually reviewed and exercised with the repository tests and local demo.",
       "language": "Python",
       "language_reason": "The public reference core and tests are Python; it uses the standard library and requires Python 3.10+.",
-      "source_revision": "53c9d83",
+      "source_revision": "53c9d83b3e94acbdfa87ae48c5cf70bd97c5bb9b",
       "artifacts": [
         {
           "label": "Public repository",
