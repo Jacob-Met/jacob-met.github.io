@@ -121,6 +121,19 @@ class CaseStudyDataTests(unittest.TestCase):
                                     for item in artifacts))
                 self.assertIn('no ', case['boundary'].lower())
 
+    def test_case_studies_reject_nonpublic_records(self):
+        data = copy.deepcopy(self.data)
+        data['case_studies'][0]['visibility'] = 'private'
+        with self.assertRaises(ValueError): build.validate_case_studies(data)
+
+    def test_case_studies_reject_unapproved_or_cross_repository_links(self):
+        for url in ('https://example.com/project', 'https://github.com/Other-User/project',
+                    'https://github.com/Jacob-Met/another-repo'):
+            data = copy.deepcopy(self.data)
+            data['case_studies'][0]['artifacts'][-1]['url'] = url
+            with self.subTest(url=url), self.assertRaises(ValueError):
+                build.validate_case_studies(data)
+
 
 class ColorContrastTests(unittest.TestCase):
     """Keep every small-text color and focus accent at WCAG AA on its surfaces."""
@@ -184,6 +197,38 @@ class ColorContrastTests(unittest.TestCase):
 
 class BuildTests(Built):
     def test_output_passes_checks(self): self.assertTrue(check(self.root)['passed'], check(self.root))
+    def test_navigation_targets_and_mobile_disclosure_are_present(self):
+        page = self.page()
+        ids = set(re.findall(r'\bid="([^"]+)"', page))
+        hrefs = set(re.findall(r'href="#([^"]+)"', page))
+        self.assertEqual(page.count('<nav class="primary-nav"'), 1)
+        self.assertEqual(page.count('<nav class="mobile-nav__links"'), 1)
+        self.assertIn('<details class="mobile-nav">', page)
+        self.assertTrue({target for _, target in build.NAV_ITEMS} <= {f'#{ident}' for ident in ids})
+        self.assertTrue(hrefs <= ids)
+
+    def test_public_case_studies_render_through_reusable_cards(self):
+        cases = build.load_case_studies()
+        page = self.page()
+        rendered_ids = re.findall(r'<article class="case-study" data-case-id="([^"]+)"', page)
+        self.assertEqual(rendered_ids, [case['id'] for case in cases])
+        self.assertEqual(page.count('class="case-grid"'), 1)
+        for case in cases:
+            with self.subTest(case=case['id']):
+                self.assertIn(case['title'], page)
+                self.assertIn(case['boundary'], page)
+                self.assertIn(case['disclosure'], page)
+                self.assertIn(case['artifacts'][0]['url'], page)
+
+    def test_additional_public_case_study_uses_the_same_card_template(self):
+        cases = build.load_case_studies()
+        additional = copy.deepcopy(cases[0])
+        additional['id'] = 'case-study-slot-fixture'
+        additional['title'] = 'Local slot fixture'
+        rendered = build.render_case_studies(cases + [additional])
+        self.assertEqual(rendered.count('<article class="case-study"'), 2)
+        self.assertEqual(rendered.count('<ol class="case-approach">'), 2)
+        self.assertIn('data-case-id="case-study-slot-fixture"', rendered)
     def test_deterministic(self):
         a = (self.root / 'build-manifest.json').read_bytes(); build.build(self.root, self.data)
         self.assertEqual(a, (self.root / 'build-manifest.json').read_bytes())
@@ -252,7 +297,7 @@ class ContentTests(Built):
                 self.assertIn('href="https://', entry)
     def test_copy_link_sequence_is_in_claim_source_map(self):
         mapped = {source['url'] for claim in self.data['claims'] for source in claim['sources']}
-        pairs = re.findall(r'<a href="(https://[^"]+)" rel="noopener">([^<]*)</a>', self.page())
+        pairs = re.findall(r'<a href="(https://[^"]+)" rel="noopener" data-copy-source="true">([^<]*)</a>', self.page())
         rendered = [(label, url) for url, label in pairs]
         expected = build.LINK_RE.findall(self.data['copy_markdown'])
         copy_links = {url for _, url in expected}

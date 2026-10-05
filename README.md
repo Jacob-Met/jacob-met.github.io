@@ -8,6 +8,7 @@ The three workflow checks use synthetic input data; the repositories make no rea
 
 - [`source/content.md`](source/content.md) is the exact landing-page copy.
 - [`source/content.json`](source/content.json) holds the public identity, update date, and claim-to-source map. The builder checks each copy URL against that map and an explicit HTTPS host set.
+- [`source/case-studies.json`](source/case-studies.json) holds explicitly public, repository-backed case records with the question, approach, disclosure, language choice, and scope limits; the builder renders them through one reusable card template.
 - [`source/build.py`](source/build.py) renders the page, 404 route, metadata, and build manifest.
 - [`source/style.css`](source/style.css) contains the local visual system and reduced-motion rules.
 - [`source/check.py`](source/check.py) verifies the generated static surface, local links/assets, CSP, and manifest hashes.
