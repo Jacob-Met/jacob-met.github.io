@@ -67,8 +67,13 @@ def share_card() -> Image.Image:
     x = 270
     d.text((x, 108), 'Jacob Metoyer', font=font(MONO_CANDIDATES, 40), fill=MUTE)
     d.rectangle((x, 190, x + 136, 198), fill=ACCENT)
-    d.text((x, 248), 'Less hand-waving.', font=font(SERIF_ITALIC_CANDIDATES, 84), fill=INK)
-    d.text((x, 352), 'More receipts.', font=font(SERIF_ITALIC_CANDIDATES, 84), fill=INK)
+    # Tagline matches the live hero (content.json hero title / build.py TITLE).
+    lines = ('Software you can', 'open, run, and check.')
+    size = 84
+    while size > 48 and max(d.textlength(t, font=font(SERIF_ITALIC_CANDIDATES, size)) for t in lines) > w - 88 - x:
+        size -= 2
+    for i, t in enumerate(lines):
+        d.text((x, 248 + i * round(size * 1.24)), t, font=font(SERIF_ITALIC_CANDIDATES, size), fill=INK)
     d.line((x, 492, w - 88, 492), fill=RULE, width=2)
     d.text((x, 548), 'jacobmetoyer.com', font=font(MONO_CANDIDATES, 30), fill=MUTE, anchor='ls')
     mark = monogram(104, radius_ratio=0.14)
