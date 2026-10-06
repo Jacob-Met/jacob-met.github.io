@@ -121,6 +121,15 @@ section { border-top: 1px solid var(--rule); padding: clamp(40px, 6vw, 72px) 0; 
 .cards p { margin: 0; font-size: 15.5px; color: var(--mute); }
 
 .about p { max-width: 640px; margin-top: 16px; }
+/* How it gets built */
+.how { padding-top: clamp(56px, 8vw, 96px); }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.steps li { padding: 20px 22px; border: 1px solid var(--rule); border-left: 3px solid var(--acc); border-radius: 14px; background: var(--bg-2); min-width: 0; }
+.steps .step-n { margin: 0 0 6px; color: var(--acc); font: 600 12px/1.4 var(--mono); letter-spacing: .12em; }
+.steps h3 { font: 600 18px/1.3 var(--sans); margin-bottom: 6px; }
+.steps li p:last-child { margin: 0; font-size: 15px; color: var(--mute); }
+@media (min-width: 720px) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1040px) { .steps { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
 .foot { width: var(--wrap); margin: 0 auto; padding: 26px 0 40px; border-top: 1px solid var(--rule); }
 .foot p { margin: 0; color: var(--mute); font: 12.5px/1.5 var(--mono); }
 .not-found { padding: 18vh 0; text-align: center; }
