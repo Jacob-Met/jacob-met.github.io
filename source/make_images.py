@@ -67,8 +67,8 @@ def share_card() -> Image.Image:
     x = 270
     d.text((x, 108), 'Jacob Metoyer', font=font(MONO_CANDIDATES, 40), fill=MUTE)
     d.rectangle((x, 190, x + 136, 198), fill=ACCENT)
-    # Tagline matches the live hero (content.json hero title / build.py TITLE).
-    lines = ('Software you can', 'open, run, and check.')
+    # Tagline matches the page title (build.py TITLE): Jacob directs the agents that build.
+    lines = ('I direct AI agents', 'to build software.')
     size = 84
     while size > 48 and max(d.textlength(t, font=font(SERIF_ITALIC_CANDIDATES, size)) for t in lines) > w - 88 - x:
         size -= 2

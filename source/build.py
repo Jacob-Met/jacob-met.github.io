@@ -20,9 +20,9 @@ from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parent
 BASE = 'https://jacobmetoyer.com'
-TITLE = 'Jacob Metoyer — software you can open, run, and check'
-DESC = 'Jacob Metoyer studies CS and physics at Cal State Long Beach and builds small, inspectable tools. Live demos with source.'
-SHARE_ALT = 'Jacob Metoyer — software you can open, run, and check.'
+TITLE = 'Jacob Metoyer — I direct AI agents to build software'
+DESC = 'Jacob Metoyer, a CS and physics student at Cal State Long Beach, directs AI coding agents to build small tools and sets the bar they ship to. Live demos with public source.'
+SHARE_ALT = 'Jacob Metoyer — I direct AI agents to build software. Every demo runs, with public source.'
 ALLOWED_HOSTS = {'github.com', 'jacobmetoyer.com'}
 CSP = "default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'"
 ROOT_ICONS = ('favicon.ico', 'apple-touch-icon.png')
@@ -30,7 +30,7 @@ SHARE_CARD = 'assets/og-card.png'
 DATE_RE = re.compile(r'\d{4}-\d{2}-\d{2}')
 SLUG_RE = re.compile(r'[a-z][a-z0-9-]{1,31}')
 SHOT_RE = re.compile(r'assets/demos/[a-z0-9-]+\.webp')
-SECTIONS = (('demos', 'Demos'), ('more', 'More work'), ('about', 'About'))
+SECTIONS = (('demos', 'Demos'), ('how', 'How'), ('more', 'More work'), ('about', 'About'))
 
 
 def text(value, limit: int = 600) -> str:
@@ -82,7 +82,7 @@ def check_shot(shot) -> None:
 
 
 def validate(data: dict) -> None:
-    keys(data, {'visibility', 'name', 'updated', 'hero', 'demos', 'terminal_demo', 'engine_slot', 'projects', 'contact'}, 'record')
+    keys(data, {'visibility', 'name', 'updated', 'hero', 'demos', 'terminal_demo', 'engine_slot', 'how', 'projects', 'about', 'contact'}, 'record')
     if data['visibility'] != 'public':
         raise ValueError('Only explicitly public content can be built')
     if data['name'] != 'Jacob Metoyer':
@@ -120,6 +120,16 @@ def validate(data: dict) -> None:
     for p in projects:
         keys(p, {'name', 'line', 'url'}, 'project'); text(p['name'], 40); text(p['line'], 240); safe_url(p['url'])
     c = keys(data['contact'], {'line', 'url'}, 'contact'); text(c['line'], 200); safe_url(c['url'])
+    w = keys(data['how'], {'title', 'line', 'steps'}, 'how'); text(w['title'], 60); text(w['line'], 200)
+    if not isinstance(w['steps'], list) or not 3 <= len(w['steps']) <= 6:
+        raise ValueError('Three to six process steps')
+    for st in w['steps']:
+        keys(st, {'name', 'line'}, 'step'); text(st['name'], 40); text(st['line'], 200)
+    ab = keys(data['about'], {'lines'}, 'about')
+    if not isinstance(ab['lines'], list) or not 1 <= len(ab['lines']) <= 4:
+        raise ValueError('One to four about paragraphs')
+    for line in ab['lines']:
+        text(line, 400)
 
 
 def esc(value: str) -> str:
@@ -179,6 +189,9 @@ def render_index(r: dict) -> str:
             f'<h3 id="engine-slot-h">{esc(e["title"])}</h3><p>{esc(e["line"])}</p></aside>')
     projects = ''.join(f'<li><h3>{ext(p["url"], p["name"])}</h3><p>{esc(p["line"])}</p></li>' for p in r['projects'])
     c = r['contact']
+    w = r['how']
+    steps = ''.join(f'<li><p class="step-n">{i:02d}</p><h3>{esc(st["name"])}</h3><p>{esc(st["line"])}</p></li>' for i, st in enumerate(w['steps'], 1))
+    about = ''.join(f'<p>{esc(line)}</p>' for line in r['about']['lines'])
     return (
         '<a class="skip" href="#main">Skip to content</a>'
         f'<header class="top"><a class="mark" href="#main" aria-label="Jacob Metoyer, top of page"><span aria-hidden="true">JM</span></a>'
@@ -187,14 +200,16 @@ def render_index(r: dict) -> str:
         f'<section class="hero" aria-labelledby="hero-h"><p class="kicker">{esc(h["kicker"])}</p>'
         f'<h1 id="hero-h"><span class="name">Jacob Metoyer</span>{esc(h["title"])}</h1>'
         f'<p class="lede">{esc(h["lede"])}</p>'
-        f'<p class="hero-links"><a class="btn" href="#demos">See the demos ↓</a> {ext(h["source"], "GitHub · Jacob-Met", "src")}</p></section>'
+        f'<p class="hero-links"><a class="btn" href="#demos">See the demos ↓</a> <a class="src" href="#how">How they get built</a> {ext(h["source"], "GitHub · Jacob-Met", "src")}</p></section>'
         f'<section id="demos" class="demos" aria-labelledby="demos-h"><div class="sec-head"><h2 id="demos-h">Demos</h2>'
         f'<p>Each one runs. The images are captures of the real thing; the links open it.</p></div>'
         + ''.join(demos) + slot + '</section>'
+        f'<section id="how" class="how" aria-labelledby="how-h"><div class="sec-head"><h2 id="how-h">{esc(w["title"])}</h2>'
+        f'<p>{esc(w["line"])}</p></div><ol class="steps">{steps}</ol></section>'
         f'<section id="more" class="more" aria-labelledby="more-h"><div class="sec-head"><h2 id="more-h">More work</h2>'
         f'<p>Research and tooling projects with source, but no in-browser demo.</p></div><ul class="cards">{projects}</ul></section>'
         f'<section id="about" class="about" aria-labelledby="about-h"><h2 id="about-h">About</h2>'
-        f'<p>{esc(h["lede"])}</p><p>{esc(c["line"])} {ext(c["url"], "github.com/Jacob-Met")}</p></section>'
+        f'{about}<p>{esc(c["line"])} {ext(c["url"], "github.com/Jacob-Met")}</p></section>'
         '</main>'
         f'<footer class="foot"><p>Updated {esc(r["updated"])} · Static page, no trackers, no scripts.</p></footer>'
     )

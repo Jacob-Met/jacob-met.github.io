@@ -136,6 +136,10 @@ class ContentTests(Built):
         for img in re.findall(r'<img [^>]+>', self.main()):
             with self.subTest(img=img[:60]):
                 self.assertRegex(img, r'alt="[^"]{20,}"'); self.assertRegex(img, r'width="\d+" height="\d+"')
+    def test_how_section_states_who_builds(self):
+        sec = re.search(r'<section id="how"[^>]*>(.*?)</section>', self.main(), re.S).group(1)
+        self.assertEqual(sec.count('<li>'), len(self.data['how']['steps']))
+        self.assertIn('agent', self.data['hero']['title'].lower())
     def test_engine_slot_is_labelled_placeholder_without_media(self):
         slot = re.search(r'<aside class="slot"[^>]*>(.*?)</aside>', self.main(), re.S)
         self.assertIsNotNone(slot); self.assertNotIn('<img', slot.group(1)); self.assertIn('In progress', slot.group(1))
