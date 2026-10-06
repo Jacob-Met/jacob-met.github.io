@@ -124,14 +124,16 @@ class ContentTests(Built):
         self.assertLess(m.index('class="hero"'), pos[0])
         self.assertEqual(self.page().count('<h1'), 1)
         self.assertIn('<a class="skip" href="#main">Skip to content</a>', self.page())
-    def test_every_demo_shows_output_line_and_repo(self):
-        cards = re.findall(r'<article class="demo[^"]*"[^>]*>(.*?)</article>', self.main(), re.S)
-        self.assertEqual(len(cards), len(self.data['demos']) + 1)
+    def test_every_demo_is_a_captured_live_link(self):
+        cards = re.findall(r'<article class="demo[^\"]*"[^>]*>(.*?)</article>', self.main(), re.S)
+        self.assertEqual(len(cards), len(self.data['demos']))
         for card in cards:
             with self.subTest(card=re.sub(r'<[^>]+>', ' ', card)[:60]):
-                self.assertTrue('<img ' in card or '<pre' in card)
+                self.assertIn('<img ', card)
+                self.assertNotIn('<pre', card)
                 self.assertIn('class="line"', card)
-                self.assertRegex(card, r'href="https://github\.com/Jacob-Met/[^"]+"')
+                self.assertRegex(card, r'href="https://github\.com/Jacob-Met/[^\"]+"')
+        self.assertNotIn('before_conflict', self.main())
     def test_every_capture_has_alt_and_size(self):
         for img in re.findall(r'<img [^>]+>', self.main()):
             with self.subTest(img=img[:60]):
@@ -162,7 +164,7 @@ class ContentTests(Built):
         slot = re.search(r'<aside class="slot"[^>]*>(.*?)</aside>', self.main(), re.S)
         self.assertIsNotNone(slot); self.assertNotIn('<img', slot.group(1)); self.assertIn('In progress', slot.group(1))
     def test_escaping(self):
-        data = copy.deepcopy(self.data); data['terminal_demo']['output'] = '"a" & \'b\''
+        data = copy.deepcopy(self.data); data['demos'][0]['detail'] = "\"a\" & 'b'"
         build.build(self.root, data)
         self.assertIn('&quot;a&quot; &amp; &#x27;b&#x27;', self.page())
         self.assertTrue(check(self.root)['passed'])
@@ -235,9 +237,9 @@ class NotFoundTests(Built):
 # ---------------------------------------------------------------------------
 # W-04 regression tests (issue #10): build hygiene.
 #
-#   * test_tmp_stays_out — a fresh rebuild must not leak a `tmp/` directory
+#   * test_tmp_stays_out ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â a fresh rebuild must not leak a `tmp/` directory
 #     or `*.tmp` artifacts into the published site tree.
-#   * test_no_contents_write_workflow — no workflow in .github/workflows/ may
+#   * test_no_contents_write_workflow ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â no workflow in .github/workflows/ may
 #     declare `contents: write`, at top level or per job. This pins the
 #     current posture (`contents: read` everywhere, plus `issues: write` on
 #     the live-site alert job).
@@ -477,8 +479,8 @@ class BuildHygieneTests(Built):
     (https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
     lists `contents`, `actions`, `issues`, ... as the scope keys and documents
     no case folding), and YAML mapping keys are case-sensitive. A capitalized
-    key such as ``Contents: write`` is therefore NOT the ``contents`` scope —
-    GitHub would not grant the scope through it — so the check deliberately
+    key such as ``Contents: write`` is therefore NOT the ``contents`` scope ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â
+    GitHub would not grant the scope through it ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â so the check deliberately
     does not fold key case. Quoted keys ('contents': write) ARE the same key
     as contents: write and are caught.
     """
@@ -497,9 +499,9 @@ class BuildHygieneTests(Built):
         if isinstance(perms, dict):
             return perms
         if str(perms).strip().lower() == 'write-all':
-            self.fail(f'{path.name}: {location} uses `permissions: write-all` — '
+            self.fail(f'{path.name}: {location} uses `permissions: write-all` ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â '
                       'grants contents:write, violating the no-contents:write posture')
-        self.fail(f'{path.name}: {location} permissions is not a block mapping ({perms!r}) — '
+        self.fail(f'{path.name}: {location} permissions is not a block mapping ({perms!r}) ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â '
                   'unsupported form; this test pins the block-form posture, '
                   'so extend the check before adopting it')
 
@@ -522,11 +524,11 @@ class BuildHygieneTests(Built):
     def test_no_contents_write_workflow(self):
         workflows_dir = self.WORKFLOWS_DIR
         self.assertTrue(workflows_dir.is_dir(),
-                        f'{workflows_dir} is missing — expected .github/workflows/ next to source/')
+                        f'{workflows_dir} is missing ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â expected .github/workflows/ next to source/')
         files = sorted(p for p in workflows_dir.iterdir()
                        if p.is_file() and p.suffix in ('.yml', '.yaml'))
         self.assertTrue(files,
-                        f'no workflow files found in {workflows_dir} — layout changed')
+                        f'no workflow files found in {workflows_dir} ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â layout changed')
         violations = []
         checked = []
         for path in files:
@@ -541,7 +543,7 @@ class BuildHygieneTests(Built):
                 locations.append(('top-level', top))
             jobs = doc.get('jobs')
             if not isinstance(jobs, dict):
-                self.fail(f'{path.name}: jobs block is missing or not a mapping — layout changed')
+                self.fail(f'{path.name}: jobs block is missing or not a mapping ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â layout changed')
             for job_name, job in jobs.items():
                 if not isinstance(job, dict):
                     self.fail(f'{path.name}: job {job_name!r} is not a mapping')

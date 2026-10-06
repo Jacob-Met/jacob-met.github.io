@@ -1,6 +1,6 @@
 # jacobmetoyer.com
 
-A small static site that puts working demos first. Each featured demo shows captured output from the running thing (desktop and phone screenshots, or real terminal output), a one-line description, a live link and its public repository.
+A small static site that puts working demos first. Each featured demo shows desktop and phone captures from its live interactive application, a concise description, a live link and public source. Screenshots document the product; they are not the demo itself.
 
 ## Source and build
 
