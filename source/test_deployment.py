@@ -31,7 +31,7 @@ class DeploymentTests(unittest.TestCase):
 
     def test_all_files_match(self):
         r = verify(self.root, self.base); self.assertTrue(r['passed'], r)
-        self.assertEqual(len(r['files']), 13); self.assertEqual((self.root / 'CNAME').read_text(encoding='utf-8'), 'jacobmetoyer.com\n')
+        self.assertEqual(len(r['files']), len(list(f for f in self.root.rglob('*') if f.is_file()))); self.assertEqual((self.root / 'CNAME').read_text(encoding='utf-8'), 'jacobmetoyer.com\n')
     def test_server_drift_fails(self):
         with (self.served / 'index.html').open('a', encoding='utf-8') as f: f.write('STALE')
         r = verify(self.root, self.base); self.assertFalse(r['passed'])

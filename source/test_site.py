@@ -7,9 +7,7 @@ from check import check
 
 
 def record():
-    data = json.loads((build.ROOT / 'content.json').read_text(encoding='utf-8'))
-    data['copy_markdown'] = (build.ROOT / data['copy_path']).read_text(encoding='utf-8')
-    return data
+    return json.loads((build.ROOT / 'content.json').read_text(encoding='utf-8'))
 
 
 class Built(unittest.TestCase):
@@ -44,24 +42,23 @@ class RecordTests(unittest.TestCase):
     def test_unknown_root_field_denied(self):
         self.data['private_notes'] = 'no'
         with self.assertRaises(ValueError): build.validate(self.data)
-    def test_claim_without_source_denied(self):
-        data = copy.deepcopy(self.data); data['claims'][1]['sources'] = []
+    def test_demo_without_repo_denied(self):
+        data = copy.deepcopy(self.data); data['demos'][0]['repo'] = 'https://github.com/Other-User/x'
         with self.assertRaises(ValueError): build.validate(data)
-    def test_duplicate_claim_id_denied(self):
-        data = copy.deepcopy(self.data); data['claims'][1]['id'] = data['claims'][0]['id']
+    def test_demo_without_capture_denied(self):
+        data = copy.deepcopy(self.data); del data['demos'][0]['shots']['mobile']
         with self.assertRaises(ValueError): build.validate(data)
-    def test_copy_url_must_be_in_source_map(self):
-        data = copy.deepcopy(self.data)
-        data['copy_markdown'] = data['copy_markdown'].replace('https://github.com/Jacob-Met/workflow-checks)', 'https://github.com/Other-User/Other-Repo)')
+    def test_capture_must_be_local_webp_with_true_size(self):
+        for src, w in (('https://github.com/x.webp', None), ('assets/demos/missing.webp', None), (None, 9999)):
+            data = copy.deepcopy(self.data); shot = data['demos'][0]['shots']['desktop']
+            if src: shot['src'] = src
+            if w: shot['w'] = w
+            with self.subTest(src=src, w=w), self.assertRaises(ValueError): build.validate(data)
+    def test_duplicate_demo_id_denied(self):
+        data = copy.deepcopy(self.data); data['demos'][1]['id'] = data['demos'][0]['id']
         with self.assertRaises(ValueError): build.validate(data)
-    def test_factual_paragraph_without_link_denied(self):
-        data = copy.deepcopy(self.data)
-        marker = '[quality-control demo](https://github.com/Jacob-Met/CaptureSuite/blob/main/tools/demo_qc.py)'
-        self.assertIn(marker, data['copy_markdown'])
-        paragraph = next(p for p in data['copy_markdown'].split('\n\n') if marker in p)
-        unlinked = build.LINK_RE.sub(lambda m: m.group(1), paragraph)
-        self.assertNotIn('](https://', unlinked)
-        data['copy_markdown'] = data['copy_markdown'].replace(paragraph, unlinked)
+    def test_markup_in_copy_denied(self):
+        data = copy.deepcopy(self.data); data['demos'][0]['line'] = '<script>x</script>'
         with self.assertRaises(ValueError): build.validate(data)
     def test_bad_urls_denied(self):
         for url in ('javascript:alert(1)', 'https://me:pw@github.com/x', 'https://github.com.evil.example/x', 'https://github.com/x?token=1',
@@ -98,66 +95,54 @@ class BuildTests(Built):
         self.assertEqual((self.root / 'favicon.ico').read_bytes()[:4], b'\x00\x00\x01\x00')
         self.assertIn(f'<meta property="og:image" content="{build.BASE}/{build.SHARE_CARD}">', self.page())
     def test_cv_json_is_the_record(self):
-        expected = dict(self.data)
-        expected['copy_sha256'] = hashlib.sha256(expected['copy_markdown'].encode('utf-8')).hexdigest()
-        self.assertEqual(json.loads((self.root / 'cv.json').read_text(encoding='utf-8')), expected)
+        self.assertEqual(json.loads((self.root / 'cv.json').read_text(encoding='utf-8')), self.data)
     def test_sitemap_has_only_the_front_page(self):
         sm = (self.root / 'sitemap.xml').read_text(encoding='utf-8')
         self.assertEqual(sm.count('<loc>'), 1); self.assertIn(f'<loc>{build.BASE}/</loc>', sm)
+    def test_only_declared_captures_ship(self):
+        shots = {f.relative_to(self.root).as_posix() for f in (self.root / 'assets' / 'demos').iterdir()}
+        self.assertEqual(shots, set(build.shot_files(self.data)))
 
 
 class ContentTests(Built):
-    """The public copy is source-mapped, work-first, and uses no prohibited old-profile references."""
+    """Demos-first: every demo shows captured output, a one-line description and its source."""
     BANNED = ('anime', 'manga', 'cosplay', 'tornadocos', 'myanimelist', 'umamusume', 'uma-sim', 'schauz', 'spire',
               'hamon', 'togishi', 'otama', 'shinogi', 'jihada', 'passionate', 'journey', 'leverage', 'robust', 'ai-assistance', 'ai-written')
     def test_no_old_profile_or_ai_assistance_copy(self):
         low = (self.page() + json.dumps(self.data)).lower()
         for word in self.BANNED:
             with self.subTest(word=word): self.assertNotIn(word, low)
-    def test_no_imagery_or_executable_scripts_in_body(self):
+    def test_no_executable_scripts_or_embeds_in_body(self):
         m = self.main()
-        for tag in ('<img', '<picture', '<figure', '<svg', '<video', '<script', '<iframe', '<form', '<canvas', '<object', '<embed'):
+        for tag in ('<svg', '<video', '<script', '<iframe', '<form', '<canvas', '<object', '<embed'):
             with self.subTest(tag=tag): self.assertNotIn(tag, m)
         self.assertNotIn('<script src', self.page())
-    def test_work_first_sections_and_one_identity_heading(self):
+    def test_demos_first_section_order(self):
         m = self.main()
         pos = [m.index(f'<section id="{i}"') for i, _ in build.SECTIONS]
         self.assertEqual(pos, sorted(pos))
-        self.assertEqual(self.page().count('<h1>'), 1)
+        self.assertLess(m.index('class="hero"'), pos[0])
+        self.assertEqual(self.page().count('<h1'), 1)
         self.assertIn('<a class="skip" href="#main">Skip to content</a>', self.page())
-    def test_every_factual_paragraph_has_a_source_link(self):
-        paragraphs = re.findall(r'<p(?:\s[^>]*)?>(.*?)</p>', self.main(), re.S)
-        self.assertGreaterEqual(len(paragraphs), 10)
-        for paragraph in paragraphs:
-            with self.subTest(paragraph=re.sub(r'<[^>]+>', ' ', paragraph)[:80]):
-                self.assertIn('href="https://', paragraph)
-    def test_six_work_entries_each_link_to_sources(self):
-        entries = re.findall(r'<article class="entry"[^>]*>(.*?)</article>', self.main(), re.S)
-        self.assertEqual(len(entries), 6)
-        for entry in entries:
-            with self.subTest(entry=re.sub(r'<[^>]+>', ' ', entry)[:60]):
-                self.assertIn('href="https://', entry)
-    def test_copy_link_sequence_is_in_claim_source_map(self):
-        mapped = {source['url'] for claim in self.data['claims'] for source in claim['sources']}
-        pairs = re.findall(r'<a href="(https://[^"]+)" rel="noopener">([^<]*)</a>', self.page())
-        rendered = [(label, url) for url, label in pairs]
-        expected = build.LINK_RE.findall(self.data['copy_markdown'])
-        copy_links = {url for _, url in expected}
-        self.assertEqual(rendered, expected)
-        self.assertTrue(copy_links <= mapped)
-    def test_copy_has_no_raw_html_and_claim_ids_are_preserved(self):
-        self.assertNotRegex(self.data['copy_markdown'], r'<\s*/?\s*[a-zA-Z]')
-        self.assertEqual({c['id'] for c in self.data['claims']}, {
-            'ID-01', 'WC-01', 'WC-02', 'WC-03', 'WC-04', 'WC-05', 'WC-06', 'CS-01', 'CP-01', 'TO-01', 'RS-01', 'CS-02', 'WC-07'
-        })
+    def test_every_demo_shows_output_line_and_repo(self):
+        cards = re.findall(r'<article class="demo[^"]*"[^>]*>(.*?)</article>', self.main(), re.S)
+        self.assertEqual(len(cards), len(self.data['demos']) + 1)
+        for card in cards:
+            with self.subTest(card=re.sub(r'<[^>]+>', ' ', card)[:60]):
+                self.assertTrue('<img ' in card or '<pre' in card)
+                self.assertIn('class="line"', card)
+                self.assertRegex(card, r'href="https://github\.com/Jacob-Met/[^"]+"')
+    def test_every_capture_has_alt_and_size(self):
+        for img in re.findall(r'<img [^>]+>', self.main()):
+            with self.subTest(img=img[:60]):
+                self.assertRegex(img, r'alt="[^"]{20,}"'); self.assertRegex(img, r'width="\d+" height="\d+"')
+    def test_engine_slot_is_labelled_placeholder_without_media(self):
+        slot = re.search(r'<aside class="slot"[^>]*>(.*?)</aside>', self.main(), re.S)
+        self.assertIsNotNone(slot); self.assertNotIn('<img', slot.group(1)); self.assertIn('In progress', slot.group(1))
     def test_escaping(self):
-        data = copy.deepcopy(self.data)
-        marker = 'See which bills need a closer look'
-        self.assertIn(marker, data['copy_markdown'])
-        data['copy_markdown'] = data['copy_markdown'].replace(marker, '<script>x</script> ' + marker)
+        data = copy.deepcopy(self.data); data['terminal_demo']['output'] = '"a" & \'b\''
         build.build(self.root, data)
-        self.assertNotIn('<script>x', self.page())
-        self.assertIn('&lt;script&gt;x&lt;/script&gt;', self.page())
+        self.assertIn('&quot;a&quot; &amp; &#x27;b&#x27;', self.page())
         self.assertTrue(check(self.root)['passed'])
     def test_external_hosts_are_only_verifiable_ones(self):
         hosts = {urlsplit(u).hostname for u in re.findall(r'href="(https://[^"]+)"', self.main())}
@@ -170,6 +155,7 @@ class CheckerTests(Built):
         (self.root / 'index.html').write_text('<h1>broken</h1>'); self.assertFalse(check(self.root)['passed'])
     def test_injected_surface_rejected(self):
         for fragment in ('<script src="site.js"></script>', '<script>void(0)</script>', '<img src="assets/mark.svg" alt="x">',
+                         '<img src="assets/demos/returnby-desktop.webp" width="1" height="1" alt="">', '<img src="assets/demos/returnby-desktop.webp" alt="no size">',
                          '<link rel="stylesheet" href="https://example.invalid/t.css">', '<meta http-equiv="refresh" content="0;url=https://example.invalid">',
                          '<iframe src="https://example.invalid"></iframe>', '<a href="https://github.com/Jacob-Met" ping="https://example.invalid">l</a>',
                          '<a href="http://github.com/Jacob-Met">plain</a>', '<a href="//example.invalid/x">rel</a>', '<style>body{}</style>',

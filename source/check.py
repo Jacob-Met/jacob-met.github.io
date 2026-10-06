@@ -2,7 +2,8 @@
 """Offline integrity checks for the generated site: declared surface, links, anchors, manifest.
 
 The site has no executable script at all. Any <script> other than a JSON-LD data block, any
-inline handler, form, frame, remote resource or non-HTTPS link is a failure.
+inline handler, form, frame, remote resource or non-HTTPS link is a failure. Images are allowed
+only as local demo captures (assets/demos/*.webp) with explicit width, height and alt text.
 """
 from __future__ import annotations
 import argparse, hashlib, json, re
@@ -47,7 +48,12 @@ class Page(HTMLParser):
         if 'id' in a: self.ids.append(a['id'])
         if tag == 'html': self.lang = a.get('lang')
         if tag == 'h1': self.h1 += 1
-        if tag in ('form', 'iframe', 'object', 'embed', 'base', 'style', 'img', 'video', 'audio', 'picture', 'svg', 'canvas'):
+        if tag == 'img':
+            src = a.get('src') or ''
+            if not re.fullmatch(r'/?assets/demos/[a-z0-9-]+\.webp', src): self.errors.append('img: only local assets/demos/*.webp captures are allowed')
+            if not (a.get('alt') or '').strip(): self.errors.append('img: missing alt text')
+            if not (str(a.get('width', '')).isdigit() and str(a.get('height', '')).isdigit()): self.errors.append('img: missing explicit width/height')
+        if tag in ('form', 'iframe', 'object', 'embed', 'base', 'style', 'video', 'audio', 'picture', 'svg', 'canvas'):
             self.errors.append(f'{tag}: outside declared surface')
         if any(k.startswith('on') or k in ('srcdoc', 'ping', 'style', 'srcset') for k in a): self.errors.append(f'{tag}: inline attribute outside declared surface')
         if tag in ('a', 'link') and a.get('href'): self.links.append(a['href'])
