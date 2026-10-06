@@ -4,8 +4,8 @@
   "updated": "2026-10-06",
   "hero": {
     "kicker": "AI-directed software · CS + physics at CSULB",
-    "title": "I direct AI agents to build software, and I set the bar it has to clear.",
-    "lede": "Most of the code on this page was written by AI coding agents I run, not typed by hand. My part is choosing the problem, writing down what done means, and deciding whether what comes back is good enough. Every demo below runs, and its source is public so you can check the work.",
+    "title": "I direct AI agents. They write all the code; I set the bar.",
+    "lede": "AI agents write all the code here. I choose the problem, set the bar, and decide what ships. Every demo below runs, and its source is public so you can check the work.",
     "source": "https://github.com/Jacob-Met"
   },
   "demos": [
@@ -55,11 +55,11 @@
   },
   "how": {
     "title": "How it gets built",
-    "line": "The same loop for every project here. Agents do the building; the direction and the standard are mine.",
+    "line": "AI agents write all the code here. I choose the problem, set the bar, and decide what ships.",
     "steps": [
       {"name": "I pick the problem", "line": "Usually something from research, school or everyday friction that a small tool could fix."},
-      {"name": "I write the bar", "line": "A short brief: what it must do, what it must not do, and how we will know it works."},
-      {"name": "Agents build it", "line": "AI coding agents on my own machines write the code, the tests and the docs, often several at once."},
+      {"name": "I set the bar", "line": "A short brief: what it must do, what it must not do, and how we will know it works."},
+      {"name": "Agents write the code", "line": "AI coding agents on my own machines write all the code. They also write tests and docs, often several at once."},
       {"name": "Checks before claims", "line": "Tests and CI run, another agent reviews it, and anything that misses the brief goes back. I make the call on what is good enough."},
       {"name": "It ships with source", "line": "Public repository, a live link where there is one, and nothing claimed that the code does not do."}
     ]
@@ -84,7 +84,7 @@
   "about": {
     "lines": [
       "I study computer science and physics at Cal State Long Beach, with a minor in biology, and I'm working toward MD/PhD training.",
-      "I spend far more time directing AI agents than writing code by hand. The useful skill turns out to be the unglamorous part: a clear brief, a bar you can actually check, and being willing to throw work away when it misses.",
+      "I don't write code. AI agents write all of it; I direct them, set the bar, and decide whether the result is good enough. The useful skill is the unglamorous part: a clear brief, a bar you can actually check, and being willing to throw work away when it misses.",
       "Most projects start as a research or everyday problem and end as a small tool with its source in public."
     ]
   },
