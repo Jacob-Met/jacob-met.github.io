@@ -1,184 +1,103 @@
 {
   "visibility": "public",
   "name": "Jacob Metoyer",
-  "updated": "2026-10-04",
-  "copy_path": "content.md",
-  "claims": [
+  "updated": "2026-10-06",
+  "hero": {
+    "kicker": "CS + physics · Cal State Long Beach",
+    "title": "I build software you can open, run, and check.",
+    "lede": "I study computer science and physics at Cal State Long Beach, with a minor in biology, and I'm working toward MD/PhD training. Most of what I make starts as a research or everyday problem and ends as a small tool with its source in public.",
+    "source": "https://github.com/Jacob-Met"
+  },
+  "demos": [
     {
-      "id": "ID-01",
-      "description": "Public identity/name.",
-      "sources": [
-        {
-          "label": "GitHub profile",
-          "url": "https://github.com/Jacob-Met"
-        }
-      ]
-    },
-    {
-      "id": "WC-01",
-      "description": "workflow-checks contains three Python standard-library demos for utilities, freight, and PT authorizations; sample data is synthetic and no real-world client/savings/accuracy claim is made.",
-      "sources": [
-        {
-          "label": "workflow-checks README",
-          "url": "https://github.com/Jacob-Met/workflow-checks/blob/main/README.md"
+      "id": "recallweave",
+      "name": "RecallWeave",
+      "tag": "ForgeHacks 2026 · AI + Education",
+      "line": "A browser-only biology lesson that picks your next question by expected information gain and shows its mastery estimates as you answer.",
+      "detail": "The learner model is plain Bayesian knowledge tracing with every probability visible; there is no chatbot and nothing leaves the page. Submitted to ForgeHacks 2026 (Devpost entry 1221781).",
+      "play": {
+        "label": "Play the lesson",
+        "url": "https://jacobmetoyer.com/RecallWeave/demo.html"
+      },
+      "repo": "https://github.com/Jacob-Met/RecallWeave",
+      "stack": "JavaScript · HTML/CSS · no build step",
+      "shots": {
+        "desktop": {
+          "src": "assets/demos/recallweave-desktop.webp",
+          "w": 1200,
+          "h": 750,
+          "alt": "RecallWeave on desktop: a question about cellular energy with four answer choices, a concept map, and live mastery bars."
         },
-        {
-          "label": "Jacob-authored demo commit",
-          "url": "https://github.com/Jacob-Met/workflow-checks/commit/fd74a02"
+        "mobile": {
+          "src": "assets/demos/recallweave-mobile.webp",
+          "w": 300,
+          "h": 649,
+          "alt": "RecallWeave on a phone after six questions: the learning trace with per-concept mastery estimates."
+        }
+      }
+    },
+    {
+      "id": "returnby",
+      "name": "ReturnBy",
+      "tag": "Browser tool · TypeScript",
+      "line": "Paste an order-confirmation email and get the return deadline plus a calendar reminder, parsed entirely in your browser.",
+      "detail": "Rule-based extraction of store, date, order number and total, a per-store return-window table, and an RFC 5545 calendar file with a reminder three days out. Try a sample: the emails are fictional.",
+      "play": {
+        "label": "Try it live",
+        "url": "https://jacobmetoyer.com/returnby/"
+      },
+      "repo": "https://github.com/Jacob-Met/returnby",
+      "stack": "TypeScript · Vite · localStorage only",
+      "shots": {
+        "desktop": {
+          "src": "assets/demos/returnby-desktop.webp",
+          "w": 1200,
+          "h": 1083,
+          "alt": "ReturnBy on desktop after loading a sample email: extracted store, order date, order number, total and a 30-day return window."
         },
-        {
-          "label": "workflow-checks repository",
-          "url": "https://github.com/Jacob-Met/workflow-checks"
-        },
-        {
-          "label": "sample outputs",
-          "url": "https://jacobmetoyer.com/workflow-checks/"
+        "mobile": {
+          "src": "assets/demos/returnby-mobile.webp",
+          "w": 300,
+          "h": 649,
+          "alt": "ReturnBy on a phone with the same sample email parsed into editable fields."
         }
-      ]
-    },
-    {
-      "id": "WC-02",
-      "description": "utility_watch flags billing exceptions and queues clean unpaid bills for approval with evidence rows; it does not issue payments.",
-      "sources": [
-        {
-          "label": "utility demo README",
-          "url": "https://github.com/Jacob-Met/workflow-checks/blob/main/utility_watch/README.md"
-        },
-        {
-          "label": "utility demo source",
-          "url": "https://github.com/Jacob-Met/workflow-checks/tree/main/utility_watch"
-        }
-      ]
-    },
-    {
-      "id": "WC-03",
-      "description": "freight_packets creates draft detention/invoice packets with calculations and evidence timelines; missing or uncertain evidence is held for human review and nothing is sent or invoiced.",
-      "sources": [
-        {
-          "label": "freight demo README",
-          "url": "https://github.com/Jacob-Met/workflow-checks/blob/main/freight_packets/README.md"
-        },
-        {
-          "label": "freight demo source",
-          "url": "https://github.com/Jacob-Met/workflow-checks/tree/main/freight_packets"
-        }
-      ]
-    },
-    {
-      "id": "WC-04",
-      "description": "pt_auth builds a prioritized authorization/visit worklist with submit-by dates and checklists; sample patients and payer rules are synthetic/placeholders and nothing is submitted.",
-      "sources": [
-        {
-          "label": "PT demo README",
-          "url": "https://github.com/Jacob-Met/workflow-checks/blob/main/pt_auth/README.md"
-        },
-        {
-          "label": "PT demo source",
-          "url": "https://github.com/Jacob-Met/workflow-checks/tree/main/pt_auth"
-        }
-      ]
-    },
-    {
-      "id": "WC-05",
-      "description": "Workflow decisions carry file:row evidence pointers; unresolved cases go to a person rather than a guess.",
-      "sources": [
-        {
-          "label": "workflow-checks README",
-          "url": "https://github.com/Jacob-Met/workflow-checks/blob/main/README.md"
-        }
-      ]
-    },
-    {
-      "id": "WC-06",
-      "description": "A future scoped pilot would use redacted exports, the client's real rules, and a manual baseline; any claim is limited to the measured comparison.",
-      "sources": [
-        {
-          "label": "workflow-checks pilot scope",
-          "url": "https://github.com/Jacob-Met/workflow-checks/blob/main/README.md"
-        },
-        {
-          "label": "utility pilot requirements",
-          "url": "https://github.com/Jacob-Met/workflow-checks/blob/main/utility_watch/README.md"
-        }
-      ]
-    },
-    {
-      "id": "CS-01",
-      "description": "CaptureSuite is Windows-first multimodal research capture with daemon, worker plugins, and sealed session packages; its offline QC demo is synthetic and does not establish hardware performance or clinical validity.",
-      "sources": [
-        {
-          "label": "CaptureSuite README",
-          "url": "https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md"
-        },
-        {
-          "label": "offline QC demo",
-          "url": "https://github.com/Jacob-Met/CaptureSuite/blob/main/tools/demo_qc.py"
-        }
-      ]
-    },
-    {
-      "id": "CP-01",
-      "description": "CanvasPilot is a Canvas LMS MCP server and CLI with a local browser-session broker; its offline demo is synthetic and does not validate live school authentication or student outcomes.",
-      "sources": [
-        {
-          "label": "CanvasPilot README",
-          "url": "https://github.com/Jacob-Met/canvaspilot/blob/main/README.md"
-        },
-        {
-          "label": "offline demo",
-          "url": "https://github.com/Jacob-Met/canvaspilot/blob/main/src/canvaspilot/offline_demo.py"
-        }
-      ]
-    },
-    {
-      "id": "TO-01",
-      "description": "TowerOps is synthetic air-traffic decision support gated before a simulated transition; it is not operational ATC and is not connected to aircraft.",
-      "sources": [
-        {
-          "label": "TowerOps README",
-          "url": "https://github.com/Jacob-Met/TowerOps/blob/main/README.md"
-        },
-        {
-          "label": "TowerOps demo",
-          "url": "https://github.com/Jacob-Met/TowerOps/blob/main/demo.py"
-        }
-      ]
-    },
-    {
-      "id": "RS-01",
-      "description": "Self-reported: undergraduate at CSULB (CS and physics, minor biology), preparing for MD/PhD training. The BUILD Scholars page describes the program, not Jacob's membership or the MD/PhD goal.",
-      "sources": [
-        {
-          "label": "CSULB BUILD Scholars Program",
-          "url": "https://github.com/Jacob-Met"
-        }
-      ]
-    },
-    {
-      "id": "CS-02",
-      "description": "CaptureSuite timing model design note is in the public repository.",
-      "sources": [
-        {
-          "label": "CaptureSuite timing model",
-          "url": "https://github.com/Jacob-Met/CaptureSuite/blob/main/docs/design/TIMING.md"
-        }
-      ]
-    },
-    {
-      "id": "WC-07",
-      "description": "workflow-checks repository root and sample-output site.",
-      "sources": [
-        {
-          "label": "workflow-checks repository",
-          "url": "https://github.com/Jacob-Met/workflow-checks"
-        },
-        {
-          "label": "sample outputs",
-          "url": "https://jacobmetoyer.com/workflow-checks/"
-        }
-      ]
+      }
     }
   ],
-  "copy_markdown": "# [Jacob Metoyer](https://github.com/Jacob-Met)\n\n## I build the tools I wish my research already had.\n\nI study computer science and physics at Cal State Long Beach, with a minor in biology. I'm working toward MD/PhD training. [More about me](https://github.com/Jacob-Met).\n\nI'm interested in what happens between a useful idea and a tool someone can actually use. Lately that's meant [CaptureSuite](https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md): recording motion and physiological data, then making sure the [timing](https://github.com/Jacob-Met/CaptureSuite/blob/main/docs/design/TIMING.md) lines up. The projects below are open to explore. Their READMEs explain what's working and what's still being built ([scope and limits](https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md)).\n\n## Projects\n\n### [CaptureSuite](https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md)\n\nWhen several sensors record the same experiment, keeping their data together is its own problem. I'm building CaptureSuite around that: Windows recording tools, plugins for different streams, and a session package that travels with the recording ([project scope](https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md)).\n\nThe [quality-control demo](https://github.com/Jacob-Met/CaptureSuite/blob/main/tools/demo_qc.py) walks through a generated recording; no hardware needed. It's a way to explore the pipeline, not a performance benchmark ([limits](https://github.com/Jacob-Met/CaptureSuite/blob/main/README.md)).\n\n### [CanvasPilot](https://github.com/Jacob-Met/canvaspilot/blob/main/README.md)\n\nCanvas has useful information spread across a lot of screens. CanvasPilot gives it a command-line and MCP interface, with a local browser-session bridge for gaps in the API ([project scope](https://github.com/Jacob-Met/canvaspilot/blob/main/README.md)).\n\nThe offline demo is synthetic and needs no Canvas account ([demo code](https://github.com/Jacob-Met/canvaspilot/blob/main/src/canvaspilot/offline_demo.py); [limits](https://github.com/Jacob-Met/canvaspilot/blob/main/README.md)).\n\n### [TowerOps](https://github.com/Jacob-Met/TowerOps/blob/main/README.md)\n\nA small air-traffic simulation for exploring a simple question: what should a system check before it acts? TowerOps makes those checks explicit. It's a toy environment, not an operational ATC system ([project scope](https://github.com/Jacob-Met/TowerOps/blob/main/README.md); [demo code](https://github.com/Jacob-Met/TowerOps/blob/main/demo.py)).\n\n## Workflow checks\n\nI also built [workflow-checks](https://github.com/Jacob-Met/workflow-checks) for the little things that get buried in paperwork: a utility bill that looks off, a freight charge worth checking, or a PT authorization deadline. Three small Python programs, each with a [sample you can explore](https://jacobmetoyer.com/workflow-checks/). The records are made up; the [README](https://github.com/Jacob-Met/workflow-checks/blob/main/README.md) explains how the demos work.\n\n### [Utility bills](https://github.com/Jacob-Met/workflow-checks/blob/main/utility_watch/README.md)\n\nSee which bills need a closer look and which are ready for approval, with the supporting rows beside them. Review only; it doesn't issue payments ([utility demo](https://github.com/Jacob-Met/workflow-checks/blob/main/utility_watch/README.md)).\n\n[See a sample](https://jacobmetoyer.com/workflow-checks/) · [Read the code](https://github.com/Jacob-Met/workflow-checks/tree/main/utility_watch)\n\n### [Freight packets](https://github.com/Jacob-Met/workflow-checks/blob/main/freight_packets/README.md)\n\nPull the calculation, timeline and missing details into a detention packet someone can review. It prepares a draft, not an invoice or an outbound message ([freight demo](https://github.com/Jacob-Met/workflow-checks/blob/main/freight_packets/README.md)).\n\n[See a sample](https://jacobmetoyer.com/workflow-checks/) · [Read the code](https://github.com/Jacob-Met/workflow-checks/tree/main/freight_packets)\n\n### [PT authorizations](https://github.com/Jacob-Met/workflow-checks/blob/main/pt_auth/README.md)\n\nPut authorizations, visits and upcoming deadlines in one worklist. The sample uses invented patients and placeholder payer rules; it doesn't submit anything ([PT demo](https://github.com/Jacob-Met/workflow-checks/blob/main/pt_auth/README.md)).\n\n[See a sample](https://jacobmetoyer.com/workflow-checks/) · [Read the code](https://github.com/Jacob-Met/workflow-checks/tree/main/pt_auth)\n\n## Want to try one on your paperwork?\n\nLet's start with one small, redacted export and the rules you actually use. We can compare its output with a manual review, see where it helps, and fix where it doesn't. The demos aren't evidence of savings on your data ([how a pilot would work](https://github.com/Jacob-Met/workflow-checks/blob/main/README.md); [utility requirements](https://github.com/Jacob-Met/workflow-checks/blob/main/utility_watch/README.md)).\n",
-  "copy_sha256": "3fa09a0e2d6d296369be931cd603347177779de48d8482a9b54c780902d95dae"
+  "terminal_demo": {
+    "id": "towerops",
+    "name": "TowerOps",
+    "tag": "AWS Agents for Humans · research simulation",
+    "line": "A toy air-traffic scenario where an agent may only propose; deterministic code checks the proposal, a human approves, and every step lands in a hash-chained audit log.",
+    "command": "python demo.py",
+    "output": "{\n  \"before_conflict\": true,\n  \"advisory\": {\n    \"aircraft_id\": \"TWR419\",\n    \"set_vx_nm_min\": -1.0,\n    \"set_vy_nm_min\": 2.0,\n    \"rationale\": \"synthetic projected-separation recovery\"\n  },\n  \"after_conflict\": false,\n  \"audit_valid\": true,\n  \"audit_events\": [\n    { \"seq\": 0, \"kind\": \"screen_pass\" },\n    { \"seq\": 1, \"kind\": \"approval\", \"decision\": \"approve\" },\n    { \"seq\": 2, \"kind\": \"ack\", \"status\": \"accepted\" },\n    { \"seq\": 3, \"kind\": \"simulated_actuation\" }\n  ]\n}",
+    "note": "Real output from the repository's demo, trimmed to the fields that tell the story (hashes removed). Synthetic aircraft only; not operational ATC software.",
+    "repo": "https://github.com/Jacob-Met/TowerOps",
+    "stack": "Python 3.12 · Strands Agents"
+  },
+  "engine_slot": {
+    "title": "Game engine — early render capture",
+    "line": "Reserved for a labelled capture of the in-progress game engine. It goes up only once a real frame has been rendered and checked."
+  },
+  "projects": [
+    {
+      "name": "CaptureSuite",
+      "line": "Windows-first multimodal research capture: a daemon, versioned worker plugins and sealed session packages, with an offline QC demo on synthetic EMG/IMU data.",
+      "url": "https://github.com/Jacob-Met/CaptureSuite"
+    },
+    {
+      "name": "CanvasPilot",
+      "line": "An MCP server and CLI for Canvas LMS that rides the browser session you already have, for schools that disable personal access tokens.",
+      "url": "https://github.com/Jacob-Met/canvaspilot"
+    },
+    {
+      "name": "workflow-checks",
+      "line": "Three small Python checks for back-office paperwork (utility bills, freight detention, PT authorizations), run on synthetic data with file:row evidence.",
+      "url": "https://github.com/Jacob-Met/workflow-checks"
+    }
+  ],
+  "contact": {
+    "line": "The fastest way to reach me or see what I'm working on is GitHub.",
+    "url": "https://github.com/Jacob-Met"
+  }
 }
