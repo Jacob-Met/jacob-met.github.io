@@ -20,9 +20,9 @@ from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parent
 BASE = 'https://jacobmetoyer.com'
-TITLE = 'Jacob Metoyer — I direct AI agents to build software'
+TITLE = 'Jacob Metoyer - I direct AI agents; they write all the code'
 DESC = 'Jacob Metoyer, a CS and physics student at Cal State Long Beach, directs AI coding agents to build small tools and sets the bar they ship to. Live demos with public source.'
-SHARE_ALT = 'Jacob Metoyer — I direct AI agents to build software. Every demo runs, with public source.'
+SHARE_ALT = 'Jacob Metoyer - I direct AI agents; they write all the code. I set the bar.'
 ALLOWED_HOSTS = {'github.com', 'jacobmetoyer.com'}
 CSP = "default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'"
 ROOT_ICONS = ('favicon.ico', 'apple-touch-icon.png')

@@ -139,7 +139,17 @@ class ContentTests(Built):
     def test_how_section_states_who_builds(self):
         sec = re.search(r'<section id="how"[^>]*>(.*?)</section>', self.main(), re.S).group(1)
         self.assertEqual(sec.count('<li>'), len(self.data['how']['steps']))
-        self.assertIn('agent', self.data['hero']['title'].lower())
+        self.assertIn('write all the code', self.data['hero']['title'].lower())
+        self.assertIn('I set the bar', self.data['hero']['title'])
+        self.assertIn('write all the code', self.data['hero']['lede'].lower())
+        self.assertIn('write all the code', self.data['how']['line'].lower())
+        self.assertEqual(self.data['how']['steps'][1]['name'], 'I set the bar')
+        self.assertIn('write all the code', self.data['how']['steps'][2]['line'].lower())
+        self.assertIn("I don't write code", self.data['about']['lines'][1])
+        self.assertIn('write all the code', build.TITLE.lower())
+        self.assertIn('write all the code', build.SHARE_ALT.lower())
+        self.assertNotIn('by hand', self.data['hero']['lede'].lower())
+        self.assertNotIn('by hand', self.data['about']['lines'][1].lower())
     def test_engine_slot_is_labelled_placeholder_without_media(self):
         slot = re.search(r'<aside class="slot"[^>]*>(.*?)</aside>', self.main(), re.S)
         self.assertIsNotNone(slot); self.assertNotIn('<img', slot.group(1)); self.assertIn('In progress', slot.group(1))
