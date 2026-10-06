@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """Build jacobmetoyer.com from source/content.json.
 
-The page is demos-first: every featured demo shows real captured output on the page
-(screenshots taken from the running demo, or real terminal output), a one-line
-description, a live link and a repository link. All copy is data in content.json;
-the builder validates every URL against an explicit HTTPS host set and refuses
-anything outside the declared static surface. `docs/` is generated; never edit it.
+The page is demos-first: every featured demo shows desktop and phone captures from its
+running interaction, a one-line description, a live link and its public source. All
+copy is data in content.json; the builder validates every URL against an explicit
+HTTPS host set and refuses anything outside the declared static surface. `docs/` is generated; never edit it.
 """
 from __future__ import annotations
 import argparse
@@ -82,7 +81,7 @@ def check_shot(shot) -> None:
 
 
 def validate(data: dict) -> None:
-    keys(data, {'visibility', 'name', 'updated', 'hero', 'demos', 'terminal_demo', 'engine_slot', 'how', 'projects', 'about', 'contact'}, 'record')
+    keys(data, {'visibility', 'name', 'updated', 'hero', 'demos', 'engine_slot', 'how', 'projects', 'about', 'contact'}, 'record')
     if data['visibility'] != 'public':
         raise ValueError('Only explicitly public content can be built')
     if data['name'] != 'Jacob Metoyer':
@@ -106,13 +105,6 @@ def validate(data: dict) -> None:
             raise ValueError('Every demo needs its public repository link')
         keys(d['shots'], {'desktop', 'mobile'}, 'screenshots')
         check_shot(d['shots']['desktop']); check_shot(d['shots']['mobile'])
-    t = keys(data['terminal_demo'], {'id', 'name', 'tag', 'line', 'command', 'output', 'note', 'repo', 'stack'}, 'terminal demo')
-    if not SLUG_RE.fullmatch(t['id']) or t['id'] in ids:
-        raise ValueError('Invalid terminal demo id')
-    text(t['name'], 40); text(t['tag'], 60); text(t['line'], 220); text(t['command'], 80); text(t['output'], 1500)
-    text(t['note'], 240); text(t['stack'], 80)
-    if not safe_url(t['repo']).startswith('https://github.com/Jacob-Met/'):
-        raise ValueError('Terminal demo needs its public repository link')
     e = keys(data['engine_slot'], {'title', 'line'}, 'engine slot'); text(e['title'], 60); text(e['line'], 240)
     projects = data['projects']
     if not isinstance(projects, list) or not 1 <= len(projects) <= 8:
@@ -143,7 +135,7 @@ def ext(url: str, label: str, cls: str = '') -> str:
 
 
 def repo_label(url: str) -> str:
-    return 'Source · ' + urlsplit(url).path.strip('/')
+    return 'Source Â· ' + urlsplit(url).path.strip('/')
 
 
 def demo_card(d: dict, n: int) -> str:
@@ -160,21 +152,7 @@ def demo_card(d: dict, n: int) -> str:
         f'<h3 id="demo-{d["id"]}-h">{esc(d["name"])}</h3>'
         f'<p class="line">{esc(d["line"])}</p><p class="detail">{esc(d["detail"])}</p>'
         f'<p class="stack">{esc(d["stack"])}</p>'
-        f'<p class="links">{ext(d["play"]["url"], d["play"]["label"] + " →", "btn")} {ext(d["repo"], repo_label(d["repo"]), "src")}</p>'
-        f'</div></article>'
-    )
-
-
-def terminal_card(t: dict, n: int) -> str:
-    return (
-        f'<article class="demo demo-term" id="demo-{t["id"]}" aria-labelledby="demo-{t["id"]}-h">'
-        f'<div class="demo-media"><figure class="term"><figcaption class="term-bar"><span aria-hidden="true"></span>'
-        f'<code>$ {esc(t["command"])}</code></figcaption><pre tabindex="0" aria-label="Captured output of {esc(t["command"])}"><code>{esc(t["output"])}</code></pre></figure></div>'
-        f'<div class="demo-copy"><p class="tag"><span class="num">{n:02d}</span>{esc(t["tag"])}</p>'
-        f'<h3 id="demo-{t["id"]}-h">{esc(t["name"])}</h3>'
-        f'<p class="line">{esc(t["line"])}</p><p class="detail">{esc(t["note"])}</p>'
-        f'<p class="stack">{esc(t["stack"])}</p>'
-        f'<p class="links">{ext(t["repo"], "Run it from source →", "btn")} {ext(t["repo"], repo_label(t["repo"]), "src")}</p>'
+        f'<p class="links">{ext(d["play"]["url"], d["play"]["label"] + " â†’", "btn")} {ext(d["repo"], repo_label(d["repo"]), "src")}</p>'
         f'</div></article>'
     )
 
@@ -183,9 +161,8 @@ def render_index(r: dict) -> str:
     h = r['hero']
     nav = ''.join(f'<a href="#{i}">{esc(label)}</a>' for i, label in SECTIONS)
     demos = [demo_card(d, i) for i, d in enumerate(r['demos'], 1)]
-    demos.append(terminal_card(r['terminal_demo'], len(demos) + 1))
     e = r['engine_slot']
-    slot = (f'<aside class="slot" aria-labelledby="engine-slot-h"><p class="tag"><span class="num">··</span>In progress</p>'
+    slot = (f'<aside class="slot" aria-labelledby="engine-slot-h"><p class="tag"><span class="num">Â·Â·</span>In progress</p>'
             f'<h3 id="engine-slot-h">{esc(e["title"])}</h3><p>{esc(e["line"])}</p></aside>')
     projects = ''.join(f'<li><h3>{ext(p["url"], p["name"])}</h3><p>{esc(p["line"])}</p></li>' for p in r['projects'])
     c = r['contact']
@@ -200,7 +177,7 @@ def render_index(r: dict) -> str:
         f'<section class="hero" aria-labelledby="hero-h"><p class="kicker">{esc(h["kicker"])}</p>'
         f'<h1 id="hero-h"><span class="name">Jacob Metoyer</span>{esc(h["title"])}</h1>'
         f'<p class="lede">{esc(h["lede"])}</p>'
-        f'<p class="hero-links"><a class="btn" href="#demos">See the demos ↓</a> <a class="src" href="#how">How they get built</a> {ext(h["source"], "GitHub · Jacob-Met", "src")}</p></section>'
+        f'<p class="hero-links"><a class="btn" href="#demos">See the demos â†“</a> <a class="src" href="#how">How they get built</a> {ext(h["source"], "GitHub Â· Jacob-Met", "src")}</p></section>'
         f'<section id="demos" class="demos" aria-labelledby="demos-h"><div class="sec-head"><h2 id="demos-h">Demos</h2>'
         f'<p>Each one runs. The images are captures of the real thing; the links open it.</p></div>'
         + ''.join(demos) + slot + '</section>'
@@ -211,7 +188,7 @@ def render_index(r: dict) -> str:
         f'<section id="about" class="about" aria-labelledby="about-h"><h2 id="about-h">About</h2>'
         f'{about}<p>{esc(c["line"])} {ext(c["url"], "github.com/Jacob-Met")}</p></section>'
         '</main>'
-        f'<footer class="foot"><p>Updated {esc(r["updated"])} · Static page, no trackers, no scripts.</p></footer>'
+        f'<footer class="foot"><p>Updated {esc(r["updated"])} Â· Static page, no trackers, no scripts.</p></footer>'
     )
 
 
@@ -260,7 +237,7 @@ def build(out: Path, data: dict | None = None) -> dict:
     out.mkdir(parents=True, exist_ok=True)
     pages = {
         'index.html': (TITLE, DESC, render_index(record)),
-        '404.html': ('Not found · Jacob Metoyer', 'Nothing here. Back to the demos.',
+        '404.html': ('Not found Â· Jacob Metoyer', 'Nothing here. Back to the demos.',
                      '<a class="skip" href="#main">Skip to content</a><main id="main" class="not-found"><h1>Nothing here.</h1>'
                      '<p><a class="btn" href="index.html#demos">Back to the demos</a></p></main>'),
     }

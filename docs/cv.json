@@ -39,42 +39,58 @@
     {
       "id": "returnby",
       "name": "ReturnBy",
-      "tag": "Browser tool · TypeScript",
-      "line": "Paste an order-confirmation email and get the return deadline plus a calendar reminder, parsed entirely in your browser.",
-      "detail": "Rule-based extraction of store, date, order number and total, a per-store return-window table, and an RFC 5545 calendar file with a reminder three days out. Try a sample: the emails are fictional.",
+      "tag": "Browser-only / local-first utility",
+      "line": "Paste your own order email, correct the extraction, track multiple due dates and export calendar reminders.",
+      "detail": "Runs the repository parser, merchant policy table, deadline math and RFC 5545 export. Review every field, edit the fallback, filter saved orders and keep all approved data in this browser; the pasted email is never persisted.",
       "play": {
         "label": "Try it live",
         "url": "https://jacobmetoyer.com/returnby/"
       },
       "repo": "https://github.com/Jacob-Met/returnby",
-      "stack": "TypeScript · Vite · localStorage only",
+      "stack": "TypeScript / Vite / local-only",
       "shots": {
         "desktop": {
           "src": "assets/demos/returnby-desktop.webp",
           "w": 1200,
-          "h": 1083,
-          "alt": "ReturnBy on desktop after loading a sample email: extracted store, order date, order number, total and a 30-day return window."
+          "h": 1123,
+          "alt": "ReturnBy desktop with two tracked orders, policy source, deadlines and calendar actions."
         },
         "mobile": {
           "src": "assets/demos/returnby-mobile.webp",
           "w": 300,
-          "h": 649,
-          "alt": "ReturnBy on a phone with the same sample email parsed into editable fields."
+          "h": 1722,
+          "alt": "ReturnBy on a phone with two saved deadlines and urgency controls."
+        }
+      }
+    },
+    {
+      "id": "towerops-airspace",
+      "name": "TowerOps Airspace Lab",
+      "tag": "Synthetic airspace / live decision-support workbench",
+      "line": "Build traffic, change a flight path and watch the actual separation logic evaluate your world.",
+      "detail": "Add or remove aircraft, edit position, bearing and speed, tune separation thresholds, import a WorldState and repeat planner/approval/readback cycles. The browser port is checked against four runs of the Python rules. Synthetic state only; not operational ATC.",
+      "play": {
+        "label": "Open the live airspace lab",
+        "url": "https://jacobmetoyer.com/TowerOps/airspace/"
+      },
+      "repo": "https://github.com/Jacob-Met/TowerOps",
+      "stack": "TypeScript / Canvas / Python-source parity",
+      "shots": {
+        "desktop": {
+          "src": "assets/demos/towerops-desktop.webp",
+          "w": 1200,
+          "h": 1962,
+          "alt": "TowerOps airspace lab with moving synthetic flights, policy controls and separation telemetry."
+        },
+        "mobile": {
+          "src": "assets/demos/towerops-mobile.webp",
+          "w": 300,
+          "h": 2298,
+          "alt": "TowerOps on a phone with live airspace, editable traffic and planner controls."
         }
       }
     }
   ],
-  "terminal_demo": {
-    "id": "towerops",
-    "name": "TowerOps",
-    "tag": "AWS Agents for Humans · research simulation",
-    "line": "A toy air-traffic scenario where an agent may only propose; deterministic code checks the proposal, a human approves, and every step lands in a hash-chained audit log.",
-    "command": "python demo.py",
-    "output": "{\n  \"before_conflict\": true,\n  \"advisory\": {\n    \"aircraft_id\": \"TWR419\",\n    \"set_vx_nm_min\": -1.0,\n    \"set_vy_nm_min\": 2.0,\n    \"rationale\": \"synthetic projected-separation recovery\"\n  },\n  \"after_conflict\": false,\n  \"audit_valid\": true,\n  \"audit_events\": [\n    { \"seq\": 0, \"kind\": \"screen_pass\" },\n    { \"seq\": 1, \"kind\": \"approval\", \"decision\": \"approve\" },\n    { \"seq\": 2, \"kind\": \"ack\", \"status\": \"accepted\" },\n    { \"seq\": 3, \"kind\": \"simulated_actuation\" }\n  ]\n}",
-    "note": "Real output from the repository's demo, trimmed to the fields that tell the story (hashes removed). Synthetic aircraft only; not operational ATC software.",
-    "repo": "https://github.com/Jacob-Met/TowerOps",
-    "stack": "Python 3.12 · Strands Agents"
-  },
   "engine_slot": {
     "title": "Game engine — early render capture",
     "line": "Reserved for a labelled capture of the in-progress game engine. It goes up only once a real frame has been rendered and checked."
