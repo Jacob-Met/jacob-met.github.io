@@ -1,7 +1,7 @@
 {
   "visibility": "public",
   "name": "Jacob Metoyer",
-  "updated": "2026-10-06",
+  "updated": "2026-10-07",
   "hero": {
     "kicker": "AI-directed work / CS + physics at CSULB",
     "title": "I direct AI agents to carry out what I ask.",
@@ -15,12 +15,25 @@
       "tag": "ForgeHacks 2026 · AI + Education",
       "line": "A browser-only biology lesson that picks your next question by expected information gain and shows its mastery estimates as you answer.",
       "detail": "The learner model is plain Bayesian knowledge tracing with every probability visible; there is no chatbot and nothing leaves the page. Submitted to ForgeHacks 2026 (Devpost entry 1221781).",
-      "play": {"label": "Play the lesson", "url": "https://jacobmetoyer.com/RecallWeave/demo.html"},
+      "play": {
+        "label": "Play the lesson",
+        "url": "https://jacobmetoyer.com/RecallWeave/demo.html"
+      },
       "repo": "https://github.com/Jacob-Met/RecallWeave",
       "stack": "JavaScript · HTML/CSS · no build step",
       "shots": {
-        "desktop": {"src": "assets/demos/recallweave-desktop.webp", "w": 1200, "h": 750, "alt": "RecallWeave on desktop: a question about cellular energy with four answer choices, a concept map, and live mastery bars."},
-        "mobile": {"src": "assets/demos/recallweave-mobile.webp", "w": 300, "h": 649, "alt": "RecallWeave on a phone after six questions: the learning trace with per-concept mastery estimates."}
+        "desktop": {
+          "src": "assets/demos/recallweave-desktop.webp",
+          "w": 1200,
+          "h": 750,
+          "alt": "RecallWeave on desktop: a question about cellular energy with four answer choices, a concept map, and live mastery bars."
+        },
+        "mobile": {
+          "src": "assets/demos/recallweave-mobile.webp",
+          "w": 300,
+          "h": 649,
+          "alt": "RecallWeave on a phone after six questions: the learning trace with per-concept mastery estimates."
+        }
       }
     },
     {
@@ -78,19 +91,39 @@
       }
     }
   ],
-  "engine_slot": {
-    "title": "Game engine — early render capture",
-    "line": "Reserved for a labelled capture of the in-progress game engine. It goes up only once a real frame has been rendered and checked."
+  "engine": {
+    "title": "Hamon Engine",
+    "tagline": "an AI-native game engine",
+    "line": "A game engine I'm building by directing AI agents, from rendering and physics to the tools around them. Playable builds will land here first.",
+    "slot": {
+      "title": "Playable builds",
+      "line": "Coming soon. A build goes up here only after it runs in the browser and a real frame has been checked."
+    }
   },
   "how": {
     "title": "How it gets built",
     "line": "AI agents carry out whatever I direct, software included. I set the bar and decide what ships.",
     "steps": [
-      {"name": "I pick the work", "line": "A research report, an ops problem, or software that needs building. Whatever needs doing."},
-      {"name": "I set the bar", "line": "A short brief: what it must do, what it must not do, and how we will know it works."},
-      {"name": "Agents carry it out", "line": "AI agents carry out the task I direct, whether it is software, research reports, or operations work."},
-      {"name": "Checks before claims", "line": "I check the result against the bar. Tests and CI matter for software; other work needs its own evidence."},
-      {"name": "I decide what ships", "line": "Software links to source where it is public. Reports and ops work ship when I decide they clear the bar."}
+      {
+        "name": "I pick the work",
+        "line": "A research report, an ops problem, or software that needs building. Whatever needs doing."
+      },
+      {
+        "name": "I set the bar",
+        "line": "A short brief: what it must do, what it must not do, and how we will know it works."
+      },
+      {
+        "name": "Agents carry it out",
+        "line": "AI agents carry out the task I direct, whether it is software, research reports, or operations work."
+      },
+      {
+        "name": "Checks before claims",
+        "line": "I check the result against the bar. Tests and CI matter for software; other work needs its own evidence."
+      },
+      {
+        "name": "I decide what ships",
+        "line": "Software links to source where it is public. Reports and ops work ship when I decide they clear the bar."
+      }
     ]
   },
   "projects": [

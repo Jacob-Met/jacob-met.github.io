@@ -109,7 +109,8 @@ class ContentTests(Built):
     BANNED = ('anime', 'manga', 'cosplay', 'tornadocos', 'myanimelist', 'umamusume', 'uma-sim', 'schauz', 'spire',
               'hamon', 'togishi', 'otama', 'shinogi', 'jihada', 'passionate', 'journey', 'leverage', 'robust', 'ai-assistance', 'ai-written')
     def test_no_old_profile_or_ai_assistance_copy(self):
-        low = (self.page() + json.dumps(self.data)).lower()
+        # "Hamon Engine" is the public name of Jacob's game engine; internal agent names stay banned.
+        low = (self.page() + json.dumps(self.data)).lower().replace('hamon engine', '')
         for word in self.BANNED:
             with self.subTest(word=word): self.assertNotIn(word, low)
     def test_no_executable_scripts_or_embeds_in_body(self):
@@ -162,7 +163,23 @@ class ContentTests(Built):
         self.assertNotIn('write all the code', visible)
     def test_engine_slot_is_labelled_placeholder_without_media(self):
         slot = re.search(r'<aside class="slot"[^>]*>(.*?)</aside>', self.main(), re.S)
-        self.assertIsNotNone(slot); self.assertNotIn('<img', slot.group(1)); self.assertIn('In progress', slot.group(1))
+        self.assertIsNotNone(slot); self.assertNotIn('<img', slot.group(1)); self.assertIn('Coming soon', slot.group(1))
+    def test_engine_section_tops_demos_without_claiming_them(self):
+        m = self.main()
+        eng = re.search(r'<section id="engine"[^>]*>(.*?)</section>', m, re.S).group(1)
+        self.assertIn('>Hamon Engine</h2>', eng); self.assertIn('an AI-native game engine', eng)
+        self.assertLess(m.index('id="engine"'), m.index('id="demos"'))
+        self.assertIn('Playable demos', m)
+        demos = re.search(r'<section id="demos"[^>]*>(.*?)</section>', m, re.S).group(1)
+        self.assertNotIn('hamon', demos.lower())
+    def test_demo_detail_is_progressive(self):
+        for card in re.findall(r'<article class="demo[^"]*"[^>]*>(.*?)</article>', self.main(), re.S):
+            self.assertRegex(card, r'<details class="more-detail"><summary>[^<]+</summary><p class="detail">')
+    def test_no_mojibake(self):
+        for name in ('index.html', '404.html'):
+            page = self.page(name)
+            for bad in ('Â', 'Ã', 'â€', 'â†'):
+                self.assertNotIn(bad, page)
     def test_escaping(self):
         data = copy.deepcopy(self.data); data['demos'][0]['detail'] = "\"a\" & 'b'"
         build.build(self.root, data)
@@ -237,9 +254,9 @@ class NotFoundTests(Built):
 # ---------------------------------------------------------------------------
 # W-04 regression tests (issue #10): build hygiene.
 #
-#   * test_tmp_stays_out ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â a fresh rebuild must not leak a `tmp/` directory
+#   * test_tmp_stays_out — a fresh rebuild must not leak a `tmp/` directory
 #     or `*.tmp` artifacts into the published site tree.
-#   * test_no_contents_write_workflow ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â no workflow in .github/workflows/ may
+#   * test_no_contents_write_workflow — no workflow in .github/workflows/ may
 #     declare `contents: write`, at top level or per job. This pins the
 #     current posture (`contents: read` everywhere, plus `issues: write` on
 #     the live-site alert job).
@@ -479,8 +496,8 @@ class BuildHygieneTests(Built):
     (https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
     lists `contents`, `actions`, `issues`, ... as the scope keys and documents
     no case folding), and YAML mapping keys are case-sensitive. A capitalized
-    key such as ``Contents: write`` is therefore NOT the ``contents`` scope ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â
-    GitHub would not grant the scope through it ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â so the check deliberately
+    key such as ``Contents: write`` is therefore NOT the ``contents`` scope —
+    GitHub would not grant the scope through it — so the check deliberately
     does not fold key case. Quoted keys ('contents': write) ARE the same key
     as contents: write and are caught.
     """
@@ -499,9 +516,9 @@ class BuildHygieneTests(Built):
         if isinstance(perms, dict):
             return perms
         if str(perms).strip().lower() == 'write-all':
-            self.fail(f'{path.name}: {location} uses `permissions: write-all` ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â '
+            self.fail(f'{path.name}: {location} uses `permissions: write-all` — '
                       'grants contents:write, violating the no-contents:write posture')
-        self.fail(f'{path.name}: {location} permissions is not a block mapping ({perms!r}) ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â '
+        self.fail(f'{path.name}: {location} permissions is not a block mapping ({perms!r}) — '
                   'unsupported form; this test pins the block-form posture, '
                   'so extend the check before adopting it')
 
@@ -524,11 +541,11 @@ class BuildHygieneTests(Built):
     def test_no_contents_write_workflow(self):
         workflows_dir = self.WORKFLOWS_DIR
         self.assertTrue(workflows_dir.is_dir(),
-                        f'{workflows_dir} is missing ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â expected .github/workflows/ next to source/')
+                        f'{workflows_dir} is missing — expected .github/workflows/ next to source/')
         files = sorted(p for p in workflows_dir.iterdir()
                        if p.is_file() and p.suffix in ('.yml', '.yaml'))
         self.assertTrue(files,
-                        f'no workflow files found in {workflows_dir} ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â layout changed')
+                        f'no workflow files found in {workflows_dir} — layout changed')
         violations = []
         checked = []
         for path in files:
@@ -543,7 +560,7 @@ class BuildHygieneTests(Built):
                 locations.append(('top-level', top))
             jobs = doc.get('jobs')
             if not isinstance(jobs, dict):
-                self.fail(f'{path.name}: jobs block is missing or not a mapping ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â layout changed')
+                self.fail(f'{path.name}: jobs block is missing or not a mapping — layout changed')
             for job_name, job in jobs.items():
                 if not isinstance(job, dict):
                     self.fail(f'{path.name}: job {job_name!r} is not a mapping')
