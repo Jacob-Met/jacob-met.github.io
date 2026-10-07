@@ -1,24 +1,24 @@
 {
   "schema": 3,
-  "date": "2026-10-06",
+  "date": "2026-10-07",
   "sha256": {
     ".nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "404.html": "58536b84a3db52457315fe06a3f33d6aa17867e13fa616f23fe3815adb492271",
+    "404.html": "7518e990a966516bdaaa8a709df4b434e0cfbc2728fb7b3979a1f8d2046a6463",
     "CNAME": "7e89b4b8e0d23220fae91b16a6c40497117ef427d16ca984e7a8c720f14d8527",
     "apple-touch-icon.png": "5228bf4a42f9ac43cf140fcb7046776f2cb312a799a221774e9aa8aa8649f53d",
     "assets/demos/recallweave-desktop.webp": "7f09210bd45edb2ac8fa157b5e380988ea5f28a820300cf319fb7fb55f683565",
     "assets/demos/recallweave-mobile.webp": "64904386178ed8bb0db502b70621bbc14dea959668ef64dfd144094856140798",
     "assets/demos/returnby-desktop.webp": "e6a6e875cab40c55f7504cabf0131dc40d5fb2c1431acda9c55f4dc4ab82850b",
     "assets/demos/returnby-mobile.webp": "84533be3d6e3fbc56ffaecfaf18e176efc84cf1c84d16d8f3545dde09839a2bd",
-    "assets/demos/towerops-desktop.webp": "23d842165cf3118498bfbc8c5205afd427e6c2e25000f0cf67f0913c215b2706",
-    "assets/demos/towerops-mobile.webp": "ce0ff71f1ff4f59dd33381f27969ea5fa292eb5113741ebe62eab8a6b5df4893",
+    "assets/demos/towerops-desktop.webp": "1f385b35fc21b57232c1ca74f77855890d370a9691ce6a84b5e6d23012629ce0",
+    "assets/demos/towerops-mobile.webp": "a18fadeabc2492ad3b4263a35b7621c36d6fa204d6b107d5728bd69e8cb274ca",
     "assets/mark.svg": "bf39430d64c6601ed417f590031b91dbee89bfc8fbbb2426fbf990553b03584c",
     "assets/og-card.png": "1f8a7f2f42b154f44a25f12fd7619c17471d4354c92247c2cae8cc680c263e24",
-    "cv.json": "676ccf40e503fa995283287c43c810d1ebbd7f7357dbb19c026e03c76d64424b",
+    "cv.json": "e915b6aa303ee5728018852103ccdc1ae2c5c4b85199a5e82c8666d24094efdb",
     "favicon.ico": "277c9b64ee26af8bf6194feb44e2364b552c6280c9339f22a52f975d3a4c77de",
-    "index.html": "ebb5e262ab3e6c4ca7b3eb1c83dd949afe57ca684b3e79a60ad59c26e98e6df0",
+    "index.html": "9e88ccc49f33fb0994c858185e6b20c3938c734ec8fcb21dbeeef580ca94f5c5",
     "robots.txt": "60d463caa67aaa008b827bdec75236dcec7a9c82c49f529ad1da2de1c847c47e",
-    "sitemap.xml": "d4f331e1af6cc5525e36da20c47cc214132f34b9aa335ae90aaead7baba0ff01",
-    "style.css": "448da9797b52e5223808feccd1ecd5f44c476f8ab2a07f0669a89be12f349844"
+    "sitemap.xml": "8ae5d9d2150de40793fed791c6bca873bb015f14fddf3eeec5a520764f0ba80f",
+    "style.css": "30e7758cf2d765e1a032e87cc054b46c2a760e90a89c3e6c87817d181c5f76a7"
   }
 }
