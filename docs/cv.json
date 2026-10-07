@@ -1,7 +1,7 @@
 {
   "visibility": "public",
   "name": "Jacob Metoyer",
-  "updated": "2026-10-06",
+  "updated": "2026-10-07",
   "hero": {
     "kicker": "AI-directed work / CS + physics at CSULB",
     "title": "I direct AI agents to carry out what I ask.",
@@ -67,33 +67,38 @@
       "id": "towerops-airspace",
       "name": "TowerOps Airspace Lab",
       "tag": "Synthetic airspace / live decision-support workbench",
-      "line": "Build traffic, change a flight path and watch the actual separation logic evaluate your world.",
-      "detail": "Add or remove aircraft, edit position, bearing and speed, tune separation thresholds, import a WorldState and repeat planner/approval/readback cycles. The browser port is checked against four runs of the Python rules. Synthetic state only; not operational ATC.",
+      "line": "Two flights, one conflict. Plan a safe move, approve it, then watch the gap reopen.",
+      "detail": "Go deeper to build traffic, tune the envelope, load a WorldState and inspect the audit trail. The actual towerops.py AdvisoryPlanner and ControlRoom run in-browser via CPython/WebAssembly, not a mock or replay. Synthetic training only; not operational ATC.",
       "play": {
         "label": "Open the live airspace lab",
         "url": "https://jacobmetoyer.com/TowerOps/airspace/"
       },
       "repo": "https://github.com/Jacob-Met/TowerOps",
-      "stack": "TypeScript / Canvas / Python-source parity",
+      "stack": "Python / WebAssembly / Canvas",
       "shots": {
         "desktop": {
           "src": "assets/demos/towerops-desktop.webp",
           "w": 1200,
-          "h": 1962,
-          "alt": "TowerOps airspace lab with moving synthetic flights, policy controls and separation telemetry."
+          "h": 1244,
+          "alt": "TowerOps simplified desktop view: two crossing flights and a three-step planner, approval and readback flow. Advanced controls are collapsed."
         },
         "mobile": {
           "src": "assets/demos/towerops-mobile.webp",
           "w": 300,
-          "h": 2298,
-          "alt": "TowerOps on a phone with live airspace, editable traffic and planner controls."
+          "h": 1546,
+          "alt": "TowerOps simplified mobile view: two crossing flights and a three-step planner, approval and readback flow. Advanced controls are collapsed."
         }
       }
     }
   ],
-  "engine_slot": {
-    "title": "Game engine — early render capture",
-    "line": "Reserved for a labelled capture of the in-progress game engine. It goes up only once a real frame has been rendered and checked."
+  "engine": {
+    "title": "Hamon Engine",
+    "tagline": "an AI-native game engine",
+    "line": "A game engine I'm building by directing AI agents, from rendering and physics to the tools around them. Playable builds will land here first.",
+    "slot": {
+      "title": "Playable builds",
+      "line": "Coming soon. A build goes up here only after it runs in the browser and a real frame has been checked."
+    }
   },
   "how": {
     "title": "How it gets built",

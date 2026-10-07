@@ -29,7 +29,7 @@ SHARE_CARD = 'assets/og-card.png'
 DATE_RE = re.compile(r'\d{4}-\d{2}-\d{2}')
 SLUG_RE = re.compile(r'[a-z][a-z0-9-]{1,31}')
 SHOT_RE = re.compile(r'assets/demos/[a-z0-9-]+\.webp')
-SECTIONS = (('demos', 'Demos'), ('how', 'How'), ('more', 'More work'), ('about', 'About'))
+SECTIONS = (('engine', 'Engine'), ('demos', 'Demos'), ('how', 'How'), ('more', 'More work'), ('about', 'About'))
 
 
 def text(value, limit: int = 600) -> str:
@@ -81,7 +81,7 @@ def check_shot(shot) -> None:
 
 
 def validate(data: dict) -> None:
-    keys(data, {'visibility', 'name', 'updated', 'hero', 'demos', 'engine_slot', 'how', 'projects', 'about', 'contact'}, 'record')
+    keys(data, {'visibility', 'name', 'updated', 'hero', 'engine', 'demos', 'how', 'projects', 'about', 'contact'}, 'record')
     if data['visibility'] != 'public':
         raise ValueError('Only explicitly public content can be built')
     if data['name'] != 'Jacob Metoyer':
@@ -105,7 +105,8 @@ def validate(data: dict) -> None:
             raise ValueError('Every demo needs its public repository link')
         keys(d['shots'], {'desktop', 'mobile'}, 'screenshots')
         check_shot(d['shots']['desktop']); check_shot(d['shots']['mobile'])
-    e = keys(data['engine_slot'], {'title', 'line'}, 'engine slot'); text(e['title'], 60); text(e['line'], 240)
+    e = keys(data['engine'], {'title', 'tagline', 'line', 'slot'}, 'engine'); text(e['title'], 40); text(e['tagline'], 60); text(e['line'], 240)
+    s = keys(e['slot'], {'title', 'line'}, 'engine slot'); text(s['title'], 60); text(s['line'], 240)
     projects = data['projects']
     if not isinstance(projects, list) or not 1 <= len(projects) <= 8:
         raise ValueError('One to eight projects')
@@ -135,7 +136,7 @@ def ext(url: str, label: str, cls: str = '') -> str:
 
 
 def repo_label(url: str) -> str:
-    return 'Source Â· ' + urlsplit(url).path.strip('/')
+    return 'Source · ' + urlsplit(url).path.strip('/')
 
 
 def demo_card(d: dict, n: int) -> str:
@@ -150,9 +151,10 @@ def demo_card(d: dict, n: int) -> str:
         f'</div>'
         f'<div class="demo-copy"><p class="tag"><span class="num">{n:02d}</span>{esc(d["tag"])}</p>'
         f'<h3 id="demo-{d["id"]}-h">{esc(d["name"])}</h3>'
-        f'<p class="line">{esc(d["line"])}</p><p class="detail">{esc(d["detail"])}</p>'
-        f'<p class="stack">{esc(d["stack"])}</p>'
-        f'<p class="links">{ext(d["play"]["url"], d["play"]["label"] + " â†’", "btn")} {ext(d["repo"], repo_label(d["repo"]), "src")}</p>'
+        f'<p class="line">{esc(d["line"])}</p>'
+        f'<details class="more-detail"><summary>What it does under the hood</summary>'
+        f'<p class="detail">{esc(d["detail"])}</p><p class="stack">{esc(d["stack"])}</p></details>'
+        f'<p class="links">{ext(d["play"]["url"], d["play"]["label"] + " →", "btn")} {ext(d["repo"], repo_label(d["repo"]), "src")}</p>'
         f'</div></article>'
     )
 
@@ -161,9 +163,12 @@ def render_index(r: dict) -> str:
     h = r['hero']
     nav = ''.join(f'<a href="#{i}">{esc(label)}</a>' for i, label in SECTIONS)
     demos = [demo_card(d, i) for i, d in enumerate(r['demos'], 1)]
-    e = r['engine_slot']
-    slot = (f'<aside class="slot" aria-labelledby="engine-slot-h"><p class="tag"><span class="num">Â·Â·</span>In progress</p>'
-            f'<h3 id="engine-slot-h">{esc(e["title"])}</h3><p>{esc(e["line"])}</p></aside>')
+    e = r['engine']
+    engine = (f'<section id="engine" class="engine" aria-labelledby="engine-h"><div class="engine-head">'
+              f'<p class="kicker">In progress</p><h2 id="engine-h">{esc(e["title"])}</h2>'
+              f'<p class="tagline">{esc(e["tagline"])}</p><p class="engine-line">{esc(e["line"])}</p></div>'
+              f'<aside class="slot" aria-labelledby="engine-slot-h"><p class="tag"><span class="num">··</span>Coming soon</p>'
+              f'<h3 id="engine-slot-h">{esc(e["slot"]["title"])}</h3><p>{esc(e["slot"]["line"])}</p></aside></section>')
     projects = ''.join(f'<li><h3>{ext(p["url"], p["name"])}</h3><p>{esc(p["line"])}</p></li>' for p in r['projects'])
     c = r['contact']
     w = r['how']
@@ -177,10 +182,11 @@ def render_index(r: dict) -> str:
         f'<section class="hero" aria-labelledby="hero-h"><p class="kicker">{esc(h["kicker"])}</p>'
         f'<h1 id="hero-h"><span class="name">Jacob Metoyer</span>{esc(h["title"])}</h1>'
         f'<p class="lede">{esc(h["lede"])}</p>'
-        f'<p class="hero-links"><a class="btn" href="#demos">See the demos â†“</a> <a class="src" href="#how">How they get built</a> {ext(h["source"], "GitHub Â· Jacob-Met", "src")}</p></section>'
-        f'<section id="demos" class="demos" aria-labelledby="demos-h"><div class="sec-head"><h2 id="demos-h">Demos</h2>'
-        f'<p>Each one runs. The images are captures of the real thing; the links open it.</p></div>'
-        + ''.join(demos) + slot + '</section>'
+        f'<p class="hero-links"><a class="btn" href="#demos">Play the demos ↓</a> <a class="src" href="#how">How they get built</a> {ext(h["source"], "GitHub · Jacob-Met", "src")}</p></section>'
+        + engine +
+        f'<section id="demos" class="demos" aria-labelledby="demos-h"><div class="sec-head"><h2 id="demos-h">Playable demos</h2>'
+        f'<p>Each one runs in your browser. The images are captures of the real thing; the links open it.</p></div>'
+        + ''.join(demos) + '</section>'
         f'<section id="how" class="how" aria-labelledby="how-h"><div class="sec-head"><h2 id="how-h">{esc(w["title"])}</h2>'
         f'<p>{esc(w["line"])}</p></div><ol class="steps">{steps}</ol></section>'
         f'<section id="more" class="more" aria-labelledby="more-h"><div class="sec-head"><h2 id="more-h">More work</h2>'
@@ -188,7 +194,7 @@ def render_index(r: dict) -> str:
         f'<section id="about" class="about" aria-labelledby="about-h"><h2 id="about-h">About</h2>'
         f'{about}<p>{esc(c["line"])} {ext(c["url"], "github.com/Jacob-Met")}</p></section>'
         '</main>'
-        f'<footer class="foot"><p>Updated {esc(r["updated"])} Â· Static page, no trackers, no scripts.</p></footer>'
+        f'<footer class="foot"><p>Updated {esc(r["updated"])} · Static page, no trackers, no scripts.</p></footer>'
     )
 
 
@@ -237,7 +243,7 @@ def build(out: Path, data: dict | None = None) -> dict:
     out.mkdir(parents=True, exist_ok=True)
     pages = {
         'index.html': (TITLE, DESC, render_index(record)),
-        '404.html': ('Not found Â· Jacob Metoyer', 'Nothing here. Back to the demos.',
+        '404.html': ('Not found · Jacob Metoyer', 'Nothing here. Back to the demos.',
                      '<a class="skip" href="#main">Skip to content</a><main id="main" class="not-found"><h1>Nothing here.</h1>'
                      '<p><a class="btn" href="index.html#demos">Back to the demos</a></p></main>'),
     }
