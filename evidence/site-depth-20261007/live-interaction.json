@@ -1,0 +1,12 @@
+{
+  "proposal": "TWR419 -> vx -1.0 / vy 2.0 NM/M / climb 0 FT/M. Bound to d01e0ef289.",
+  "audit": "4 EVENTS / VALID",
+  "gates": [
+    "PASS",
+    "APPROVED",
+    "ACCEPTED"
+  ],
+  "body": "TO\nTOWEROPS / AIRSPACE LAB\nSYNTHETIC TRAINING\nPYTHON SOURCE \u2197\n\nDECISION SUPPORT / RESEARCH SIMULATION\n\nHold the gap.\nProve the move.\n\nTwo flights are on a collision course. Ask the planner for a fix, approve it, and watch the gap reopen. Every step is checked against a fixed separation rule.\n\n1\nRun planner\n2\nApprove\n3\nAccept readback\n01\nAPPROACH\nSECTOR\n5 MIN\nXY PLANE / NAUTICAL MILES\nAPPROACH 04\nSIM TIME\nT+0 SEC\nTRACK\nPROJECTED CONFLICT\n5.0 MIN PROJECTION\nRANGE +/- 15 NM\nWORLD CHECK\nCLEAR\nNo projected conflict\n\nNo simultaneous horizontal and vertical intrusion inside the active policy horizon.\n\nCONFLICT PAIRS\n0\nPOLICY WINDOW\n5.0 MIN\nFIRST SEPARATION LOSS\nCLEAR\n\nNo simultaneous loss of separation. Add traffic or tighten the envelope.\n\nBOUNDED PLANNER\nIDLE\nSimulated setpoint applied. No projected conflict remains in the policy window.\n01\nFresh state + safety screen\nPASS\n02\nController approval fixture\nAPPROVED\n03\nReadback acknowledgement\nACCEPTED\nRun planner\nApprove\nAccept readback + apply\nRun traffic\nReset\n\nApproval and readback are synthetic fixtures, not real authority. The real towerops.py planner and approval gate run in your browser, on demand. No traffic leaves your device.\n\nLive CPython \u00b7 ControlRoom.apply \u00b7 audit verified\n\nGO DEEPER\n\nShape the traffic\ninject, build, perturb, time scale, safety envelope\nInspect or load a WorldState\nthe raw JSON the solver sees\nUnder the hood\ntraffic register, separation watch, hash-chained decision trace\nTOWEROPS / SYNTHETIC RESEARCH SIMULATION\nNot operational ATC. No live data or real aircraft control.",
+  "errors": [],
+  "http_errors": []
+}
