@@ -1,0 +1,59 @@
+{
+  "schema": "hamon.independent_site_publication_packet.v1",
+  "at": "2026-10-08T17:09:21.978381+00:00",
+  "native_git_head": "d67eda4a2ce1e4ee9cdba9b787ccb68068d0b0a7",
+  "native_git_tree": "365453722e8c7811cae3c4d66701c146259140f8",
+  "bundle_complete": true,
+  "bundle_verified": true,
+  "committed_blob_bytes_verified": 703,
+  "embedded_manifest_sha256": "d8fe4ff999b8e5e0063780090f68cba5a51c9c4625866d0d4e1048e726b554ea",
+  "files": [
+    {
+      "path": "final-receipt.json",
+      "bytes": 6336,
+      "sha256": "b944ad03618a529605453c89b8108d594d6d26ca9c171130cfc4a5799271b688",
+      "git_blob": "434d90eb44f2e1305c91c4e216d9c21612b7c95f"
+    },
+    {
+      "path": "independent-receiving.bundle",
+      "bytes": 812905,
+      "sha256": "9ccdf72120f98a0d5d5908ff7aec7461b08cacda4283a54ee87945d8f3f05466",
+      "git_blob": "5e2c2e4126288b06a55042e0ac6bf3dccd017b4a"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3196,
+      "sha256": "c64b70eb71a01be9b9822e080d1ba66482cf18a1c5f941b74f0f649764c4e975",
+      "git_blob": "ba3947b95d84771bff56950a07bb23e9b5ceada5"
+    },
+    {
+      "path": "REVIEW.md",
+      "bytes": 6014,
+      "sha256": "303ea71cb65b498d2be8269a3dd5e4d00e050e930e4498334d8fd5ef8066845a",
+      "git_blob": "9205aae022314ebbadc085f6ec7ed4cde33636d0"
+    }
+  ],
+  "independent_acceptance": true,
+  "candidate_files": [
+    {
+      "path": "source/test_site.py",
+      "sha256": "5ab93e45e2df8ffdc57fad4e8b48dce25b7466bbe3df9be17ca67543b90992d3",
+      "git_blob": "f13a5c6aa0db40f613758793870dc4aab750a257",
+      "bytes": 33521
+    },
+    {
+      "path": "source/test_screenshot_access.py",
+      "sha256": "286ecd4059dc82d5eae7a3685a585c065ec24b5b9606417759ebb3ddaba82bb7",
+      "git_blob": "c2d03d91b78c8209edb41a417c8a7472f1c8f483",
+      "bytes": 3098
+    }
+  ],
+  "publication_allowlist": [
+    "independent-receiving.bundle",
+    "MANIFEST.json",
+    "REVIEW.md",
+    "final-receipt.json",
+    "README.md"
+  ],
+  "manifest_note": "Pins the other four files; its own SHA is retained in native publication receipt and author intake."
+}
