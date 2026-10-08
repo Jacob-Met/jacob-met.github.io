@@ -1,5 +1,5 @@
 {
-  "schema": "hamon.site.windows-native-acceptance.v1",
+  "schema": "[redacted]",
   "acceptedUtc": "2026-10-08T17:14:39.998Z",
   "scope": "Exact two-file native source acceptance; publication and integration are separate boundaries",
   "repository": "Jacob-Met/jacob-met.github.io",
@@ -108,7 +108,7 @@
     ]
   },
   "runtime": {
-    "device": "DESKTOP-LA7CMTA",
+    "device": "[redacted]",
     "python": "3.13.15",
     "git": "2.55.0.windows.5",
     "shell": "GNU sh 5.3.15",
