@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Offline integrity checks for the generated site: declared surface, links, anchors, manifest.
 
-The site has no executable script at all. Any <script> other than a JSON-LD data block, any
+The portfolio pages have no executable script. The one pinned TasteTable subtree is
+admitted only after exact source-inventory and byte verification. Any <script> other than a JSON-LD data block, any
 inline handler, form, frame, remote resource or non-HTTPS link is a failure. Images are allowed
 only as local demo captures (assets/demos/*.webp) with explicit width, height and alt text.
 """
@@ -11,6 +12,7 @@ from html.parser import HTMLParser
 from pathlib import Path, PurePosixPath
 from urllib.parse import unquote, urlsplit
 from xml.etree import ElementTree as ET
+from tastetable import DIRECTORY as APP_DIRECTORY, read_files as read_app_files
 
 ROOT_RELATIVE_PAGES = frozenset({'404.html'})
 CSP_REQUIRED = {'default-src': "'none'", 'style-src': "'self'", 'img-src': "'self'", 'base-uri': "'none'", 'form-action': "'none'"}
@@ -117,10 +119,16 @@ def svg_surface(text: str) -> tuple[list[str], list[str]]:
 def check(root: Path) -> dict:
     root = root.resolve(); failures = []; parsed = {}
     if not root.is_dir(): return {'passed': False, 'html_pages': 0, 'files': 0, 'failures': ['output root missing']}
+    application_paths = set()
+    try:
+        application_paths = {f'{APP_DIRECTORY}/{name}' for name in read_app_files(root / APP_DIRECTORY)}
+    except (OSError, ValueError) as error:
+        failures.append(f'TasteTable admission failed: {error}')
     for f in sorted(root.rglob('*')):
         rel = f.relative_to(root).as_posix()
         if f.is_symlink(): failures.append(f'{rel}: symlink outside declared output surface'); continue
         if not f.is_file(): continue
+        if rel in application_paths: continue
         if f.suffix == '.html':
             try: text = f.read_text(encoding='utf-8')
             except (OSError, UnicodeError): failures.append(f'{rel}: unreadable HTML'); continue

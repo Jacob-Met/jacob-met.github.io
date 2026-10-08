@@ -16,6 +16,7 @@ import shutil
 import struct
 from pathlib import Path
 from urllib.parse import urlsplit
+from tastetable import DIRECTORY as APP_DIRECTORY, directories as app_directories, read_files as read_app_files
 
 ROOT = Path(__file__).resolve().parent
 BASE = 'https://jacobmetoyer.com'
@@ -228,17 +229,22 @@ def shot_files(record: dict) -> list[str]:
 def build(out: Path, data: dict | None = None) -> dict:
     record = json.loads((ROOT / 'content.json').read_text(encoding='utf-8')) if data is None else json.loads(json.dumps(data))
     validate(record)
+    application = read_app_files(ROOT / APP_DIRECTORY)
+    application_paths = {f'{APP_DIRECTORY}/{name}' for name in application}
+    application_dirs = {APP_DIRECTORY, *(f'{APP_DIRECTORY}/{name}' for name in app_directories(application))}
     out = out.resolve()
     if out == ROOT or ROOT.is_relative_to(out):
         raise ValueError('Output must not replace source')
     shots = shot_files(record)
     allowed = {'index.html', '404.html', 'style.css', '.nojekyll', 'CNAME', 'robots.txt', 'sitemap.xml', 'cv.json',
                'build-manifest.json', 'assets/mark.svg', SHARE_CARD, *ROOT_ICONS}
+    allowed.update(application_paths)
     allowed_prefix = 'assets/demos/'
     if out.exists():
         for f in out.rglob('*'):
             rel = f.relative_to(out).as_posix()
-            if f.is_symlink() or (f.is_file() and rel not in allowed and not SHOT_RE.fullmatch(rel)):
+            if (f.is_symlink() or (f.is_file() and rel not in allowed and not SHOT_RE.fullmatch(rel))
+                    or (f.is_dir() and rel.startswith(APP_DIRECTORY + '/') and rel not in application_dirs)):
                 raise ValueError('Output contains unexpected material; refuse to overwrite it')
         stale = out / 'assets' / 'demos'
         if stale.is_dir():
@@ -267,6 +273,10 @@ def build(out: Path, data: dict | None = None) -> dict:
     sm = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>{BASE}/</loc><lastmod>{record["updated"]}</lastmod></url></urlset>'
     (out / 'sitemap.xml').write_text(sm, encoding='utf-8', newline='\n')
     (out / 'cv.json').write_text(json.dumps(record, indent=2, ensure_ascii=False) + '\n', encoding='utf-8', newline='\n')
+    for name, raw in application.items():
+        target = out / APP_DIRECTORY / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(raw)
     files = [f for f in out.rglob('*') if f.is_file() and f.name != 'build-manifest.json']
     manifest = {f.relative_to(out).as_posix(): hashlib.sha256(f.read_bytes()).hexdigest()
                 for f in sorted(files, key=lambda f: f.relative_to(out).as_posix())}
