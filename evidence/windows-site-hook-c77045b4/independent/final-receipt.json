@@ -1,5 +1,5 @@
 {
-  "schema": "hamon.independent_windows_site_final_receiving.v1",
+  "schema": "[redacted]",
   "at": "2026-10-08T17:04:28.191618+00:00",
   "baseline_commit": "5824003ee53a6525197006645050d6ddf70e31fb",
   "baseline_tree": "8a36d031be1ee9ee8ac3d4ade66708b4ed6c2666",
@@ -23,7 +23,7 @@
     {
       "mode": "cp1252",
       "command": [
-        "C:\\Users\\minec\\AppData\\Local\\Hamon\\hubtwo\\runtime\\python-3.13.15\\python.exe",
+        "[redacted]",
         "-X",
         "utf8=0",
         "-m",
@@ -47,7 +47,7 @@
     {
       "mode": "utf8",
       "command": [
-        "C:\\Users\\minec\\AppData\\Local\\Hamon\\hubtwo\\runtime\\python-3.13.15\\python.exe",
+        "[redacted]",
         "-X",
         "utf8",
         "-m",
