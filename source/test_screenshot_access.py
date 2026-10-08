@@ -56,14 +56,14 @@ class ScreenshotAccess(unittest.TestCase):
             for demo in record["demos"]:
                 self.assertIn(demo["play"]["url"], [a["attrs"]["href"] for a in links])
                 self.assertIn(demo["repo"], [a["attrs"]["href"] for a in links])
-            self.assertEqual(json.loads((out / "cv.json").read_text()), record)
+            self.assertEqual(json.loads((out / "cv.json").read_text(encoding="utf-8")), record)
             self.assertTrue(check(out)["passed"])
 
     def test_all_screens_open_exact_local_assets_and_keep_live_actions(self):
-        self.check_access(json.loads((build.ROOT / "content.json").read_text()))
+        self.check_access(json.loads((build.ROOT / "content.json").read_text(encoding="utf-8")))
 
     def test_labels_and_destinations_follow_changed_approved_content(self):
-        record = json.loads((build.ROOT / "content.json").read_text())
+        record = json.loads((build.ROOT / "content.json").read_text(encoding="utf-8"))
         record["demos"][0]["name"] = 'Reader & "review"'
         record["demos"][0]["shots"] = copy.deepcopy(record["demos"][1]["shots"])
         record["demos"].reverse()

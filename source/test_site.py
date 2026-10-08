@@ -596,9 +596,13 @@ class PrecommitHookTests(unittest.TestCase):
         self.work = Path(self.tmp.name) / 'site'
         shutil.copytree(self.repo_root / 'source', self.work / 'source')
         shutil.copytree(self.repo_root / '.githooks', self.work / '.githooks')
+        # Match the real checkout's LF and binary rules, including on Windows.
+        shutil.copy2(self.repo_root / '.gitattributes', self.work / '.gitattributes')
         self.git('init', '-q')
         self.git('config', 'user.email', 'hook-test@example')
         self.git('config', 'user.name', 'hook-test')
+        # Exercise Windows' checkout setting on every test platform.
+        self.git('config', 'core.autocrlf', 'true')
         self.rebuild()
         self.git('add', '-A')
         self.git('commit', '-qm', 'baseline')
@@ -636,8 +640,8 @@ class PrecommitHookTests(unittest.TestCase):
     def test_staged_source_with_rebuilt_docs_passes(self):
         self.edit_content(); self.rebuild()
         self.git('add', 'source/content.json', 'docs')
-        code, _ = self.hook()
-        self.assertEqual(code, 0)
+        code, err = self.hook()
+        self.assertEqual(code, 0, err)
 
     def test_clean_tree_passes(self):
         code, _ = self.hook()

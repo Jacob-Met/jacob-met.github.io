@@ -1,0 +1,91 @@
+{
+  "schema": "hamon.independent_windows_site_final_receiving.v1",
+  "at": "2026-10-08T17:04:28.191618+00:00",
+  "baseline_commit": "5824003ee53a6525197006645050d6ddf70e31fb",
+  "baseline_tree": "8a36d031be1ee9ee8ac3d4ade66708b4ed6c2666",
+  "candidate_files": [
+    {
+      "path": "source/test_site.py",
+      "sha256": "5ab93e45e2df8ffdc57fad4e8b48dce25b7466bbe3df9be17ca67543b90992d3",
+      "git_blob": "f13a5c6aa0db40f613758793870dc4aab750a257",
+      "bytes": 33521
+    },
+    {
+      "path": "source/test_screenshot_access.py",
+      "sha256": "286ecd4059dc82d5eae7a3685a585c065ec24b5b9606417759ebb3ddaba82bb7",
+      "git_blob": "c2d03d91b78c8209edb41a417c8a7472f1c8f483",
+      "bytes": 3098
+    }
+  ],
+  "driver_sha256": "345341836b99869213586d3032ffa9946388232bc2c6c7c452f6950f72e04212",
+  "patch_sha256": "d5ec8be3faefbb0ddaf69929ce0b90c9a414a58e7534ababa9d3d0cceb4a0e74",
+  "runs": [
+    {
+      "mode": "cp1252",
+      "command": [
+        "C:\\Users\\minec\\AppData\\Local\\Hamon\\hubtwo\\runtime\\python-3.13.15\\python.exe",
+        "-X",
+        "utf8=0",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "source",
+        "-v"
+      ],
+      "runtime": {
+        "version": "3.13.15 (tags/v3.13.15:4061bc4, Aug  5 2026, 13:05:39) [MSC v.1944 64 bit (AMD64)]",
+        "utf8_mode": 0,
+        "preferred_encoding": "cp1252"
+      },
+      "exit_code": 0,
+      "passed": true,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "0db71e2d222856d462c1f6cf1d60366f4132af31d71c3eafd6ccde626566032d",
+      "stderr_tail": "est_site.PrecommitHookTests.test_clean_tree_passes) ... ok\r\ntest_staged_source_with_rebuilt_docs_passes (test_site.PrecommitHookTests.test_staged_source_with_rebuilt_docs_passes) ... ok\r\ntest_staged_source_without_docs_blocks (test_site.PrecommitHookTests.test_staged_source_without_docs_blocks) ... ok\r\ntest_unstaged_changes_only_pass (test_site.PrecommitHookTests.test_unstaged_changes_only_pass) ... ok\r\ntest_bad_urls_denied (test_site.RecordTests.test_bad_urls_denied) ... ok\r\ntest_capture_must_be_local_webp_with_true_size (test_site.RecordTests.test_capture_must_be_local_webp_with_true_size) ... ok\r\ntest_demo_without_capture_denied (test_site.RecordTests.test_demo_without_capture_denied) ... ok\r\ntest_demo_without_repo_denied (test_site.RecordTests.test_demo_without_repo_denied) ... ok\r\ntest_duplicate_demo_id_denied (test_site.RecordTests.test_duplicate_demo_id_denied) ... ok\r\ntest_identity_drift_denied (test_site.RecordTests.test_identity_drift_denied) ... ok\r\ntest_markup_in_copy_denied (test_site.RecordTests.test_markup_in_copy_denied) ... ok\r\ntest_private_denied (test_site.RecordTests.test_private_denied) ... ok\r\ntest_record_valid (test_site.RecordTests.test_record_valid) ... ok\r\ntest_unknown_root_field_denied (test_site.RecordTests.test_unknown_root_field_denied) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 59 tests in 17.377s\r\n\r\nOK\r\n"
+    },
+    {
+      "mode": "utf8",
+      "command": [
+        "C:\\Users\\minec\\AppData\\Local\\Hamon\\hubtwo\\runtime\\python-3.13.15\\python.exe",
+        "-X",
+        "utf8",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "source",
+        "-v"
+      ],
+      "runtime": {
+        "version": "3.13.15 (tags/v3.13.15:4061bc4, Aug  5 2026, 13:05:39) [MSC v.1944 64 bit (AMD64)]",
+        "utf8_mode": 1,
+        "preferred_encoding": "utf-8"
+      },
+      "exit_code": 0,
+      "passed": true,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "aa2fe30947ac9fd89f5297188e80d5ee5cae63417a1bf1601794a2e1cd6307c3",
+      "stderr_tail": "est_site.PrecommitHookTests.test_clean_tree_passes) ... ok\r\ntest_staged_source_with_rebuilt_docs_passes (test_site.PrecommitHookTests.test_staged_source_with_rebuilt_docs_passes) ... ok\r\ntest_staged_source_without_docs_blocks (test_site.PrecommitHookTests.test_staged_source_without_docs_blocks) ... ok\r\ntest_unstaged_changes_only_pass (test_site.PrecommitHookTests.test_unstaged_changes_only_pass) ... ok\r\ntest_bad_urls_denied (test_site.RecordTests.test_bad_urls_denied) ... ok\r\ntest_capture_must_be_local_webp_with_true_size (test_site.RecordTests.test_capture_must_be_local_webp_with_true_size) ... ok\r\ntest_demo_without_capture_denied (test_site.RecordTests.test_demo_without_capture_denied) ... ok\r\ntest_demo_without_repo_denied (test_site.RecordTests.test_demo_without_repo_denied) ... ok\r\ntest_duplicate_demo_id_denied (test_site.RecordTests.test_duplicate_demo_id_denied) ... ok\r\ntest_identity_drift_denied (test_site.RecordTests.test_identity_drift_denied) ... ok\r\ntest_markup_in_copy_denied (test_site.RecordTests.test_markup_in_copy_denied) ... ok\r\ntest_private_denied (test_site.RecordTests.test_private_denied) ... ok\r\ntest_record_valid (test_site.RecordTests.test_record_valid) ... ok\r\ntest_unknown_root_field_denied (test_site.RecordTests.test_unknown_root_field_denied) ... ok\r\n\r\n----------------------------------------------------------------------\r\nRan 59 tests in 18.689s\r\n\r\nOK\r\n"
+    }
+  ],
+  "checks": {
+    "both_full_59_test_suites_pass": true,
+    "locale_diff_exactly_three_explicit_utf8_reads": true,
+    "candidate_sources_unchanged": true,
+    "all_82_unrelated_source_files_preserved": true,
+    "all_84_author_baseline_files_preserved": true,
+    "original_hook_unchanged": true
+  },
+  "passed": true,
+  "scope": "Two test files only. Canonical Git attributes copied into the isolated hook fixture, local autocrlf=true exposure, preserved hook diagnostic, and three explicit UTF-8 fixture JSON reads.",
+  "original_controls": {
+    "actual_hook": "9/9 original-hook contract groups passed",
+    "fixture": "3/4 original maintained tests; canonical attributes alone repair valid case while drift remains blocked",
+    "locale": "Original ScreenshotAccess 0/2 cp1252 and 2/2 explicit UTF-8"
+  },
+  "limitations": [
+    "No production hook, build, generated site, runtime, installed service or global environment changes.",
+    "Tests ran using native Python 3.13.15 and Git 2.55.0.windows.5 with a task-local Python3 wrapper and temporary paths containing spaces."
+  ]
+}
