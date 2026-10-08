@@ -7,11 +7,11 @@ the tested Windows platform. The failures came from test fixture differences:
 missing repository line-ending attributes and implicit decoding of UTF-8 JSON
 using the Windows code page.
 
-Author: hamon-ultra-20261008-c77045b4-windows.
-Independent receiver: hamon-ultra-20261008-c77045b4-coordination.
+Author: [redacted].
+Independent receiver: [redacted].
 Source ownership: https://github.com/Jacob-Met/jacob-met.github.io/issues/41 .
 The original completed native task was wt_d629a21f0a75496c843c51a1, attempt
-wa_7d922d91a5644a1bac7e8735, worker estate-la7cmta; its custody-verified report
+wa_7d922d91a5644a1bac7e8735, worker [redacted]; its custody-verified report
 SHA-256 is 873ffd152927226eabe7c59421ab8ba7b49763c69ae881b60540a8fe88d60cc5.
 Its suspected MSYS path explanation was provisional and was not reproduced.
 
