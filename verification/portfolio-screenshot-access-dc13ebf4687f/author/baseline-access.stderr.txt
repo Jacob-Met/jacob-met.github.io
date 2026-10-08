@@ -1,0 +1,27 @@
+test_all_screens_open_exact_local_assets_and_keep_live_actions (__main__.ScreenshotAccess.test_all_screens_open_exact_local_assets_and_keep_live_actions) ... FAIL
+test_labels_and_destinations_follow_changed_approved_content (__main__.ScreenshotAccess.test_labels_and_destinations_follow_changed_approved_content) ... FAIL
+
+======================================================================
+FAIL: test_all_screens_open_exact_local_assets_and_keep_live_actions (__main__.ScreenshotAccess.test_all_screens_open_exact_local_assets_and_keep_live_actions)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/dev/shm/portfolio-screenshot-access-dc13ebf4687f/source/test_screenshot_access.py", line 63, in test_all_screens_open_exact_local_assets_and_keep_live_actions
+    self.check_access(json.loads((build.ROOT / "content.json").read_text()))
+  File "/dev/shm/portfolio-screenshot-access-dc13ebf4687f/source/test_screenshot_access.py", line 47, in check_access
+    self.assertEqual(len(shots), len(expected), "Every captured screen needs a visible full-image link")
+AssertionError: 0 != 6 : Every captured screen needs a visible full-image link
+
+======================================================================
+FAIL: test_labels_and_destinations_follow_changed_approved_content (__main__.ScreenshotAccess.test_labels_and_destinations_follow_changed_approved_content)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/dev/shm/portfolio-screenshot-access-dc13ebf4687f/source/test_screenshot_access.py", line 70, in test_labels_and_destinations_follow_changed_approved_content
+    self.check_access(record)
+  File "/dev/shm/portfolio-screenshot-access-dc13ebf4687f/source/test_screenshot_access.py", line 47, in check_access
+    self.assertEqual(len(shots), len(expected), "Every captured screen needs a visible full-image link")
+AssertionError: 0 != 6 : Every captured screen needs a visible full-image link
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.017s
+
+FAILED (failures=2)

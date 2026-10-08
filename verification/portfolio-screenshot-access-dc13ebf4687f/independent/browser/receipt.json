@@ -1,0 +1,945 @@
+{
+  "candidate": "b9a7ef94cec8c38d1202995bb9c8359012f91157",
+  "docs": "/dev/shm/portfolio-screenshot-access-dc13ebf4687f/docs",
+  "program_sha256": "d795b0beb5df576a0926d196ff5eb0c0ec8fd8f4f68ca64d0245d362c14de636",
+  "node": "v24.19.0",
+  "playwright": "1.62.1",
+  "source_before": [
+    {
+      "path": ".nojekyll",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "404.html",
+      "bytes": 1803,
+      "sha256": "7518e990a966516bdaaa8a709df4b434e0cfbc2728fb7b3979a1f8d2046a6463"
+    },
+    {
+      "path": "CNAME",
+      "bytes": 17,
+      "sha256": "7e89b4b8e0d23220fae91b16a6c40497117ef427d16ca984e7a8c720f14d8527"
+    },
+    {
+      "path": "apple-touch-icon.png",
+      "bytes": 4836,
+      "sha256": "5228bf4a42f9ac43cf140fcb7046776f2cb312a799a221774e9aa8aa8649f53d"
+    },
+    {
+      "path": "assets/demos/recallweave-desktop.webp",
+      "bytes": 37320,
+      "sha256": "7f09210bd45edb2ac8fa157b5e380988ea5f28a820300cf319fb7fb55f683565"
+    },
+    {
+      "path": "assets/demos/recallweave-mobile.webp",
+      "bytes": 13288,
+      "sha256": "64904386178ed8bb0db502b70621bbc14dea959668ef64dfd144094856140798"
+    },
+    {
+      "path": "assets/demos/returnby-desktop.webp",
+      "bytes": 65932,
+      "sha256": "e6a6e875cab40c55f7504cabf0131dc40d5fb2c1431acda9c55f4dc4ab82850b"
+    },
+    {
+      "path": "assets/demos/returnby-mobile.webp",
+      "bytes": 52958,
+      "sha256": "84533be3d6e3fbc56ffaecfaf18e176efc84cf1c84d16d8f3545dde09839a2bd"
+    },
+    {
+      "path": "assets/demos/towerops-desktop.webp",
+      "bytes": 58360,
+      "sha256": "1f385b35fc21b57232c1ca74f77855890d370a9691ce6a84b5e6d23012629ce0"
+    },
+    {
+      "path": "assets/demos/towerops-mobile.webp",
+      "bytes": 39420,
+      "sha256": "a18fadeabc2492ad3b4263a35b7621c36d6fa204d6b107d5728bd69e8cb274ca"
+    },
+    {
+      "path": "assets/mark.svg",
+      "bytes": 442,
+      "sha256": "bf39430d64c6601ed417f590031b91dbee89bfc8fbbb2426fbf990553b03584c"
+    },
+    {
+      "path": "assets/og-card.png",
+      "bytes": 56600,
+      "sha256": "1f8a7f2f42b154f44a25f12fd7619c17471d4354c92247c2cae8cc680c263e24"
+    },
+    {
+      "path": "build-manifest.json",
+      "bytes": 1768,
+      "sha256": "97bda6717edaf6b07c2e30186ca55d6c89ebdfa06e7c5cbacd9ddd05fb4cf344"
+    },
+    {
+      "path": "cv.json",
+      "bytes": 7309,
+      "sha256": "e915b6aa303ee5728018852103ccdc1ae2c5c4b85199a5e82c8666d24094efdb"
+    },
+    {
+      "path": "favicon.ico",
+      "bytes": 3791,
+      "sha256": "277c9b64ee26af8bf6194feb44e2364b552c6280c9339f22a52f975d3a4c77de"
+    },
+    {
+      "path": "index.html",
+      "bytes": 12508,
+      "sha256": "37d1e30c938c97017ea72256dff5e2908d29fd7674b4dfcf3a6ef782604891a4"
+    },
+    {
+      "path": "robots.txt",
+      "bytes": 69,
+      "sha256": "60d463caa67aaa008b827bdec75236dcec7a9c82c49f529ad1da2de1c847c47e"
+    },
+    {
+      "path": "sitemap.xml",
+      "bytes": 184,
+      "sha256": "8ae5d9d2150de40793fed791c6bca873bb015f14fddf3eeec5a520764f0ba80f"
+    },
+    {
+      "path": "style.css",
+      "bytes": 10648,
+      "sha256": "7ffaaf9068456c86ab23e5c8ec21e2b8d3377b0620e0f6388e057dc809903f61"
+    }
+  ],
+  "served": [
+    {
+      "path": "/index.html",
+      "bytes": 12508,
+      "sha256": "37d1e30c938c97017ea72256dff5e2908d29fd7674b4dfcf3a6ef782604891a4",
+      "type": "text/html"
+    },
+    {
+      "path": "/style.css",
+      "bytes": 10648,
+      "sha256": "7ffaaf9068456c86ab23e5c8ec21e2b8d3377b0620e0f6388e057dc809903f61",
+      "type": "text/css"
+    },
+    {
+      "path": "/assets/demos/recallweave-desktop.webp",
+      "bytes": 37320,
+      "sha256": "7f09210bd45edb2ac8fa157b5e380988ea5f28a820300cf319fb7fb55f683565",
+      "type": "image/webp"
+    },
+    {
+      "path": "/assets/demos/recallweave-mobile.webp",
+      "bytes": 13288,
+      "sha256": "64904386178ed8bb0db502b70621bbc14dea959668ef64dfd144094856140798",
+      "type": "image/webp"
+    },
+    {
+      "path": "/assets/demos/returnby-desktop.webp",
+      "bytes": 65932,
+      "sha256": "e6a6e875cab40c55f7504cabf0131dc40d5fb2c1431acda9c55f4dc4ab82850b",
+      "type": "image/webp"
+    },
+    {
+      "path": "/assets/demos/returnby-mobile.webp",
+      "bytes": 52958,
+      "sha256": "84533be3d6e3fbc56ffaecfaf18e176efc84cf1c84d16d8f3545dde09839a2bd",
+      "type": "image/webp"
+    },
+    {
+      "path": "/assets/demos/towerops-desktop.webp",
+      "bytes": 58360,
+      "sha256": "1f385b35fc21b57232c1ca74f77855890d370a9691ce6a84b5e6d23012629ce0",
+      "type": "image/webp"
+    },
+    {
+      "path": "/assets/demos/towerops-mobile.webp",
+      "bytes": 39420,
+      "sha256": "a18fadeabc2492ad3b4263a35b7621c36d6fa204d6b107d5728bd69e8cb274ca",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/index.html",
+      "bytes": 12508,
+      "sha256": "37d1e30c938c97017ea72256dff5e2908d29fd7674b4dfcf3a6ef782604891a4",
+      "type": "text/html"
+    },
+    {
+      "path": "/preview/style.css",
+      "bytes": 10648,
+      "sha256": "7ffaaf9068456c86ab23e5c8ec21e2b8d3377b0620e0f6388e057dc809903f61",
+      "type": "text/css"
+    },
+    {
+      "path": "/preview/assets/demos/recallweave-desktop.webp",
+      "bytes": 37320,
+      "sha256": "7f09210bd45edb2ac8fa157b5e380988ea5f28a820300cf319fb7fb55f683565",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/recallweave-mobile.webp",
+      "bytes": 13288,
+      "sha256": "64904386178ed8bb0db502b70621bbc14dea959668ef64dfd144094856140798",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/returnby-desktop.webp",
+      "bytes": 65932,
+      "sha256": "e6a6e875cab40c55f7504cabf0131dc40d5fb2c1431acda9c55f4dc4ab82850b",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/returnby-mobile.webp",
+      "bytes": 52958,
+      "sha256": "84533be3d6e3fbc56ffaecfaf18e176efc84cf1c84d16d8f3545dde09839a2bd",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/towerops-desktop.webp",
+      "bytes": 58360,
+      "sha256": "1f385b35fc21b57232c1ca74f77855890d370a9691ce6a84b5e6d23012629ce0",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/towerops-mobile.webp",
+      "bytes": 39420,
+      "sha256": "a18fadeabc2492ad3b4263a35b7621c36d6fa204d6b107d5728bd69e8cb274ca",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/recallweave-desktop.webp",
+      "bytes": 37320,
+      "sha256": "7f09210bd45edb2ac8fa157b5e380988ea5f28a820300cf319fb7fb55f683565",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/index.html",
+      "bytes": 12508,
+      "sha256": "37d1e30c938c97017ea72256dff5e2908d29fd7674b4dfcf3a6ef782604891a4",
+      "type": "text/html"
+    },
+    {
+      "path": "/preview/style.css",
+      "bytes": 10648,
+      "sha256": "7ffaaf9068456c86ab23e5c8ec21e2b8d3377b0620e0f6388e057dc809903f61",
+      "type": "text/css"
+    },
+    {
+      "path": "/preview/assets/demos/recallweave-desktop.webp",
+      "bytes": 37320,
+      "sha256": "7f09210bd45edb2ac8fa157b5e380988ea5f28a820300cf319fb7fb55f683565",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/recallweave-mobile.webp",
+      "bytes": 13288,
+      "sha256": "64904386178ed8bb0db502b70621bbc14dea959668ef64dfd144094856140798",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/returnby-desktop.webp",
+      "bytes": 65932,
+      "sha256": "e6a6e875cab40c55f7504cabf0131dc40d5fb2c1431acda9c55f4dc4ab82850b",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/returnby-mobile.webp",
+      "bytes": 52958,
+      "sha256": "84533be3d6e3fbc56ffaecfaf18e176efc84cf1c84d16d8f3545dde09839a2bd",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/towerops-desktop.webp",
+      "bytes": 58360,
+      "sha256": "1f385b35fc21b57232c1ca74f77855890d370a9691ce6a84b5e6d23012629ce0",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/towerops-mobile.webp",
+      "bytes": 39420,
+      "sha256": "a18fadeabc2492ad3b4263a35b7621c36d6fa204d6b107d5728bd69e8cb274ca",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/recallweave-mobile.webp",
+      "bytes": 13288,
+      "sha256": "64904386178ed8bb0db502b70621bbc14dea959668ef64dfd144094856140798",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/index.html",
+      "bytes": 12508,
+      "sha256": "37d1e30c938c97017ea72256dff5e2908d29fd7674b4dfcf3a6ef782604891a4",
+      "type": "text/html"
+    },
+    {
+      "path": "/preview/style.css",
+      "bytes": 10648,
+      "sha256": "7ffaaf9068456c86ab23e5c8ec21e2b8d3377b0620e0f6388e057dc809903f61",
+      "type": "text/css"
+    },
+    {
+      "path": "/preview/assets/demos/recallweave-desktop.webp",
+      "bytes": 37320,
+      "sha256": "7f09210bd45edb2ac8fa157b5e380988ea5f28a820300cf319fb7fb55f683565",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/recallweave-mobile.webp",
+      "bytes": 13288,
+      "sha256": "64904386178ed8bb0db502b70621bbc14dea959668ef64dfd144094856140798",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/returnby-desktop.webp",
+      "bytes": 65932,
+      "sha256": "e6a6e875cab40c55f7504cabf0131dc40d5fb2c1431acda9c55f4dc4ab82850b",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/returnby-mobile.webp",
+      "bytes": 52958,
+      "sha256": "84533be3d6e3fbc56ffaecfaf18e176efc84cf1c84d16d8f3545dde09839a2bd",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/towerops-desktop.webp",
+      "bytes": 58360,
+      "sha256": "1f385b35fc21b57232c1ca74f77855890d370a9691ce6a84b5e6d23012629ce0",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/towerops-mobile.webp",
+      "bytes": 39420,
+      "sha256": "a18fadeabc2492ad3b4263a35b7621c36d6fa204d6b107d5728bd69e8cb274ca",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/returnby-desktop.webp",
+      "bytes": 65932,
+      "sha256": "e6a6e875cab40c55f7504cabf0131dc40d5fb2c1431acda9c55f4dc4ab82850b",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/index.html",
+      "bytes": 12508,
+      "sha256": "37d1e30c938c97017ea72256dff5e2908d29fd7674b4dfcf3a6ef782604891a4",
+      "type": "text/html"
+    },
+    {
+      "path": "/preview/style.css",
+      "bytes": 10648,
+      "sha256": "7ffaaf9068456c86ab23e5c8ec21e2b8d3377b0620e0f6388e057dc809903f61",
+      "type": "text/css"
+    },
+    {
+      "path": "/preview/assets/demos/recallweave-desktop.webp",
+      "bytes": 37320,
+      "sha256": "7f09210bd45edb2ac8fa157b5e380988ea5f28a820300cf319fb7fb55f683565",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/recallweave-mobile.webp",
+      "bytes": 13288,
+      "sha256": "64904386178ed8bb0db502b70621bbc14dea959668ef64dfd144094856140798",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/returnby-desktop.webp",
+      "bytes": 65932,
+      "sha256": "e6a6e875cab40c55f7504cabf0131dc40d5fb2c1431acda9c55f4dc4ab82850b",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/returnby-mobile.webp",
+      "bytes": 52958,
+      "sha256": "84533be3d6e3fbc56ffaecfaf18e176efc84cf1c84d16d8f3545dde09839a2bd",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/towerops-desktop.webp",
+      "bytes": 58360,
+      "sha256": "1f385b35fc21b57232c1ca74f77855890d370a9691ce6a84b5e6d23012629ce0",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/towerops-mobile.webp",
+      "bytes": 39420,
+      "sha256": "a18fadeabc2492ad3b4263a35b7621c36d6fa204d6b107d5728bd69e8cb274ca",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/returnby-mobile.webp",
+      "bytes": 52958,
+      "sha256": "84533be3d6e3fbc56ffaecfaf18e176efc84cf1c84d16d8f3545dde09839a2bd",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/index.html",
+      "bytes": 12508,
+      "sha256": "37d1e30c938c97017ea72256dff5e2908d29fd7674b4dfcf3a6ef782604891a4",
+      "type": "text/html"
+    },
+    {
+      "path": "/preview/style.css",
+      "bytes": 10648,
+      "sha256": "7ffaaf9068456c86ab23e5c8ec21e2b8d3377b0620e0f6388e057dc809903f61",
+      "type": "text/css"
+    },
+    {
+      "path": "/preview/assets/demos/recallweave-desktop.webp",
+      "bytes": 37320,
+      "sha256": "7f09210bd45edb2ac8fa157b5e380988ea5f28a820300cf319fb7fb55f683565",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/recallweave-mobile.webp",
+      "bytes": 13288,
+      "sha256": "64904386178ed8bb0db502b70621bbc14dea959668ef64dfd144094856140798",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/returnby-desktop.webp",
+      "bytes": 65932,
+      "sha256": "e6a6e875cab40c55f7504cabf0131dc40d5fb2c1431acda9c55f4dc4ab82850b",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/returnby-mobile.webp",
+      "bytes": 52958,
+      "sha256": "84533be3d6e3fbc56ffaecfaf18e176efc84cf1c84d16d8f3545dde09839a2bd",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/towerops-desktop.webp",
+      "bytes": 58360,
+      "sha256": "1f385b35fc21b57232c1ca74f77855890d370a9691ce6a84b5e6d23012629ce0",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/towerops-mobile.webp",
+      "bytes": 39420,
+      "sha256": "a18fadeabc2492ad3b4263a35b7621c36d6fa204d6b107d5728bd69e8cb274ca",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/towerops-desktop.webp",
+      "bytes": 58360,
+      "sha256": "1f385b35fc21b57232c1ca74f77855890d370a9691ce6a84b5e6d23012629ce0",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/index.html",
+      "bytes": 12508,
+      "sha256": "37d1e30c938c97017ea72256dff5e2908d29fd7674b4dfcf3a6ef782604891a4",
+      "type": "text/html"
+    },
+    {
+      "path": "/preview/style.css",
+      "bytes": 10648,
+      "sha256": "7ffaaf9068456c86ab23e5c8ec21e2b8d3377b0620e0f6388e057dc809903f61",
+      "type": "text/css"
+    },
+    {
+      "path": "/preview/assets/demos/recallweave-desktop.webp",
+      "bytes": 37320,
+      "sha256": "7f09210bd45edb2ac8fa157b5e380988ea5f28a820300cf319fb7fb55f683565",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/recallweave-mobile.webp",
+      "bytes": 13288,
+      "sha256": "64904386178ed8bb0db502b70621bbc14dea959668ef64dfd144094856140798",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/returnby-desktop.webp",
+      "bytes": 65932,
+      "sha256": "e6a6e875cab40c55f7504cabf0131dc40d5fb2c1431acda9c55f4dc4ab82850b",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/returnby-mobile.webp",
+      "bytes": 52958,
+      "sha256": "84533be3d6e3fbc56ffaecfaf18e176efc84cf1c84d16d8f3545dde09839a2bd",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/towerops-desktop.webp",
+      "bytes": 58360,
+      "sha256": "1f385b35fc21b57232c1ca74f77855890d370a9691ce6a84b5e6d23012629ce0",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/towerops-mobile.webp",
+      "bytes": 39420,
+      "sha256": "a18fadeabc2492ad3b4263a35b7621c36d6fa204d6b107d5728bd69e8cb274ca",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/towerops-mobile.webp",
+      "bytes": 39420,
+      "sha256": "a18fadeabc2492ad3b4263a35b7621c36d6fa204d6b107d5728bd69e8cb274ca",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/index.html",
+      "bytes": 12508,
+      "sha256": "37d1e30c938c97017ea72256dff5e2908d29fd7674b4dfcf3a6ef782604891a4",
+      "type": "text/html"
+    },
+    {
+      "path": "/preview/style.css",
+      "bytes": 10648,
+      "sha256": "7ffaaf9068456c86ab23e5c8ec21e2b8d3377b0620e0f6388e057dc809903f61",
+      "type": "text/css"
+    },
+    {
+      "path": "/preview/assets/demos/recallweave-desktop.webp",
+      "bytes": 37320,
+      "sha256": "7f09210bd45edb2ac8fa157b5e380988ea5f28a820300cf319fb7fb55f683565",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/recallweave-mobile.webp",
+      "bytes": 13288,
+      "sha256": "64904386178ed8bb0db502b70621bbc14dea959668ef64dfd144094856140798",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/returnby-desktop.webp",
+      "bytes": 65932,
+      "sha256": "e6a6e875cab40c55f7504cabf0131dc40d5fb2c1431acda9c55f4dc4ab82850b",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/returnby-mobile.webp",
+      "bytes": 52958,
+      "sha256": "84533be3d6e3fbc56ffaecfaf18e176efc84cf1c84d16d8f3545dde09839a2bd",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/towerops-desktop.webp",
+      "bytes": 58360,
+      "sha256": "1f385b35fc21b57232c1ca74f77855890d370a9691ce6a84b5e6d23012629ce0",
+      "type": "image/webp"
+    },
+    {
+      "path": "/preview/assets/demos/towerops-mobile.webp",
+      "bytes": 39420,
+      "sha256": "a18fadeabc2492ad3b4263a35b7621c36d6fa204d6b107d5728bd69e8cb274ca",
+      "type": "image/webp"
+    }
+  ],
+  "blocked": [],
+  "viewports": [
+    {
+      "width": 1280,
+      "entry": "/index.html",
+      "tab_sequences": [
+        {
+          "demo": "RecallWeave",
+          "links": [
+            {
+              "name": "RecallWeave: full desktop screenshot",
+              "href": "assets/demos/recallweave-desktop.webp",
+              "visible": true,
+              "outline": "2px",
+              "height": 44,
+              "x": 880.421875,
+              "right": 933.109375,
+              "viewport": 1280
+            },
+            {
+              "name": "RecallWeave: full phone screenshot",
+              "href": "assets/demos/recallweave-mobile.webp",
+              "visible": true,
+              "outline": "2px",
+              "height": 44,
+              "x": 947.109375,
+              "right": 984.75,
+              "viewport": 1280
+            }
+          ],
+          "next": "https://jacobmetoyer.com/RecallWeave/demo.html"
+        },
+        {
+          "demo": "ReturnBy",
+          "links": [
+            {
+              "name": "ReturnBy: full desktop screenshot",
+              "href": "assets/demos/returnby-desktop.webp",
+              "visible": true,
+              "outline": "2px",
+              "height": 44,
+              "x": 234.9375,
+              "right": 287.625,
+              "viewport": 1280
+            },
+            {
+              "name": "ReturnBy: full phone screenshot",
+              "href": "assets/demos/returnby-mobile.webp",
+              "visible": true,
+              "outline": "2px",
+              "height": 44,
+              "x": 301.625,
+              "right": 339.265625,
+              "viewport": 1280
+            }
+          ],
+          "next": "https://jacobmetoyer.com/returnby/"
+        },
+        {
+          "demo": "TowerOps Airspace Lab",
+          "links": [
+            {
+              "name": "TowerOps Airspace Lab: full desktop screenshot",
+              "href": "assets/demos/towerops-desktop.webp",
+              "visible": true,
+              "outline": "2px",
+              "height": 44,
+              "x": 880.421875,
+              "right": 933.109375,
+              "viewport": 1280
+            },
+            {
+              "name": "TowerOps Airspace Lab: full phone screenshot",
+              "href": "assets/demos/towerops-mobile.webp",
+              "visible": true,
+              "outline": "2px",
+              "height": 44,
+              "x": 947.109375,
+              "right": 984.75,
+              "viewport": 1280
+            }
+          ],
+          "next": "https://jacobmetoyer.com/TowerOps/airspace/"
+        }
+      ],
+      "pre_decode_images": [
+        {
+          "src": "assets/demos/recallweave-desktop.webp",
+          "complete": true,
+          "width": 1200,
+          "height": 750
+        },
+        {
+          "src": "assets/demos/recallweave-mobile.webp",
+          "complete": true,
+          "width": 300,
+          "height": 649
+        },
+        {
+          "src": "assets/demos/returnby-desktop.webp",
+          "complete": false,
+          "width": 1200,
+          "height": 1123
+        },
+        {
+          "src": "assets/demos/returnby-mobile.webp",
+          "complete": false,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "src": "assets/demos/towerops-desktop.webp",
+          "complete": false,
+          "width": 0,
+          "height": 0
+        },
+        {
+          "src": "assets/demos/towerops-mobile.webp",
+          "complete": false,
+          "width": 0,
+          "height": 0
+        }
+      ],
+      "images_decoded": true,
+      "no_horizontal_overflow": true
+    },
+    {
+      "width": 390,
+      "entry": "/preview/index.html",
+      "tab_sequences": [
+        {
+          "demo": "RecallWeave",
+          "links": [
+            {
+              "name": "RecallWeave: full desktop screenshot",
+              "href": "assets/demos/recallweave-desktop.webp",
+              "visible": true,
+              "outline": "2px",
+              "height": 44,
+              "x": 180.9375,
+              "right": 233.625,
+              "viewport": 390
+            },
+            {
+              "name": "RecallWeave: full phone screenshot",
+              "href": "assets/demos/recallweave-mobile.webp",
+              "visible": true,
+              "outline": "2px",
+              "height": 44,
+              "x": 247.625,
+              "right": 285.265625,
+              "viewport": 390
+            }
+          ],
+          "next": "https://jacobmetoyer.com/RecallWeave/demo.html"
+        },
+        {
+          "demo": "ReturnBy",
+          "links": [
+            {
+              "name": "ReturnBy: full desktop screenshot",
+              "href": "assets/demos/returnby-desktop.webp",
+              "visible": true,
+              "outline": "2px",
+              "height": 44,
+              "x": 180.9375,
+              "right": 233.625,
+              "viewport": 390
+            },
+            {
+              "name": "ReturnBy: full phone screenshot",
+              "href": "assets/demos/returnby-mobile.webp",
+              "visible": true,
+              "outline": "2px",
+              "height": 44,
+              "x": 247.625,
+              "right": 285.265625,
+              "viewport": 390
+            }
+          ],
+          "next": "https://jacobmetoyer.com/returnby/"
+        },
+        {
+          "demo": "TowerOps Airspace Lab",
+          "links": [
+            {
+              "name": "TowerOps Airspace Lab: full desktop screenshot",
+              "href": "assets/demos/towerops-desktop.webp",
+              "visible": true,
+              "outline": "2px",
+              "height": 44,
+              "x": 180.9375,
+              "right": 233.625,
+              "viewport": 390
+            },
+            {
+              "name": "TowerOps Airspace Lab: full phone screenshot",
+              "href": "assets/demos/towerops-mobile.webp",
+              "visible": true,
+              "outline": "2px",
+              "height": 44,
+              "x": 247.625,
+              "right": 285.265625,
+              "viewport": 390
+            }
+          ],
+          "next": "https://jacobmetoyer.com/TowerOps/airspace/"
+        }
+      ],
+      "pre_decode_images": [
+        {
+          "src": "assets/demos/recallweave-desktop.webp",
+          "complete": true,
+          "width": 1200,
+          "height": 750
+        },
+        {
+          "src": "assets/demos/recallweave-mobile.webp",
+          "complete": true,
+          "width": 300,
+          "height": 649
+        },
+        {
+          "src": "assets/demos/returnby-desktop.webp",
+          "complete": true,
+          "width": 1200,
+          "height": 1123
+        },
+        {
+          "src": "assets/demos/returnby-mobile.webp",
+          "complete": true,
+          "width": 300,
+          "height": 1722
+        },
+        {
+          "src": "assets/demos/towerops-desktop.webp",
+          "complete": true,
+          "width": 1200,
+          "height": 1244
+        },
+        {
+          "src": "assets/demos/towerops-mobile.webp",
+          "complete": true,
+          "width": 300,
+          "height": 1546
+        }
+      ],
+      "images_decoded": true,
+      "no_horizontal_overflow": true
+    }
+  ],
+  "native_navigations": [
+    {
+      "name": "RecallWeave: full desktop screenshot",
+      "url": "http://127.0.0.1:33635/preview/assets/demos/recallweave-desktop.webp",
+      "status": 200,
+      "bytes": 37320,
+      "sha256": "7f09210bd45edb2ac8fa157b5e380988ea5f28a820300cf319fb7fb55f683565",
+      "dimensions": {
+        "width": 1200,
+        "height": 750
+      }
+    },
+    {
+      "name": "RecallWeave: full phone screenshot",
+      "url": "http://127.0.0.1:33635/preview/assets/demos/recallweave-mobile.webp",
+      "status": 200,
+      "bytes": 13288,
+      "sha256": "64904386178ed8bb0db502b70621bbc14dea959668ef64dfd144094856140798",
+      "dimensions": {
+        "width": 300,
+        "height": 649
+      }
+    },
+    {
+      "name": "ReturnBy: full desktop screenshot",
+      "url": "http://127.0.0.1:33635/preview/assets/demos/returnby-desktop.webp",
+      "status": 200,
+      "bytes": 65932,
+      "sha256": "e6a6e875cab40c55f7504cabf0131dc40d5fb2c1431acda9c55f4dc4ab82850b",
+      "dimensions": {
+        "width": 1200,
+        "height": 1123
+      }
+    },
+    {
+      "name": "ReturnBy: full phone screenshot",
+      "url": "http://127.0.0.1:33635/preview/assets/demos/returnby-mobile.webp",
+      "status": 200,
+      "bytes": 52958,
+      "sha256": "84533be3d6e3fbc56ffaecfaf18e176efc84cf1c84d16d8f3545dde09839a2bd",
+      "dimensions": {
+        "width": 300,
+        "height": 1722
+      }
+    },
+    {
+      "name": "TowerOps Airspace Lab: full desktop screenshot",
+      "url": "http://127.0.0.1:33635/preview/assets/demos/towerops-desktop.webp",
+      "status": 200,
+      "bytes": 58360,
+      "sha256": "1f385b35fc21b57232c1ca74f77855890d370a9691ce6a84b5e6d23012629ce0",
+      "dimensions": {
+        "width": 1200,
+        "height": 1244
+      }
+    },
+    {
+      "name": "TowerOps Airspace Lab: full phone screenshot",
+      "url": "http://127.0.0.1:33635/preview/assets/demos/towerops-mobile.webp",
+      "status": 200,
+      "bytes": 39420,
+      "sha256": "a18fadeabc2492ad3b4263a35b7621c36d6fa204d6b107d5728bd69e8cb274ca",
+      "dimensions": {
+        "width": 300,
+        "height": 1546
+      }
+    }
+  ],
+  "page_errors": [],
+  "browser": "153.0.8010.0",
+  "ok": true,
+  "source_after": [
+    {
+      "path": ".nojekyll",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "404.html",
+      "bytes": 1803,
+      "sha256": "7518e990a966516bdaaa8a709df4b434e0cfbc2728fb7b3979a1f8d2046a6463"
+    },
+    {
+      "path": "CNAME",
+      "bytes": 17,
+      "sha256": "7e89b4b8e0d23220fae91b16a6c40497117ef427d16ca984e7a8c720f14d8527"
+    },
+    {
+      "path": "apple-touch-icon.png",
+      "bytes": 4836,
+      "sha256": "5228bf4a42f9ac43cf140fcb7046776f2cb312a799a221774e9aa8aa8649f53d"
+    },
+    {
+      "path": "assets/demos/recallweave-desktop.webp",
+      "bytes": 37320,
+      "sha256": "7f09210bd45edb2ac8fa157b5e380988ea5f28a820300cf319fb7fb55f683565"
+    },
+    {
+      "path": "assets/demos/recallweave-mobile.webp",
+      "bytes": 13288,
+      "sha256": "64904386178ed8bb0db502b70621bbc14dea959668ef64dfd144094856140798"
+    },
+    {
+      "path": "assets/demos/returnby-desktop.webp",
+      "bytes": 65932,
+      "sha256": "e6a6e875cab40c55f7504cabf0131dc40d5fb2c1431acda9c55f4dc4ab82850b"
+    },
+    {
+      "path": "assets/demos/returnby-mobile.webp",
+      "bytes": 52958,
+      "sha256": "84533be3d6e3fbc56ffaecfaf18e176efc84cf1c84d16d8f3545dde09839a2bd"
+    },
+    {
+      "path": "assets/demos/towerops-desktop.webp",
+      "bytes": 58360,
+      "sha256": "1f385b35fc21b57232c1ca74f77855890d370a9691ce6a84b5e6d23012629ce0"
+    },
+    {
+      "path": "assets/demos/towerops-mobile.webp",
+      "bytes": 39420,
+      "sha256": "a18fadeabc2492ad3b4263a35b7621c36d6fa204d6b107d5728bd69e8cb274ca"
+    },
+    {
+      "path": "assets/mark.svg",
+      "bytes": 442,
+      "sha256": "bf39430d64c6601ed417f590031b91dbee89bfc8fbbb2426fbf990553b03584c"
+    },
+    {
+      "path": "assets/og-card.png",
+      "bytes": 56600,
+      "sha256": "1f8a7f2f42b154f44a25f12fd7619c17471d4354c92247c2cae8cc680c263e24"
+    },
+    {
+      "path": "build-manifest.json",
+      "bytes": 1768,
+      "sha256": "97bda6717edaf6b07c2e30186ca55d6c89ebdfa06e7c5cbacd9ddd05fb4cf344"
+    },
+    {
+      "path": "cv.json",
+      "bytes": 7309,
+      "sha256": "e915b6aa303ee5728018852103ccdc1ae2c5c4b85199a5e82c8666d24094efdb"
+    },
+    {
+      "path": "favicon.ico",
+      "bytes": 3791,
+      "sha256": "277c9b64ee26af8bf6194feb44e2364b552c6280c9339f22a52f975d3a4c77de"
+    },
+    {
+      "path": "index.html",
+      "bytes": 12508,
+      "sha256": "37d1e30c938c97017ea72256dff5e2908d29fd7674b4dfcf3a6ef782604891a4"
+    },
+    {
+      "path": "robots.txt",
+      "bytes": 69,
+      "sha256": "60d463caa67aaa008b827bdec75236dcec7a9c82c49f529ad1da2de1c847c47e"
+    },
+    {
+      "path": "sitemap.xml",
+      "bytes": 184,
+      "sha256": "8ae5d9d2150de40793fed791c6bca873bb015f14fddf3eeec5a520764f0ba80f"
+    },
+    {
+      "path": "style.css",
+      "bytes": 10648,
+      "sha256": "7ffaaf9068456c86ab23e5c8ec21e2b8d3377b0620e0f6388e057dc809903f61"
+    }
+  ]
+}

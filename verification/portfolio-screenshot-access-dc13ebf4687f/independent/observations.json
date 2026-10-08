@@ -1,0 +1,116 @@
+{
+  "author_packet_root": "/dev/shm/portfolio-screenshot-evidence-dc13ebf4687f",
+  "author_packet_manifest": {
+    "path": "packet-manifest.json",
+    "bytes": 3638,
+    "sha256": "870fa169e7ce7928e6dcd9bd5fc0b01737d226dedb07c61048dbd9eb5d3e8ec6",
+    "git_blob": "be3211b35a51f2d67bb16767df07e7440cde537e"
+  },
+  "author_receipt": {
+    "path": "author-receipt.json",
+    "bytes": 4616,
+    "sha256": "be6095198a3537dfdb6caf2b9e8fca83a00c763f072681ca7900da29eb808f7d",
+    "git_blob": "9c644803b0bf66f98b8589b95c20bdf387d418d7"
+  },
+  "author_source_manifest": {
+    "path": "source-manifest.json",
+    "bytes": 24670,
+    "sha256": "992c806fa48ad8efd531ce103a06d80347310b847738611885d9d0a9952a4568",
+    "git_blob": "6810e6f34fe813ab4af0dd7d856ce977f7aabcc5"
+  },
+  "browser_receipts": [
+    {
+      "path": "browser-before/receipt.json",
+      "bytes": 1155,
+      "sha256": "53003a852e53b77d6dfb687c7fad60fe1cc914a13ea3ffa24b26de2d53d7e3be",
+      "git_blob": "27ee88b3e5636a711014fc045366bbbe597a9d1e",
+      "ok": true,
+      "viewport_count": 2,
+      "served_request_count": 16,
+      "error": null
+    },
+    {
+      "path": "browser-after/receipt.json",
+      "bytes": 642,
+      "sha256": "c80a2589b88edb9f48a58b8635ec999284a865a00e1d208a29c3016b4c8166a8",
+      "git_blob": "d1d21ced0a480c8afa5ab55eb0441b370d9cd9cd",
+      "ok": false,
+      "viewport_count": 0,
+      "served_request_count": 8,
+      "error": "page.waitForFunction: Timeout 30000ms exceeded."
+    },
+    {
+      "path": "browser-after-v2/receipt.json",
+      "bytes": 5328,
+      "sha256": "ce404fd7058707704408b733e3e22f341e324bbedb36b36f10508c5880973c56",
+      "git_blob": "cdadbb53cdb0596366b720e270d65f767895c7b4",
+      "ok": false,
+      "viewport_count": 0,
+      "served_request_count": 0,
+      "error": "browserContext.newPage: Target page, context or browser has been closed"
+    },
+    {
+      "path": "browser-after-v3/receipt.json",
+      "bytes": 11166,
+      "sha256": "28d8fe1785c919d5891086007b1cdaf489299c67714ea734e6c0465e04c3bf76",
+      "git_blob": "fbd11f9fdacbc30021401325b2cc443d8a2680b5",
+      "ok": false,
+      "viewport_count": 0,
+      "served_request_count": 0,
+      "error": "browserType.launch: Target page, context or browser has been closed"
+    }
+  ],
+  "harnesses": [
+    {
+      "path": "receive-browser-v1.cjs",
+      "bytes": 5531,
+      "sha256": "02e27e5849104a1043aa63584f365f00242fe8bec341383db03646ee628bda80",
+      "git_blob": "6988b14e54aa42c26b67d0632b6c1797e417c665"
+    },
+    {
+      "path": "receive-browser-v2.cjs",
+      "bytes": 6108,
+      "sha256": "2e8071801d35bac4d21178f8eadc9e90c1476a61ddbf706ae4c0e831dc42a136",
+      "git_blob": "35e4e1b1d6ff74802845a14a7e0f9a6e60904f3d"
+    },
+    {
+      "path": "receive-browser.cjs",
+      "bytes": 6276,
+      "sha256": "8a125576f0231139c71bb11d4b1acc0d4adf2871557b1854f83684276bdf8618",
+      "git_blob": "1d59fe015b2d8f50d5852724e88eaaeeb8b98401"
+    }
+  ],
+  "harness_version_mapping": {
+    "receive-browser-v1.cjs": [
+      "browser-before/receipt.json",
+      "browser-after/receipt.json"
+    ],
+    "receive-browser-v2.cjs": [
+      "browser-after-v2/receipt.json"
+    ],
+    "receive-browser.cjs": [
+      "browser-after-v3/receipt.json"
+    ]
+  },
+  "interpretation": {
+    "baseline": "Two original-baseline viewports passed with six previews and zero full-image actions.",
+    "candidate_timeout": "The first candidate receipt served six image paths but timed out before recording link/viewport checks. It does not establish completed response decoding; no cause was proved.",
+    "later_initialization_failures": "Two later receipts stop during browser/page startup; their logs record temporary-space and ANGLE/EGL failures.",
+    "independent_receiving": "A fresh separately pinned run now qualifies this candidate at two Chromium viewport widths. Earlier failed receipts remain failures and their cause remains unresolved."
+  },
+  "local_capacity_observations_bytes": [
+    {
+      "stage": "initial inventory",
+      "available": 80666624
+    },
+    {
+      "stage": "post-build launch gate; browser deferred",
+      "available": 4837376
+    },
+    {
+      "stage": "final launch gate; one browser run permitted",
+      "available": 128233472
+    }
+  ],
+  "failed_static_harness": "rejected-harnesses/static-v1.json"
+}

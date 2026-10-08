@@ -1,0 +1,139 @@
+{
+  "decision": "accepted",
+  "candidate": "b9a7ef94cec8c38d1202995bb9c8359012f91157",
+  "candidate_tree": "c9c842524f70d10b4b1d4486352e190fb853424d",
+  "upstream": "c6f22409c5f52a3b5925ed6a74e19e4b5c0cda27",
+  "upstream_tree": "99e64f39de7038fd91125ed7157a2fd57cf30ba8",
+  "baseline_local": "9edce3a22d39fe87ac0b65336df980c0db89cdee",
+  "source_paths": [
+    {
+      "path": "source/build.py",
+      "bytes": 16673,
+      "sha256": "b98d8cacce78a2887f0b327247e6f52278c8fcaae1c5a2c3fe895a1cbbedec1f",
+      "git_blob": "85a4b256075cfdb6ff7f0bd3d8869c5bdf8925d1"
+    },
+    {
+      "path": "source/style.css",
+      "bytes": 10648,
+      "sha256": "7ffaaf9068456c86ab23e5c8ec21e2b8d3377b0620e0f6388e057dc809903f61",
+      "git_blob": "1f89736b67230b75427e9c8d76a4ee95e073ebcd"
+    },
+    {
+      "path": "source/test_screenshot_access.py",
+      "bytes": 3050,
+      "sha256": "641123ef50384c8fad60ac24e35992d9f2db6a54658a89bdb4925d810a86bcb9",
+      "git_blob": "c1ddc5d138dbaa27908c8b05aac4c05a7fdb2eb2"
+    },
+    {
+      "path": "docs/index.html",
+      "bytes": 12508,
+      "sha256": "37d1e30c938c97017ea72256dff5e2908d29fd7674b4dfcf3a6ef782604891a4",
+      "git_blob": "1c6d76e224c10b27dfc5fdfdfda06724772a4eb4"
+    },
+    {
+      "path": "docs/style.css",
+      "bytes": 10648,
+      "sha256": "7ffaaf9068456c86ab23e5c8ec21e2b8d3377b0620e0f6388e057dc809903f61",
+      "git_blob": "1f89736b67230b75427e9c8d76a4ee95e073ebcd"
+    },
+    {
+      "path": "docs/build-manifest.json",
+      "bytes": 1768,
+      "sha256": "97bda6717edaf6b07c2e30186ca55d6c89ebdfa06e7c5cbacd9ddd05fb4cf344",
+      "git_blob": "e5762f093d9151b83316e8adcfdbea140554db69"
+    }
+  ],
+  "qualification": {
+    "exact_generated_build_files": 19,
+    "unaffected_candidate_files": 43,
+    "existing_html_and_actions_byte_preserved": true,
+    "exact_existing_image_destinations": 6,
+    "browser": "153.0.8010.0",
+    "playwright": "1.62.1",
+    "node": "v24.19.0",
+    "viewport_widths": [
+      1280,
+      390
+    ],
+    "all_previews_decoded": true,
+    "no_horizontal_overflow": true,
+    "tab_sequences": 6,
+    "native_keyboard_image_navigations": 6,
+    "exact_image_bytes_and_intrinsic_dimensions": true,
+    "same_tab_back_return": true,
+    "rendered_returnby_captures_visually_inspected": true,
+    "source_unchanged_after_browser": true,
+    "external_requests": 0,
+    "page_errors": 0,
+    "inherited_test_suite_repeated": false
+  },
+  "evidence": [
+    {
+      "path": "review_static.py",
+      "bytes": 7905,
+      "sha256": "9cabb9dac25f3bed7b61e6cc8e72b5628af99d2cab2d38c420b24ff453d84fda",
+      "git_blob": "06c30c7365ea211504a96f0ec7476c596287c93c"
+    },
+    {
+      "path": "static-receipt.json",
+      "bytes": 8759,
+      "sha256": "fd118f3a36f3944a96efdb208fff844f6a1a062bdfdb832d48125143534275ee",
+      "git_blob": "6e9e8c5f9587593c2fc521f02ccda8ec354caa8c"
+    },
+    {
+      "path": "review_browser.cjs",
+      "bytes": 8165,
+      "sha256": "d795b0beb5df576a0926d196ff5eb0c0ec8fd8f4f68ca64d0245d362c14de636",
+      "git_blob": "b7ce7e2ef976479357275f59e59eacd3ab516700"
+    },
+    {
+      "path": "browser/receipt.json",
+      "bytes": 29661,
+      "sha256": "979d43c15b89f18f3cb1d2d20dee7784d423ca2c3c22bd7fb64b7ab17dd79b4c",
+      "git_blob": "2f45d8d0d4c26e02c71900df25ea41fc2b1bf981"
+    },
+    {
+      "path": "browser/returnby-1280.png",
+      "bytes": 142010,
+      "sha256": "6746e1d99c6cc609b7e57f751ca5cb896fcb8c1acaba0ed6f007c00ed57f7fdf",
+      "git_blob": "b40bc486306d7ca4fd4f91d59dd497a7978361d6"
+    },
+    {
+      "path": "browser/returnby-390.png",
+      "bytes": 94289,
+      "sha256": "531f20486e9d1714f47163ceb3f07184c2b71cdc46bc05ff76fca8bd3a8eb9cf",
+      "git_blob": "f7c51febbd875cdb6d1625b9a208f1396e914a4b"
+    },
+    {
+      "path": "observations.json",
+      "bytes": 4321,
+      "sha256": "25f4e4f665c55a10e6df521d967c9e9c5f16c15602869b6d023120b3ef486617",
+      "git_blob": "986b159cc896d4aa42db9defc03b34d5eb0de849"
+    },
+    {
+      "path": "rejected-harnesses/static-v1.py",
+      "bytes": 7893,
+      "sha256": "58368727a3f1c7d859143c58d52e965a59e19c3a291765cc09fea234648bdf95",
+      "git_blob": "10e992cc1973442457ed1fcde69ee2bbf015b5bd"
+    },
+    {
+      "path": "rejected-harnesses/static-v1.json",
+      "bytes": 450,
+      "sha256": "ffe8d9c85fcb5ce52e738781950e7b7edb4b7409c227de149b4baabc4bf418f5",
+      "git_blob": "de3d2cb608b056c2515e88cd467776aa3fc9d281"
+    }
+  ],
+  "author_packet_manifest": {
+    "path": "packet-manifest.json",
+    "bytes": 3638,
+    "sha256": "870fa169e7ce7928e6dcd9bd5fc0b01737d226dedb07c61048dbd9eb5d3e8ec6",
+    "git_blob": "be3211b35a51f2d67bb16767df07e7440cde537e"
+  },
+  "limits": [
+    "The three earlier candidate browser failures are retained; the initial decode timeout's cause is not established.",
+    "Rendered receiving covers Chromium153 at1280px and390px, with keyboard navigation; no physical phone, touch gesture, other browser or live-site deployment claim.",
+    "Existing demo and repository actions are preserved and checked as navigation targets; no external action was activated.",
+    "The review programs use historical local source roots and disposable one-shot output directories; they are evidence, not new installed user commands.",
+    "The first static review attempt stopped on an overly restrictive regular-file mode assumption in the reviewer harness; its exact program and observation are retained separately."
+  ]
+}

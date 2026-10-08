@@ -1,0 +1,148 @@
+diff --git a/docs/build-manifest.json b/docs/build-manifest.json
+index e022b09bd53e5f3d0957e88ee760f88c72b07f10..e5762f093d9151b83316e8adcfdbea140554db69 100644
+--- a/docs/build-manifest.json
++++ b/docs/build-manifest.json
+@@ -16,9 +16,9 @@
+     "assets/og-card.png": "1f8a7f2f42b154f44a25f12fd7619c17471d4354c92247c2cae8cc680c263e24",
+     "cv.json": "e915b6aa303ee5728018852103ccdc1ae2c5c4b85199a5e82c8666d24094efdb",
+     "favicon.ico": "277c9b64ee26af8bf6194feb44e2364b552c6280c9339f22a52f975d3a4c77de",
+-    "index.html": "9e88ccc49f33fb0994c858185e6b20c3938c734ec8fcb21dbeeef580ca94f5c5",
++    "index.html": "37d1e30c938c97017ea72256dff5e2908d29fd7674b4dfcf3a6ef782604891a4",
+     "robots.txt": "60d463caa67aaa008b827bdec75236dcec7a9c82c49f529ad1da2de1c847c47e",
+     "sitemap.xml": "8ae5d9d2150de40793fed791c6bca873bb015f14fddf3eeec5a520764f0ba80f",
+-    "style.css": "30e7758cf2d765e1a032e87cc054b46c2a760e90a89c3e6c87817d181c5f76a7"
++    "style.css": "7ffaaf9068456c86ab23e5c8ec21e2b8d3377b0620e0f6388e057dc809903f61"
+   }
+ }
+diff --git a/docs/index.html b/docs/index.html
+index 20f48897f549759e8775e9cb6c369c562fcafa10..1c6d76e224c10b27dfc5fdfdfda06724772a4eb4 100644
+--- a/docs/index.html
++++ b/docs/index.html
+@@ -4,4 +4,4 @@
+ <meta property="og:type" content="website"><meta property="og:title" content="Jacob Metoyer - I direct AI agents to carry out what I ask"><meta property="og:description" content="I direct AI agents to carry out whatever I ask, software included. I set the bar and decide what ships."><meta property="og:url" content="https://jacobmetoyer.com/">
+ <meta property="og:image" content="https://jacobmetoyer.com/assets/og-card.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Jacob Metoyer - AI agents carry out whatever I direct, software included. I set the bar and decide what ships."><meta name="twitter:card" content="summary_large_image">
+ <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Person", "name": "Jacob Metoyer", "url": "https://jacobmetoyer.com", "sameAs": ["https://github.com/Jacob-Met"]}</script></head>
+-<body><a class="skip" href="#main">Skip to content</a><header class="top"><a class="mark" href="#main" aria-label="Jacob Metoyer, top of page"><span aria-hidden="true">JM</span></a><nav aria-label="Sections"><a href="#engine">Engine</a><a href="#demos">Demos</a><a href="#how">How</a><a href="#more">More work</a><a href="#about">About</a></nav></header><main id="main"><section class="hero" aria-labelledby="hero-h"><p class="kicker">AI-directed work / CS + physics at CSULB</p><h1 id="hero-h"><span class="name">Jacob Metoyer</span>I direct AI agents to carry out what I ask.</h1><p class="lede">AI agents carry out whatever I direct, software included. That work has included running a home estate of several machines, producing research reports, disk and ops cleanup, and building this site. I set the bar and decide what ships. Every demo below runs, and its source is public so you can check the work.</p><p class="hero-links"><a class="btn" href="#demos">Play the demos ↓</a> <a class="src" href="#how">How they get built</a> <a class="src" href="https://github.com/Jacob-Met" rel="noopener">GitHub · Jacob-Met</a></p></section><section id="engine" class="engine" aria-labelledby="engine-h"><div class="engine-head"><p class="kicker">In progress</p><h2 id="engine-h">Hamon Engine</h2><p class="tagline">an AI-native game engine</p><p class="engine-line">A game engine I&#x27;m building by directing AI agents, from rendering and physics to the tools around them. Playable builds will land here first.</p></div><aside class="slot" aria-labelledby="engine-slot-h"><p class="tag"><span class="num">··</span>Coming soon</p><h3 id="engine-slot-h">Playable builds</h3><p>Coming soon. A build goes up here only after it runs in the browser and a real frame has been checked.</p></aside></section><section id="demos" class="demos" aria-labelledby="demos-h"><div class="sec-head"><h2 id="demos-h">Playable demos</h2><p>Each one runs in your browser. The images are captures of the real thing; the links open it.</p></div><article class="demo" id="demo-recallweave" aria-labelledby="demo-recallweave-h"><div class="demo-media"><figure class="frame frame-desktop"><span class="frame-bar" aria-hidden="true"></span><img src="assets/demos/recallweave-desktop.webp" width="1200" height="750" alt="RecallWeave on desktop: a question about cellular energy with four answer choices, a concept map, and live mastery bars." loading="eager" decoding="async"></figure><figure class="frame frame-phone"><img src="assets/demos/recallweave-mobile.webp" width="300" height="649" alt="RecallWeave on a phone after six questions: the learning trace with per-concept mastery estimates." loading="lazy" decoding="async"></figure></div><div class="demo-copy"><p class="tag"><span class="num">01</span>ForgeHacks 2026 · AI + Education</p><h3 id="demo-recallweave-h">RecallWeave</h3><p class="line">A browser-only biology lesson that picks your next question by expected information gain and shows its mastery estimates as you answer.</p><details class="more-detail"><summary>What it does under the hood</summary><p class="detail">The learner model is plain Bayesian knowledge tracing with every probability visible; there is no chatbot and nothing leaves the page. Submitted to ForgeHacks 2026 (Devpost entry 1221781).</p><p class="stack">JavaScript · HTML/CSS · no build step</p></details><p class="links"><a class="btn" href="https://jacobmetoyer.com/RecallWeave/demo.html" rel="noopener">Play the lesson →</a> <a class="src" href="https://github.com/Jacob-Met/RecallWeave" rel="noopener">Source · Jacob-Met/RecallWeave</a></p></div></article><article class="demo" id="demo-returnby" aria-labelledby="demo-returnby-h"><div class="demo-media"><figure class="frame frame-desktop"><span class="frame-bar" aria-hidden="true"></span><img src="assets/demos/returnby-desktop.webp" width="1200" height="1123" alt="ReturnBy desktop with two tracked orders, policy source, deadlines and calendar actions." loading="lazy" decoding="async"></figure><figure class="frame frame-phone"><img src="assets/demos/returnby-mobile.webp" width="300" height="1722" alt="ReturnBy on a phone with two saved deadlines and urgency controls." loading="lazy" decoding="async"></figure></div><div class="demo-copy"><p class="tag"><span class="num">02</span>Browser-only / local-first utility</p><h3 id="demo-returnby-h">ReturnBy</h3><p class="line">Paste your own order email, correct the extraction, track multiple due dates and export calendar reminders.</p><details class="more-detail"><summary>What it does under the hood</summary><p class="detail">Runs the repository parser, merchant policy table, deadline math and RFC 5545 export. Review every field, edit the fallback, filter saved orders and keep all approved data in this browser; the pasted email is never persisted.</p><p class="stack">TypeScript / Vite / local-only</p></details><p class="links"><a class="btn" href="https://jacobmetoyer.com/returnby/" rel="noopener">Try it live →</a> <a class="src" href="https://github.com/Jacob-Met/returnby" rel="noopener">Source · Jacob-Met/returnby</a></p></div></article><article class="demo" id="demo-towerops-airspace" aria-labelledby="demo-towerops-airspace-h"><div class="demo-media"><figure class="frame frame-desktop"><span class="frame-bar" aria-hidden="true"></span><img src="assets/demos/towerops-desktop.webp" width="1200" height="1244" alt="TowerOps simplified desktop view: two crossing flights and a three-step planner, approval and readback flow. Advanced controls are collapsed." loading="lazy" decoding="async"></figure><figure class="frame frame-phone"><img src="assets/demos/towerops-mobile.webp" width="300" height="1546" alt="TowerOps simplified mobile view: two crossing flights and a three-step planner, approval and readback flow. Advanced controls are collapsed." loading="lazy" decoding="async"></figure></div><div class="demo-copy"><p class="tag"><span class="num">03</span>Synthetic airspace / live decision-support workbench</p><h3 id="demo-towerops-airspace-h">TowerOps Airspace Lab</h3><p class="line">Two flights, one conflict. Plan a safe move, approve it, then watch the gap reopen.</p><details class="more-detail"><summary>What it does under the hood</summary><p class="detail">Go deeper to build traffic, tune the envelope, load a WorldState and inspect the audit trail. The actual towerops.py AdvisoryPlanner and ControlRoom run in-browser via CPython/WebAssembly, not a mock or replay. Synthetic training only; not operational ATC.</p><p class="stack">Python / WebAssembly / Canvas</p></details><p class="links"><a class="btn" href="https://jacobmetoyer.com/TowerOps/airspace/" rel="noopener">Open the live airspace lab →</a> <a class="src" href="https://github.com/Jacob-Met/TowerOps" rel="noopener">Source · Jacob-Met/TowerOps</a></p></div></article></section><section id="how" class="how" aria-labelledby="how-h"><div class="sec-head"><h2 id="how-h">How it gets built</h2><p>AI agents carry out whatever I direct, software included. I set the bar and decide what ships.</p></div><ol class="steps"><li><p class="step-n">01</p><h3>I pick the work</h3><p>A research report, an ops problem, or software that needs building. Whatever needs doing.</p></li><li><p class="step-n">02</p><h3>I set the bar</h3><p>A short brief: what it must do, what it must not do, and how we will know it works.</p></li><li><p class="step-n">03</p><h3>Agents carry it out</h3><p>AI agents carry out the task I direct, whether it is software, research reports, or operations work.</p></li><li><p class="step-n">04</p><h3>Checks before claims</h3><p>I check the result against the bar. Tests and CI matter for software; other work needs its own evidence.</p></li><li><p class="step-n">05</p><h3>I decide what ships</h3><p>Software links to source where it is public. Reports and ops work ship when I decide they clear the bar.</p></li></ol></section><section id="more" class="more" aria-labelledby="more-h"><div class="sec-head"><h2 id="more-h">More work</h2><p>Research and tooling projects with source, but no in-browser demo.</p></div><ul class="cards"><li><h3><a href="https://github.com/Jacob-Met/CaptureSuite" rel="noopener">CaptureSuite</a></h3><p>Windows-first multimodal research capture: a daemon, versioned worker plugins and sealed session packages, with an offline QC demo on synthetic EMG/IMU data.</p></li><li><h3><a href="https://github.com/Jacob-Met/canvaspilot" rel="noopener">CanvasPilot</a></h3><p>An MCP server and CLI for Canvas LMS that rides the browser session you already have, for schools that disable personal access tokens.</p></li><li><h3><a href="https://github.com/Jacob-Met/workflow-checks" rel="noopener">workflow-checks</a></h3><p>Three small Python checks for back-office paperwork (utility bills, freight detention, PT authorizations), run on synthetic data with file:row evidence.</p></li></ul></section><section id="about" class="about" aria-labelledby="about-h"><h2 id="about-h">About</h2><p>I study computer science and physics at Cal State Long Beach, with a minor in biology, and I&#x27;m working toward MD/PhD training.</p><p>I direct AI agents across more than software. That work includes running a home estate of several machines, producing research reports, disk and ops cleanup, and building this site. I set the bar and decide what ships.</p><p>A result can be a report, an ops fix, or software. I decide what is ready to ship.</p><p>The fastest way to reach me or see what I&#x27;m working on is GitHub. <a href="https://github.com/Jacob-Met" rel="noopener">github.com/Jacob-Met</a></p></section></main><footer class="foot"><p>Updated 2026-10-07 · Static page, no trackers, no scripts.</p></footer></body></html>
+\ No newline at end of file
++<body><a class="skip" href="#main">Skip to content</a><header class="top"><a class="mark" href="#main" aria-label="Jacob Metoyer, top of page"><span aria-hidden="true">JM</span></a><nav aria-label="Sections"><a href="#engine">Engine</a><a href="#demos">Demos</a><a href="#how">How</a><a href="#more">More work</a><a href="#about">About</a></nav></header><main id="main"><section class="hero" aria-labelledby="hero-h"><p class="kicker">AI-directed work / CS + physics at CSULB</p><h1 id="hero-h"><span class="name">Jacob Metoyer</span>I direct AI agents to carry out what I ask.</h1><p class="lede">AI agents carry out whatever I direct, software included. That work has included running a home estate of several machines, producing research reports, disk and ops cleanup, and building this site. I set the bar and decide what ships. Every demo below runs, and its source is public so you can check the work.</p><p class="hero-links"><a class="btn" href="#demos">Play the demos ↓</a> <a class="src" href="#how">How they get built</a> <a class="src" href="https://github.com/Jacob-Met" rel="noopener">GitHub · Jacob-Met</a></p></section><section id="engine" class="engine" aria-labelledby="engine-h"><div class="engine-head"><p class="kicker">In progress</p><h2 id="engine-h">Hamon Engine</h2><p class="tagline">an AI-native game engine</p><p class="engine-line">A game engine I&#x27;m building by directing AI agents, from rendering and physics to the tools around them. Playable builds will land here first.</p></div><aside class="slot" aria-labelledby="engine-slot-h"><p class="tag"><span class="num">··</span>Coming soon</p><h3 id="engine-slot-h">Playable builds</h3><p>Coming soon. A build goes up here only after it runs in the browser and a real frame has been checked.</p></aside></section><section id="demos" class="demos" aria-labelledby="demos-h"><div class="sec-head"><h2 id="demos-h">Playable demos</h2><p>Each one runs in your browser. The images are captures of the real thing; the links open it.</p></div><article class="demo" id="demo-recallweave" aria-labelledby="demo-recallweave-h"><div class="demo-media"><figure class="frame frame-desktop"><span class="frame-bar" aria-hidden="true"></span><img src="assets/demos/recallweave-desktop.webp" width="1200" height="750" alt="RecallWeave on desktop: a question about cellular energy with four answer choices, a concept map, and live mastery bars." loading="eager" decoding="async"></figure><figure class="frame frame-phone"><img src="assets/demos/recallweave-mobile.webp" width="300" height="649" alt="RecallWeave on a phone after six questions: the learning trace with per-concept mastery estimates." loading="lazy" decoding="async"></figure></div><div class="demo-copy"><p class="tag"><span class="num">01</span>ForgeHacks 2026 · AI + Education</p><h3 id="demo-recallweave-h">RecallWeave</h3><p class="line">A browser-only biology lesson that picks your next question by expected information gain and shows its mastery estimates as you answer.</p><details class="more-detail"><summary>What it does under the hood</summary><p class="detail">The learner model is plain Bayesian knowledge tracing with every probability visible; there is no chatbot and nothing leaves the page. Submitted to ForgeHacks 2026 (Devpost entry 1221781).</p><p class="stack">JavaScript · HTML/CSS · no build step</p></details><p class="screenshot-links"><span>Full screenshots:</span><a class="screenshot-link" href="assets/demos/recallweave-desktop.webp" aria-label="RecallWeave: full desktop screenshot">Desktop</a><a class="screenshot-link" href="assets/demos/recallweave-mobile.webp" aria-label="RecallWeave: full phone screenshot">Phone</a></p><p class="links"><a class="btn" href="https://jacobmetoyer.com/RecallWeave/demo.html" rel="noopener">Play the lesson →</a> <a class="src" href="https://github.com/Jacob-Met/RecallWeave" rel="noopener">Source · Jacob-Met/RecallWeave</a></p></div></article><article class="demo" id="demo-returnby" aria-labelledby="demo-returnby-h"><div class="demo-media"><figure class="frame frame-desktop"><span class="frame-bar" aria-hidden="true"></span><img src="assets/demos/returnby-desktop.webp" width="1200" height="1123" alt="ReturnBy desktop with two tracked orders, policy source, deadlines and calendar actions." loading="lazy" decoding="async"></figure><figure class="frame frame-phone"><img src="assets/demos/returnby-mobile.webp" width="300" height="1722" alt="ReturnBy on a phone with two saved deadlines and urgency controls." loading="lazy" decoding="async"></figure></div><div class="demo-copy"><p class="tag"><span class="num">02</span>Browser-only / local-first utility</p><h3 id="demo-returnby-h">ReturnBy</h3><p class="line">Paste your own order email, correct the extraction, track multiple due dates and export calendar reminders.</p><details class="more-detail"><summary>What it does under the hood</summary><p class="detail">Runs the repository parser, merchant policy table, deadline math and RFC 5545 export. Review every field, edit the fallback, filter saved orders and keep all approved data in this browser; the pasted email is never persisted.</p><p class="stack">TypeScript / Vite / local-only</p></details><p class="screenshot-links"><span>Full screenshots:</span><a class="screenshot-link" href="assets/demos/returnby-desktop.webp" aria-label="ReturnBy: full desktop screenshot">Desktop</a><a class="screenshot-link" href="assets/demos/returnby-mobile.webp" aria-label="ReturnBy: full phone screenshot">Phone</a></p><p class="links"><a class="btn" href="https://jacobmetoyer.com/returnby/" rel="noopener">Try it live →</a> <a class="src" href="https://github.com/Jacob-Met/returnby" rel="noopener">Source · Jacob-Met/returnby</a></p></div></article><article class="demo" id="demo-towerops-airspace" aria-labelledby="demo-towerops-airspace-h"><div class="demo-media"><figure class="frame frame-desktop"><span class="frame-bar" aria-hidden="true"></span><img src="assets/demos/towerops-desktop.webp" width="1200" height="1244" alt="TowerOps simplified desktop view: two crossing flights and a three-step planner, approval and readback flow. Advanced controls are collapsed." loading="lazy" decoding="async"></figure><figure class="frame frame-phone"><img src="assets/demos/towerops-mobile.webp" width="300" height="1546" alt="TowerOps simplified mobile view: two crossing flights and a three-step planner, approval and readback flow. Advanced controls are collapsed." loading="lazy" decoding="async"></figure></div><div class="demo-copy"><p class="tag"><span class="num">03</span>Synthetic airspace / live decision-support workbench</p><h3 id="demo-towerops-airspace-h">TowerOps Airspace Lab</h3><p class="line">Two flights, one conflict. Plan a safe move, approve it, then watch the gap reopen.</p><details class="more-detail"><summary>What it does under the hood</summary><p class="detail">Go deeper to build traffic, tune the envelope, load a WorldState and inspect the audit trail. The actual towerops.py AdvisoryPlanner and ControlRoom run in-browser via CPython/WebAssembly, not a mock or replay. Synthetic training only; not operational ATC.</p><p class="stack">Python / WebAssembly / Canvas</p></details><p class="screenshot-links"><span>Full screenshots:</span><a class="screenshot-link" href="assets/demos/towerops-desktop.webp" aria-label="TowerOps Airspace Lab: full desktop screenshot">Desktop</a><a class="screenshot-link" href="assets/demos/towerops-mobile.webp" aria-label="TowerOps Airspace Lab: full phone screenshot">Phone</a></p><p class="links"><a class="btn" href="https://jacobmetoyer.com/TowerOps/airspace/" rel="noopener">Open the live airspace lab →</a> <a class="src" href="https://github.com/Jacob-Met/TowerOps" rel="noopener">Source · Jacob-Met/TowerOps</a></p></div></article></section><section id="how" class="how" aria-labelledby="how-h"><div class="sec-head"><h2 id="how-h">How it gets built</h2><p>AI agents carry out whatever I direct, software included. I set the bar and decide what ships.</p></div><ol class="steps"><li><p class="step-n">01</p><h3>I pick the work</h3><p>A research report, an ops problem, or software that needs building. Whatever needs doing.</p></li><li><p class="step-n">02</p><h3>I set the bar</h3><p>A short brief: what it must do, what it must not do, and how we will know it works.</p></li><li><p class="step-n">03</p><h3>Agents carry it out</h3><p>AI agents carry out the task I direct, whether it is software, research reports, or operations work.</p></li><li><p class="step-n">04</p><h3>Checks before claims</h3><p>I check the result against the bar. Tests and CI matter for software; other work needs its own evidence.</p></li><li><p class="step-n">05</p><h3>I decide what ships</h3><p>Software links to source where it is public. Reports and ops work ship when I decide they clear the bar.</p></li></ol></section><section id="more" class="more" aria-labelledby="more-h"><div class="sec-head"><h2 id="more-h">More work</h2><p>Research and tooling projects with source, but no in-browser demo.</p></div><ul class="cards"><li><h3><a href="https://github.com/Jacob-Met/CaptureSuite" rel="noopener">CaptureSuite</a></h3><p>Windows-first multimodal research capture: a daemon, versioned worker plugins and sealed session packages, with an offline QC demo on synthetic EMG/IMU data.</p></li><li><h3><a href="https://github.com/Jacob-Met/canvaspilot" rel="noopener">CanvasPilot</a></h3><p>An MCP server and CLI for Canvas LMS that rides the browser session you already have, for schools that disable personal access tokens.</p></li><li><h3><a href="https://github.com/Jacob-Met/workflow-checks" rel="noopener">workflow-checks</a></h3><p>Three small Python checks for back-office paperwork (utility bills, freight detention, PT authorizations), run on synthetic data with file:row evidence.</p></li></ul></section><section id="about" class="about" aria-labelledby="about-h"><h2 id="about-h">About</h2><p>I study computer science and physics at Cal State Long Beach, with a minor in biology, and I&#x27;m working toward MD/PhD training.</p><p>I direct AI agents across more than software. That work includes running a home estate of several machines, producing research reports, disk and ops cleanup, and building this site. I set the bar and decide what ships.</p><p>A result can be a report, an ops fix, or software. I decide what is ready to ship.</p><p>The fastest way to reach me or see what I&#x27;m working on is GitHub. <a href="https://github.com/Jacob-Met" rel="noopener">github.com/Jacob-Met</a></p></section></main><footer class="foot"><p>Updated 2026-10-07 · Static page, no trackers, no scripts.</p></footer></body></html>
+\ No newline at end of file
+diff --git a/docs/style.css b/docs/style.css
+index ca86413da793a6741a25702faa2a37a250f9609d..1f89736b67230b75427e9c8d76a4ee95e073ebcd 100644
+--- a/docs/style.css
++++ b/docs/style.css
+@@ -112,6 +112,8 @@ section { border-top: 1px solid var(--rule); padding: clamp(40px, 6vw, 72px) 0;
+ .more-detail summary:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; border-radius: 4px; }
+ .more-detail p:first-of-type { margin-top: 2px; }
+ .stack { color: var(--mute); font: 12.5px/1.5 var(--mono); }
++.screenshot-links { display: flex; flex-wrap: wrap; align-items: center; gap: 0 14px; margin: 8px 0 0; color: var(--mute); font: 12.5px/1.4 var(--mono); }
++.screenshot-link { display: inline-flex; align-items: center; min-height: 44px; color: var(--text); }
+ .links { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin: 18px 0 0; }
+ 
+ /* Terminal demo */
+diff --git a/source/build.py b/source/build.py
+index 555753be45d6e1324d3f56f5272f3a2e18eade83..85a4b256075cfdb6ff7f0bd3d8869c5bdf8925d1 100644
+--- a/source/build.py
++++ b/source/build.py
+@@ -154,6 +154,9 @@ def demo_card(d: dict, n: int) -> str:
+         f'<p class="line">{esc(d["line"])}</p>'
+         f'<details class="more-detail"><summary>What it does under the hood</summary>'
+         f'<p class="detail">{esc(d["detail"])}</p><p class="stack">{esc(d["stack"])}</p></details>'
++        f'<p class="screenshot-links"><span>Full screenshots:</span>'
++        f'<a class="screenshot-link" href="{dk["src"]}" aria-label="{esc(d["name"])}: full desktop screenshot">Desktop</a>'
++        f'<a class="screenshot-link" href="{mb["src"]}" aria-label="{esc(d["name"])}: full phone screenshot">Phone</a></p>'
+         f'<p class="links">{ext(d["play"]["url"], d["play"]["label"] + " →", "btn")} {ext(d["repo"], repo_label(d["repo"]), "src")}</p>'
+         f'</div></article>'
+     )
+diff --git a/source/style.css b/source/style.css
+index ca86413da793a6741a25702faa2a37a250f9609d..1f89736b67230b75427e9c8d76a4ee95e073ebcd 100644
+--- a/source/style.css
++++ b/source/style.css
+@@ -112,6 +112,8 @@ section { border-top: 1px solid var(--rule); padding: clamp(40px, 6vw, 72px) 0;
+ .more-detail summary:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; border-radius: 4px; }
+ .more-detail p:first-of-type { margin-top: 2px; }
+ .stack { color: var(--mute); font: 12.5px/1.5 var(--mono); }
++.screenshot-links { display: flex; flex-wrap: wrap; align-items: center; gap: 0 14px; margin: 8px 0 0; color: var(--mute); font: 12.5px/1.4 var(--mono); }
++.screenshot-link { display: inline-flex; align-items: center; min-height: 44px; color: var(--text); }
+ .links { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin: 18px 0 0; }
+ 
+ /* Terminal demo */
+diff --git a/source/test_screenshot_access.py b/source/test_screenshot_access.py
+new file mode 100644
+index 0000000000000000000000000000000000000000..c1ddc5d138dbaa27908c8b05aac4c05a7fdb2eb2
+--- /dev/null
++++ b/source/test_screenshot_access.py
+@@ -0,0 +1,74 @@
++"""Readers can open the exact captured screen without following a live-demo link."""
++import copy
++import json
++import tempfile
++import unittest
++from html.parser import HTMLParser
++from pathlib import Path
++
++import build
++from check import check
++
++
++class Links(HTMLParser):
++    def __init__(self, markup):
++        super().__init__()
++        self.links = []
++        self.current = None
++        self.feed(markup)
++
++    def handle_starttag(self, tag, attrs):
++        if tag == "a":
++            self.current = {"attrs": dict(attrs), "text": ""}
++            self.links.append(self.current)
++
++    def handle_data(self, data):
++        if self.current is not None:
++            self.current["text"] += data
++
++    def handle_endtag(self, tag):
++        if tag == "a":
++            self.current = None
++
++
++class ScreenshotAccess(unittest.TestCase):
++    def check_access(self, record):
++        with tempfile.TemporaryDirectory() as temp:
++            out = Path(temp) / "site"
++            build.build(out, record)
++            markup = (out / "index.html").read_text(encoding="utf-8")
++            links = Links(markup).links
++            shots = [a for a in links if "screenshot-link" in a["attrs"].get("class", "").split()]
++            expected = [
++                (demo, device, demo["shots"][key])
++                for demo in record["demos"]
++                for key, device in (("desktop", "desktop"), ("mobile", "phone"))
++            ]
++            self.assertEqual(len(shots), len(expected), "Every captured screen needs a visible full-image link")
++            for link, (demo, device, shot) in zip(shots, expected):
++                with self.subTest(demo=demo["id"], device=device):
++                    self.assertEqual(link["text"], device.title())
++                    self.assertEqual(link["attrs"]["aria-label"], f"{demo['name']}: full {device} screenshot")
++                    self.assertEqual(link["attrs"]["href"], shot["src"])
++                    self.assertNotIn("download", link["attrs"])
++                    self.assertNotIn("target", link["attrs"])
++                    self.assertEqual((out / shot["src"]).read_bytes(), (build.ROOT / shot["src"]).read_bytes())
++            for demo in record["demos"]:
++                self.assertIn(demo["play"]["url"], [a["attrs"]["href"] for a in links])
++                self.assertIn(demo["repo"], [a["attrs"]["href"] for a in links])
++            self.assertEqual(json.loads((out / "cv.json").read_text()), record)
++            self.assertTrue(check(out)["passed"])
++
++    def test_all_screens_open_exact_local_assets_and_keep_live_actions(self):
++        self.check_access(json.loads((build.ROOT / "content.json").read_text()))
++
++    def test_labels_and_destinations_follow_changed_approved_content(self):
++        record = json.loads((build.ROOT / "content.json").read_text())
++        record["demos"][0]["name"] = 'Reader & "review"'
++        record["demos"][0]["shots"] = copy.deepcopy(record["demos"][1]["shots"])
++        record["demos"].reverse()
++        self.check_access(record)
++
++
++if __name__ == "__main__":
++    unittest.main()

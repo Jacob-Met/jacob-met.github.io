@@ -112,6 +112,8 @@ section { border-top: 1px solid var(--rule); padding: clamp(40px, 6vw, 72px) 0; 
 .more-detail summary:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; border-radius: 4px; }
 .more-detail p:first-of-type { margin-top: 2px; }
 .stack { color: var(--mute); font: 12.5px/1.5 var(--mono); }
+.screenshot-links { display: flex; flex-wrap: wrap; align-items: center; gap: 0 14px; margin: 8px 0 0; color: var(--mute); font: 12.5px/1.4 var(--mono); }
+.screenshot-link { display: inline-flex; align-items: center; min-height: 44px; color: var(--text); }
 .links { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin: 18px 0 0; }
 
 /* Terminal demo */

@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "candidate_commit": "b9a7ef94cec8c38d1202995bb9c8359012f91157",
+  "policy": "Copy only these exact files. All temporary/browser-profile/cache content is excluded. Do not copy source asset trees, abandoned staging or signed URLs.",
+  "files": [
+    "README.md",
+    "author-receipt.json",
+    "baseline-access.json",
+    "baseline-access.stderr.txt",
+    "baseline-access.stdout.txt",
+    "browser-after-v2/receipt.json",
+    "browser-after-v3/receipt.json",
+    "browser-after/receipt.json",
+    "browser-before/receipt.json",
+    "browser-before/returnby-phone.png",
+    "packet-manifest.json",
+    "portfolio-screenshot-access.patch",
+    "publication-allowlist.json",
+    "receive-browser-v1.cjs",
+    "receive-browser-v2.cjs",
+    "receive-browser.cjs",
+    "screenshot-map.json",
+    "source-manifest.json",
+    "source-ownership-observation.json",
+    "upstream/baseline-manifest.json",
+    "upstream/source-tree-observation.json"
+  ],
+  "manifest_self_hash_note": "packet-manifest.json binds the other20 files, including this allowlist. Its own SHA256 is supplied in the handoff."
+}

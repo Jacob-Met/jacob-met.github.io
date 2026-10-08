@@ -1,0 +1,125 @@
+{
+  "schema": 1,
+  "frozen_at_utc": "2026-10-08T12:33:04.009401+00:00",
+  "candidate_commit": "b9a7ef94cec8c38d1202995bb9c8359012f91157",
+  "source_manifest_sha256": "992c806fa48ad8efd531ce103a06d80347310b847738611885d9d0a9952a4568",
+  "beneficiary": "Portfolio readers inspecting the full existing desktop and phone captures from each demo card.",
+  "implementation": "Native relative image anchors with explicit visible device labels and demo-specific accessible labels, reusing existing focus styling. Existing live-demo actions remain separate.",
+  "authored_baseline_comparison": {
+    "methods": 2,
+    "expected_failures": 2,
+    "reason": "No full-screenshot actions were present: zero links instead of six.",
+    "raw_receipts": [
+      "baseline-access.json",
+      "baseline-access.stderr.txt",
+      "baseline-access.stdout.txt"
+    ]
+  },
+  "candidate_test_observation": {
+    "command": [
+      "python",
+      "-B",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "source",
+      "-v"
+    ],
+    "working_directory": "/dev/shm/portfolio-screenshot-access-dc13ebf4687f",
+    "environment": {
+      "TMPDIR": "/dev/shm/portfolio-screenshot-evidence-dc13ebf4687f/tmp"
+    },
+    "exit_code": 0,
+    "methods_passed": 59,
+    "inherited_methods": 57,
+    "new_methods": 2,
+    "reported_duration_seconds": 3.92,
+    "optimization": "normal; no optimized-mode claim",
+    "receipt_basis": "Observed successful exec tool output in this session; raw candidate test stdout/stderr were not separately persisted.",
+    "transport_scope": "Inherited deployment tests use a disposable loopback HTTP fixture; no public-host requests were required."
+  },
+  "build_observation": {
+    "command": [
+      "python",
+      "-B",
+      "source/build.py",
+      "--out",
+      "docs"
+    ],
+    "exit_code": 0,
+    "reported_pages": 2,
+    "reported_demos": 4,
+    "reported_files": 19,
+    "count_note": "The existing builder includes its engine section in the demos count; content.json has three screenshot-bearing demo records."
+  },
+  "checker_observation": {
+    "command": [
+      "python",
+      "-B",
+      "source/check.py",
+      "docs"
+    ],
+    "exit_code": 0,
+    "result": {
+      "passed": true,
+      "html_pages": 2,
+      "files": 19,
+      "failures": []
+    }
+  },
+  "generated_custody_check": {
+    "manifest_sha256": "97bda6717edaf6b07c2e30186ca55d6c89ebdfa06e7c5cbacd9ddd05fb4cf344",
+    "all_18_listed_files_hash_verified": true,
+    "manifest_plus_listed_files": 19
+  },
+  "browser_observations": {
+    "original_baseline": {
+      "receipt": "browser-before/receipt.json",
+      "passed": true,
+      "viewports": [
+        1280,
+        390
+      ],
+      "previews_each": 6,
+      "full_screenshot_actions_each": 0,
+      "image": "browser-before/returnby-phone.png",
+      "image_scope": "Original baseline only; this is not a candidate screenshot."
+    },
+    "candidate_attempt_1": {
+      "receipt": "browser-after/receipt.json",
+      "passed": false,
+      "failure": "Thirty-second image decode-completion wait timed out before viewport/link assertions. All six exact asset paths were served; cause was not established."
+    },
+    "candidate_attempt_2": {
+      "receipt": "browser-after-v2/receipt.json",
+      "passed": false,
+      "failure": "Browser page initialization failed; retained logs include low temporary space and graphics initialization errors."
+    },
+    "candidate_attempt_3": {
+      "receipt": "browser-after-v3/receipt.json",
+      "passed": false,
+      "failure": "Browser launch failed; retained logs include low temporary space and graphics initialization errors."
+    },
+    "receiving_limit": "Candidate rendering, keyboard activation, visual focus and native full-image navigation remain unqualified by these author attempts.",
+    "outbound_requests": "Harnesses allow only their own loopback origin.",
+    "harness_version_mapping": {
+      "receive-browser-v1.cjs": [
+        "browser-before/receipt.json",
+        "browser-after/receipt.json"
+      ],
+      "receive-browser-v2.cjs": [
+        "browser-after-v2/receipt.json"
+      ],
+      "receive-browser.cjs": [
+        "browser-after-v3/receipt.json"
+      ]
+    },
+    "historical_path_note": "Earlier receipt stacks name receive-browser.cjs as executed then; exact earlier bytes were retained under versioned filenames before subsequent harness edits."
+  },
+  "publication_and_live_state": {
+    "remote_mutations": false,
+    "deployment": false,
+    "independent_review": "Portability reviewing separately; this author receipt does not assert independent acceptance."
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "stage": "after",
+  "docs": "/dev/shm/portfolio-screenshot-access-dc13ebf4687f/docs",
+  "viewports": [],
+  "blocked": [],
+  "served": [
+    "/index.html",
+    "/style.css",
+    "/assets/demos/recallweave-desktop.webp",
+    "/assets/demos/recallweave-mobile.webp",
+    "/assets/demos/returnby-desktop.webp",
+    "/assets/demos/returnby-mobile.webp",
+    "/assets/demos/towerops-desktop.webp",
+    "/assets/demos/towerops-mobile.webp"
+  ],
+  "browser": "153.0.8010.0",
+  "ok": false,
+  "error": "page.waitForFunction: Timeout 30000ms exceeded.\n    at main (/dev/shm/portfolio-screenshot-evidence-dc13ebf4687f/receive-browser.cjs:50:18)"
+}

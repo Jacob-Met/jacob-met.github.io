@@ -1,0 +1,7 @@
+{
+  "sha256": "58368727a3f1c7d859143c58d52e965a59e19c3a291765cc09fea234648bdf95",
+  "result": "Stopped before source/build checks because the review harness incorrectly required every baseline Git blob to have mode 100644; an existing executable file has mode 100755.",
+  "failing_assertion": "assert kind == 'blob' and mode == '100644'",
+  "classification": "review harness assumption; no candidate defect established",
+  "source_unchanged": true
+}
