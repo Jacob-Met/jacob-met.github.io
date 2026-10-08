@@ -1,0 +1,89 @@
+{
+  "source_record_sha256": "e915b6aa303ee5728018852103ccdc1ae2c5c4b85199a5e82c8666d24094efdb",
+  "screenshots": [
+    {
+      "demo": "RecallWeave",
+      "visible_link_text": "Desktop",
+      "accessible_label": "RecallWeave: full desktop screenshot",
+      "relative_href": "assets/demos/recallweave-desktop.webp",
+      "source_declared_dimensions": {
+        "width": 1200,
+        "height": 750
+      },
+      "bytes": 37320,
+      "sha256": "7f09210bd45edb2ac8fa157b5e380988ea5f28a820300cf319fb7fb55f683565",
+      "git_blob": "8cdb7c80ec308af53e4c5c327592a880f159ab87",
+      "unchanged_source_and_generated_bytes": true
+    },
+    {
+      "demo": "RecallWeave",
+      "visible_link_text": "Phone",
+      "accessible_label": "RecallWeave: full phone screenshot",
+      "relative_href": "assets/demos/recallweave-mobile.webp",
+      "source_declared_dimensions": {
+        "width": 300,
+        "height": 649
+      },
+      "bytes": 13288,
+      "sha256": "64904386178ed8bb0db502b70621bbc14dea959668ef64dfd144094856140798",
+      "git_blob": "cfb35b9f3020208570e6645993c6c1d87862da1e",
+      "unchanged_source_and_generated_bytes": true
+    },
+    {
+      "demo": "ReturnBy",
+      "visible_link_text": "Desktop",
+      "accessible_label": "ReturnBy: full desktop screenshot",
+      "relative_href": "assets/demos/returnby-desktop.webp",
+      "source_declared_dimensions": {
+        "width": 1200,
+        "height": 1123
+      },
+      "bytes": 65932,
+      "sha256": "e6a6e875cab40c55f7504cabf0131dc40d5fb2c1431acda9c55f4dc4ab82850b",
+      "git_blob": "6be53ce925daefd100332e443c8bc286e8d13387",
+      "unchanged_source_and_generated_bytes": true
+    },
+    {
+      "demo": "ReturnBy",
+      "visible_link_text": "Phone",
+      "accessible_label": "ReturnBy: full phone screenshot",
+      "relative_href": "assets/demos/returnby-mobile.webp",
+      "source_declared_dimensions": {
+        "width": 300,
+        "height": 1722
+      },
+      "bytes": 52958,
+      "sha256": "84533be3d6e3fbc56ffaecfaf18e176efc84cf1c84d16d8f3545dde09839a2bd",
+      "git_blob": "5e914e704a660fe13dfab0389b31d10840e87d0c",
+      "unchanged_source_and_generated_bytes": true
+    },
+    {
+      "demo": "TowerOps Airspace Lab",
+      "visible_link_text": "Desktop",
+      "accessible_label": "TowerOps Airspace Lab: full desktop screenshot",
+      "relative_href": "assets/demos/towerops-desktop.webp",
+      "source_declared_dimensions": {
+        "width": 1200,
+        "height": 1244
+      },
+      "bytes": 58360,
+      "sha256": "1f385b35fc21b57232c1ca74f77855890d370a9691ce6a84b5e6d23012629ce0",
+      "git_blob": "f0f4d0473e2344fbd6e9391ae3f3a3e8dc40a05d",
+      "unchanged_source_and_generated_bytes": true
+    },
+    {
+      "demo": "TowerOps Airspace Lab",
+      "visible_link_text": "Phone",
+      "accessible_label": "TowerOps Airspace Lab: full phone screenshot",
+      "relative_href": "assets/demos/towerops-mobile.webp",
+      "source_declared_dimensions": {
+        "width": 300,
+        "height": 1546
+      },
+      "bytes": 39420,
+      "sha256": "a18fadeabc2492ad3b4263a35b7621c36d6fa204d6b107d5728bd69e8cb274ca",
+      "git_blob": "eb0c8f1ddec21dae3f794b03b2a9c30921280801",
+      "unchanged_source_and_generated_bytes": true
+    }
+  ]
+}

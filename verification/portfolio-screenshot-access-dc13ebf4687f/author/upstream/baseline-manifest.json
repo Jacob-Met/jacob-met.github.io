@@ -1,0 +1,344 @@
+{
+  "repository": "Jacob-Met/jacob-met.github.io",
+  "commit": "c6f22409c5f52a3b5925ed6a74e19e4b5c0cda27",
+  "tree": "99e64f39de7038fd91125ed7157a2fd57cf30ba8",
+  "truncated": false,
+  "files": [
+    {
+      "path": ".gitattributes",
+      "git_blob": "2be5f5e8eb2390872e63f19f29037aebcedfb4d3",
+      "mode": "100644",
+      "bytes": 59,
+      "sha256": "58967098f662e2ff4f6d7e609546fec8051638cf62609bfffd5e88e28169fa43"
+    },
+    {
+      "path": ".githooks/pre-commit",
+      "git_blob": "e4b03fe09831127794c9ed6f5106f6d805cfdba7",
+      "mode": "100755",
+      "bytes": 2392,
+      "sha256": "b02897530456cde70d89cdfc22277f3af836ed674ed87dfb2dfc7fdd355a0bb2"
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "git_blob": "5ace4600a1f26e6892982f3e2f069ebfab108d87",
+      "mode": "100644",
+      "bytes": 118,
+      "sha256": "883b95e3be554fbadd92b315e4a8c6ea6ca688b64924e22dd61222b07f683507"
+    },
+    {
+      "path": ".github/scripts/duplicate-pr-guard.mjs",
+      "git_blob": "de7d533d7df06e85e523736fdb6442c43d928259",
+      "mode": "100644",
+      "bytes": 7773,
+      "sha256": "ee3a58541a91f15a5d6cae5939450a56194e5279b189186ec7f6dc8da223c31d"
+    },
+    {
+      "path": ".github/workflows/duplicate-pr-guard.yml",
+      "git_blob": "23b9cd9ca778a317f5c446c0ce4adda68742f9ba",
+      "mode": "100644",
+      "bytes": 802,
+      "sha256": "7199a45ac5ad915ff8c22eeb8076b95b2db3cddcf58789241db9584a21cc5d84"
+    },
+    {
+      "path": ".github/workflows/live-site.yml",
+      "git_blob": "6f33a0b74cc066a93ee0ea070d07c20b2c968bcf",
+      "mode": "100644",
+      "bytes": 2251,
+      "sha256": "7a2c8f69f23d52d057d0fe43438a8b805bdc3d42f9bc7b4f6d18cd2e3d9acc23"
+    },
+    {
+      "path": ".github/workflows/site-checks.yml",
+      "git_blob": "1fb9221d77412da9e7dc6a01b07f230ad6fac058",
+      "mode": "100644",
+      "bytes": 1011,
+      "sha256": "0491648ca65ff85cb2193f3bbc35452adc374dc5169e8874264e5ff8db9c9435"
+    },
+    {
+      "path": ".gitignore",
+      "git_blob": "cb313aeec633aee175329bb87ef35c2227804b9b",
+      "mode": "100644",
+      "bytes": 66,
+      "sha256": "c2f7905a5a1ddda46b0da0c776efbe12f68d6a6dc6ce138a70ee48cb88577bd6"
+    },
+    {
+      "path": "CNAME",
+      "git_blob": "02c007f768fe6afb8de14d29d0b1e97aa8d766a7",
+      "mode": "100644",
+      "bytes": 17,
+      "sha256": "7e89b4b8e0d23220fae91b16a6c40497117ef427d16ca984e7a8c720f14d8527"
+    },
+    {
+      "path": "README.md",
+      "git_blob": "3c6881d524e0df46a8339479908ad0649b04800c",
+      "mode": "100644",
+      "bytes": 1464,
+      "sha256": "5a330b631995b89b5fec5f6f522e51418fbf474eaf44ca56d88d09f3b84133ba"
+    },
+    {
+      "path": "docs/.nojekyll",
+      "git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "mode": "100644",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/404.html",
+      "git_blob": "646f3c580575887bc71bc881c686c9cd3386e7dc",
+      "mode": "100644",
+      "bytes": 1803,
+      "sha256": "7518e990a966516bdaaa8a709df4b434e0cfbc2728fb7b3979a1f8d2046a6463"
+    },
+    {
+      "path": "docs/CNAME",
+      "git_blob": "02c007f768fe6afb8de14d29d0b1e97aa8d766a7",
+      "mode": "100644",
+      "bytes": 17,
+      "sha256": "7e89b4b8e0d23220fae91b16a6c40497117ef427d16ca984e7a8c720f14d8527"
+    },
+    {
+      "path": "docs/apple-touch-icon.png",
+      "git_blob": "ae029953c4dcbb5797d2e3fcec47db9617a57420",
+      "mode": "100644",
+      "bytes": 4836,
+      "sha256": "5228bf4a42f9ac43cf140fcb7046776f2cb312a799a221774e9aa8aa8649f53d"
+    },
+    {
+      "path": "docs/assets/demos/recallweave-desktop.webp",
+      "git_blob": "8cdb7c80ec308af53e4c5c327592a880f159ab87",
+      "mode": "100644",
+      "bytes": 37320,
+      "sha256": "7f09210bd45edb2ac8fa157b5e380988ea5f28a820300cf319fb7fb55f683565"
+    },
+    {
+      "path": "docs/assets/demos/recallweave-mobile.webp",
+      "git_blob": "cfb35b9f3020208570e6645993c6c1d87862da1e",
+      "mode": "100644",
+      "bytes": 13288,
+      "sha256": "64904386178ed8bb0db502b70621bbc14dea959668ef64dfd144094856140798"
+    },
+    {
+      "path": "docs/assets/demos/returnby-desktop.webp",
+      "git_blob": "6be53ce925daefd100332e443c8bc286e8d13387",
+      "mode": "100644",
+      "bytes": 65932,
+      "sha256": "e6a6e875cab40c55f7504cabf0131dc40d5fb2c1431acda9c55f4dc4ab82850b"
+    },
+    {
+      "path": "docs/assets/demos/returnby-mobile.webp",
+      "git_blob": "5e914e704a660fe13dfab0389b31d10840e87d0c",
+      "mode": "100644",
+      "bytes": 52958,
+      "sha256": "84533be3d6e3fbc56ffaecfaf18e176efc84cf1c84d16d8f3545dde09839a2bd"
+    },
+    {
+      "path": "docs/assets/demos/towerops-desktop.webp",
+      "git_blob": "f0f4d0473e2344fbd6e9391ae3f3a3e8dc40a05d",
+      "mode": "100644",
+      "bytes": 58360,
+      "sha256": "1f385b35fc21b57232c1ca74f77855890d370a9691ce6a84b5e6d23012629ce0"
+    },
+    {
+      "path": "docs/assets/demos/towerops-mobile.webp",
+      "git_blob": "eb0c8f1ddec21dae3f794b03b2a9c30921280801",
+      "mode": "100644",
+      "bytes": 39420,
+      "sha256": "a18fadeabc2492ad3b4263a35b7621c36d6fa204d6b107d5728bd69e8cb274ca"
+    },
+    {
+      "path": "docs/assets/mark.svg",
+      "git_blob": "dc856e2f537770b30de16ddd5e0da7fc4e227df0",
+      "mode": "100644",
+      "bytes": 442,
+      "sha256": "bf39430d64c6601ed417f590031b91dbee89bfc8fbbb2426fbf990553b03584c"
+    },
+    {
+      "path": "docs/assets/og-card.png",
+      "git_blob": "4bb95e1d1a3a96b133ed5f96ba219166edabdcf9",
+      "mode": "100644",
+      "bytes": 56600,
+      "sha256": "1f8a7f2f42b154f44a25f12fd7619c17471d4354c92247c2cae8cc680c263e24"
+    },
+    {
+      "path": "docs/build-manifest.json",
+      "git_blob": "e022b09bd53e5f3d0957e88ee760f88c72b07f10",
+      "mode": "100644",
+      "bytes": 1768,
+      "sha256": "de10d9f0fe4c708d51d1af34c6d7da68712b892fc5709dc64466f70bbbe1ffe5"
+    },
+    {
+      "path": "docs/cv.json",
+      "git_blob": "47d5807c7d19e502064950432d78a49b34d90b3c",
+      "mode": "100644",
+      "bytes": 7309,
+      "sha256": "e915b6aa303ee5728018852103ccdc1ae2c5c4b85199a5e82c8666d24094efdb"
+    },
+    {
+      "path": "docs/favicon.ico",
+      "git_blob": "11c7f5f883dfe533ab936fc2d739e123abf9445c",
+      "mode": "100644",
+      "bytes": 3791,
+      "sha256": "277c9b64ee26af8bf6194feb44e2364b552c6280c9339f22a52f975d3a4c77de"
+    },
+    {
+      "path": "docs/index.html",
+      "git_blob": "20f48897f549759e8775e9cb6c369c562fcafa10",
+      "mode": "100644",
+      "bytes": 11537,
+      "sha256": "9e88ccc49f33fb0994c858185e6b20c3938c734ec8fcb21dbeeef580ca94f5c5"
+    },
+    {
+      "path": "docs/robots.txt",
+      "git_blob": "6002c60d61a1c09dc75d5de3078b56d3cb4005dd",
+      "mode": "100644",
+      "bytes": 69,
+      "sha256": "60d463caa67aaa008b827bdec75236dcec7a9c82c49f529ad1da2de1c847c47e"
+    },
+    {
+      "path": "docs/sitemap.xml",
+      "git_blob": "22fcab54044f446490666a67e6b4048654b676bb",
+      "mode": "100644",
+      "bytes": 184,
+      "sha256": "8ae5d9d2150de40793fed791c6bca873bb015f14fddf3eeec5a520764f0ba80f"
+    },
+    {
+      "path": "docs/style.css",
+      "git_blob": "ca86413da793a6741a25702faa2a37a250f9609d",
+      "mode": "100644",
+      "bytes": 10391,
+      "sha256": "30e7758cf2d765e1a032e87cc054b46c2a760e90a89c3e6c87817d181c5f76a7"
+    },
+    {
+      "path": "source/assets/apple-touch-icon.png",
+      "git_blob": "ae029953c4dcbb5797d2e3fcec47db9617a57420",
+      "mode": "100644",
+      "bytes": 4836,
+      "sha256": "5228bf4a42f9ac43cf140fcb7046776f2cb312a799a221774e9aa8aa8649f53d"
+    },
+    {
+      "path": "source/assets/demos/recallweave-desktop.webp",
+      "git_blob": "8cdb7c80ec308af53e4c5c327592a880f159ab87",
+      "mode": "100644",
+      "bytes": 37320,
+      "sha256": "7f09210bd45edb2ac8fa157b5e380988ea5f28a820300cf319fb7fb55f683565"
+    },
+    {
+      "path": "source/assets/demos/recallweave-mobile.webp",
+      "git_blob": "cfb35b9f3020208570e6645993c6c1d87862da1e",
+      "mode": "100644",
+      "bytes": 13288,
+      "sha256": "64904386178ed8bb0db502b70621bbc14dea959668ef64dfd144094856140798"
+    },
+    {
+      "path": "source/assets/demos/returnby-desktop.webp",
+      "git_blob": "6be53ce925daefd100332e443c8bc286e8d13387",
+      "mode": "100644",
+      "bytes": 65932,
+      "sha256": "e6a6e875cab40c55f7504cabf0131dc40d5fb2c1431acda9c55f4dc4ab82850b"
+    },
+    {
+      "path": "source/assets/demos/returnby-mobile.webp",
+      "git_blob": "5e914e704a660fe13dfab0389b31d10840e87d0c",
+      "mode": "100644",
+      "bytes": 52958,
+      "sha256": "84533be3d6e3fbc56ffaecfaf18e176efc84cf1c84d16d8f3545dde09839a2bd"
+    },
+    {
+      "path": "source/assets/demos/towerops-desktop.webp",
+      "git_blob": "f0f4d0473e2344fbd6e9391ae3f3a3e8dc40a05d",
+      "mode": "100644",
+      "bytes": 58360,
+      "sha256": "1f385b35fc21b57232c1ca74f77855890d370a9691ce6a84b5e6d23012629ce0"
+    },
+    {
+      "path": "source/assets/demos/towerops-mobile.webp",
+      "git_blob": "eb0c8f1ddec21dae3f794b03b2a9c30921280801",
+      "mode": "100644",
+      "bytes": 39420,
+      "sha256": "a18fadeabc2492ad3b4263a35b7621c36d6fa204d6b107d5728bd69e8cb274ca"
+    },
+    {
+      "path": "source/assets/favicon.ico",
+      "git_blob": "11c7f5f883dfe533ab936fc2d739e123abf9445c",
+      "mode": "100644",
+      "bytes": 3791,
+      "sha256": "277c9b64ee26af8bf6194feb44e2364b552c6280c9339f22a52f975d3a4c77de"
+    },
+    {
+      "path": "source/assets/mark.svg",
+      "git_blob": "dc856e2f537770b30de16ddd5e0da7fc4e227df0",
+      "mode": "100644",
+      "bytes": 442,
+      "sha256": "bf39430d64c6601ed417f590031b91dbee89bfc8fbbb2426fbf990553b03584c"
+    },
+    {
+      "path": "source/assets/og-card.png",
+      "git_blob": "4bb95e1d1a3a96b133ed5f96ba219166edabdcf9",
+      "mode": "100644",
+      "bytes": 56600,
+      "sha256": "1f8a7f2f42b154f44a25f12fd7619c17471d4354c92247c2cae8cc680c263e24"
+    },
+    {
+      "path": "source/build.py",
+      "git_blob": "555753be45d6e1324d3f56f5272f3a2e18eade83",
+      "mode": "100644",
+      "bytes": 16355,
+      "sha256": "7ffa45c1c8760500a456475975d1aacf23112c8a5f6d1f50a37a72022f8604c0"
+    },
+    {
+      "path": "source/check.py",
+      "git_blob": "651a24995b4901d9e12d4103a4fb4abaea8ba79a",
+      "mode": "100644",
+      "bytes": 11626,
+      "sha256": "f0afa5d718d8f094b5b22a387f97c37fa52ad064acc7c6c2fc1a14f9aeb61629"
+    },
+    {
+      "path": "source/content.json",
+      "git_blob": "47d5807c7d19e502064950432d78a49b34d90b3c",
+      "mode": "100644",
+      "bytes": 7309,
+      "sha256": "e915b6aa303ee5728018852103ccdc1ae2c5c4b85199a5e82c8666d24094efdb"
+    },
+    {
+      "path": "source/make_images.py",
+      "git_blob": "08208b7d572c00bfaf31196a123954778fa85a94",
+      "mode": "100644",
+      "bytes": 4525,
+      "sha256": "2eac1363ec8c6e663d9942666fd25b9b56024eb6cc55baceda00b519c5fc0f85"
+    },
+    {
+      "path": "source/style.css",
+      "git_blob": "ca86413da793a6741a25702faa2a37a250f9609d",
+      "mode": "100644",
+      "bytes": 10391,
+      "sha256": "30e7758cf2d765e1a032e87cc054b46c2a760e90a89c3e6c87817d181c5f76a7"
+    },
+    {
+      "path": "source/test_deployment.py",
+      "git_blob": "6010ce504f2d7abbe463f63f8c99b3de3f65a00e",
+      "mode": "100644",
+      "bytes": 3434,
+      "sha256": "522da89387d962b094a79e54c9551be1c239150863e067ac9acb104c139fb6d5"
+    },
+    {
+      "path": "source/test_head_icons.py",
+      "git_blob": "447abc8fc165849bb583e8182959f14cbb0716b2",
+      "mode": "100644",
+      "bytes": 981,
+      "sha256": "99f29677b8bfb8b8293bee3cbffa919cb97b02fb9eaf3f06af113fc3db416bf7"
+    },
+    {
+      "path": "source/test_site.py",
+      "git_blob": "45a8a772a5c48a1714dde6c8b0fdb4c6b0d83947",
+      "mode": "100644",
+      "bytes": 33228,
+      "sha256": "5f5329acf9d914bc2ebe41ac962b06ccb299298bb068d57b15ad83f0d03b36f1"
+    },
+    {
+      "path": "source/verify_deployment.py",
+      "git_blob": "647607d0b21e6a7cfc66bf03ab7d7c22074b2ff3",
+      "mode": "100644",
+      "bytes": 3960,
+      "sha256": "43bb06239d247249d4f259362db0c9a483e1d3a473ade170935d2f32dc6d4d1e"
+    }
+  ]
+}

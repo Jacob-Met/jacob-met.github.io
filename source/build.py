@@ -154,6 +154,9 @@ def demo_card(d: dict, n: int) -> str:
         f'<p class="line">{esc(d["line"])}</p>'
         f'<details class="more-detail"><summary>What it does under the hood</summary>'
         f'<p class="detail">{esc(d["detail"])}</p><p class="stack">{esc(d["stack"])}</p></details>'
+        f'<p class="screenshot-links"><span>Full screenshots:</span>'
+        f'<a class="screenshot-link" href="{dk["src"]}" aria-label="{esc(d["name"])}: full desktop screenshot">Desktop</a>'
+        f'<a class="screenshot-link" href="{mb["src"]}" aria-label="{esc(d["name"])}: full phone screenshot">Phone</a></p>'
         f'<p class="links">{ext(d["play"]["url"], d["play"]["label"] + " →", "btn")} {ext(d["repo"], repo_label(d["repo"]), "src")}</p>'
         f'</div></article>'
     )

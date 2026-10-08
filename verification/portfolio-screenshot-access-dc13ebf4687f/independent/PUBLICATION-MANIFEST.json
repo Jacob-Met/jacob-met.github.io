@@ -1,0 +1,87 @@
+{
+  "candidate_commit": "b9a7ef94cec8c38d1202995bb9c8359012f91157",
+  "review_decision": "accepted",
+  "files": [
+    {
+      "path": "review_static.py",
+      "bytes": 7905,
+      "sha256": "9cabb9dac25f3bed7b61e6cc8e72b5628af99d2cab2d38c420b24ff453d84fda",
+      "git_blob": "06c30c7365ea211504a96f0ec7476c596287c93c"
+    },
+    {
+      "path": "static-receipt.json",
+      "bytes": 8759,
+      "sha256": "fd118f3a36f3944a96efdb208fff844f6a1a062bdfdb832d48125143534275ee",
+      "git_blob": "6e9e8c5f9587593c2fc521f02ccda8ec354caa8c"
+    },
+    {
+      "path": "review_browser.cjs",
+      "bytes": 8165,
+      "sha256": "d795b0beb5df576a0926d196ff5eb0c0ec8fd8f4f68ca64d0245d362c14de636",
+      "git_blob": "b7ce7e2ef976479357275f59e59eacd3ab516700"
+    },
+    {
+      "path": "browser/receipt.json",
+      "bytes": 29661,
+      "sha256": "979d43c15b89f18f3cb1d2d20dee7784d423ca2c3c22bd7fb64b7ab17dd79b4c",
+      "git_blob": "2f45d8d0d4c26e02c71900df25ea41fc2b1bf981"
+    },
+    {
+      "path": "browser/returnby-1280.png",
+      "bytes": 142010,
+      "sha256": "6746e1d99c6cc609b7e57f751ca5cb896fcb8c1acaba0ed6f007c00ed57f7fdf",
+      "git_blob": "b40bc486306d7ca4fd4f91d59dd497a7978361d6"
+    },
+    {
+      "path": "browser/returnby-390.png",
+      "bytes": 94289,
+      "sha256": "531f20486e9d1714f47163ceb3f07184c2b71cdc46bc05ff76fca8bd3a8eb9cf",
+      "git_blob": "f7c51febbd875cdb6d1625b9a208f1396e914a4b"
+    },
+    {
+      "path": "observations.json",
+      "bytes": 4321,
+      "sha256": "25f4e4f665c55a10e6df521d967c9e9c5f16c15602869b6d023120b3ef486617",
+      "git_blob": "986b159cc896d4aa42db9defc03b34d5eb0de849"
+    },
+    {
+      "path": "rejected-harnesses/static-v1.py",
+      "bytes": 7893,
+      "sha256": "58368727a3f1c7d859143c58d52e965a59e19c3a291765cc09fea234648bdf95",
+      "git_blob": "10e992cc1973442457ed1fcde69ee2bbf015b5bd"
+    },
+    {
+      "path": "rejected-harnesses/static-v1.json",
+      "bytes": 450,
+      "sha256": "ffe8d9c85fcb5ce52e738781950e7b7edb4b7409c227de149b4baabc4bf418f5",
+      "git_blob": "de3d2cb608b056c2515e88cd467776aa3fc9d281"
+    },
+    {
+      "path": "review-receipt.json",
+      "bytes": 5432,
+      "sha256": "e565a0aab9f5d050299bc6bca9879d8db3e131a157e37f73e5af4f7f295bbcc7",
+      "git_blob": "bde66fa5a7b004403eb2e51b93f73027d6e3a7e0"
+    },
+    {
+      "path": "REVIEW.md",
+      "bytes": 4375,
+      "sha256": "472efa4b0ef999c6934ef4dd6aaa40cda4e9cea03349708f0a3f0d6ba8e3fd17",
+      "git_blob": "4f0e869f1da429912ca82210e10d7f745801a19a"
+    }
+  ],
+  "file_count": 11,
+  "total_bytes": 313260,
+  "additional_carriers": [
+    {
+      "path": "PUBLICATION-ALLOWLIST.txt",
+      "bytes": 242,
+      "sha256": "abbfa2710e1794cad8f5003e4f49afc5598035da4d66ce2c5528c1aa4691b560",
+      "git_blob": "ab30b90a9541a8205f4a207d361c765893fbf43b"
+    },
+    {
+      "path": "PUBLICATION-MANIFEST.json",
+      "self_hash_excluded": true
+    }
+  ],
+  "publication_contract": "Eleven exact allowlisted review inputs plus two carrier files, preserving relative layout. Excludes rebuilt files, browser temporary directories and caches. Author's frozen source and failed-browser packet are separate."
+}

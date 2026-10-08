@@ -1,0 +1,11 @@
+{
+  "command": [
+    "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+    "-B",
+    "-c",
+    "import runpy,sys; sys.path.insert(0,sys.argv[1]); test=sys.argv[2]; sys.argv=[test,\"-v\"]; runpy.run_path(test,run_name=\"__main__\")",
+    "/workspace/scratch/dc13ebf4687f/work-capability-portfolio/baseline/source",
+    "/dev/shm/portfolio-screenshot-access-dc13ebf4687f/source/test_screenshot_access.py"
+  ],
+  "exit_code": 1
+}

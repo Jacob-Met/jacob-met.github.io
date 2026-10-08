@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "frozen_at_utc": "2026-10-08T12:36:41.305098+00:00",
+  "candidate_commit": "b9a7ef94cec8c38d1202995bb9c8359012f91157",
+  "candidate_tree": "c9c842524f70d10b4b1d4486352e190fb853424d",
+  "file_count_excluding_self": 20,
+  "bytes_excluding_self": 198554,
+  "self_excluded": true,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 5035,
+      "sha256": "95b6b14a0a5159e30fc8f12ca8ad7696a6ff9661425b34f71140d05d7a3b8dee"
+    },
+    {
+      "path": "author-receipt.json",
+      "bytes": 4616,
+      "sha256": "be6095198a3537dfdb6caf2b9e8fca83a00c763f072681ca7900da29eb808f7d"
+    },
+    {
+      "path": "baseline-access.json",
+      "bytes": 453,
+      "sha256": "443612e4748d6a1ccb1ac78eac6a5cedab373578351f259236b266080cccfa35"
+    },
+    {
+      "path": "baseline-access.stderr.txt",
+      "bytes": 2154,
+      "sha256": "57566861612c2e6ca914f368568696f5087410cee881df327bb0c107624b7b77"
+    },
+    {
+      "path": "baseline-access.stdout.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "browser-after-v2/receipt.json",
+      "bytes": 5328,
+      "sha256": "ce404fd7058707704408b733e3e22f341e324bbedb36b36f10508c5880973c56"
+    },
+    {
+      "path": "browser-after-v3/receipt.json",
+      "bytes": 11166,
+      "sha256": "28d8fe1785c919d5891086007b1cdaf489299c67714ea734e6c0465e04c3bf76"
+    },
+    {
+      "path": "browser-after/receipt.json",
+      "bytes": 642,
+      "sha256": "c80a2589b88edb9f48a58b8635ec999284a865a00e1d208a29c3016b4c8166a8"
+    },
+    {
+      "path": "browser-before/receipt.json",
+      "bytes": 1155,
+      "sha256": "53003a852e53b77d6dfb687c7fad60fe1cc914a13ea3ffa24b26de2d53d7e3be"
+    },
+    {
+      "path": "browser-before/returnby-phone.png",
+      "bytes": 61271,
+      "sha256": "6b1b3d855a0cb1942e96ba7623f6e52dd84f6fe46b0434daaa93eb2e00049a55"
+    },
+    {
+      "path": "portfolio-screenshot-access.patch",
+      "bytes": 28852,
+      "sha256": "036a9d5adeab28965e22d88ccedeca8abd73adf100988577e0820c73c12b25f5"
+    },
+    {
+      "path": "publication-allowlist.json",
+      "bytes": 1109,
+      "sha256": "e301b46f2642bd84d0578f6ff82a85867c00d8389541553122efa71a1bc2409b"
+    },
+    {
+      "path": "receive-browser-v1.cjs",
+      "bytes": 5531,
+      "sha256": "02e27e5849104a1043aa63584f365f00242fe8bec341383db03646ee628bda80"
+    },
+    {
+      "path": "receive-browser-v2.cjs",
+      "bytes": 6108,
+      "sha256": "2e8071801d35bac4d21178f8eadc9e90c1476a61ddbf706ae4c0e831dc42a136"
+    },
+    {
+      "path": "receive-browser.cjs",
+      "bytes": 6276,
+      "sha256": "8a125576f0231139c71bb11d4b1acc0d4adf2871557b1854f83684276bdf8618"
+    },
+    {
+      "path": "screenshot-map.json",
+      "bytes": 3248,
+      "sha256": "18ecbb74d8301f76888f776fc055f91576802b4e074edf174c56c4263ba1666e"
+    },
+    {
+      "path": "source-manifest.json",
+      "bytes": 24670,
+      "sha256": "992c806fa48ad8efd531ce103a06d80347310b847738611885d9d0a9952a4568"
+    },
+    {
+      "path": "source-ownership-observation.json",
+      "bytes": 1387,
+      "sha256": "2a5a5b8d89c2b68645653760f309bedd1628f246a93852c543520f904706c65b"
+    },
+    {
+      "path": "upstream/baseline-manifest.json",
+      "bytes": 12023,
+      "sha256": "0b7058a8fb94995e99192bbf961665d3a0a2afd5234ecee58bde556b8e8f4990"
+    },
+    {
+      "path": "upstream/source-tree-observation.json",
+      "bytes": 17530,
+      "sha256": "5a8a762549099a5c3cd95fad0fac5c0595cae9409f30565c727cdf5d034b283f"
+    }
+  ],
+  "status": "Author source and observations frozen. Independent review is external and does not alter these files."
+}

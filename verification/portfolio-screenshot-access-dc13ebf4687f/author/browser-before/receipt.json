@@ -1,0 +1,41 @@
+{
+  "stage": "before",
+  "docs": "/workspace/scratch/dc13ebf4687f/work-capability-portfolio/baseline/docs",
+  "viewports": [
+    {
+      "width": 1280,
+      "entry": "/index.html",
+      "previews": 6,
+      "full_screenshot_actions": 0,
+      "opened": []
+    },
+    {
+      "width": 390,
+      "entry": "/preview/index.html",
+      "previews": 6,
+      "full_screenshot_actions": 0,
+      "opened": []
+    }
+  ],
+  "blocked": [],
+  "served": [
+    "/index.html",
+    "/style.css",
+    "/assets/demos/recallweave-desktop.webp",
+    "/assets/demos/recallweave-mobile.webp",
+    "/assets/demos/returnby-desktop.webp",
+    "/assets/demos/returnby-mobile.webp",
+    "/assets/demos/towerops-desktop.webp",
+    "/assets/demos/towerops-mobile.webp",
+    "/preview/index.html",
+    "/preview/style.css",
+    "/preview/assets/demos/recallweave-desktop.webp",
+    "/preview/assets/demos/recallweave-mobile.webp",
+    "/preview/assets/demos/returnby-desktop.webp",
+    "/preview/assets/demos/returnby-mobile.webp",
+    "/preview/assets/demos/towerops-desktop.webp",
+    "/preview/assets/demos/towerops-mobile.webp"
+  ],
+  "browser": "153.0.8010.0",
+  "ok": true
+}
