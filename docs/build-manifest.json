@@ -1,6 +1,6 @@
 {
   "schema": 3,
-  "date": "2026-10-07",
+  "date": "2026-10-10",
   "sha256": {
     ".nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "404.html": "7518e990a966516bdaaa8a709df4b434e0cfbc2728fb7b3979a1f8d2046a6463",
@@ -14,11 +14,11 @@
     "assets/demos/towerops-mobile.webp": "a18fadeabc2492ad3b4263a35b7621c36d6fa204d6b107d5728bd69e8cb274ca",
     "assets/mark.svg": "bf39430d64c6601ed417f590031b91dbee89bfc8fbbb2426fbf990553b03584c",
     "assets/og-card.png": "1f8a7f2f42b154f44a25f12fd7619c17471d4354c92247c2cae8cc680c263e24",
-    "cv.json": "e915b6aa303ee5728018852103ccdc1ae2c5c4b85199a5e82c8666d24094efdb",
+    "cv.json": "84f5c67226d18c21ff91614dc1527698a570b3f2add9efaf0e780f3166c5818b",
     "favicon.ico": "277c9b64ee26af8bf6194feb44e2364b552c6280c9339f22a52f975d3a4c77de",
-    "index.html": "37d1e30c938c97017ea72256dff5e2908d29fd7674b4dfcf3a6ef782604891a4",
+    "index.html": "7a5879b0c3d195b8676260b2be250a8f6928e438f8c9b9c49769aac9d948d9ec",
     "robots.txt": "60d463caa67aaa008b827bdec75236dcec7a9c82c49f529ad1da2de1c847c47e",
-    "sitemap.xml": "8ae5d9d2150de40793fed791c6bca873bb015f14fddf3eeec5a520764f0ba80f",
-    "style.css": "7ffaaf9068456c86ab23e5c8ec21e2b8d3377b0620e0f6388e057dc809903f61"
+    "sitemap.xml": "966f3a5729f4709d5d0c7cbc54ea374ec3967a9d3d7c853adbaa26595ea0383c",
+    "style.css": "507f5941599be1967c27cb538ce598893359ea16f01e4cfeb52cc8d84f4916ff"
   }
 }

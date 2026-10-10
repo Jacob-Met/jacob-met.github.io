@@ -1,7 +1,7 @@
 {
   "visibility": "public",
   "name": "Jacob Metoyer",
-  "updated": "2026-10-07",
+  "updated": "2026-10-10",
   "hero": {
     "kicker": "AI-directed work / CS + physics at CSULB",
     "title": "I direct AI agents to carry out what I ask.",
@@ -100,6 +100,16 @@
       "line": "Coming soon. A build goes up here only after it runs in the browser and a real frame has been checked."
     }
   },
+  "games": [
+    {
+      "id": "spire-of-octaves",
+      "name": "Spire of Octaves",
+      "kind": "Fiction world · own site",
+      "line": "A fiction world with its own home. Its games are being rebuilt in Hamon Engine; one appears here as playable only after its browser build runs and a real frame is checked.",
+      "url": "https://spireofoctaves.com",
+      "build": null
+    }
+  ],
   "how": {
     "title": "How it gets built",
     "line": "AI agents carry out whatever I direct, software included. I set the bar and decide what ships.",

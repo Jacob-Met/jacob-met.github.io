@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "note": "Canonical public presence. The site renders from content.json; this file is the target for the GitHub profile and LinkedIn. presence-sync (host-side, hourly) diffs live state against it. Pen names are never listed here.",
+  "site": {
+    "url": "https://jacobmetoyer.com/",
+    "repo": "Jacob-Met/jacob-met.github.io",
+    "manifest": "docs/build-manifest.json"
+  },
+  "github": {
+    "login": "Jacob-Met",
+    "name": "Jacob Metoyer",
+    "bio": "Research software across biology, medicine and AI: evidence-first tooling, agent systems and simulators. CSULB; aspiring MD/PhD.",
+    "blog": "https://jacobmetoyer.com",
+    "location": "Long Beach, CA",
+    "pins": [
+      "workflow-checks",
+      "CaptureSuite",
+      "canvaspilot",
+      "TowerOps",
+      "testpilot",
+      "uma-sim"
+    ],
+    "readme": {
+      "repo": "Jacob-Met/Jacob-Met",
+      "path": "README.md",
+      "source": "source/profile/README.md"
+    }
+  },
+  "linkedin": {
+    "url": "https://www.linkedin.com/in/jacob-metoyer-15b701352",
+    "managed": false,
+    "headline": null,
+    "about": null,
+    "featured": [],
+    "rule": "Fields stay null until a pre-edit snapshot of the live profile is taken in Jacob's signed-in browser. Never touch share or privacy settings."
+  },
+  "banned_terms": [
+    "schauz"
+  ]
+}

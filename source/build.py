@@ -22,14 +22,15 @@ BASE = 'https://jacobmetoyer.com'
 TITLE = 'Jacob Metoyer - I direct AI agents to carry out what I ask'
 DESC = 'I direct AI agents to carry out whatever I ask, software included. I set the bar and decide what ships.'
 SHARE_ALT = 'Jacob Metoyer - AI agents carry out whatever I direct, software included. I set the bar and decide what ships.'
-ALLOWED_HOSTS = {'github.com', 'jacobmetoyer.com'}
+ALLOWED_HOSTS = {'github.com', 'jacobmetoyer.com', 'spireofoctaves.com'}
+PLAY_HOST = 'jacobmetoyer.com'
 CSP = "default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'"
 ROOT_ICONS = ('favicon.ico', 'apple-touch-icon.png')
 SHARE_CARD = 'assets/og-card.png'
 DATE_RE = re.compile(r'\d{4}-\d{2}-\d{2}')
 SLUG_RE = re.compile(r'[a-z][a-z0-9-]{1,31}')
 SHOT_RE = re.compile(r'assets/demos/[a-z0-9-]+\.webp')
-SECTIONS = (('engine', 'Engine'), ('demos', 'Demos'), ('how', 'How'), ('more', 'More work'), ('about', 'About'))
+SECTIONS = (('engine', 'Engine'), ('games', 'Games'), ('demos', 'Demos'), ('how', 'How'), ('more', 'More work'), ('about', 'About'))
 
 
 def text(value, limit: int = 600) -> str:
@@ -80,8 +81,30 @@ def check_shot(shot) -> None:
         raise ValueError(f'Declared size differs from {shot["src"]}')
 
 
+def validate_games(games) -> None:
+    """Games and worlds. A game is playable only with a verified browser build on this site."""
+    if not isinstance(games, list) or len(games) > 12:
+        raise ValueError('Zero to twelve games')
+    ids = set()
+    for g in games:
+        keys(g, {'id', 'name', 'kind', 'line', 'url', 'build'}, 'game')
+        if not SLUG_RE.fullmatch(g['id']) or g['id'] in ids:
+            raise ValueError('Invalid or duplicate game id')
+        ids.add(g['id'])
+        text(g['name'], 40); text(g['kind'], 60); text(g['line'], 240); safe_url(g['url'])
+        b = g['build']
+        if b is None:
+            continue
+        keys(b, {'play_url', 'verified_at', 'evidence'}, 'game build')
+        if urlsplit(safe_url(b['play_url'])).hostname != PLAY_HOST:
+            raise ValueError('A playable build must be served from jacobmetoyer.com')
+        if not isinstance(b['verified_at'], str) or not DATE_RE.fullmatch(b['verified_at']):
+            raise ValueError('Playable build needs a verification date')
+        text(b['evidence'], 240)
+
+
 def validate(data: dict) -> None:
-    keys(data, {'visibility', 'name', 'updated', 'hero', 'engine', 'demos', 'how', 'projects', 'about', 'contact'}, 'record')
+    keys(data, {'visibility', 'name', 'updated', 'hero', 'engine', 'games', 'demos', 'how', 'projects', 'about', 'contact'}, 'record')
     if data['visibility'] != 'public':
         raise ValueError('Only explicitly public content can be built')
     if data['name'] != 'Jacob Metoyer':
@@ -107,6 +130,7 @@ def validate(data: dict) -> None:
         check_shot(d['shots']['desktop']); check_shot(d['shots']['mobile'])
     e = keys(data['engine'], {'title', 'tagline', 'line', 'slot'}, 'engine'); text(e['title'], 40); text(e['tagline'], 60); text(e['line'], 240)
     s = keys(e['slot'], {'title', 'line'}, 'engine slot'); text(s['title'], 60); text(s['line'], 240)
+    validate_games(data['games'])
     projects = data['projects']
     if not isinstance(projects, list) or not 1 <= len(projects) <= 8:
         raise ValueError('One to eight projects')
@@ -162,6 +186,19 @@ def demo_card(d: dict, n: int) -> str:
     )
 
 
+def games_section(games: list) -> str:
+    items = []
+    for g in games:
+        b = g['build']
+        link = (ext(b['play_url'], f'Play {g["name"]} →', 'btn') if b else ext(g['url'], f'Visit {urlsplit(g["url"]).hostname} →', 'src'))
+        status = f'Playable · build verified {esc(b["verified_at"])}' if b else 'Not playable here yet'
+        items.append(f'<li id="game-{g["id"]}"><p class="tag">{esc(g["kind"])}</p><h3>{esc(g["name"])}</h3>'
+                     f'<p>{esc(g["line"])}</p><p class="status">{status}</p><p class="links">{link}</p></li>')
+    body = f'<ul class="cards">{"".join(items)}</ul>' if items else '<p>No game has a verified browser build yet.</p>'
+    return (f'<section id="games" class="games" aria-labelledby="games-h"><div class="sec-head"><h2 id="games-h">Games and worlds</h2>'
+            f'<p>A game is marked playable only after its browser build runs here and a real frame has been checked.</p></div>{body}</section>')
+
+
 def render_index(r: dict) -> str:
     h = r['hero']
     nav = ''.join(f'<a href="#{i}">{esc(label)}</a>' for i, label in SECTIONS)
@@ -172,6 +209,7 @@ def render_index(r: dict) -> str:
               f'<p class="tagline">{esc(e["tagline"])}</p><p class="engine-line">{esc(e["line"])}</p></div>'
               f'<aside class="slot" aria-labelledby="engine-slot-h"><p class="tag"><span class="num">··</span>Coming soon</p>'
               f'<h3 id="engine-slot-h">{esc(e["slot"]["title"])}</h3><p>{esc(e["slot"]["line"])}</p></aside></section>')
+    engine += games_section(r['games'])
     projects = ''.join(f'<li><h3>{ext(p["url"], p["name"])}</h3><p>{esc(p["line"])}</p></li>' for p in r['projects'])
     c = r['contact']
     w = r['how']

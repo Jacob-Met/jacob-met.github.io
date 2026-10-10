@@ -135,6 +135,9 @@ section { border-top: 1px solid var(--rule); padding: clamp(40px, 6vw, 72px) 0; 
 @media (min-width: 900px) { .engine { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 40px; } }
 
 /* More work */
+.games .cards .tag { margin: 0 0 6px; }
+.games .status { margin: 10px 0 6px; font: 600 12px/1.4 var(--mono); color: var(--acc); }
+.games .links { margin: 0; }
 .cards { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
 .cards li { padding: 20px 22px; border: 1px solid var(--rule); border-radius: 14px; background: var(--bg-2); }
 .cards h3 { font: 600 19px/1.3 var(--sans); margin-bottom: 8px; }
