@@ -23,4 +23,11 @@ python source/build.py --out docs
 python source/check.py docs
 ```
 
+Enable the pre-commit guard once per clone (blocks committing `source/`
+changes without the regenerated `docs/`):
+
+```sh
+git config core.hooksPath .githooks
+```
+
 The page has no executable scripts, analytics or third-party resources (enforced by [`source/check.py`](source/check.py)).
