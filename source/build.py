@@ -16,6 +16,7 @@ import shutil
 import struct
 from pathlib import Path
 from urllib.parse import urlsplit
+from game_assets import game_files
 
 ROOT = Path(__file__).resolve().parent
 BASE = 'https://jacobmetoyer.com'
@@ -270,8 +271,9 @@ def build(out: Path, data: dict | None = None) -> dict:
     if out == ROOT or ROOT.is_relative_to(out):
         raise ValueError('Output must not replace source')
     shots = shot_files(record)
+    games = game_files(ROOT, record)
     allowed = {'index.html', '404.html', 'style.css', '.nojekyll', 'CNAME', 'robots.txt', 'sitemap.xml', 'cv.json',
-               'build-manifest.json', 'assets/mark.svg', SHARE_CARD, *ROOT_ICONS}
+               'build-manifest.json', 'assets/mark.svg', SHARE_CARD, *ROOT_ICONS, *games}
     allowed_prefix = 'assets/demos/'
     if out.exists():
         for f in out.rglob('*'):
@@ -296,6 +298,9 @@ def build(out: Path, data: dict | None = None) -> dict:
     shutil.copyfile(ROOT / SHARE_CARD, out / SHARE_CARD)
     for rel in shots:
         assert rel.startswith(allowed_prefix)
+        shutil.copyfile(ROOT / rel, out / rel)
+    for rel in games:
+        (out / rel).parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / rel, out / rel)
     for name in ROOT_ICONS:
         shutil.copyfile(ROOT / 'assets' / name, out / name)

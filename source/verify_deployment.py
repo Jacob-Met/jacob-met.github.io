@@ -37,7 +37,7 @@ def verify(root: Path, base: str, timeout: float = 15) -> dict:
         try:
             with opener.open(request, timeout=timeout) as response:
                 actual = response.read(len(expected) + 1); mime = response.headers.get_content_type()
-                wanted = {'.html': 'text/html', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.json': 'application/json'}.get(path.suffix)
+                wanted = {'.html': 'text/html', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.json': 'application/json', '.wasm': 'application/wasm'}.get(path.suffix)
                 item.update(status=response.status, received_bytes=len(actual), mime=mime, actual_sha256=hashlib.sha256(actual).hexdigest(),
                             bytes_match=actual == expected, mime_match=not wanted or mime == wanted)
                 item['passed'] = response.status == 200 and item['bytes_match'] and item['mime_match']

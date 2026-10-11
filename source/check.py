@@ -11,6 +11,7 @@ from html.parser import HTMLParser
 from pathlib import Path, PurePosixPath
 from urllib.parse import unquote, urlsplit
 from xml.etree import ElementTree as ET
+from game_assets import GAME_PATH, audit_game_bundle
 
 ROOT_RELATIVE_PAGES = frozenset({'404.html'})
 CSP_REQUIRED = {'default-src': "'none'", 'style-src': "'self'", 'img-src': "'self'", 'base-uri': "'none'", 'form-action': "'none'"}
@@ -115,12 +116,22 @@ def svg_surface(text: str) -> tuple[list[str], list[str]]:
 
 
 def check(root: Path) -> dict:
-    root = root.resolve(); failures = []; parsed = {}
+    root = root.resolve(); failures = []; parsed = {}; game_manifest = {}
     if not root.is_dir(): return {'passed': False, 'html_pages': 0, 'files': 0, 'failures': ['output root missing']}
+    if (root / 'games').exists():
+        try:
+            if {p.name for p in (root / 'games').iterdir()} != {'aetherline'}:
+                raise ValueError('Undeclared game directory')
+            game_manifest = audit_game_bundle(root / GAME_PATH)
+        except (ValueError, OSError, UnicodeError) as error:
+            failures.append('Game publication boundary: ' + str(error))
     for f in sorted(root.rglob('*')):
         rel = f.relative_to(root).as_posix()
         if f.is_symlink(): failures.append(f'{rel}: symlink outside declared output surface'); continue
         if not f.is_file(): continue
+        if rel.startswith(GAME_PATH + '/'):
+            if f.name not in game_manifest: failures.append(f'{rel}: undeclared game file')
+            continue  # The game subpage uses audit_game_bundle, not root-page policy.
         if f.suffix == '.html':
             try: text = f.read_text(encoding='utf-8')
             except (OSError, UnicodeError): failures.append(f'{rel}: unreadable HTML'); continue
