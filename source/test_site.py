@@ -163,9 +163,14 @@ class ContentTests(Built):
         for blocked in ('coursework', 'canvas', 'finances', 'purchases', 'private accounts'):
             self.assertNotIn(blocked, visible)
         self.assertNotIn('write all the code', visible)
-    def test_engine_slot_is_labelled_placeholder_without_media(self):
+    def test_engine_slot_status_matches_actual_builds_without_media(self):
         slot = re.search(r'<aside class="slot"[^>]*>(.*?)</aside>', self.main(), re.S)
-        self.assertIsNotNone(slot); self.assertNotIn('<img', slot.group(1)); self.assertIn('Coming soon', slot.group(1))
+        self.assertIsNotNone(slot)
+        assert slot is not None
+        self.assertNotIn('<img', slot.group(1))
+        playable = any(g['build'] is not None for g in self.data['games'])
+        self.assertIn('Playable now' if playable else 'Coming soon', slot.group(1))
+        self.assertNotIn('Coming soon' if playable else 'Playable now', slot.group(1))
     def test_engine_section_tops_demos_without_claiming_them(self):
         m = self.main()
         eng = re.search(r'<section id="engine"[^>]*>(.*?)</section>', m, re.S).group(1)
@@ -191,7 +196,24 @@ class ContentTests(Built):
         data['games'][0]['build'] = {'play_url': 'https://jacobmetoyer.com/play/x/', 'verified_at': '2026-10-10', 'evidence': 'frame checked'}
         build.validate(data)
     def test_spire_links_its_own_site(self):
-        self.assertIn('href="https://spireofoctaves.com"', self.main())
+        self.assertIn('href="https://spireofoctaves.com/"', self.main())
+    def test_aetherline_is_top_feature_spire_is_secondary_only(self):
+        m=self.main()
+        self.assertLess(m.index('Aetherline: Relic Run'),m.index('Spire of Octaves'))
+        engine=re.search(r'<section id="engine"[^>]*>(.*?)</section>',m,re.S)
+        assert engine is not None
+        self.assertIn('Playable game',engine.group(1))
+        self.assertIn('href="https://jacobmetoyer.com/games/aetherline/"',engine.group(1))
+        self.assertNotIn('Spire',engine.group(1))
+        self.assertNotIn('Coming soon',engine.group(1))
+        spire=re.search(r'<li id="game-spire-of-octaves">(.*?)</li>',m,re.S)
+        assert spire is not None
+        self.assertNotIn('class="btn"',spire.group(1))
+        self.assertNotIn('In progress',spire.group(1))
+        self.assertIn('spireofoctaves.com →',spire.group(1))
+        self.assertIsNone(next(g for g in self.data['games'] if g['id']=='spire-of-octaves')['build'])
+    def test_game_verification_record_link_is_explicit(self):
+        self.assertIn('href="https://jacobmetoyer.com/games/aetherline/evidence.json"',self.main())
     def test_presence_record_is_consistent(self):
         p = json.loads(Path(__file__).with_name('presence.json').read_text(encoding='utf-8'))
         gh = p['github']

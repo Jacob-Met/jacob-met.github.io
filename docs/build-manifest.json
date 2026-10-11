@@ -1,6 +1,6 @@
 {
   "schema": 3,
-  "date": "2026-10-10",
+  "date": "2026-10-11",
   "sha256": {
     ".nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "404.html": "7518e990a966516bdaaa8a709df4b434e0cfbc2728fb7b3979a1f8d2046a6463",
@@ -14,11 +14,22 @@
     "assets/demos/towerops-mobile.webp": "a18fadeabc2492ad3b4263a35b7621c36d6fa204d6b107d5728bd69e8cb274ca",
     "assets/mark.svg": "bf39430d64c6601ed417f590031b91dbee89bfc8fbbb2426fbf990553b03584c",
     "assets/og-card.png": "1f8a7f2f42b154f44a25f12fd7619c17471d4354c92247c2cae8cc680c263e24",
-    "cv.json": "84f5c67226d18c21ff91614dc1527698a570b3f2add9efaf0e780f3166c5818b",
+    "cv.json": "f12112f18c301ea51676ecb5fc1651cdc9281c678214e392a82bc485feebb990",
     "favicon.ico": "277c9b64ee26af8bf6194feb44e2364b552c6280c9339f22a52f975d3a4c77de",
-    "index.html": "7a5879b0c3d195b8676260b2be250a8f6928e438f8c9b9c49769aac9d948d9ec",
+    "games/aetherline/build-info.json": "cb551e37d5f8c20f45b44706ba86bf73cedcc607a58df1db3c4b5c15edeb05de",
+    "games/aetherline/desktop.png": "f87ce4d8ce3528ae86724565a0b2b0ca13be5ed0e3548f4c91d5cdb97bf4cf9f",
+    "games/aetherline/evidence.json": "89404b3ff5e9a044c558ea9bbcdc20b25ef84143f47dcc394a99d1332c4bd2c4",
+    "games/aetherline/hamon_web.js": "485b7b6bf29be6b0615eafe5b4ffc1bf604489e23ee479fef9ee8d36434e19e6",
+    "games/aetherline/hamon_web_bg.wasm": "605fd20803886c85a6b3780925b9f3209cd143031ea98a947e6086742e2e7499",
+    "games/aetherline/index.html": "9ce4fd0027dad6dc1ca100a56c2bbd2ffbf14985bd009d279c29b6bfae750f7c",
+    "games/aetherline/loader.js": "3eee5354e5340cc31f3aa74053f243bee051fd8454f1f5c714c65cfde9b91070",
+    "games/aetherline/mobile.png": "1746b3db0c5caea17c73424b7fae5b5f447e4fa7fc3d4869440c3f88a77a1212",
+    "games/aetherline/poster.svg": "b636153128e525cf77141e64914aed3258cdf6bd316d9314543761ad5b3c2f45",
+    "games/aetherline/style.css": "6a4c0e20a4316051c77f9b13d0cf581019c47d19918fae8f18d09bef2f36fd72",
+    "games/aetherline/webgpu-compat.js": "95b4487d37462f3e60f159abfedff03bcd6810960339ae2a65e0311863954822",
+    "index.html": "d2ef991b785f9be6c94dffa341636f858928bd8b51f5bdccd1883ca5c32d0ba4",
     "robots.txt": "60d463caa67aaa008b827bdec75236dcec7a9c82c49f529ad1da2de1c847c47e",
-    "sitemap.xml": "966f3a5729f4709d5d0c7cbc54ea374ec3967a9d3d7c853adbaa26595ea0383c",
+    "sitemap.xml": "c0a2881878fd2b62217fe84b7c2c1433cb45e2b710241482c1ac5fb55e81531d",
     "style.css": "507f5941599be1967c27cb538ce598893359ea16f01e4cfeb52cc8d84f4916ff"
   }
 }

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">Aetherline poster</title>
+  <desc id="desc">A luminous faceted relic in teal, amber and coral floats above a dark horizon.</desc>
+  <defs>
+    <radialGradient id="field" cx="51%" cy="44%" r="76%"><stop offset="0" stop-color="#12383d"/><stop offset=".52" stop-color="#0a2028"/><stop offset="1" stop-color="#050d12"/></radialGradient>
+    <linearGradient id="gem" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#65ead1"/><stop offset=".48" stop-color="#22aa9e"/><stop offset="1" stop-color="#f0a444"/></linearGradient>
+    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="24"/></filter>
+    <pattern id="stars" width="128" height="128" patternUnits="userSpaceOnUse"><circle cx="18" cy="21" r="1.4" fill="#c0ede5" opacity=".35"/><circle cx="98" cy="48" r="1" fill="#f6c47f" opacity=".42"/><circle cx="64" cy="105" r="1.2" fill="#9de3dc" opacity=".28"/></pattern>
+  </defs>
+  <rect width="1280" height="720" fill="url(#field)"/><rect width="1280" height="720" fill="url(#stars)"/>
+  <path d="M0 564 Q180 510 350 555 T690 544 T1020 558 T1280 520 V720 H0Z" fill="#0b292f" opacity=".84"/>
+  <ellipse cx="640" cy="370" rx="238" ry="212" fill="#27c7b2" opacity=".18" filter="url(#glow)"/>
+  <ellipse cx="640" cy="390" rx="216" ry="188" fill="none" stroke="#dcaa5a" stroke-width="2" opacity=".64" transform="rotate(-19 640 390)"/>
+  <path d="M640 208 754 331 712 490 568 490 526 331Z" fill="url(#gem)" stroke="#b5fff0" stroke-width="2"/>
+  <path d="M640 208 640 363 526 331Z" fill="#7af0dc" opacity=".78"/><path d="M640 208 754 331 640 363Z" fill="#f2ad50" opacity=".9"/>
+  <path d="M526 331 640 363 568 490Z" fill="#138f8b"/><path d="M754 331 640 363 712 490Z" fill="#ed765d"/>
+  <path d="M568 490 640 363 712 490Z" fill="#0c686d"/>
+  <path d="M421 581 H859" stroke="#54c8bd" stroke-width="1" opacity=".5"/><path d="M463 603 H817" stroke="#e9af5f" stroke-width="1" opacity=".45"/>
+  <text x="640" y="112" text-anchor="middle" fill="#62d6c6" font-family="system-ui,sans-serif" font-size="14" font-weight="700" letter-spacing="7">HAMON ENGINE · BROWSER TARGET</text>
+  <text x="640" y="648" text-anchor="middle" fill="#f0f3ee" font-family="system-ui,sans-serif" font-size="34" font-weight="700" letter-spacing="8">AETHERLINE</text>
+  <text x="640" y="680" text-anchor="middle" fill="#9db7b8" font-family="system-ui,sans-serif" font-size="13" letter-spacing="2">WEBGPU UNAVAILABLE · STATIC POSTER</text>
+</svg>

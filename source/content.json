@@ -1,7 +1,7 @@
 {
   "visibility": "public",
   "name": "Jacob Metoyer",
-  "updated": "2026-10-10",
+  "updated": "2026-10-11",
   "hero": {
     "kicker": "AI-directed work / CS + physics at CSULB",
     "title": "I direct AI agents to carry out what I ask.",
@@ -94,19 +94,31 @@
   "engine": {
     "title": "Hamon Engine",
     "tagline": "an AI-native game engine",
-    "line": "A game engine I'm building by directing AI agents, from rendering and physics to the tools around them. Playable builds will land here first.",
+    "line": "A game engine I'm building by directing AI agents, from rendering and physics to the tools around them. Aetherline is its first playable browser build here.",
     "slot": {
-      "title": "Playable builds",
-      "line": "Coming soon. A build goes up here only after it runs in the browser and a real frame has been checked."
+      "title": "Aetherline: Relic Run",
+      "line": "Collect three relics, open the gate and win. Runs locally in a WebGPU-capable browser, with keyboard and on-screen controls. The engine source stays private."
     }
   },
   "games": [
     {
+      "id": "aetherline",
+      "name": "Aetherline: Relic Run",
+      "kind": "Hamon Engine · browser game",
+      "line": "Move, turn and jump to collect three relics and open the gate. WebGPU required; keyboard and touch controls, no account or install. No browser audio in this build.",
+      "url": "https://jacobmetoyer.com/games/aetherline/",
+      "build": {
+        "play_url": "https://jacobmetoyer.com/games/aetherline/",
+        "verified_at": "2026-10-11",
+        "evidence": "Real Apple M3 Pro WebGPU frames, keyboard/pointer victories and phone-size touch victory checked in native Chrome. Physical phone not tested; WebGPU required."
+      }
+    },
+    {
       "id": "spire-of-octaves",
       "name": "Spire of Octaves",
       "kind": "Fiction world · own site",
-      "line": "A fiction world with its own home. Its games are being rebuilt in Hamon Engine; one appears here as playable only after its browser build runs and a real frame is checked.",
-      "url": "https://spireofoctaves.com",
+      "line": "A fiction world with its own site. Its game work is in progress and not playable here yet.",
+      "url": "https://spireofoctaves.com/",
       "build": null
     }
   ],

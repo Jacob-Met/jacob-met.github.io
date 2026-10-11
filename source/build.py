@@ -191,10 +191,11 @@ def games_section(games: list) -> str:
     items = []
     for g in games:
         b = g['build']
-        link = (ext(b['play_url'], f'Play {g["name"]} →', 'btn') if b else ext(g['url'], f'Visit {urlsplit(g["url"]).hostname} →', 'src'))
+        link = (ext(b['play_url'], f'Play {g["name"]} →', 'btn') if b else ext(g['url'], f'{urlsplit(g["url"]).hostname} →', 'src'))
         status = f'Playable · build verified {esc(b["verified_at"])}' if b else 'Not playable here yet'
         items.append(f'<li id="game-{g["id"]}"><p class="tag">{esc(g["kind"])}</p><h3>{esc(g["name"])}</h3>'
-                     f'<p>{esc(g["line"])}</p><p class="status">{status}</p><p class="links">{link}</p></li>')
+                     f'<p>{esc(g["line"])}</p><p class="status">{status}</p><p class="links">{link}</p>'
+                     + (f'<p class="detail">{esc(b["evidence"])}</p><p>{ext(b["play_url"] + "evidence.json", "Verification record", "src")}</p>' if b else '') + '</li>')
     body = f'<ul class="cards">{"".join(items)}</ul>' if items else '<p>No game has a verified browser build yet.</p>'
     return (f'<section id="games" class="games" aria-labelledby="games-h"><div class="sec-head"><h2 id="games-h">Games and worlds</h2>'
             f'<p>A game is marked playable only after its browser build runs here and a real frame has been checked.</p></div>{body}</section>')
@@ -206,10 +207,14 @@ def render_index(r: dict) -> str:
     demos = [demo_card(d, i) for i, d in enumerate(r['demos'], 1)]
     e = r['engine']
     engine = (f'<section id="engine" class="engine" aria-labelledby="engine-h"><div class="engine-head">'
-              f'<p class="kicker">In progress</p><h2 id="engine-h">{esc(e["title"])}</h2>'
+              f'<p class="kicker">{"Playable game" if any(g["build"] is not None for g in r["games"]) else "In progress"}</p><h2 id="engine-h">{esc(e["title"])}</h2>'
               f'<p class="tagline">{esc(e["tagline"])}</p><p class="engine-line">{esc(e["line"])}</p></div>'
-              f'<aside class="slot" aria-labelledby="engine-slot-h"><p class="tag"><span class="num">··</span>Coming soon</p>'
+              f'<aside class="slot" aria-labelledby="engine-slot-h"><p class="tag"><span class="num">··</span>{"Playable now" if any(g["build"] is not None for g in r["games"]) else "Coming soon"}</p>'
               f'<h3 id="engine-slot-h">{esc(e["slot"]["title"])}</h3><p>{esc(e["slot"]["line"])}</p></aside></section>')
+    featured = next((g for g in r['games'] if g['build'] is not None), None)
+    if featured:
+        action = f'<p class="links">{ext(featured["build"]["play_url"], "Play " + featured["name"] + " →", "btn")}</p>'
+        engine = engine.replace('</aside>', action + '</aside>')
     engine += games_section(r['games'])
     projects = ''.join(f'<li><h3>{ext(p["url"], p["name"])}</h3><p>{esc(p["line"])}</p></li>' for p in r['projects'])
     c = r['contact']
