@@ -29,10 +29,34 @@
   "linkedin": {
     "url": "https://www.linkedin.com/in/jacob-metoyer-15b701352",
     "managed": false,
-    "headline": null,
-    "about": null,
+    "headline": "Research software across biology, medicine and AI · CSULB BUILD Scholar · aspiring MD/PhD",
+    "about": "I build evidence-first research tooling, agent systems and simulators — code at github.com/Jacob-Met.\n\nI'm Jacob Metoyer, a student researcher and developer working across biology, physics, computer science, and computational methods.\n\nMy research experience spans human movement and gait rehabilitation, behavioral neurobiology, protein molecular dynamics, and collaborative surgical-ergonomics work. I'm especially interested in measurement, reproducible analysis, scientific software, and computational methods that make difficult biological questions more testable.\n\nAt Chapman University's Gait Rehabilitation and Research Lab, I support participant and motion-data workflows and contribute to gait-analysis tooling. Earlier research at Georgetown's Joshi Lab involved molecular-dynamics trajectory pipelines and structural evaluation of generated protein trajectories; at CSULB's Tsai Lab I worked with behavioral tracking, analysis, and laboratory workflows.\n\nI also build software around problems I encounter. Projects such as CaptureSuite focus on research capture, quality control, reproducibility, and downstream analysis.\n\nAlongside my formal academic work, I pursue independent research in AI systems as a technical hobby. I'm particularly interested in human-AI collaboration, agentic systems, evaluation, and how AI changes knowledge and production work. I build experimental systems, preserve execution evidence and failures, and study when successful procedures can be made reliably reusable.\n\nI'm interested in research collaborations and selective consulting engagements that extend these questions into real organizations: studying an existing workflow, building a bounded AI-enabled alternative, and empirically comparing its quality, capability, time, cost, and required human intervention.\n\nLong term, I hope to pursue an MD/PhD while continuing research and development across computational biology, scientific software, and AI systems.",
     "featured": [],
-    "rule": "Fields stay null until a pre-edit snapshot of the live profile is taken in Jacob's signed-in browser. Never touch share or privacy settings."
+    "rule": "Fields stay null until a pre-edit snapshot of the live profile is taken in Jacob's signed-in browser. Never touch share or privacy settings.",
+    "snapshot": {
+      "captured_at_utc": "2026-10-11T00:06:07.3282796Z",
+      "source_url": "https://www.linkedin.com/in/jacob-metoyer-15b701352/",
+      "method": "Windows UIAutomation existing Chrome session, read-only",
+      "signed_in": true,
+      "signed_in_evidence": [
+        "Me",
+        "Edit profile",
+        "Edit about",
+        "Add section",
+        "Private to you"
+      ],
+      "raw_accessibility_sha256": "334eed078af1c0aa6640b71b3bd51bb2f4b19fd2d8a758b84c221f129932137e",
+      "profile_extract_sha256": "9dc901b31be8705ebb060ac338b4ec2194229168b1a16cb13db62caeac7be760",
+      "fields_observed": [
+        "headline",
+        "about"
+      ],
+      "about_format": "Accessibility paragraph nodes joined with blank lines; paragraph text preserved.",
+      "featured_observation": "Featured heading/cards not present in this rendered accessibility snapshot; absence not established",
+      "read_only": true,
+      "linkedin_edits": false,
+      "privacy_or_share_changes": false
+    }
   },
   "banned_terms": [
     "schauz"
