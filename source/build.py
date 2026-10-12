@@ -31,7 +31,7 @@ SHARE_CARD = 'assets/og-card.png'
 DATE_RE = re.compile(r'\d{4}-\d{2}-\d{2}')
 SLUG_RE = re.compile(r'[a-z][a-z0-9-]{1,31}')
 SHOT_RE = re.compile(r'assets/demos/[a-z0-9-]+\.webp')
-SECTIONS = (('engine', 'Engine'), ('games', 'Games'), ('demos', 'Demos'), ('how', 'How'), ('more', 'More work'), ('about', 'About'))
+SECTIONS = (('engine', 'Engine'), ('demos', 'Demos'), ('how', 'How'), ('more', 'More work'), ('worlds', 'Worlds'), ('about', 'About'))
 
 
 def text(value, limit: int = 600) -> str:
@@ -92,7 +92,7 @@ def validate_games(games) -> None:
         if not SLUG_RE.fullmatch(g['id']) or g['id'] in ids:
             raise ValueError('Invalid or duplicate game id')
         ids.add(g['id'])
-        text(g['name'], 40); text(g['kind'], 60); text(g['line'], 240); safe_url(g['url'])
+        text(g['name'], 40); text(g['kind'], 60); text(g['line'], 400); safe_url(g['url'])
         b = g['build']
         if b is None:
             continue
@@ -215,7 +215,22 @@ def render_index(r: dict) -> str:
     if featured:
         action = f'<p class="links">{ext(featured["build"]["play_url"], "Play " + featured["name"] + " →", "btn")}</p>'
         engine = engine.replace('</aside>', action + '</aside>')
-    engine += games_section(r['games'])
+    # The playable example belongs to the sole featured engine entry.
+    if featured:
+        b = featured['build']
+        evidence = (f'<p class="status">Playable · build verified {esc(b["verified_at"])}</p>'
+                    f'<p class="detail">{esc(featured["line"])}</p>'
+                    f'<p class="detail">{esc(b["evidence"])}</p>'
+                    f'<p>{ext(b["play_url"] + "evidence.json", "Verification record", "src")}</p>')
+        engine = engine.replace('</aside>', evidence + '</aside>')
+    worlds = ''.join(
+        f'<li id="game-{g["id"]}"><p class="tag">{esc(g["kind"])}</p><h3>{esc(g["name"])}</h3>'
+        f'<p>{esc(g["line"]).replace("*Seamwork*", "<em>Seamwork</em>")}</p>'
+        f'<p class="links">{ext(g["url"], "Explore the world →", "src")}</p></li>'
+        for g in r['games'] if g['build'] is None)
+    worlds = (f'<section id="worlds" class="games" aria-labelledby="worlds-h">'
+              f'<div class="sec-head"><h2 id="worlds-h">Stories and worlds</h2></div>'
+              f'<ul class="cards">{worlds}</ul></section>') if worlds else ''
     projects = ''.join(f'<li><h3>{ext(p["url"], p["name"])}</h3><p>{esc(p["line"])}</p></li>' for p in r['projects'])
     c = r['contact']
     w = r['how']
@@ -238,6 +253,7 @@ def render_index(r: dict) -> str:
         f'<p>{esc(w["line"])}</p></div><ol class="steps">{steps}</ol></section>'
         f'<section id="more" class="more" aria-labelledby="more-h"><div class="sec-head"><h2 id="more-h">More work</h2>'
         f'<p>Research and tooling projects with source, but no in-browser demo.</p></div><ul class="cards">{projects}</ul></section>'
+        + worlds +
         f'<section id="about" class="about" aria-labelledby="about-h"><h2 id="about-h">About</h2>'
         f'{about}<p>{esc(c["line"])} {ext(c["url"], "github.com/Jacob-Met")}</p></section>'
         '</main>'

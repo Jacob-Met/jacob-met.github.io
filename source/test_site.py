@@ -180,13 +180,12 @@ class ContentTests(Built):
         demos = re.search(r'<section id="demos"[^>]*>(.*?)</section>', m, re.S).group(1)
         self.assertNotIn('hamon', demos.lower())
     def test_games_are_playable_only_with_verified_build(self):
-        sec = re.search(r'<section id="games"[^>]*>(.*?)</section>', self.main(), re.S).group(1)
-        for g in self.data['games']:
-            item = re.search(rf'<li id="game-{g["id"]}">(.*?)</li>', sec, re.S).group(1)
-            if g['build'] is None:
-                self.assertIn('Not playable here yet', item); self.assertNotIn('Play ', item)
-            else:
-                self.assertIn('Playable · build verified', item)
+        m = self.main()
+        engine = re.search(r'<section id="engine"[^>]*>(.*?)</section>', m, re.S).group(1)
+        self.assertIn('Playable · build verified', engine)
+        spire = re.search(r'<li id="game-spire-of-octaves">(.*?)</li>', m, re.S).group(1)
+        self.assertNotIn('Play ', spire)
+        self.assertIn('short story published on Royal Road', spire)
     def test_unverified_or_offsite_build_refused(self):
         data = copy.deepcopy(self.data)
         data['games'][0]['build'] = {'play_url': 'https://spireofoctaves.com/play', 'verified_at': '2026-10-10', 'evidence': 'frame checked'}
@@ -210,7 +209,7 @@ class ContentTests(Built):
         assert spire is not None
         self.assertNotIn('class="btn"',spire.group(1))
         self.assertNotIn('In progress',spire.group(1))
-        self.assertIn('spireofoctaves.com →',spire.group(1))
+        self.assertIn('Explore the world →',spire.group(1))
         self.assertIsNone(next(g for g in self.data['games'] if g['id']=='spire-of-octaves')['build'])
     def test_game_verification_record_link_is_explicit(self):
         self.assertIn('href="https://jacobmetoyer.com/games/aetherline/evidence.json"',self.main())

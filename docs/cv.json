@@ -10,6 +10,33 @@
   },
   "demos": [
     {
+      "id": "towerops-airspace",
+      "name": "TowerOps Airspace Lab",
+      "tag": "Synthetic airspace / live decision-support workbench",
+      "line": "A traffic-management simulation where you create flights, change their paths and see where conflicts develop. Synthetic demo, not operational ATC.",
+      "detail": "A planner proposes adjustments; each simulated change goes through approval and readback, with an audit trail. The actual AdvisoryPlanner and ControlRoom run in-browser via CPython/WebAssembly, not a mock or replay. It uses synthetic or visitor-provided data and is not operational air-traffic-control software.",
+      "play": {
+        "label": "Open the live airspace lab",
+        "url": "https://jacobmetoyer.com/TowerOps/airspace/"
+      },
+      "repo": "https://github.com/Jacob-Met/TowerOps",
+      "stack": "Python / WebAssembly / Canvas",
+      "shots": {
+        "desktop": {
+          "src": "assets/demos/towerops-desktop.webp",
+          "w": 1200,
+          "h": 1244,
+          "alt": "TowerOps simplified desktop view: two crossing flights and a three-step planner, approval and readback flow. Advanced controls are collapsed."
+        },
+        "mobile": {
+          "src": "assets/demos/towerops-mobile.webp",
+          "w": 300,
+          "h": 1546,
+          "alt": "TowerOps simplified mobile view: two crossing flights and a three-step planner, approval and readback flow. Advanced controls are collapsed."
+        }
+      }
+    },
+    {
       "id": "recallweave",
       "name": "RecallWeave",
       "tag": "ForgeHacks 2026 · AI + Education",
@@ -62,60 +89,6 @@
           "alt": "ReturnBy on a phone with two saved deadlines and urgency controls."
         }
       }
-    },
-    {
-      "id": "towerops-airspace",
-      "name": "TowerOps Airspace Lab",
-      "tag": "Synthetic airspace / live decision-support workbench",
-      "line": "A traffic-management simulation where you create flights, change their paths and see where conflicts develop.",
-      "detail": "A planner proposes adjustments; each simulated change goes through approval and readback, with an audit trail. The actual AdvisoryPlanner and ControlRoom run in-browser via CPython/WebAssembly, not a mock or replay. It uses synthetic or visitor-provided data and is not operational air-traffic-control software.",
-      "play": {
-        "label": "Open the live airspace lab",
-        "url": "https://jacobmetoyer.com/TowerOps/airspace/"
-      },
-      "repo": "https://github.com/Jacob-Met/TowerOps",
-      "stack": "Python / WebAssembly / Canvas",
-      "shots": {
-        "desktop": {
-          "src": "assets/demos/towerops-desktop.webp",
-          "w": 1200,
-          "h": 1244,
-          "alt": "TowerOps simplified desktop view: two crossing flights and a three-step planner, approval and readback flow. Advanced controls are collapsed."
-        },
-        "mobile": {
-          "src": "assets/demos/towerops-mobile.webp",
-          "w": 300,
-          "h": 1546,
-          "alt": "TowerOps simplified mobile view: two crossing flights and a three-step planner, approval and readback flow. Advanced controls are collapsed."
-        }
-      }
-    },
-    {
-      "id": "longwater-fourteen-tides",
-      "name": "Longwater: Fourteen Tides",
-      "tag": "Marsh stewardship · Rust/WebAssembly",
-      "line": "A fourteen-tide marsh stewardship game. Keep the Longwater alive through changing tides.",
-      "detail": "Actions resolve against a Rust simulation compiled to WebAssembly. The live build includes a separate practice watch, local progress, a tide journal and an offline download.",
-      "play": {
-        "label": "Play Longwater",
-        "url": "https://jacobmetoyer.com/longwater-browser-demo/"
-      },
-      "repo": "https://github.com/Jacob-Met/longwater-browser-demo",
-      "stack": "Rust · WebAssembly · JavaScript",
-      "shots": {
-        "desktop": {
-          "src": "assets/demos/longwater-desktop.webp",
-          "w": 1440,
-          "h": 900,
-          "alt": "Desktop capture of Longwater's three marsh cells, tide readings and action controls."
-        },
-        "mobile": {
-          "src": "assets/demos/longwater-mobile.webp",
-          "w": 390,
-          "h": 844,
-          "alt": "Phone capture of Longwater's marsh cells and tide controls."
-        }
-      }
     }
   ],
   "engine": {
@@ -144,7 +117,7 @@
       "id": "spire-of-octaves",
       "name": "Spire of Octaves",
       "kind": "Fiction world · own site",
-      "line": "A fiction world with its own site. Its game work is in progress and not playable here yet.",
+      "line": "My own world, told through stories, music, games and animation. A vertical world born from an unfinished sacred song, where matter remembers intent and new floors are still being composed beneath the people who live there. Its first story, *Seamwork*, is a short story published on Royal Road.",
       "url": "https://spireofoctaves.com/",
       "build": null
     }
