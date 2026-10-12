@@ -6,29 +6,34 @@
 
 ## Hi, I'm Jacob.
 
-CS and physics undergraduate (biology minor) at **CSULB**, BUILD Scholar, aiming for an MD/PhD. I build scientific software and agentic AI systems, and I care most about measurement: tools whose results you can inspect, reproduce, and check.
+I study computer science and physics at Cal State Long Beach, with a minor in biology. I'm a BUILD Scholar working toward MD/PhD training.
 
-**Research:** behavior and neurobiology · protein molecular dynamics · gait and rehabilitation · collaborative surgical-ergonomics work.
-**Independent work:** human–AI collaboration and agent systems — building them, studying where they fail, and finding when a procedure can be reused reliably instead of reasoned through again.
+I direct AI agents across more than software: running a home estate of several machines, producing research reports, disk and ops cleanup, and building this site. I set the bar and decide what ships.
 
-### Featured work
+My research experience spans gait and rehabilitation, behavioral neurobiology, protein molecular dynamics, and collaborative surgical-ergonomics work. I'm interested in measurement, reproducible analysis and scientific software.
 
-| Project | What it is |
+Checks come before claims. I keep runnable examples, source and explicit limits with the work. Research contributions are collaborative; synthetic demos are not evidence of clinical validity, learning gains or savings on someone else's data.
+
+### Public work
+
+| Project | What you can inspect |
 |---|---|
-| [**workflow-checks**](https://github.com/Jacob-Met/workflow-checks) | Evidence-first back-office checks: freight detention and carrier invoice audit, PT authorization worklist, utility bill exceptions. Python stdlib, tested in CI, synthetic data. [Live sample outputs →](https://jacobmetoyer.com/workflow-checks/) |
-| [**CaptureSuite**](https://github.com/Jacob-Met/CaptureSuite) | Windows-first multimodal research capture: daemon, versioned worker plugins, sealed sessions, PySide6 operator UI. |
-| [**CanvasPilot**](https://github.com/Jacob-Met/canvaspilot) | Agentic Canvas LMS tools for LLMs — an MCP server + CLI driven by your own authenticated browser session. |
-| [**TowerOps**](https://github.com/Jacob-Met/TowerOps) | Synthetic air-traffic decision-support demo (Strands Agents) where deterministic checks gate every state change behind conflict projection, approval, and readback. |
-| [**uma-sim**](https://github.com/Jacob-Met/uma-sim) | Unofficial Umamusume career simulator in Rust. |
+| [**RecallWeave**](https://jacobmetoyer.com/RecallWeave/explore.html) | Offline learning toolkit with visible Bayesian estimates, lesson authoring and interactive labs; no measured learning-gain claim. |
+| [**ReturnBy**](https://jacobmetoyer.com/returnby/) | Local-first return deadlines and calendar reminders; review extracted fields and merchant rules. |
+| [**TowerOps**](https://jacobmetoyer.com/TowerOps/airspace/) | Synthetic airspace workbench with approval and readback gates; not operational ATC. |
+| [**Aetherline: Relic Run**](https://jacobmetoyer.com/games/aetherline/) | Hamon Engine browser prototype; WebGPU required, private engine source, no browser audio. |
+| [**Multi-agent Fan-out Engine**](https://github.com/Jacob-Met/multi-agent-fanout-engine) | Sanitized reference core for dependency planning and dispatch reconciliation; not a production-capacity benchmark. |
+| [**ShadeWindow**](https://devpost.com/software/shadewindow) | Submitted historical heat-index replay demo; not a safety forecast. |
 
-**Hackathon builds:** [testpilot](https://github.com/Jacob-Met/testpilot) (agent that writes, runs and repairs regression tests for a diff) · [ledgerly](https://github.com/Jacob-Met/ledgerly) (invoice + payout copilot with a human approval gate) · [tastetable](https://github.com/Jacob-Met/tastetable) (weekly outing planner for seniors and caregivers on Qloo taste signals).
+### More research tooling
 
-Each repository documents its scope, evidence, and limitations. Research contributions are collaborative, not claims of independent clinical validation.
+- [CaptureSuite](https://github.com/Jacob-Met/CaptureSuite) — Windows-first multimodal research capture: a daemon, versioned worker plugins and sealed session packages, with an offline QC demo on synthetic EMG/IMU data.
+- [CanvasPilot](https://github.com/Jacob-Met/canvaspilot) — An MCP server and CLI for Canvas LMS that rides the browser session you already have, for schools that disable personal access tokens.
+- [workflow-checks](https://github.com/Jacob-Met/workflow-checks) — Three small Python checks for back-office paperwork (utility bills, freight detention, PT authorizations), run on synthetic data with file:row evidence.
+- [Multi-agent Fan-out Engine](https://github.com/Jacob-Met/multi-agent-fanout-engine) — A public-safe reference core for dependency plans, SQLite dispatch custody and reconcile-not-replay. Local adapter tests, not claims about production capacity.
 
 ### Working together
 
-Open to research collaborations and scoped pilots: understand an existing process, build a bounded alternative, and measure quality, time, cost, and human intervention against it.
+Open to research collaborations and scoped pilots: start with a bounded problem, compare with an existing workflow, and measure quality, time, cost and human intervention. No savings or clinical outcomes are implied by a demo.
 
-Outside the lab: cosplay, physical making, music, anime, games.
-
-**[jacobmetoyer.com →](https://jacobmetoyer.com/)** · [LinkedIn](https://www.linkedin.com/in/jacob-metoyer-15b701352)
+**[jacobmetoyer.com](https://jacobmetoyer.com/)** · [LinkedIn](https://www.linkedin.com/in/jacob-metoyer-15b701352)

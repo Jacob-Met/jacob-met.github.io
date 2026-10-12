@@ -1,7 +1,7 @@
 {
   "visibility": "public",
   "name": "Jacob Metoyer",
-  "updated": "2026-10-11",
+  "updated": "2026-10-12",
   "hero": {
     "kicker": "AI-directed work / CS + physics at CSULB",
     "title": "I direct AI agents to carry out what I ask.",
@@ -13,11 +13,11 @@
       "id": "recallweave",
       "name": "RecallWeave",
       "tag": "ForgeHacks 2026 · AI + Education",
-      "line": "A browser-only biology lesson that picks your next question by expected information gain and shows its mastery estimates as you answer.",
-      "detail": "The learner model is plain Bayesian knowledge tracing with every probability visible; there is no chatbot and nothing leaves the page. Submitted to ForgeHacks 2026 (Devpost entry 1221781).",
+      "line": "An offline learning toolkit: adaptive lessons, course downloads, authoring tools and interactive science, mathematics and computing labs.",
+      "detail": "The learner exposes Bayesian model estimates, not grades or demonstrated learning gains. Work with local lesson files and explicit downloads; no account or cloud service. Submitted to ForgeHacks 2026 (Devpost entry 1221781).",
       "play": {
-        "label": "Play the lesson",
-        "url": "https://jacobmetoyer.com/RecallWeave/demo.html"
+        "label": "Explore the toolkit",
+        "url": "https://jacobmetoyer.com/RecallWeave/explore.html"
       },
       "repo": "https://github.com/Jacob-Met/RecallWeave",
       "stack": "JavaScript · HTML/CSS · no build step",
@@ -163,13 +163,19 @@
       "name": "workflow-checks",
       "line": "Three small Python checks for back-office paperwork (utility bills, freight detention, PT authorizations), run on synthetic data with file:row evidence.",
       "url": "https://github.com/Jacob-Met/workflow-checks"
+    },
+    {
+      "name": "Multi-agent Fan-out Engine",
+      "line": "A public-safe reference core for dependency plans, SQLite dispatch custody and reconcile-not-replay. Local adapter tests, not claims about production capacity.",
+      "url": "https://github.com/Jacob-Met/multi-agent-fanout-engine"
     }
   ],
   "about": {
     "lines": [
-      "I study computer science and physics at Cal State Long Beach, with a minor in biology, and I'm working toward MD/PhD training.",
-      "I direct AI agents across more than software. That work includes running a home estate of several machines, producing research reports, disk and ops cleanup, and building this site. I set the bar and decide what ships.",
-      "A result can be a report, an ops fix, or software. I decide what is ready to ship."
+      "I study computer science and physics at Cal State Long Beach, with a minor in biology. I'm a BUILD Scholar working toward MD/PhD training.",
+      "I direct AI agents across more than software: running a home estate of several machines, producing research reports, disk and ops cleanup, and building this site. I set the bar and decide what ships.",
+      "My research experience spans gait and rehabilitation, behavioral neurobiology, protein molecular dynamics, and collaborative surgical-ergonomics work. I'm interested in measurement, reproducible analysis and scientific software.",
+      "Checks come before claims. I keep runnable examples, source and explicit limits with the work. Research contributions are collaborative; synthetic demos are not evidence of clinical validity, learning gains or savings on someone else's data."
     ]
   },
   "contact": {
