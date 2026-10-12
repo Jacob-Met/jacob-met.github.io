@@ -107,7 +107,7 @@ class BuildTests(Built):
 class ContentTests(Built):
     """Demos-first: every demo shows captured output, a one-line description and its source."""
     BANNED = ('anime', 'manga', 'cosplay', 'tornadocos', 'myanimelist', 'umamusume', 'uma-sim', 'schauz', 'spire',
-              'hamon', 'togishi', 'otama', 'shinogi', 'jihada', 'passionate', 'journey', 'leverage', 'robust', 'ai-assistance', 'ai-written')
+              'togishi', 'otama', 'shinogi', 'jihada', 'passionate', 'journey', 'leverage', 'robust', 'ai-assistance', 'ai-written')
     def test_no_old_profile_or_ai_assistance_copy(self):
         # "Hamon Engine" is the public name of Jacob's game engine; internal agent names stay banned.
         # "Spire of Octaves" is Jacob's public fiction world (spireofoctaves.com); the pen name stays banned.
@@ -174,7 +174,7 @@ class ContentTests(Built):
     def test_engine_section_tops_demos_without_claiming_them(self):
         m = self.main()
         eng = re.search(r'<section id="engine"[^>]*>(.*?)</section>', m, re.S).group(1)
-        self.assertIn('>Hamon Engine</h2>', eng); self.assertIn('an AI-native game engine', eng)
+        self.assertIn('>Hamon Engine</h2>', eng); self.assertIn('A Rust game engine built for AI agents', eng)
         self.assertLess(m.index('id="engine"'), m.index('id="demos"'))
         self.assertIn('Playable demos', m)
         demos = re.search(r'<section id="demos"[^>]*>(.*?)</section>', m, re.S).group(1)
