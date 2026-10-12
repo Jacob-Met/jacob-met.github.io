@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "note": "Canonical public presence. Edit identity here; profile/generate.py renders the shared site biography, GitHub README and LinkedIn About. Site demos remain in content.json. Only saved/read-back fields are managed. No posts or automated browser writes.",
+  "note": "Canonical public facts and profile targets. Site/GitHub copy is generated from identity. LinkedIn uses independent wording; its About belongs to Jacob and is excluded from management. No posts or automated browser writes.",
   "site": {
     "url": "https://jacobmetoyer.com/",
     "repo": "Jacob-Met/jacob-met.github.io",
@@ -29,10 +29,17 @@
   "linkedin": {
     "url": "https://www.linkedin.com/in/jacob-metoyer-15b701352",
     "managed": true,
-    "headline": "Research & scientific software | AI-directed tools and demos | CSULB BUILD Scholar | Aspiring MD/PhD",
-    "about": "I study computer science and physics at Cal State Long Beach, with a minor in biology. I'm a BUILD Scholar working toward MD/PhD training.\n\nI direct AI agents across more than software: running a home estate of several machines, producing research reports, disk and ops cleanup, and building this site. I set the bar and decide what ships.\n\nMy research experience spans gait and rehabilitation, behavioral neurobiology, protein molecular dynamics, and collaborative surgical-ergonomics work. I'm interested in measurement, reproducible analysis and scientific software.\n\nChecks come before claims. I keep runnable examples, source and explicit limits with the work. Research contributions are collaborative; synthetic demos are not evidence of clinical validity, learning gains or savings on someone else's data.\n\nPublic work you can explore:\n• RecallWeave: Offline learning toolkit with visible Bayesian estimates, lesson authoring and interactive labs; no measured learning-gain claim. https://jacobmetoyer.com/RecallWeave/explore.html\n• ReturnBy: Local-first return deadlines and calendar reminders; review extracted fields and merchant rules. https://jacobmetoyer.com/returnby/\n• TowerOps: Synthetic airspace workbench with approval and readback gates; not operational ATC. https://jacobmetoyer.com/TowerOps/airspace/\n• Aetherline: Relic Run: Hamon Engine browser prototype; WebGPU required, private engine source, no browser audio. https://jacobmetoyer.com/games/aetherline/\n• Multi-agent Fan-out Engine: Sanitized reference core for dependency planning and dispatch reconciliation; not a production-capacity benchmark. https://github.com/Jacob-Met/multi-agent-fanout-engine\n• ShadeWindow: Submitted historical heat-index replay demo; not a safety forecast. https://devpost.com/software/shadewindow\n\nPortfolio: https://jacobmetoyer.com/\nSource: https://github.com/Jacob-Met",
+    "headline": "Student researcher | Gait, neurobiology & scientific software | Building with AI | CSULB BUILD Scholar | Aspiring MD/PhD",
+    "about": null,
     "featured": [],
-    "rule": "Snapshot first. Share profile updates must be OFF before content saves. Profile edits only; no posts/messages/connections, other setting changes or Experience title/employer/date changes. Read back each save."
+    "rule": "Snapshot first. Share profile updates must be OFF before content saves. Profile edits only; no posts/messages/connections, other setting changes or Experience title/employer/date changes. Read back each save.",
+    "about_owner": "Jacob",
+    "about_managed": false,
+    "managed_fields": [
+      "headline",
+      "projects",
+      "featured"
+    ]
   },
   "banned_terms": [
     "schauz"

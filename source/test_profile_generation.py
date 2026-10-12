@@ -22,21 +22,21 @@ class ProfileGeneration(unittest.TestCase):
         self.assertEqual(about, self.p['linkedin']['about'])
         self.assertEqual(readme, (ROOT / 'profile' / 'README.md').read_text(encoding='utf-8'))
         for line in paragraphs:
-            self.assertIn(line, about)
             self.assertIn(line, readme)
 
     def test_platform_lengths(self):
         self.assertLessEqual(len(self.p['github']['bio']), 160)
         self.assertLessEqual(len(self.p['linkedin']['headline']), 220)
-        self.assertLessEqual(len(gen.outputs(self.p, self.c)[1]), 2600)
+        self.assertIsNone(gen.outputs(self.p, self.c)[1])
+        self.assertEqual(self.p['linkedin']['about_owner'], 'Jacob')
 
     def test_limits_survive_rendering(self):
         _, about, readme = gen.outputs(self.p, self.c)
-        for text in (about, readme):
+        for text in (readme,):
             for caveat in ('not operational ATC', 'not a safety forecast', 'private engine source', 'not a production-capacity benchmark', 'synthetic demos'):
                 self.assertIn(caveat, text)
         for draft in ('ReplayForge', 'EVIDENCEGRAPH', 'TestPilot'):
-            self.assertNotIn(draft, about)
+            self.assertNotIn(draft, readme)
 
     def test_oversized_copy_refused(self):
         bad = copy.deepcopy(self.p)

@@ -18,10 +18,9 @@ def outputs(presence, content):
     projects = presence['identity']['featured_work']
     if not projects or any(not p['url'].startswith('https://') for p in projects):
         raise ValueError('Featured work needs public HTTPS links')
-    about = '\n\n'.join(paragraphs) + '\n\nPublic work you can explore:\n' + '\n'.join(
-        f"• {p['name']}: {p['line']} {p['url']}" for p in projects
-    ) + '\n\nPortfolio: https://jacobmetoyer.com/\nSource: https://github.com/Jacob-Met'
-    if len(about) > 2600 or len(presence['linkedin']['headline']) > 220 or len(presence['github']['bio']) > 160:
+    # LinkedIn copy is independently authored; About belongs to Jacob.
+    about = None
+    if len(presence['linkedin']['headline']) > 220 or len(presence['github']['bio']) > 160:
         raise ValueError('Public profile field exceeds platform limit')
     readme = '''<picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/profile-banner-dark.svg">
@@ -52,7 +51,6 @@ def main():
     paragraphs, about, readme = outputs(presence, content)
     expected = {
         cp: {**content, 'about': {'lines': paragraphs}},
-        pp: {**presence, 'linkedin': {**presence['linkedin'], 'about': about}},
     }
     failures = []
     for path, data in expected.items():
@@ -69,7 +67,7 @@ def main():
             raise SystemExit('Profile source drift: ' + ', '.join(failures))
     else:
         rp.write_text(readme, encoding='utf-8')
-    print(json.dumps({'passed': True, 'check_only': args.check, 'linkedin_about_chars': len(about), 'shared_paragraphs': len(paragraphs), 'featured_projects': len(presence['identity']['featured_work'])}))
+    print(json.dumps({'passed': True, 'check_only': args.check, 'linkedin_about_managed': False, 'shared_paragraphs': len(paragraphs), 'featured_projects': len(presence['identity']['featured_work'])}))
 
 
 if __name__ == '__main__':
