@@ -19,11 +19,11 @@ function resizeCanvas() {
 }
 
 if (!canvas || !poster || !status) {
-  throw new Error("Aetherline static shell is missing required DOM elements.");
+  throw new Error("Lanternwake static shell is missing required DOM elements.");
 }
 
 if (!Reflect.get(navigator, "gpu")) {
-  showPoster("This browser does not expose WebGPU. The accessible Aetherline poster is shown instead.");
+  showPoster("This browser does not expose WebGPU. The accessible Lanternwake poster is shown instead.");
 } else {
   resizeCanvas();
   window.addEventListener("resize", resizeCanvas, { passive: true });
@@ -36,8 +36,8 @@ if (!Reflect.get(navigator, "gpu")) {
     await init();
     installControls(input, reset, focus_lost); await start("webgpu");
   } catch (error) {
-    console.error("Aetherline WebGPU startup failed", error);
-    showPoster("WebGPU could not start here. The accessible Aetherline poster is shown instead.");
+    console.error("Lanternwake WebGPU startup failed", error);
+    showPoster("WebGPU could not start here. The accessible Lanternwake poster is shown instead.");
   }
 }
 
@@ -51,7 +51,7 @@ function installControls(input, reset, focusLost) {
   window.addEventListener("blur", clear); document.addEventListener("visibilitychange", () => { if(document.hidden) clear(); });
   const hud=document.createElement("p"); hud.id="hud"; hud.setAttribute("role","status"); status.after(hud);
   const controls = document.createElement("div"); controls.setAttribute("aria-label","Movement controls"); controls.className="controls";
-  for(const [label,bit] of [["Forward",1],["Back",2],["Left",4],["Right",8],["Jump",16]]) {
+  for(const [label,bit] of [["Forward",1],["Back",2],["Left",4],["Right",8],["Pulse",16]]) {
     const button = document.createElement("button"); button.textContent=label; 
     button.addEventListener("pointerdown", event => { event.preventDefault(); button.setPointerCapture(event.pointerId); touches.set(event.pointerId,bit); send(); });
     for(const type of ["pointerup","pointercancel","lostpointercapture"]) button.addEventListener(type,event => { touches.delete(event.pointerId); send(); }); controls.append(button);

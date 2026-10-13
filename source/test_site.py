@@ -196,13 +196,13 @@ class ContentTests(Built):
         build.validate(data)
     def test_spire_links_its_own_site(self):
         self.assertIn('href="https://spireofoctaves.com/"', self.main())
-    def test_aetherline_is_top_feature_spire_is_secondary_only(self):
+    def test_lanternwake_is_top_feature_spire_is_secondary_only(self):
         m=self.main()
-        self.assertLess(m.index('Aetherline: Relic Run'),m.index('Spire of Octaves'))
+        self.assertLess(m.index('Lanternwake'),m.index('Spire of Octaves'))
         engine=re.search(r'<section id="engine"[^>]*>(.*?)</section>',m,re.S)
         assert engine is not None
         self.assertIn('Playable game',engine.group(1))
-        self.assertIn('href="https://jacobmetoyer.com/games/aetherline/"',engine.group(1))
+        self.assertIn('href="https://jacobmetoyer.com/games/lanternwake/"',engine.group(1))
         self.assertNotIn('Spire',engine.group(1))
         self.assertNotIn('Coming soon',engine.group(1))
         spire=re.search(r'<li id="game-spire-of-octaves">(.*?)</li>',m,re.S)
@@ -212,7 +212,7 @@ class ContentTests(Built):
         self.assertIn('Explore the world →',spire.group(1))
         self.assertIsNone(next(g for g in self.data['games'] if g['id']=='spire-of-octaves')['build'])
     def test_game_verification_record_link_is_explicit(self):
-        self.assertIn('href="https://jacobmetoyer.com/games/aetherline/evidence.json"',self.main())
+        self.assertIn('href="https://jacobmetoyer.com/games/lanternwake/evidence.json"',self.main())
     def test_presence_record_is_consistent(self):
         p = json.loads(Path(__file__).with_name('presence.json').read_text(encoding='utf-8'))
         gh = p['github']

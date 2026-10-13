@@ -1,0 +1,127 @@
+{
+  "game": "Lanternwake",
+  "engine_commit": "6f40564d881962fd688761065e503e3dd292ffd3",
+  "passed": true,
+  "hardware": "Apple M3 Pro / Metal",
+  "browser": "headed native Chrome",
+  "runs": [
+    {
+      "mode": "desktop",
+      "logs": [],
+      "errors": [],
+      "adapter": {
+        "info": {
+          "vendor": "apple",
+          "architecture": "metal-3",
+          "description": ""
+        },
+        "fallback": false
+      },
+      "initial": {
+        "frame": 14,
+        "position": [
+          0.0,
+          0.0,
+          -4.0
+        ],
+        "heading": 0,
+        "score": 0,
+        "gate": 0,
+        "won": false
+      },
+      "pixel_variance": [
+        120.49408382499129,
+        46.10939869114696,
+        39.2093267294725
+      ],
+      "victory": {
+        "frame": 698,
+        "position": [
+          -0.1600016,
+          0.0,
+          8.266652
+        ],
+        "heading": 0,
+        "score": 3,
+        "gate": 255,
+        "won": true
+      },
+      "restart": {
+        "frame": 2,
+        "position": [
+          0.0,
+          0.0,
+          -4.0
+        ],
+        "heading": 0,
+        "score": 0,
+        "gate": 0,
+        "won": false
+      },
+      "passed": true
+    },
+    {
+      "mode": "mobile",
+      "logs": [],
+      "errors": [],
+      "adapter": {
+        "info": {
+          "vendor": "apple",
+          "architecture": "metal-3",
+          "description": ""
+        },
+        "fallback": false
+      },
+      "initial": {
+        "frame": 3,
+        "position": [
+          0.0,
+          0.0,
+          -4.0
+        ],
+        "heading": 0,
+        "score": 0,
+        "gate": 0,
+        "won": false
+      },
+      "pixel_variance": [
+        112.0996131687831,
+        40.506473552975535,
+        35.29981293013984
+      ],
+      "victory": {
+        "frame": 654,
+        "position": [
+          -0.05333478,
+          0.0,
+          8.15999
+        ],
+        "heading": 0,
+        "score": 3,
+        "gate": 255,
+        "won": true
+      },
+      "restart": {
+        "frame": 3,
+        "position": [
+          0.0,
+          0.0,
+          -4.0
+        ],
+        "heading": 0,
+        "score": 0,
+        "gate": 0,
+        "won": false
+      },
+      "passed": true
+    }
+  ],
+  "limits": [
+    "Phone-size touch emulation only; physical phone and Safari untested",
+    "Presentation shader, not a port of the native PBR renderer"
+  ],
+  "captures": {
+    "desktop.png": "2405736059c1d6fc5757057d9161346dab8bdf3cd50cc6ab14bcbc04a21d40a0",
+    "mobile.png": "7a94fe73b5e513b048e64a8436c60c0b000ceabc87f77e1a9c31602cdb9642f4"
+  }
+}

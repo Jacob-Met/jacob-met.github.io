@@ -1,6 +1,6 @@
 """Explicit runtime-only publication boundary for the private engine's browser game.
 
-Only Aetherline's shipped runtime files are admitted. This is not a repository export.
+Only the featured game's shipped runtime files are admitted. This is not a repository export.
 Root-page policy remains unchanged; the game has its own narrow WebAssembly policy.
 """
 from __future__ import annotations
@@ -11,7 +11,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlsplit
 
-GAME_PATH = 'games/aetherline'
+GAME_PATH = 'games/lanternwake'
 RUNTIME_FILES = frozenset({'index.html', 'style.css', 'loader.js', 'hamon_web.js',
                           'hamon_web_bg.wasm', 'webgpu-compat.js', 'poster.svg', 'build-info.json'})
 EVIDENCE_FILES = frozenset({'evidence.json', 'desktop.png', 'mobile.png'})
@@ -91,6 +91,6 @@ def game_files(source: Path, record: dict) -> list[str]:
     playable = [g for g in record['games'] if g['build'] is not None]
     if not playable: return []
     if len(playable) != 1 or urlsplit(playable[0]['build']['play_url']).path != '/' + GAME_PATH + '/':
-        raise ValueError('Only the explicitly admitted Aetherline build path is supported')
+        raise ValueError('Only the explicitly admitted Lanternwake build path is supported')
     manifest = audit_game_bundle(source / GAME_PATH)
     return [GAME_PATH + '/' + name for name in manifest]

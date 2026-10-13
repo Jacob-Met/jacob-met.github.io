@@ -120,7 +120,7 @@ def check(root: Path) -> dict:
     if not root.is_dir(): return {'passed': False, 'html_pages': 0, 'files': 0, 'failures': ['output root missing']}
     if (root / 'games').exists():
         try:
-            if {p.name for p in (root / 'games').iterdir()} != {'aetherline'}:
+            if {p.name for p in (root / 'games').iterdir()} != {GAME_PATH.split('/')[1]}:
                 raise ValueError('Undeclared game directory')
             game_manifest = audit_game_bundle(root / GAME_PATH)
         except (ValueError, OSError, UnicodeError) as error:

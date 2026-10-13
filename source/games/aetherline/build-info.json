@@ -1,8 +1,0 @@
-{
-  "visibility": "public-runtime-only",
-  "engine_commit": "059cd5138c018300d894862c25bc301184bc8abc",
-  "name": "Aetherline: Relic Run",
-  "source_visibility": "private",
-  "runtime": "Rust / wasm-bindgen / WebGPU",
-  "audio": "No browser audio output in this build"
-}

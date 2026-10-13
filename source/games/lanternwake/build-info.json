@@ -1,0 +1,8 @@
+{
+  "visibility": "public-runtime-only",
+  "engine_commit": "6f40564d881962fd688761065e503e3dd292ffd3",
+  "name": "Lanternwake",
+  "source_visibility": "private",
+  "runtime": "Rust / wasm-bindgen / WebGPU",
+  "wasm_bindgen": "0.2.129"
+}

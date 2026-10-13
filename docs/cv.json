@@ -1,7 +1,7 @@
 {
   "visibility": "public",
   "name": "Jacob Metoyer",
-  "updated": "2026-10-12",
+  "updated": "2026-10-13",
   "hero": {
     "kicker": "AI-directed work / CS + physics at CSULB",
     "title": "I direct AI agents to carry out what I ask.",
@@ -62,33 +62,6 @@
           "alt": "RecallWeave on a phone after six questions: the learning trace with per-concept mastery estimates."
         }
       }
-    },
-    {
-      "id": "returnby",
-      "name": "ReturnBy",
-      "tag": "Browser-only / local-first utility",
-      "line": "Paste your own order email, correct the extraction, track multiple due dates and export calendar reminders.",
-      "detail": "Runs the repository parser, merchant policy table, deadline math and RFC 5545 export. Review every field, edit the fallback, filter saved orders and keep all approved data in this browser; the pasted email is never persisted.",
-      "play": {
-        "label": "Try it live",
-        "url": "https://jacobmetoyer.com/returnby/"
-      },
-      "repo": "https://github.com/Jacob-Met/returnby",
-      "stack": "TypeScript / Vite / local-only",
-      "shots": {
-        "desktop": {
-          "src": "assets/demos/returnby-desktop.webp",
-          "w": 1200,
-          "h": 1123,
-          "alt": "ReturnBy desktop with two tracked orders, policy source, deadlines and calendar actions."
-        },
-        "mobile": {
-          "src": "assets/demos/returnby-mobile.webp",
-          "w": 300,
-          "h": 1722,
-          "alt": "ReturnBy on a phone with two saved deadlines and urgency controls."
-        }
-      }
     }
   ],
   "engine": {
@@ -96,21 +69,21 @@
     "tagline": "A Rust game engine built for AI agents",
     "line": "Most engines assume a person at the editor, so agents guess from screenshots. Hamon exposes exact state over MCP and is deterministic: agents can rerun and compare changes. Agents also drive the next feature when the engine falls short.",
     "slot": {
-      "title": "Aetherline: Relic Run",
-      "line": "Aetherline is an optional public WebGPU demo; the engine repository remains private and is not linked here. Multi-agent describes the intended workflow, not qualified concurrent control."
+      "title": "Lanternwake",
+      "line": "The latest playable Hamon Engine build. The engine repository remains private and is not linked here; only the compiled browser runtime is published."
     }
   },
   "games": [
     {
-      "id": "aetherline",
-      "name": "Aetherline: Relic Run",
+      "id": "lanternwake",
+      "name": "Lanternwake",
       "kind": "Hamon Engine · browser game",
-      "line": "Move, turn and jump to collect three relics and open the gate. WebGPU required; keyboard and touch controls, no account or install. No browser audio in this build.",
-      "url": "https://jacobmetoyer.com/games/aetherline/",
+      "line": "Restore three lanterns on a small 3D island, then return to the stone arch at dawn. Keyboard and touch controls; WebGPU required, no account or install.",
+      "url": "https://jacobmetoyer.com/games/lanternwake/",
       "build": {
-        "play_url": "https://jacobmetoyer.com/games/aetherline/",
-        "verified_at": "2026-10-11",
-        "evidence": "Real Apple M3 Pro WebGPU frames, keyboard/pointer victories and phone-size touch victory checked in native Chrome. Physical phone not tested; WebGPU required."
+        "play_url": "https://jacobmetoyer.com/games/lanternwake/",
+        "verified_at": "2026-10-13",
+        "evidence": "Played to victory and restarted with real keyboard input (desktop) and touch buttons (phone-size viewport) in Chromium, zero console errors. Physical phone and Safari untested."
       }
     },
     {
