@@ -164,6 +164,24 @@ def repo_label(url: str) -> str:
     return 'Source · ' + urlsplit(url).path.strip('/')
 
 
+def project_index(r: dict) -> str:
+    """Expose existing project anchors without scripts or changes to project order."""
+    featured = next((g for g in r['games'] if g['build'] is not None), None)
+    projects = ([('engine', featured['name'])] if featured else [])
+    projects += [('demo-' + d['id'], d['name']) for d in r['demos']]
+    links = ''.join(
+        f'<li><a href="#{esc(anchor)}"><span class="project-no" aria-hidden="true">{i:02d}</span>'
+        f'<span>{esc(name)}</span><span class="project-arrow" aria-hidden="true">↓</span></a></li>'
+        for i, (anchor, name) in enumerate(projects, 1)
+    )
+    return (
+        '<nav class="project-index" aria-labelledby="project-index-h">'
+        '<p class="kicker">Start exploring</p><h2 id="project-index-h">Find a project to try.</h2>'
+        '<p>Jump to the details, then open the live project.</p>'
+        f'<ol>{links}</ol></nav>'
+    )
+
+
 def demo_card(d: dict, n: int) -> str:
     dk, mb = d['shots']['desktop'], d['shots']['mobile']
     return (
@@ -226,10 +244,11 @@ def render_index(r: dict) -> str:
         f'<header class="top"><a class="mark" href="#main" aria-label="Jacob Metoyer, top of page"><span aria-hidden="true">JM</span></a>'
         f'<nav aria-label="Sections">{nav}</nav></header>'
         '<main id="main">'
-        f'<section class="hero" aria-labelledby="hero-h"><p class="kicker">{esc(h["kicker"])}</p>'
+        f'<section class="hero" aria-labelledby="hero-h"><div class="hero-copy"><p class="kicker">{esc(h["kicker"])}</p>'
         f'<h1 id="hero-h"><span class="name">Jacob Metoyer</span>{esc(h["title"])}</h1>'
         f'<p class="lede">{esc(h["lede"])}</p>'
-        f'<p class="hero-links"><a class="btn" href="#demos">Play the demos ↓</a> <a class="src" href="#how">How they get built</a> {ext(h["source"], "GitHub · Jacob-Met", "src")}</p></section>'
+        f'<p class="hero-links"><a class="btn" href="#engine">Explore the work ↓</a> <a class="src" href="#how">How it gets built</a> {ext(h["source"], "GitHub · Jacob-Met", "src")}</p></div>'
+        + project_index(r) + '</section>'
         + engine +
         f'<section id="demos" class="demos" aria-labelledby="demos-h"><div class="sec-head"><h2 id="demos-h">Playable demos</h2>'
         f'<p>Each one runs in your browser. The images are captures of the real thing; the links open it.</p></div>'
