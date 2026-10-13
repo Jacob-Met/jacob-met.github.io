@@ -18,12 +18,12 @@ Checks come before claims. I keep runnable examples, source and explicit limits 
 
 | Project | What you can inspect |
 |---|---|
-| [**RecallWeave**](https://jacobmetoyer.com/RecallWeave/explore.html) | Offline learning toolkit with visible Bayesian estimates, lesson authoring and interactive labs; no measured learning-gain claim. |
-| [**ReturnBy**](https://jacobmetoyer.com/returnby/) | Local-first return deadlines and calendar reminders; review extracted fields and merchant rules. |
 | [**TowerOps**](https://jacobmetoyer.com/TowerOps/airspace/) | Synthetic airspace workbench with approval and readback gates; not operational ATC. |
-| [**Aetherline: Relic Run**](https://jacobmetoyer.com/games/aetherline/) | Hamon Engine browser prototype; WebGPU required, private engine source, no browser audio. |
+| [**RecallWeave**](https://jacobmetoyer.com/RecallWeave/explore.html) | Offline learning toolkit with visible Bayesian estimates, lesson authoring and interactive labs; no measured learning-gain claim. |
+| [**Lanternwake**](https://jacobmetoyer.com/games/lanternwake/) | Hamon Engine browser game: restore three lanterns on a small 3D island and return to the arch at dawn. WebGPU required, keyboard and touch; private engine source. |
 | [**Multi-agent Fan-out Engine**](https://github.com/Jacob-Met/multi-agent-fanout-engine) | Sanitized reference core for dependency planning and dispatch reconciliation; not a production-capacity benchmark. |
 | [**ShadeWindow**](https://devpost.com/software/shadewindow) | Submitted historical heat-index replay demo; not a safety forecast. |
+| [**Spire of Octaves**](https://spireofoctaves.com/) | My own fiction world, told through stories, music, games and animation. |
 
 ### More research tooling
 
