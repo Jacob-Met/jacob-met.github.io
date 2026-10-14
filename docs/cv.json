@@ -1,11 +1,11 @@
 {
   "visibility": "public",
   "name": "Jacob Metoyer",
-  "updated": "2026-10-13",
+  "updated": "2026-10-14",
   "hero": {
     "kicker": "AI-directed work / CS + physics at CSULB",
     "title": "I direct AI agents to carry out what I ask.",
-    "lede": "AI agents carry out whatever I direct, software included. That work has included running a home estate of several machines, producing research reports, disk and ops cleanup, and building this site. I set the bar and decide what ships. Every demo below runs, and its source is public so you can check the work.",
+    "lede": "I direct AI agents across research, operations and software. I set the bar and decide what ships. The demos below run in your browser; public projects link to their source, with clear limits on what they show.",
     "source": "https://github.com/Jacob-Met"
   },
   "demos": [
@@ -14,7 +14,7 @@
       "name": "TowerOps Airspace Lab",
       "tag": "Synthetic airspace / live decision-support workbench",
       "line": "A traffic-management simulation where you create flights, change their paths and see where conflicts develop. Synthetic demo, not operational ATC.",
-      "detail": "A planner proposes adjustments; each simulated change goes through approval and readback, with an audit trail. The actual AdvisoryPlanner and ControlRoom run in-browser via CPython/WebAssembly, not a mock or replay. It uses synthetic or visitor-provided data and is not operational air-traffic-control software.",
+      "detail": "Create and edit synthetic traffic, compare planner proposals, then approve and read back a simulated change. The browser workbench exposes its decision trace. This is a research simulation, not operational air-traffic-control software.",
       "play": {
         "label": "Open the live airspace lab",
         "url": "https://jacobmetoyer.com/TowerOps/airspace/"
@@ -70,7 +70,13 @@
     "line": "Most engines assume a person at the editor, so agents guess from screenshots. Hamon exposes exact state over MCP and is deterministic: agents can rerun and compare changes. Agents also drive the next feature when the engine falls short.",
     "slot": {
       "title": "Lanternwake",
-      "line": "The latest playable Hamon Engine build. The engine repository remains private and is not linked here; only the compiled browser runtime is published."
+      "line": "A small island prototype: restore three lanterns, then return to the stone arch. The image is a capture of the qualified browser build, not concept art or a release announcement.",
+      "shot": {
+        "src": "assets/demos/lanternwake-preview.webp",
+        "w": 1000,
+        "h": 817,
+        "alt": "Lanternwake browser prototype: the island scene, stone arch and on-screen movement controls in the retained desktop capture."
+      }
     }
   },
   "games": [

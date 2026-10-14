@@ -130,7 +130,8 @@ def validate(data: dict) -> None:
         keys(d['shots'], {'desktop', 'mobile'}, 'screenshots')
         check_shot(d['shots']['desktop']); check_shot(d['shots']['mobile'])
     e = keys(data['engine'], {'title', 'tagline', 'line', 'slot'}, 'engine'); text(e['title'], 40); text(e['tagline'], 60); text(e['line'], 240)
-    s = keys(e['slot'], {'title', 'line'}, 'engine slot'); text(s['title'], 60); text(s['line'], 240)
+    s = keys(e['slot'], {'title', 'line', 'shot'}, 'engine slot'); text(s['title'], 60); text(s['line'], 240)
+    check_shot(s['shot'])
     validate_games(data['games'])
     projects = data['projects']
     if not isinstance(projects, list) or not 1 <= len(projects) <= 8:
@@ -192,7 +193,7 @@ def games_section(games: list) -> str:
     for g in games:
         b = g['build']
         link = (ext(b['play_url'], f'Play {g["name"]} →', 'btn') if b else ext(g['url'], f'{urlsplit(g["url"]).hostname} →', 'src'))
-        status = f'Playable · build verified {esc(b["verified_at"])}' if b else 'Not playable here yet'
+        status = f'Browser prototype · qualified {esc(b["verified_at"])}' if b else 'Not playable here yet'
         items.append(f'<li id="game-{g["id"]}"><p class="tag">{esc(g["kind"])}</p><h3>{esc(g["name"])}</h3>'
                      f'<p>{esc(g["line"])}</p><p class="status">{status}</p><p class="links">{link}</p>'
                      + (f'<p class="detail">{esc(b["evidence"])}</p><p>{ext(b["play_url"] + "evidence.json", "Verification record", "src")}</p>' if b else '') + '</li>')
@@ -207,19 +208,23 @@ def render_index(r: dict) -> str:
     demos = [demo_card(d, i) for i, d in enumerate(r['demos'], 1)]
     e = r['engine']
     engine = (f'<section id="engine" class="engine" aria-labelledby="engine-h"><div class="engine-head">'
-              f'<p class="kicker">{"Playable game" if any(g["build"] is not None for g in r["games"]) else "In progress"}</p><h2 id="engine-h">{esc(e["title"])}</h2>'
+              f'<p class="kicker">{"Engine development"}</p><h2 id="engine-h">{esc(e["title"])}</h2>'
               f'<p class="tagline">{esc(e["tagline"])}</p><p class="engine-line">{esc(e["line"])}</p></div>'
-              f'<aside class="slot" aria-labelledby="engine-slot-h"><p class="tag"><span class="num">··</span>{"Playable now" if any(g["build"] is not None for g in r["games"]) else "Coming soon"}</p>'
+              f'<aside class="slot" aria-labelledby="engine-slot-h"><p class="tag"><span class="num">··</span>{"Prototype preview"}</p>'
               f'<h3 id="engine-slot-h">{esc(e["slot"]["title"])}</h3><p>{esc(e["slot"]["line"])}</p></aside></section>')
     featured = next((g for g in r['games'] if g['build'] is not None), None)
     if featured:
         action = f'<p class="links">{ext(featured["build"]["play_url"], "Play " + featured["name"] + " →", "btn")}</p>'
         engine = engine.replace('</aside>', action + '</aside>')
-    # The playable example belongs to the sole featured engine entry.
+    shot = e['slot']['shot']
+    capture = (f'<figure class="engine-preview"><img src="{shot["src"]}" width="{shot["w"]}" height="{shot["h"]}" '
+               f'alt="{esc(shot["alt"])}" loading="lazy" decoding="async">'
+               f'<figcaption>Prototype · retained browser capture · <a href="{shot["src"]}">Open full capture</a></figcaption></figure>')
+    engine = engine.replace('</aside>', capture + '</aside>')
+    # Existing runtime links are preserved; this preview makes no new launch claim.
     if featured:
         b = featured['build']
-        evidence = (f'<p class="status">Playable · build verified {esc(b["verified_at"])}</p>'
-                    f'<p class="detail">{esc(featured["line"])}</p>'
+        evidence = (f'<p class="status">Browser prototype · qualified {esc(b["verified_at"])}</p>'
                     f'<p class="detail">{esc(b["evidence"])}</p>'
                     f'<p>{ext(b["play_url"] + "evidence.json", "Verification record", "src")}</p>')
         engine = engine.replace('</aside>', evidence + '</aside>')
@@ -270,7 +275,7 @@ def page_html(name: str, title: str, desc: str, body: str, data: dict) -> str:
 <title>{esc(title)}</title><meta name="description" content="{esc(desc)}"><meta name="theme-color" content="#0b0a08"><meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="canonical" href="{canonical}"><link rel="icon" href="assets/mark.svg" type="image/svg+xml"><link rel="icon" href="favicon.ico" sizes="48x48"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="stylesheet" href="style.css">
 <meta property="og:type" content="website"><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{canonical}">
-<meta property="og:image" content="{BASE}/{SHARE_CARD}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="{esc(SHARE_ALT)}"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:image" content="{BASE}/{SHARE_CARD}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="{esc(SHARE_ALT)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="{BASE}/{SHARE_CARD}">
 <script type="application/ld+json">{structured}</script></head>
 <body>{body}</body></html>'''
 
@@ -282,7 +287,7 @@ def root_links(name: str, markup: str) -> str:
 
 
 def shot_files(record: dict) -> list[str]:
-    return sorted({s['src'] for d in record['demos'] for s in d['shots'].values()})
+    return sorted({s['src'] for d in record['demos'] for s in d['shots'].values()} | {record['engine']['slot']['shot']['src']})
 
 
 def build(out: Path, data: dict | None = None) -> dict:

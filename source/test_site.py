@@ -145,9 +145,8 @@ class ContentTests(Built):
         sec = re.search(r'<section id="how"[^>]*>(.*?)</section>', self.main(), re.S).group(1)
         self.assertEqual(sec.count('<li>'), len(self.data['how']['steps']))
         self.assertIn('carry out what i ask', self.data['hero']['title'].lower())
-        self.assertIn('software included', self.data['hero']['lede'].lower())
-        for phrase in ('home estate of several machines', 'research reports', 'disk and ops cleanup', 'building this site'):
-            self.assertIn(phrase, self.data['hero']['lede'].lower())
+        self.assertIn('research, operations and software', self.data['hero']['lede'].lower())
+        self.assertIn('public projects link to their source', self.data['hero']['lede'].lower())
         self.assertIn('I set the bar and decide what ships', self.data['hero']['lede'])
         self.assertIn('carry out whatever i direct', self.data['how']['line'].lower())
         self.assertEqual(self.data['how']['steps'][0]['name'], 'I pick the work')
@@ -163,14 +162,14 @@ class ContentTests(Built):
         for blocked in ('coursework', 'canvas', 'finances', 'purchases', 'private accounts'):
             self.assertNotIn(blocked, visible)
         self.assertNotIn('write all the code', visible)
-    def test_engine_slot_status_matches_actual_builds_without_media(self):
+    def test_engine_slot_has_one_labeled_prototype_capture(self):
         slot = re.search(r'<aside class="slot"[^>]*>(.*?)</aside>', self.main(), re.S)
         self.assertIsNotNone(slot)
         assert slot is not None
-        self.assertNotIn('<img', slot.group(1))
-        playable = any(g['build'] is not None for g in self.data['games'])
-        self.assertIn('Playable now' if playable else 'Coming soon', slot.group(1))
-        self.assertNotIn('Coming soon' if playable else 'Playable now', slot.group(1))
+        self.assertEqual(slot.group(1).count('<img'), 1)
+        self.assertIn('Prototype preview', slot.group(1))
+        self.assertIn('retained browser capture', slot.group(1))
+        self.assertNotIn('Playable now', slot.group(1))
     def test_engine_section_tops_demos_without_claiming_them(self):
         m = self.main()
         eng = re.search(r'<section id="engine"[^>]*>(.*?)</section>', m, re.S).group(1)
@@ -182,7 +181,7 @@ class ContentTests(Built):
     def test_games_are_playable_only_with_verified_build(self):
         m = self.main()
         engine = re.search(r'<section id="engine"[^>]*>(.*?)</section>', m, re.S).group(1)
-        self.assertIn('Playable · build verified', engine)
+        self.assertIn('Browser prototype · qualified', engine)
         spire = re.search(r'<li id="game-spire-of-octaves">(.*?)</li>', m, re.S).group(1)
         self.assertNotIn('Play ', spire)
         self.assertIn('short story published on Royal Road', spire)
@@ -201,7 +200,7 @@ class ContentTests(Built):
         self.assertLess(m.index('Lanternwake'),m.index('Spire of Octaves'))
         engine=re.search(r'<section id="engine"[^>]*>(.*?)</section>',m,re.S)
         assert engine is not None
-        self.assertIn('Playable game',engine.group(1))
+        self.assertIn('Engine development',engine.group(1))
         self.assertIn('href="https://jacobmetoyer.com/games/lanternwake/"',engine.group(1))
         self.assertNotIn('Spire',engine.group(1))
         self.assertNotIn('Coming soon',engine.group(1))

@@ -1,18 +1,19 @@
 {
   "schema": 3,
-  "date": "2026-10-13",
+  "date": "2026-10-14",
   "sha256": {
     ".nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "404.html": "7518e990a966516bdaaa8a709df4b434e0cfbc2728fb7b3979a1f8d2046a6463",
+    "404.html": "d6a5088766c0e8c1a2850a2e3d297d8827c2ef3e6c9f670546d13d5161150d0a",
     "CNAME": "7e89b4b8e0d23220fae91b16a6c40497117ef427d16ca984e7a8c720f14d8527",
     "apple-touch-icon.png": "5228bf4a42f9ac43cf140fcb7046776f2cb312a799a221774e9aa8aa8649f53d",
+    "assets/demos/lanternwake-preview.webp": "4bc9dcbe37c1ab5ac9162e47ac62bbe51b4241fc8aa6d5855f1fe8cdbd0503c7",
     "assets/demos/recallweave-desktop.webp": "7f09210bd45edb2ac8fa157b5e380988ea5f28a820300cf319fb7fb55f683565",
     "assets/demos/recallweave-mobile.webp": "64904386178ed8bb0db502b70621bbc14dea959668ef64dfd144094856140798",
     "assets/demos/towerops-desktop.webp": "1f385b35fc21b57232c1ca74f77855890d370a9691ce6a84b5e6d23012629ce0",
     "assets/demos/towerops-mobile.webp": "a18fadeabc2492ad3b4263a35b7621c36d6fa204d6b107d5728bd69e8cb274ca",
     "assets/mark.svg": "bf39430d64c6601ed417f590031b91dbee89bfc8fbbb2426fbf990553b03584c",
     "assets/og-card.png": "1f8a7f2f42b154f44a25f12fd7619c17471d4354c92247c2cae8cc680c263e24",
-    "cv.json": "677cff481f8aabb7fd62561b6bde03de8ee49977a3edfcfe3a78a941eba2abfc",
+    "cv.json": "e26f0ff1e8969f566a4a075a0cbd4c3b1fa15e790a6ebe316419332a9dc52b0b",
     "favicon.ico": "277c9b64ee26af8bf6194feb44e2364b552c6280c9339f22a52f975d3a4c77de",
     "games/lanternwake/build-info.json": "a0cfabeef8c3d89ea5f28eca998a25ac9c7bfa98c57c778c239ba9c17ec25a28",
     "games/lanternwake/desktop.png": "2405736059c1d6fc5757057d9161346dab8bdf3cd50cc6ab14bcbc04a21d40a0",
@@ -25,9 +26,9 @@
     "games/lanternwake/poster.svg": "1ee8b5c9154f1f52b9bad22b5216de44a172ff47bef6c7752d785c84e87e3175",
     "games/lanternwake/style.css": "6a4c0e20a4316051c77f9b13d0cf581019c47d19918fae8f18d09bef2f36fd72",
     "games/lanternwake/webgpu-compat.js": "95b4487d37462f3e60f159abfedff03bcd6810960339ae2a65e0311863954822",
-    "index.html": "544add03b7c17125171f517d50ac9993d4f809ebb781564f2876acdf9c28ae0c",
+    "index.html": "cddd881f19709acb21016786b9b58a364fec064398045ce32141b597d243debe",
     "robots.txt": "60d463caa67aaa008b827bdec75236dcec7a9c82c49f529ad1da2de1c847c47e",
-    "sitemap.xml": "22caab22d36c7887dcc4d495d1018e7ee463cc9036cf159b8c865175a129a96f",
-    "style.css": "507f5941599be1967c27cb538ce598893359ea16f01e4cfeb52cc8d84f4916ff"
+    "sitemap.xml": "253d9c0370ff4c0bce1de1e72c6b02cc6f200f22c42adcefc44f631ac95b0c06",
+    "style.css": "382015927251242ee0b3a38985456fff05853cff4289c2f0341f17e425445bc0"
   }
 }

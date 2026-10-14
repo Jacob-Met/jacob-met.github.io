@@ -1,4 +1,4 @@
-/* Demos-first portfolio: warm near-black, one amber accent, system fonts, no remote assets. */
+/* Portfolio polish: same layout, warm near-black, amber accent, local system fonts. */
 :root {
   color-scheme: dark;
   --bg: #0b0a08;
@@ -171,6 +171,29 @@ section { border-top: 1px solid var(--rule); padding: clamp(40px, 6vw, 72px) 0; 
   .top nav { gap: 16px; }
   .frame-bar { height: 16px; }
   .frame-bar::before { height: 16px; transform: scale(.75); transform-origin: left center; }
+}
+/* Preserve layout and identity; remove narrow-phone overflow. */
+.top nav { flex-wrap: wrap; justify-content: flex-end; gap: 8px 22px; min-width: 0; }
+.top nav a { display: inline-flex; align-items: center; min-height: 32px; }
+.hero h1 { max-width: 17ch; }
+.lede, .engine-line { text-wrap: pretty; }
+.slot { border-style: solid; background: var(--bg-2); }
+.slot .detail { line-height: 1.6; }
+.engine-preview { margin: 22px 0 0; }
+.engine-preview img { width: 100%; height: auto; max-height: 320px; object-fit: contain; background: #080907; border: 1px solid var(--rule); border-radius: 9px; }
+.engine-preview figcaption { margin-top: 10px; color: var(--mute); font: 12px/1.6 var(--mono); }
+.engine-preview a { display: inline-flex; align-items: center; min-height: 32px; }
+@media (max-width: 520px) {
+  .top { align-items: flex-start; gap: 12px; }
+  .mark { flex: 0 0 36px; margin-top: 4px; }
+  .top nav { gap: 2px 14px; }
+  .top nav a { font-size: 12px; }
+  .hero { padding-top: 44px; }
+  .hero h1 { font-size: clamp(36px, 10.5vw, 48px); line-height: 1.07; }
+  .demo-media { padding-bottom: 10px; }
+  .frame-phone { right: 0; bottom: 0; }
+  .tag { flex-wrap: wrap; gap: 6px; letter-spacing: .04em; }
+  .links .btn { font-size: 13px; line-height: 1.3; padding: 10px 16px; max-width: 100%; }
 }
 @media (prefers-reduced-motion: no-preference) {
   a, .btn { transition: color 140ms ease, background-color 140ms ease; }
