@@ -10,6 +10,51 @@ assert spec is not None and spec.loader is not None
 gen = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(gen)
 
+# Independent of presence.json / README.md so equally stale source+generated cannot pass.
+APPROVED_FEATURED_WORK = (
+    {
+        'name': 'TowerOps',
+        'url': 'https://jacobmetoyer.com/TowerOps/airspace/',
+        'line': 'Synthetic airspace workbench with approval and readback gates; not operational ATC.',
+    },
+    {
+        'name': 'RecallWeave',
+        'url': 'https://jacobmetoyer.com/RecallWeave/explore.html',
+        'line': 'Offline learning toolkit with visible Bayesian estimates, lesson authoring and interactive labs; no measured learning-gain claim.',
+    },
+    {
+        'name': 'Lanternwake',
+        'url': 'https://jacobmetoyer.com/games/lanternwake/',
+        'line': 'Hamon Engine browser game: restore three lanterns on a small 3D island and return to the arch at dawn. WebGPU required, keyboard and touch; private engine source.',
+    },
+    {
+        'name': 'Multi-agent Fan-out Engine',
+        'url': 'https://github.com/Jacob-Met/multi-agent-fanout-engine',
+        'line': 'Sanitized reference core for dependency planning and dispatch reconciliation; not a production-capacity benchmark.',
+    },
+    {
+        'name': 'ShadeWindow',
+        'url': 'https://devpost.com/software/shadewindow',
+        'line': 'Submitted historical heat-index replay demo; not a safety forecast.',
+    },
+    {
+        'name': 'Spire of Octaves',
+        'url': 'https://spireofoctaves.com/',
+        'line': 'My own fiction world, told through stories, music, games and animation.',
+    },
+)
+
+APPROVED_PUBLIC_WORK_TABLE = (
+    '| Project | What you can inspect |\n'
+    '|---|---|\n'
+    '| [**TowerOps**](https://jacobmetoyer.com/TowerOps/airspace/) | Synthetic airspace workbench with approval and readback gates; not operational ATC. |\n'
+    '| [**RecallWeave**](https://jacobmetoyer.com/RecallWeave/explore.html) | Offline learning toolkit with visible Bayesian estimates, lesson authoring and interactive labs; no measured learning-gain claim. |\n'
+    '| [**Lanternwake**](https://jacobmetoyer.com/games/lanternwake/) | Hamon Engine browser game: restore three lanterns on a small 3D island and return to the arch at dawn. WebGPU required, keyboard and touch; private engine source. |\n'
+    '| [**Multi-agent Fan-out Engine**](https://github.com/Jacob-Met/multi-agent-fanout-engine) | Sanitized reference core for dependency planning and dispatch reconciliation; not a production-capacity benchmark. |\n'
+    '| [**ShadeWindow**](https://devpost.com/software/shadewindow) | Submitted historical heat-index replay demo; not a safety forecast. |\n'
+    '| [**Spire of Octaves**](https://spireofoctaves.com/) | My own fiction world, told through stories, music, games and animation. |\n'
+)
+
 
 class ProfileGeneration(unittest.TestCase):
     def setUp(self):
@@ -37,6 +82,21 @@ class ProfileGeneration(unittest.TestCase):
                 self.assertIn(caveat, text)
         for draft in ('ReplayForge', 'EVIDENCEGRAPH', 'TestPilot'):
             self.assertNotIn(draft, readme)
+
+    def test_approved_featured_inventory_is_independent_fixture(self):
+        featured = self.p['identity']['featured_work']
+        self.assertEqual(
+            [(p['name'], p['url'], p['line']) for p in featured],
+            [(p['name'], p['url'], p['line']) for p in APPROVED_FEATURED_WORK],
+        )
+        _, _, readme = gen.outputs(self.p, self.c)
+        self.assertIn(APPROVED_PUBLIC_WORK_TABLE, readme)
+        self.assertEqual(readme, (ROOT / 'profile' / 'README.md').read_text(encoding='utf-8'))
+        public_work = readme.split('### Public work', 1)[1].split('### More research tooling', 1)[0]
+        self.assertNotIn('ReturnBy', public_work)
+        self.assertNotIn('Aetherline', public_work)
+        self.assertNotIn('/games/aetherline/', public_work)
+        self.assertNotIn('https://jacobmetoyer.com/returnby/', public_work)
 
     def test_oversized_copy_refused(self):
         bad = copy.deepcopy(self.p)

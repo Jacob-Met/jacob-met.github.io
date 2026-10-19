@@ -53,24 +53,19 @@
     ],
     "featured_work": [
       {
-        "name": "RecallWeave",
-        "line": "Offline learning toolkit with visible Bayesian estimates, lesson authoring and interactive labs; no measured learning-gain claim.",
-        "url": "https://jacobmetoyer.com/RecallWeave/explore.html"
-      },
-      {
-        "name": "ReturnBy",
-        "line": "Local-first return deadlines and calendar reminders; review extracted fields and merchant rules.",
-        "url": "https://jacobmetoyer.com/returnby/"
-      },
-      {
         "name": "TowerOps",
         "line": "Synthetic airspace workbench with approval and readback gates; not operational ATC.",
         "url": "https://jacobmetoyer.com/TowerOps/airspace/"
       },
       {
-        "name": "Aetherline: Relic Run",
-        "line": "Hamon Engine browser prototype; WebGPU required, private engine source, no browser audio.",
-        "url": "https://jacobmetoyer.com/games/aetherline/"
+        "name": "RecallWeave",
+        "line": "Offline learning toolkit with visible Bayesian estimates, lesson authoring and interactive labs; no measured learning-gain claim.",
+        "url": "https://jacobmetoyer.com/RecallWeave/explore.html"
+      },
+      {
+        "name": "Lanternwake",
+        "line": "Hamon Engine browser game: restore three lanterns on a small 3D island and return to the arch at dawn. WebGPU required, keyboard and touch; private engine source.",
+        "url": "https://jacobmetoyer.com/games/lanternwake/"
       },
       {
         "name": "Multi-agent Fan-out Engine",
@@ -81,6 +76,11 @@
         "name": "ShadeWindow",
         "line": "Submitted historical heat-index replay demo; not a safety forecast.",
         "url": "https://devpost.com/software/shadewindow"
+      },
+      {
+        "name": "Spire of Octaves",
+        "line": "My own fiction world, told through stories, music, games and animation.",
+        "url": "https://spireofoctaves.com/"
       }
     ]
   }
