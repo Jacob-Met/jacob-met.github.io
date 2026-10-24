@@ -1,26 +1,26 @@
 {
   "visibility": "public",
   "name": "Jacob Metoyer",
-  "updated": "2026-10-13",
+  "updated": "2026-10-24",
   "hero": {
-    "kicker": "AI-directed work / CS + physics at CSULB",
-    "title": "I direct AI agents to carry out what I ask.",
-    "lede": "AI agents carry out whatever I direct, software included. That work has included running a home estate of several machines, producing research reports, disk and ops cleanup, and building this site. I set the bar and decide what ships. Every demo below runs, and its source is public so you can check the work.",
+    "kicker": "Computer science + physics · CSULB",
+    "title": "Software, science, and other worlds.",
+    "lede": "I study computer science and physics at Cal State Long Beach. I make research tools, interactive experiments, and a world of fiction.",
     "source": "https://github.com/Jacob-Met"
   },
   "demos": [
     {
       "id": "towerops-airspace",
       "name": "TowerOps Airspace Lab",
-      "tag": "Synthetic airspace / live decision-support workbench",
+      "tag": "Synthetic airspace simulation",
       "line": "A traffic-management simulation where you create flights, change their paths and see where conflicts develop. Synthetic demo, not operational ATC.",
-      "detail": "A planner proposes adjustments; each simulated change goes through approval and readback, with an audit trail. The actual AdvisoryPlanner and ControlRoom run in-browser via CPython/WebAssembly, not a mock or replay. It uses synthetic or visitor-provided data and is not operational air-traffic-control software.",
+      "detail": "Create flights, change their paths, and inspect proposed adjustments. Simulated changes go through approval and readback with an audit trail. Synthetic or visitor-provided data only; not operational air-traffic-control software.",
       "play": {
         "label": "Open the live airspace lab",
         "url": "https://jacobmetoyer.com/TowerOps/airspace/"
       },
       "repo": "https://github.com/Jacob-Met/TowerOps",
-      "stack": "Python / WebAssembly / Canvas",
+      "stack": "Interactive simulation · public source",
       "shots": {
         "desktop": {
           "src": "assets/demos/towerops-desktop.webp",
@@ -39,9 +39,9 @@
     {
       "id": "recallweave",
       "name": "RecallWeave",
-      "tag": "ForgeHacks 2026 · AI + Education",
+      "tag": "Offline learning tools",
       "line": "An offline learning toolkit: adaptive lessons, course downloads, authoring tools and interactive science, mathematics and computing labs.",
-      "detail": "The learner exposes Bayesian model estimates, not grades or demonstrated learning gains. Work with local lesson files and explicit downloads; no account or cloud service. Submitted to ForgeHacks 2026 (Devpost entry 1221781).",
+      "detail": "The learner exposes Bayesian model estimates, not grades or demonstrated learning gains. Work with local lesson files and explicit downloads; no account or cloud service.",
       "play": {
         "label": "Explore the toolkit",
         "url": "https://jacobmetoyer.com/RecallWeave/explore.html"
@@ -53,7 +53,7 @@
           "src": "assets/demos/recallweave-desktop.webp",
           "w": 1200,
           "h": 750,
-          "alt": "RecallWeave on desktop: a question about cellular energy with four answer choices, a concept map, and live mastery bars."
+          "alt": "RecallWeave on desktop: a photosynthetic-pigment question with four answer choices, a correction explaining light capture, and a button to follow the next thread."
         },
         "mobile": {
           "src": "assets/demos/recallweave-mobile.webp",
@@ -66,11 +66,11 @@
   ],
   "engine": {
     "title": "Hamon Engine",
-    "tagline": "A Rust game engine built for AI agents",
-    "line": "Most engines assume a person at the editor, so agents guess from screenshots. Hamon exposes exact state over MCP and is deterministic: agents can rerun and compare changes. Agents also drive the next feature when the engine falls short.",
+    "tagline": "A Rust game engine",
+    "line": "Hamon Engine powers the public Lanternwake browser game. Its source repository remains private; this site includes only the compiled runtime and existing verification captures.",
     "slot": {
       "title": "Lanternwake",
-      "line": "The latest playable Hamon Engine build. The engine repository remains private and is not linked here; only the compiled browser runtime is published."
+      "line": "A published Hamon Engine browser-game snapshot. The engine repository remains private; this site preserves only the audited compiled runtime and its verification evidence."
     }
   },
   "games": [
@@ -95,32 +95,6 @@
       "build": null
     }
   ],
-  "how": {
-    "title": "How it gets built",
-    "line": "AI agents carry out whatever I direct, software included. I set the bar and decide what ships.",
-    "steps": [
-      {
-        "name": "I pick the work",
-        "line": "A research report, an ops problem, or software that needs building. Whatever needs doing."
-      },
-      {
-        "name": "I set the bar",
-        "line": "A short brief: what it must do, what it must not do, and how we will know it works."
-      },
-      {
-        "name": "Agents carry it out",
-        "line": "AI agents carry out the task I direct, whether it is software, research reports, or operations work."
-      },
-      {
-        "name": "Checks before claims",
-        "line": "I check the result against the bar. Tests and CI matter for software; other work needs its own evidence."
-      },
-      {
-        "name": "I decide what ships",
-        "line": "Software links to source where it is public. Reports and ops work ship when I decide they clear the bar."
-      }
-    ]
-  },
   "projects": [
     {
       "name": "CaptureSuite",
@@ -146,9 +120,9 @@
   "about": {
     "lines": [
       "I study computer science and physics at Cal State Long Beach, with a minor in biology. I'm a BUILD Scholar working toward MD/PhD training.",
-      "I direct AI agents across more than software: running a home estate of several machines, producing research reports, disk and ops cleanup, and building this site. I set the bar and decide what ships.",
-      "My research experience spans gait and rehabilitation, behavioral neurobiology, protein molecular dynamics, and collaborative surgical-ergonomics work. I'm interested in measurement, reproducible analysis and scientific software.",
-      "Checks come before claims. I keep runnable examples, source and explicit limits with the work. Research contributions are collaborative; synthetic demos are not evidence of clinical validity, learning gains or savings on someone else's data."
+      "My collaborative research experience spans gait and rehabilitation, behavioral neurobiology, protein molecular dynamics, and surgical ergonomics.",
+      "I'm interested in measurement, reproducible analysis, and scientific software. Alongside research, I make interactive tools, games, and the fiction world Spire of Octaves.",
+      "Research contributions are collaborative; synthetic demos are not evidence of clinical validity, learning gains, or real-world savings. Public projects include their own scope and limits."
     ]
   },
   "contact": {
