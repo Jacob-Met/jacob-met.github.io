@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "visibility": "public-captured",
+  "capture": {
+    "src": "assets/scene/forge-native.png",
+    "width": 800,
+    "height": 500,
+    "sha256": "d70bf573a6225421532370a147cac4dde8bb15afcd62c730f98a602dfd5f02fc",
+    "alt": "Actual native HAMON Engine rendering of the original forge: a charcoal hearth, steel anvil on a hewn support, joined workbench and blade rack, with cool courtyard light.",
+    "label": "Captured HAMON Engine view"
+  },
+  "recording": {
+    "src": "assets/scene/forge-native-motion.mp4",
+    "width": 800,
+    "height": 548,
+    "sha256": "3d84ddcfa12b0267624932cd6699a8a715239bb38c934c1da0bfd530ee2ad95c",
+    "frames": 60,
+    "playbackFps": 20,
+    "nativeJobSeconds": 67.178563751,
+    "receiptSha256": "e6b5d91ccb38e17353f2cb32602fb62e636295971fe0e59a320b5bb49cae30df",
+    "label": "Recorded native HAMON Engine camera approach, not live browser rendering"
+  },
+  "engineProof": {
+    "src": "assets/scene/hamon-engine-study.webp",
+    "width": 1280,
+    "height": 720,
+    "sha256": "82a8d85623aad37e633fcf6da2b1cb7548a829bd379067043d6a9952e4642034",
+    "alt": "Actual HAMON Engine rendering study: a stylized character in a bright landscape with outlined rocks, a tree, crystals and grass.",
+    "label": "Captured native engine output"
+  }
+}

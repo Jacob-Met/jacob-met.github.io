@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Offline integrity checks for the generated site: declared surface, links, anchors, manifest.
 
-The site has no executable script at all. Any <script> other than a JSON-LD data block, any
-inline handler, form, frame, remote resource or non-HTTPS link is a failure. Images are allowed
-only as local demo captures (assets/demos/*.webp) with explicit width, height and alt text.
+The homepage has one checksum-pinned local UI script and explicitly captured native media.
+Inline execution, undeclared modules, handlers, frames, remote resources and non-HTTPS
+links remain forbidden. Public game runtime uses its separate immutable bundle audit.
 """
 from __future__ import annotations
 import argparse, hashlib, json, re
@@ -12,9 +12,13 @@ from pathlib import Path, PurePosixPath
 from urllib.parse import unquote, urlsplit
 from xml.etree import ElementTree as ET
 from game_assets import GAME_PATH, audit_game_bundle
+from capture_policy import load_capture, video_element_errors, source_element_errors, CAPTURE_FILE, PROOF_FILE
+from experience_policy import load_experience
+from site_policy import (FONT_PROPERTIES, validate_fonts, SCRIPT_FILES,
+                         audit_scripts, script_element_errors, canvas_element_errors)
 
 ROOT_RELATIVE_PAGES = frozenset({'404.html'})
-CSP_REQUIRED = {'default-src': "'none'", 'style-src': "'self'", 'img-src': "'self'", 'base-uri': "'none'", 'form-action': "'none'"}
+CSP_REQUIRED = {'default-src': "'none'", 'style-src': "'self'", 'script-src': "'self'", 'img-src': "'self'", 'media-src': "'self'", 'font-src': "'self'", 'connect-src': "'none'", 'object-src': "'none'", 'frame-src': "'none'", 'worker-src': "'none'", 'base-uri': "'none'", 'form-action': "'none'"}
 EXPECTED_HTML = {'index.html', '404.html'}
 
 
@@ -34,8 +38,10 @@ def local_path(value: str) -> bool:
 
 
 class Page(HTMLParser):
-    def __init__(self):
+    def __init__(self, hashes=None):
         super().__init__(convert_charrefs=True)
+        self.hashes = {} if hashes is None else hashes
+        self.script_entries = []; self.script_attrs = None; self.canvases = []
         self.ids = []; self.links = []; self.resources = []; self.errors = []
         self.h1 = 0; self.lang = None; self.csp = []; self.head_order = []
         self.script_type = None; self.script_text = []; self.text = []
@@ -51,19 +57,25 @@ class Page(HTMLParser):
         if tag == 'h1': self.h1 += 1
         if tag == 'img':
             src = a.get('src') or ''
-            if not re.fullmatch(r'/?assets/demos/[a-z0-9-]+\.webp', src): self.errors.append('img: only local assets/demos/*.webp captures are allowed')
+            if not re.fullmatch(r'/?assets/demos/[a-z0-9-]+\.webp', src) and src not in {CAPTURE_FILE, PROOF_FILE}:
+                self.errors.append('img: outside the declared local project-image inventory')
             if not (a.get('alt') or '').strip(): self.errors.append('img: missing alt text')
             if not (str(a.get('width', '')).isdigit() and str(a.get('height', '')).isdigit()): self.errors.append('img: missing explicit width/height')
-        if tag in ('form', 'iframe', 'object', 'embed', 'base', 'style', 'video', 'audio', 'picture', 'svg', 'canvas'):
+        if tag in ('form', 'iframe', 'object', 'embed', 'base', 'style', 'audio', 'picture', 'svg'):
             self.errors.append(f'{tag}: outside declared surface')
+        if tag == 'video':
+            self.errors.extend(video_element_errors(a)); self.resources.append(a.get('poster',''))
+        if tag == 'source': self.errors.extend(source_element_errors(a))
+        if tag == 'canvas':
+            self.canvases.append(a)
+            self.errors.extend(canvas_element_errors(a))
         if any(k.startswith('on') or k in ('srcdoc', 'ping', 'style', 'srcset') for k in a): self.errors.append(f'{tag}: inline attribute outside declared surface')
         if tag in ('a', 'link') and a.get('href'): self.links.append(a['href'])
         if tag == 'link' and set(a.get('rel', '').lower().split()) & {'stylesheet', 'icon', 'apple-touch-icon', 'preload', 'modulepreload', 'prefetch', 'preconnect', 'dns-prefetch', 'manifest'}:
             self.resources.append(a.get('href', ''))
         if a.get('src'): self.resources.append(a['src'])
         if tag == 'script':
-            self.script_type = a.get('type', ''); self.script_text = []
-            if a.get('src') is not None or self.script_type != 'application/ld+json': self.errors.append('script: executable script')
+            self.script_type = a.get('type', ''); self.script_text = []; self.script_attrs = a
 
     def handle_data(self, data):
         if self.script_type is not None: self.script_text.append(data)
@@ -71,9 +83,10 @@ class Page(HTMLParser):
 
     def handle_endtag(self, tag):
         if tag == 'script' and self.script_type is not None:
-            try: json.loads(''.join(self.script_text))
-            except (ValueError, TypeError): self.errors.append('script: invalid JSON-LD')
-            self.script_type = None
+            source = ''.join(self.script_text)
+            self.errors.extend(script_element_errors(self.script_attrs, source, self.hashes))
+            self.script_entries.append((self.script_attrs, source))
+            self.script_type = None; self.script_attrs = None
 
 
 def csp_errors(p: Page) -> list[str]:
@@ -82,7 +95,10 @@ def csp_errors(p: Page) -> list[str]:
     policy = {}
     for part in p.csp[0].split(';'):
         bits = part.split()
-        if bits: policy[bits[0].lower()] = ' '.join(bits[1:])
+        if bits:
+            name = bits[0].lower()
+            if name in policy: return ['CSP contains duplicate directive: ' + name]
+            policy[name] = ' '.join(bits[1:])
     errors = [f'CSP {k} must be {v}' for k, v in CSP_REQUIRED.items() if policy.get(k) != v]
     extra = set(policy) - set(CSP_REQUIRED)
     if extra: errors.append('CSP has undeclared directives: ' + ', '.join(sorted(extra)))
@@ -94,8 +110,19 @@ def css_surface(text: str) -> tuple[list[str], list[str]]:
     text = re.sub(r'\\([0-9a-fA-F]{1,6})\s?', lambda m: chr(int(m[1], 16)) if 0 < int(m[1], 16) <= 0x10ffff else '\ufffd', text)
     text = re.sub(r'\\(.)', r'\1', text, flags=re.S)
     errors = []
-    if re.search(r'@import\b|@font-face\b|expression\s*\(|(?<![\w-])(?:-moz-binding|behavior)\s*:|image-set\s*\(', text, re.I):
-        errors.append('CSS import, font-face, image-set or legacy execution outside declared surface')
+    faces = re.findall(r'@font-face\s*\{([^{}]*)\}', text, re.I)
+    if len(faces) > 1:
+        errors.append('Only one declared local font face is permitted')
+    for face in faces:
+        pairs = [p.strip().split(':', 1) for p in face.split(';') if p.strip()]
+        if any(len(p) != 2 for p in pairs):
+            errors.append('Malformed local font declaration'); continue
+        props = {k.strip(): v.strip() for k, v in pairs}
+        if len(props) != len(pairs) or props != FONT_PROPERTIES:
+            errors.append('Font face outside explicit local font declaration')
+    remainder = re.sub(r'@font-face\s*\{[^{}]*\}', '', text, flags=re.I)
+    if re.search(r'@import\b|@font-face\b|expression\s*\(|(?<![\w-])(?:-moz-binding|behavior)\s*:|image-set\s*\(', remainder, re.I):
+        errors.append('CSS import, undeclared font-face, image-set or legacy execution outside declared surface')
     resources = [v.strip().strip('"\'') for v in re.findall(r'url\s*\((.*?)\)', text, re.I | re.S)]
     return errors, resources
 
@@ -116,8 +143,16 @@ def svg_surface(text: str) -> tuple[list[str], list[str]]:
 
 
 def check(root: Path) -> dict:
-    root = root.resolve(); failures = []; parsed = {}; game_manifest = {}
+    root = root.resolve(); failures = []; parsed = {}; game_manifest = {}; hashes = {}
     if not root.is_dir(): return {'passed': False, 'html_pages': 0, 'files': 0, 'failures': ['output root missing']}
+    try:
+        hashes = audit_scripts(root)
+    except (ValueError, OSError, UnicodeError) as error:
+        failures.append('Homepage script custody: ' + str(error))
+    try:
+        validate_fonts(root)
+    except (ValueError, OSError, UnicodeError) as error:
+        failures.append('Font publication boundary: ' + str(error))
     if (root / 'games').exists():
         try:
             if {p.name for p in (root / 'games').iterdir()} != {GAME_PATH.split('/')[1]}:
@@ -135,7 +170,7 @@ def check(root: Path) -> dict:
         if f.suffix == '.html':
             try: text = f.read_text(encoding='utf-8')
             except (OSError, UnicodeError): failures.append(f'{rel}: unreadable HTML'); continue
-            p = Page(); p.feed(text); p.close(); parsed[rel] = p
+            p = Page(hashes); p.feed(text); p.close(); parsed[rel] = p
             failures.extend(f'{rel}: {e}' for e in p.errors)
             for value in p.resources:
                 rooted = rooted_ref(rel, value)
@@ -144,6 +179,8 @@ def check(root: Path) -> dict:
                 target = root / unquote(urlsplit(value).path)
                 if not target.resolve().is_relative_to(root) or target.is_symlink(): failures.append(f'{rel}: escaped resource')
                 elif not target.is_file(): failures.append(f'{rel}: missing local resource {value}')
+        elif f.suffix in ('.js', '.mjs', '.cjs'):
+            if rel not in SCRIPT_FILES: failures.append(f'{rel}: undeclared executable file')
         elif f.suffix in ('.css', '.svg'):
             try: text = f.read_text(encoding='utf-8')
             except (OSError, UnicodeError): failures.append(f'{rel}: unreadable UTF-8'); continue
@@ -156,6 +193,10 @@ def check(root: Path) -> dict:
                 if not target.resolve().is_relative_to(root) or target.is_symlink() or not target.is_file(): failures.append(f'{rel}: missing or escaped resource')
     if set(parsed) != EXPECTED_HTML: failures.append(f'Expected HTML routes {sorted(EXPECTED_HTML)}, found {sorted(parsed)}')
     for name, p in parsed.items():
+        kinds = [a.get('type', '') for a, _ in p.script_entries]
+        expected_kinds = ['application/ld+json'] + ([''] if name == 'index.html' else [])
+        if sorted(kinds) != sorted(expected_kinds): failures.append(f'{name}: incorrect script/data inventory')
+        if p.canvases: failures.append(f'{name}: incorrect canvas inventory')
         if p.h1 != 1: failures.append(f'{name}: expected one h1')
         if p.lang != 'en': failures.append(f'{name}: missing language')
         failures.extend(f'{name}: {e}' for e in csp_errors(p))
@@ -178,8 +219,23 @@ def check(root: Path) -> dict:
             tname = target.relative_to(root).as_posix()
             if ref.fragment and tname in parsed and ref.fragment not in parsed[tname].ids: failures.append(f'{name}: missing anchor {u}')
     try:
+        import build
+        import portfolio
+        public_record = json.loads((root / 'cv.json').read_text(encoding='utf-8'))
+        preview_record = json.loads((root / 'portfolio.json').read_text(encoding='utf-8'))
+        build.validate(public_record); build.validate_portfolio(preview_record)
+        load_experience(root); load_capture(root)
+        expected_files = build.output_files(public_record)
+        actual_files = {f.relative_to(root).as_posix() for f in root.rglob('*') if f.is_file()}
+        if actual_files != expected_files:
+            failures.append('Output inventory differs from explicit artifact allowlist')
+    except (ValueError, OSError, UnicodeError, TypeError, KeyError) as error:
+        failures.append('Portfolio data boundary: ' + str(error))
+    try:
         obj = json.loads((root / 'build-manifest.json').read_text(encoding='utf-8')); manifest = obj['sha256']
         if not isinstance(manifest, dict): raise ValueError('Invalid manifest shape')
+        if obj.get('schema') != 6 or obj.get('publication') != 'public-captured':
+            failures.append('Manifest must identify the approved captured-public projection')
     except (OSError, ValueError, KeyError, TypeError): failures.append('Missing or malformed build manifest'); manifest = {}
     for name, sha in manifest.items():
         if not isinstance(name, str) or not local_path(name) or '#' in name or not isinstance(sha, str) or not re.fullmatch('[0-9a-f]{64}', sha):

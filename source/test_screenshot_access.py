@@ -47,7 +47,7 @@ class ScreenshotAccess(unittest.TestCase):
             self.assertEqual(len(shots), len(expected), "Every captured screen needs a visible full-image link")
             for link, (demo, device, shot) in zip(shots, expected):
                 with self.subTest(demo=demo["id"], device=device):
-                    self.assertEqual(link["text"], device.title())
+                    self.assertEqual(link["text"], device.title() + " capture")
                     self.assertEqual(link["attrs"]["aria-label"], f"{demo['name']}: full {device} screenshot")
                     self.assertEqual(link["attrs"]["href"], shot["src"])
                     self.assertNotIn("download", link["attrs"])

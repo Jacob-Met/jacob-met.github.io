@@ -1,52 +1,55 @@
 # jacobmetoyer.com
 
-A small static site that puts working demos first. Each featured demo shows desktop and phone captures from its live interactive application, a concise description, a live link and public source. Screenshots document the product; they are not the demo itself.
+Jacob Metoyer’s portfolio: **Research, HAMON, and Spire of Octaves**. The homepage uses an original forge rendered by HAMON Engine, with direct access to academic and independent research, software, public demos, and fiction.
+
+## What the page actually runs
+
+The forge is a **captured native engine render**, not a live browser walkthrough. Its optional, controls-only recording contains 60 rendered frames played over 3 seconds. Playback rate is not rendering performance. The separate engine proof image is also actual captured output. No generated photographic backdrop is used.
+
+The only homepage executable is the checksum-pinned local `detail.js`: progressive Engine navigation, history/focus handling, and keyboard-operable system tabs. All content and public links remain in the HTML without JavaScript. There are no analytics, external fonts, runtime network calls, inline executable code, or experimental engine WASM on the homepage.
+
+The existing **Lanternwake** route remains a separately scoped, unchanged WebGPU game snapshot. It is not a distribution of the current private engine. Its own evidence distinguishes desktop and phone-size testing from physical-phone/Safari qualification. The homepage does not promise those untested platforms work.
 
 ## Source and build
 
-- [`source/content.json`](source/content.json) holds all page copy: hero, demos, the in-progress slot, more work, contact.
-- [`source/assets/demos/`](source/assets/demos) holds the WebP captures; the builder checks each declared width/height against the file.
-- [`source/build.py`](source/build.py) renders the page, 404 route, metadata and build manifest, and validates every URL against an explicit HTTPS host set.
-- [`source/style.css`](source/style.css) is the local visual system, with reduced-motion rules.
-- [`source/check.py`](source/check.py) verifies the generated static surface: local-only images with alt text and explicit size, links/anchors, CSP, and manifest hashes.
-- [`source/verify_deployment.py`](source/verify_deployment.py) compares a checked local build with the HTTPS deployment.
-- `docs/` is generated output served by GitHub Pages from `main:/docs`; do not hand-edit it.
-- `source/content.json` also carries `games`: a game is shown as playable only with a verified browser build served from jacobmetoyer.com; Spire of Octaves links to its own site, spireofoctaves.com.
+- `source/portfolio.py`: pure HTML renderer; `source/experience.css`: responsive visual system.
+- `source/experience-content.json`: reviewed public display copy; `source/portfolio.json`: identity and approved proof-image inventory.
+- `source/content.json`: preserved public demo/game/project records and generated biography; `source/presence.json`: canonical public identity/profile-target record.
+- `source/capture-manifest.json`: exact media hashes, dimensions, and recording scope.
+- `source/assets/scene/`: the three approved captured media files. `source/assets/demos/`: original public desktop/phone captures.
+- `source/site_policy.py`, `capture_policy.py`, `experience_policy.py`, and `source_policy.py`: explicit script/media/content/source boundaries. Adding a file or changing a script requires deliberate inventory/custody review.
+- `source/build.py`: validates inputs and generates `docs/`. `source/check.py`: checks output inventory, hashes, CSP, resource URLs, anchors, metadata, and separately audited game bundles.
+- `source/verify_deployment.py`: read-only exact-byte and MIME comparison against HTTPS deployment.
 
-No GitHub Actions run in this repository. `source/presence.json` is the canonical public identity and profile-target record. After editing it, run `python source/profile/generate.py`: it renders the shared site biography in `content.json`, and the GitHub README in `source/profile/README.md`. LinkedIn entries use their own wording with the same verified facts; About is written and owned by Jacob, is not managed, and is never generated. `--check` rejects drift without writing. Featured links are selected from verified public work; drafts are not advertised as submissions.
-
-Profile publication is separate from generation. Snapshot every touched field, confirm LinkedIn's share-profile-updates setting is OFF, save only authorized content fields and independently read each save back. Do not automate posts, connections, messages or Experience title/employer/date changes. The historical host-side `presence-sync` comparison is not proof that LinkedIn has been saved; check the actual surface.
-
-Build and verify locally:
+`docs/` is generated and served by GitHub Pages from `main:/docs`; never hand-edit it. Existing public game/demo/capture URLs are preserved. Private scene inputs, engine source, experimental browser modules, and audit ledgers do not belong in this public repository.
 
 ```sh
 python -m unittest discover -s source -v
+python source/profile/generate.py --check
 python source/build.py --out docs
 python source/check.py docs
 ```
 
-The homepage has no executable scripts, analytics or third-party resources (enforced by [`source/check.py`](source/check.py)). The separately scoped Aetherline game runs same-origin JavaScript/WebAssembly with a narrow WebGPU CSP; no trackers, account, network service, audio or cross-origin runtime dependency.
+The builder/checker use the Python standard library. The UI behavior tests also require Node.js. Optional metadata-art regeneration uses Pillow and a local sans-serif font (`python source/make_images.py`). Captured project media is not generated by that script.
 
-## Aetherline: Relic Run
-
-The featured game runs on Hamon Engine. Collect three diamonds to open the gate and win; W/S or arrows move, A/D turn, Space jumps, R restarts. On-screen buttons also accept pointer/touch. A WebGPU-capable browser is required. The engine repository remains private: this site publishes only eight audited runtime files and three optional verification/capture files. No engine Rust/TypeScript, source maps, debug/custom wasm sections or repository export is admitted.
-
-Native Chrome on Apple M3 Pro passed real rendered-pixel, keyboard/pointer victory and phone-size touch-emulation acceptance. This is **not a physical-phone qualification**. Exact engine commit and runtime hashes are in `games/aetherline/build-info.json` and `evidence.json`; captures are from real interaction, not substitutes for gameplay.
-
-Package the qualified six-file engine runtime into a **new** folder, without editing input or existing receipts:
+Enable the staged-tree drift guard once per clone:
 
 ```sh
-python source/package_game.py --runtime /path/to/qualified-runtime --engine-commit EXACT_40_CHARACTER_SHA --out /path/to/new-site-runtime --receipt /path/to/new-receipt.json
+git config core.hooksPath .githooks
 ```
 
-Receive those eight audited files into `source/games/aetherline/`, add qualified evidence/captures, then rebuild `docs/`. The private engine build uses `cargo build --release --locked --lib --target wasm32-unknown-unknown -p hamon-web` and matching `wasm-bindgen --target web --out-name hamon_web`; the current qualified build pins wasm-bindgen 0.2.129. Run those steps in the **private engine checkout**, never copy that checkout here.
+The hook rebuilds the **staged** source and rejects a commit whose staged `docs/` differs. Commit source and generated output together. This repository does not define workflow files; GitHub Pages may expose its platform-managed build/deployment runs.
 
-Real browser acceptance (optional tooling: `pip install playwright pillow`; Chromium + Xvfb/xdotool/xmessage for the Linux software/focus cohort):
+## Profile and game boundaries
+
+`python source/profile/generate.py` renders the site biography and `source/profile/README.md`; `--check` rejects drift without writing. Generation does not authorize publishing changes to other profiles. LinkedIn About remains separately owned and unmanaged.
+
+The game packaging/audit/browser-verification tools remain available for a separately qualified future game update. Such an update requires its own runtime, evidence and private-source-boundary review; this portfolio release does not rebuild or replace the game.
+
+After an authorized deployment, compare the exact checked artifact:
 
 ```sh
-python source/verify_game_browser.py --native-gpu --chrome /path/to/native/chrome --root source/games/aetherline --out /path/to/new-proof
-python source/verify_game_browser.py --native-gpu --chrome /path/to/native/chrome --url https://jacobmetoyer.com/games/aetherline/ --out /path/to/new-live-proof
-python source/verify_deployment.py --root docs --base https://jacobmetoyer.com --receipt /path/to/new-hash-receipt.json
+python source/verify_deployment.py --root docs --base https://jacobmetoyer.com --receipt /path/to/new-receipt.json
 ```
 
-The native check requires hardware WebGPU (no SwiftShader/llvmpipe/fallback adapter), real keyboard/pointer/touch events, gameplay state progression, victory, restart, nonblank pixels and zero runtime errors at desktop and phone-size viewports. It does not write game state or bypass CSP. The software cohort separately verifies actual X11 focus loss releases held input. Deployments are ordinary source-repository pushes to `main:/docs`; no workflow files or Actions commands. Preserve baseline and branch history; use forward reviewed reverts for rollback.
+HTTP byte/MIME verification is not a claim of live GPU interaction or visual acceptance. Preserve prior evidence; use a new receipt path and forward reviewed commits for rollback.

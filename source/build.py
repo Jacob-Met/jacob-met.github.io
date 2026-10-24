@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
-"""Build jacobmetoyer.com from source/content.json.
+"""Build the approved captured portfolio from public content and one small UI script.
 
-The page is demos-first: every featured demo shows desktop and phone captures from its
-running interaction, a one-line description, a live link and its public source. All
-copy is data in content.json; the builder validates every URL against an explicit
-HTTPS host set and refuses anything outside the declared static surface. `docs/` is generated; never edit it.
+Public demo/game records remain separately validated. The captured-public projection excludes experimental engine code and raw scene inputs. `docs/` is generated; never edit it.
 """
 from __future__ import annotations
 import argparse
@@ -17,21 +14,27 @@ import struct
 from pathlib import Path
 from urllib.parse import urlsplit
 from game_assets import game_files
+from site_policy import (FONT_FILES, validate_fonts, SCENE_ASSETS, SCENE_FILES, SCRIPT_FILES,
+                         EXPERIENCE_CSS, audit_scripts, script_integrity)
+import portfolio
+from capture_policy import CAPTURE_FILES, load_capture
+from experience_policy import EXPERIENCE_FILE, load_experience
+from source_policy import validate_source_publication
 
 ROOT = Path(__file__).resolve().parent
 BASE = 'https://jacobmetoyer.com'
-TITLE = 'Jacob Metoyer - I direct AI agents to carry out what I ask'
-DESC = 'I direct AI agents to carry out whatever I ask, software included. I set the bar and decide what ships.'
-SHARE_ALT = 'Jacob Metoyer - AI agents carry out whatever I direct, software included. I set the bar and decide what ships.'
-ALLOWED_HOSTS = {'github.com', 'jacobmetoyer.com', 'spireofoctaves.com'}
+TITLE = 'Jacob Metoyer'
+DESC = 'Computer science and physics at Cal State Long Beach. Explore Jacob Metoyer’s research tools, interactive media, games, and the fiction world Spire of Octaves.'
+SHARE_ALT = 'Jacob Metoyer. Computer science and physics at Cal State Long Beach.'
+ALLOWED_HOSTS = {'github.com', 'jacobmetoyer.com', 'spireofoctaves.com', 'www.linkedin.com', 'mango.blender.org', 'creativecommons.org', 'commons.wikimedia.org', 'www.royalroad.com', 'devpost.com'}
 PLAY_HOST = 'jacobmetoyer.com'
-CSP = "default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'"
+CSP = "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self'; media-src 'self'; font-src 'self'; connect-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'"
 ROOT_ICONS = ('favicon.ico', 'apple-touch-icon.png')
 SHARE_CARD = 'assets/og-card.png'
 DATE_RE = re.compile(r'\d{4}-\d{2}-\d{2}')
 SLUG_RE = re.compile(r'[a-z][a-z0-9-]{1,31}')
 SHOT_RE = re.compile(r'assets/demos/[a-z0-9-]+\.webp')
-SECTIONS = (('engine', 'Engine'), ('demos', 'Demos'), ('how', 'How'), ('more', 'More work'), ('worlds', 'Worlds'), ('about', 'About'))
+SECTIONS = (('work', 'Selected work'), ('research', 'Research'), ('worlds', 'Stories & games'), ('about', 'About & contact'))
 
 
 def text(value, limit: int = 600) -> str:
@@ -76,8 +79,8 @@ def check_shot(shot) -> None:
         raise ValueError('Screenshot must be a local assets/demos/*.webp file')
     text(shot['alt'], 240)
     f = ROOT / shot['src']
-    if not f.is_file():
-        raise ValueError(f'Missing screenshot {shot["src"]}')
+    if not f.is_file() or f.is_symlink() or not f.resolve().is_relative_to(ROOT):
+        raise ValueError(f'Missing or symlinked screenshot {shot["src"]}')
     if webp_size(f) != (shot['w'], shot['h']):
         raise ValueError(f'Declared size differs from {shot["src"]}')
 
@@ -105,7 +108,7 @@ def validate_games(games) -> None:
 
 
 def validate(data: dict) -> None:
-    keys(data, {'visibility', 'name', 'updated', 'hero', 'engine', 'games', 'demos', 'how', 'projects', 'about', 'contact'}, 'record')
+    keys(data, {'visibility', 'name', 'updated', 'hero', 'engine', 'games', 'demos', 'projects', 'about', 'contact'}, 'record')
     if data['visibility'] != 'public':
         raise ValueError('Only explicitly public content can be built')
     if data['name'] != 'Jacob Metoyer':
@@ -138,11 +141,6 @@ def validate(data: dict) -> None:
     for p in projects:
         keys(p, {'name', 'line', 'url'}, 'project'); text(p['name'], 40); text(p['line'], 240); safe_url(p['url'])
     c = keys(data['contact'], {'line', 'url'}, 'contact'); text(c['line'], 200); safe_url(c['url'])
-    w = keys(data['how'], {'title', 'line', 'steps'}, 'how'); text(w['title'], 60); text(w['line'], 200)
-    if not isinstance(w['steps'], list) or not 3 <= len(w['steps']) <= 6:
-        raise ValueError('Three to six process steps')
-    for st in w['steps']:
-        keys(st, {'name', 'line'}, 'step'); text(st['name'], 40); text(st['line'], 200)
     ab = keys(data['about'], {'lines'}, 'about')
     if not isinstance(ab['lines'], list) or not 1 <= len(ab['lines']) <= 4:
         raise ValueError('One to four about paragraphs')
@@ -164,111 +162,45 @@ def repo_label(url: str) -> str:
     return 'Source · ' + urlsplit(url).path.strip('/')
 
 
-def demo_card(d: dict, n: int) -> str:
-    dk, mb = d['shots']['desktop'], d['shots']['mobile']
-    return (
-        f'<article class="demo" id="demo-{d["id"]}" aria-labelledby="demo-{d["id"]}-h">'
-        f'<div class="demo-media">'
-        f'<figure class="frame frame-desktop"><span class="frame-bar" aria-hidden="true"></span>'
-        f'<img src="{dk["src"]}" width="{dk["w"]}" height="{dk["h"]}" alt="{esc(dk["alt"])}" loading="{"eager" if n == 1 else "lazy"}" decoding="async"></figure>'
-        f'<figure class="frame frame-phone">'
-        f'<img src="{mb["src"]}" width="{mb["w"]}" height="{mb["h"]}" alt="{esc(mb["alt"])}" loading="lazy" decoding="async"></figure>'
-        f'</div>'
-        f'<div class="demo-copy"><p class="tag"><span class="num">{n:02d}</span>{esc(d["tag"])}</p>'
-        f'<h3 id="demo-{d["id"]}-h">{esc(d["name"])}</h3>'
-        f'<p class="line">{esc(d["line"])}</p>'
-        f'<details class="more-detail"><summary>What it does under the hood</summary>'
-        f'<p class="detail">{esc(d["detail"])}</p><p class="stack">{esc(d["stack"])}</p></details>'
-        f'<p class="screenshot-links"><span>Full screenshots:</span>'
-        f'<a class="screenshot-link" href="{dk["src"]}" aria-label="{esc(d["name"])}: full desktop screenshot">Desktop</a>'
-        f'<a class="screenshot-link" href="{mb["src"]}" aria-label="{esc(d["name"])}: full phone screenshot">Phone</a></p>'
-        f'<p class="links">{ext(d["play"]["url"], d["play"]["label"] + " →", "btn")} {ext(d["repo"], repo_label(d["repo"]), "src")}</p>'
-        f'</div></article>'
-    )
+def validate_portfolio(data: dict) -> None:
+    keys(data, {'visibility','name','updated','github','linkedin','sceneAssets'}, 'captured public portfolio')
+    if data['visibility'] != 'public-captured' or data['name'] != 'Jacob Metoyer' or not DATE_RE.fullmatch(data['updated']):
+        raise ValueError('Only the approved captured-public identity may publish')
+    if safe_url(data['github']) != 'https://github.com/Jacob-Met' or safe_url(data['linkedin']) != 'https://www.linkedin.com/in/jacob-metoyer-15b701352':
+        raise ValueError('Portfolio public contact identity differs')
+    if data['sceneAssets'] != {key: v[0] for key,v in SCENE_ASSETS.items()}:
+        raise ValueError('Unexpected captured-public asset inventory')
+    for name,width,height in SCENE_ASSETS.values():
+        asset=ROOT/name
+        if asset.is_symlink() or not asset.is_file() or webp_size(asset)!=(width,height):
+            raise ValueError('Public proof image differs from declared dimensions')
+    validate_fonts(ROOT)
 
 
-def games_section(games: list) -> str:
-    items = []
-    for g in games:
-        b = g['build']
-        link = (ext(b['play_url'], f'Play {g["name"]} →', 'btn') if b else ext(g['url'], f'{urlsplit(g["url"]).hostname} →', 'src'))
-        status = f'Playable · build verified {esc(b["verified_at"])}' if b else 'Not playable here yet'
-        items.append(f'<li id="game-{g["id"]}"><p class="tag">{esc(g["kind"])}</p><h3>{esc(g["name"])}</h3>'
-                     f'<p>{esc(g["line"])}</p><p class="status">{status}</p><p class="links">{link}</p>'
-                     + (f'<p class="detail">{esc(b["evidence"])}</p><p>{ext(b["play_url"] + "evidence.json", "Verification record", "src")}</p>' if b else '') + '</li>')
-    body = f'<ul class="cards">{"".join(items)}</ul>' if items else '<p>No game has a verified browser build yet.</p>'
-    return (f'<section id="games" class="games" aria-labelledby="games-h"><div class="sec-head"><h2 id="games-h">Games and worlds</h2>'
-            f'<p>A game is marked playable only after its browser build runs here and a real frame has been checked.</p></div>{body}</section>')
+def portfolio_record() -> dict:
+    data = json.loads((ROOT / 'portfolio.json').read_text(encoding='utf-8'))
+    validate_portfolio(data)
+    return data
 
 
-def render_index(r: dict) -> str:
-    h = r['hero']
-    nav = ''.join(f'<a href="#{i}">{esc(label)}</a>' for i, label in SECTIONS)
-    demos = [demo_card(d, i) for i, d in enumerate(r['demos'], 1)]
-    e = r['engine']
-    engine = (f'<section id="engine" class="engine" aria-labelledby="engine-h"><div class="engine-head">'
-              f'<p class="kicker">{"Playable game" if any(g["build"] is not None for g in r["games"]) else "In progress"}</p><h2 id="engine-h">{esc(e["title"])}</h2>'
-              f'<p class="tagline">{esc(e["tagline"])}</p><p class="engine-line">{esc(e["line"])}</p></div>'
-              f'<aside class="slot" aria-labelledby="engine-slot-h"><p class="tag"><span class="num">··</span>{"Playable now" if any(g["build"] is not None for g in r["games"]) else "Coming soon"}</p>'
-              f'<h3 id="engine-slot-h">{esc(e["slot"]["title"])}</h3><p>{esc(e["slot"]["line"])}</p></aside></section>')
-    featured = next((g for g in r['games'] if g['build'] is not None), None)
-    if featured:
-        action = f'<p class="links">{ext(featured["build"]["play_url"], "Play " + featured["name"] + " →", "btn")}</p>'
-        engine = engine.replace('</aside>', action + '</aside>')
-    # The playable example belongs to the sole featured engine entry.
-    if featured:
-        b = featured['build']
-        evidence = (f'<p class="status">Playable · build verified {esc(b["verified_at"])}</p>'
-                    f'<p class="detail">{esc(featured["line"])}</p>'
-                    f'<p class="detail">{esc(b["evidence"])}</p>'
-                    f'<p>{ext(b["play_url"] + "evidence.json", "Verification record", "src")}</p>')
-        engine = engine.replace('</aside>', evidence + '</aside>')
-    worlds = ''.join(
-        f'<li id="game-{g["id"]}"><p class="tag">{esc(g["kind"])}</p><h3>{esc(g["name"])}</h3>'
-        f'<p>{esc(g["line"]).replace("*Seamwork*", "<em>Seamwork</em>")}</p>'
-        f'<p class="links">{ext(g["url"], "Explore the world →", "src")}</p></li>'
-        for g in r['games'] if g['build'] is None)
-    worlds = (f'<section id="worlds" class="games" aria-labelledby="worlds-h">'
-              f'<div class="sec-head"><h2 id="worlds-h">Stories and worlds</h2></div>'
-              f'<ul class="cards">{worlds}</ul></section>') if worlds else ''
-    projects = ''.join(f'<li><h3>{ext(p["url"], p["name"])}</h3><p>{esc(p["line"])}</p></li>' for p in r['projects'])
-    c = r['contact']
-    w = r['how']
-    steps = ''.join(f'<li><p class="step-n">{i:02d}</p><h3>{esc(st["name"])}</h3><p>{esc(st["line"])}</p></li>' for i, st in enumerate(w['steps'], 1))
-    about = ''.join(f'<p>{esc(line)}</p>' for line in r['about']['lines'])
-    return (
-        '<a class="skip" href="#main">Skip to content</a>'
-        f'<header class="top"><a class="mark" href="#main" aria-label="Jacob Metoyer, top of page"><span aria-hidden="true">JM</span></a>'
-        f'<nav aria-label="Sections">{nav}</nav></header>'
-        '<main id="main">'
-        f'<section class="hero" aria-labelledby="hero-h"><p class="kicker">{esc(h["kicker"])}</p>'
-        f'<h1 id="hero-h"><span class="name">Jacob Metoyer</span>{esc(h["title"])}</h1>'
-        f'<p class="lede">{esc(h["lede"])}</p>'
-        f'<p class="hero-links"><a class="btn" href="#demos">Play the demos ↓</a> <a class="src" href="#how">How they get built</a> {ext(h["source"], "GitHub · Jacob-Met", "src")}</p></section>'
-        + engine +
-        f'<section id="demos" class="demos" aria-labelledby="demos-h"><div class="sec-head"><h2 id="demos-h">Playable demos</h2>'
-        f'<p>Each one runs in your browser. The images are captures of the real thing; the links open it.</p></div>'
-        + ''.join(demos) + '</section>'
-        f'<section id="how" class="how" aria-labelledby="how-h"><div class="sec-head"><h2 id="how-h">{esc(w["title"])}</h2>'
-        f'<p>{esc(w["line"])}</p></div><ol class="steps">{steps}</ol></section>'
-        f'<section id="more" class="more" aria-labelledby="more-h"><div class="sec-head"><h2 id="more-h">More work</h2>'
-        f'<p>Research and tooling projects with source, but no in-browser demo.</p></div><ul class="cards">{projects}</ul></section>'
-        + worlds +
-        f'<section id="about" class="about" aria-labelledby="about-h"><h2 id="about-h">About</h2>'
-        f'{about}<p>{esc(c["line"])} {ext(c["url"], "github.com/Jacob-Met")}</p></section>'
-        '</main>'
-        f'<footer class="foot"><p>Updated {esc(r["updated"])} · Static page, no trackers, no scripts.</p></footer>'
-    )
+def render_index(r: dict, portfolio_data: dict | None = None) -> str:
+    current = portfolio_record() if portfolio_data is None else portfolio_data
+    validate_portfolio(current)
+    return portfolio.render(current, r, load_experience(ROOT), load_capture(ROOT))
 
 
 def page_html(name: str, title: str, desc: str, body: str, data: dict) -> str:
     schema = {'@context': 'https://schema.org', '@type': 'Person', 'name': data['name'], 'url': BASE,
-              'sameAs': ['https://github.com/Jacob-Met']}
+              'sameAs': ['https://github.com/Jacob-Met', 'https://www.linkedin.com/in/jacob-metoyer-15b701352']}
     structured = json.dumps(schema, ensure_ascii=False).replace('<', '\\u003c').replace('>', '\\u003e')
     canonical = BASE + '/' + ('' if name == 'index.html' else name)
+    enhancement = ''
+    if name == 'index.html':
+        digest = audit_scripts(ROOT)['detail.js']
+        enhancement = f'<script src="detail.js" defer integrity="{script_integrity(digest)}"></script>'
     return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="{CSP}"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{esc(title)}</title><meta name="description" content="{esc(desc)}"><meta name="theme-color" content="#0b0a08"><meta name="referrer" content="strict-origin-when-cross-origin">
-<link rel="canonical" href="{canonical}"><link rel="icon" href="assets/mark.svg" type="image/svg+xml"><link rel="icon" href="favicon.ico" sizes="48x48"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="stylesheet" href="style.css">
+<title>{esc(title)}</title><meta name="description" content="{esc(desc)}"><meta name="theme-color" content="#060c17"><meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="canonical" href="{canonical}"><link rel="icon" href="assets/mark.svg" type="image/svg+xml"><link rel="icon" href="favicon.ico" sizes="48x48"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="stylesheet" href="experience.css">{enhancement}
 <meta property="og:type" content="website"><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{canonical}">
 <meta property="og:image" content="{BASE}/{SHARE_CARD}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="{esc(SHARE_ALT)}"><meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">{structured}</script></head>
@@ -285,16 +217,27 @@ def shot_files(record: dict) -> list[str]:
     return sorted({s['src'] for d in record['demos'] for s in d['shots'].values()})
 
 
+def output_files(record: dict) -> set[str]:
+    return {'index.html', '404.html', 'style.css', EXPERIENCE_CSS, '.nojekyll', 'CNAME',
+            'robots.txt', 'sitemap.xml', 'cv.json', 'build-manifest.json', 'portfolio.json',
+            'assets/mark.svg', SHARE_CARD, *ROOT_ICONS, *FONT_FILES, *SCENE_FILES,
+            *SCRIPT_FILES, *CAPTURE_FILES, EXPERIENCE_FILE, *shot_files(record), *game_files(ROOT, record)}
+
+
 def build(out: Path, data: dict | None = None) -> dict:
+    validate_source_publication(ROOT)
     record = json.loads((ROOT / 'content.json').read_text(encoding='utf-8')) if data is None else json.loads(json.dumps(data))
     validate(record)
+    current = portfolio_record()
+    audit_scripts(ROOT)
+    load_capture(ROOT)
+    load_experience(ROOT)
     out = out.resolve()
     if out == ROOT or ROOT.is_relative_to(out):
         raise ValueError('Output must not replace source')
     shots = shot_files(record)
     games = game_files(ROOT, record)
-    allowed = {'index.html', '404.html', 'style.css', '.nojekyll', 'CNAME', 'robots.txt', 'sitemap.xml', 'cv.json',
-               'build-manifest.json', 'assets/mark.svg', SHARE_CARD, *ROOT_ICONS, *games}
+    allowed = output_files(record)
     allowed_prefix = 'assets/demos/'
     if out.exists():
         for f in out.rglob('*'):
@@ -306,19 +249,28 @@ def build(out: Path, data: dict | None = None) -> dict:
             shutil.rmtree(stale)
     out.mkdir(parents=True, exist_ok=True)
     pages = {
-        'index.html': (TITLE, DESC, render_index(record)),
-        '404.html': ('Not found · Jacob Metoyer', 'Nothing here. Back to the demos.',
+        'index.html': (TITLE, DESC, render_index(record, current)),
+        '404.html': ('Not found · Jacob Metoyer', 'Return to Jacob Metoyer’s work.',
                      '<a class="skip" href="#main">Skip to content</a><main id="main" class="not-found"><h1>Nothing here.</h1>'
-                     '<p><a class="btn" href="index.html#demos">Back to the demos</a></p></main>'),
+                     '<p><a class="btn" href="index.html">Back to the work</a></p></main>'),
     }
     for name, (title, desc, body) in pages.items():
         (out / name).write_text(root_links(name, page_html(name, title, desc, body, record)), encoding='utf-8', newline='\n')
-    (out / 'style.css').write_text((ROOT / 'style.css').read_text(encoding='utf-8'), encoding='utf-8', newline='\n')
+    # Preserve the established stylesheet URL as an alias to the current system.
+    css = (ROOT / EXPERIENCE_CSS).read_text(encoding='utf-8')
+    for name in ('style.css', EXPERIENCE_CSS):
+        (out / name).write_text(css, encoding='utf-8', newline='\n')
+    for name in (*SCRIPT_FILES, *CAPTURE_FILES, EXPERIENCE_FILE):
+        (out / name).parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(ROOT / name, out / name)
     (out / 'assets' / 'demos').mkdir(parents=True, exist_ok=True)
     shutil.copyfile(ROOT / 'assets' / 'mark.svg', out / 'assets' / 'mark.svg')
     shutil.copyfile(ROOT / SHARE_CARD, out / SHARE_CARD)
     for rel in shots:
         assert rel.startswith(allowed_prefix)
+        shutil.copyfile(ROOT / rel, out / rel)
+    for rel in {*FONT_FILES, *SCENE_FILES}:
+        (out / rel).parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / rel, out / rel)
     for rel in games:
         (out / rel).parent.mkdir(parents=True, exist_ok=True)
@@ -331,11 +283,12 @@ def build(out: Path, data: dict | None = None) -> dict:
     sm = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>{BASE}/</loc><lastmod>{record["updated"]}</lastmod></url></urlset>'
     (out / 'sitemap.xml').write_text(sm, encoding='utf-8', newline='\n')
     (out / 'cv.json').write_text(json.dumps(record, indent=2, ensure_ascii=False) + '\n', encoding='utf-8', newline='\n')
+    (out / 'portfolio.json').write_text(json.dumps(current, indent=2, ensure_ascii=False) + '\n', encoding='utf-8', newline='\n')
     files = [f for f in out.rglob('*') if f.is_file() and f.name != 'build-manifest.json']
     manifest = {f.relative_to(out).as_posix(): hashlib.sha256(f.read_bytes()).hexdigest()
                 for f in sorted(files, key=lambda f: f.relative_to(out).as_posix())}
-    (out / 'build-manifest.json').write_text(json.dumps({'schema': 3, 'date': record['updated'], 'sha256': manifest}, indent=2) + '\n', encoding='utf-8', newline='\n')
-    return {'pages': len(pages), 'demos': len(record['demos']) + 1, 'output': str(out), 'files': len(manifest) + 1}
+    (out / 'build-manifest.json').write_text(json.dumps({'schema': 6, 'date': record['updated'], 'publication': current['visibility'], 'sha256': manifest}, indent=2) + '\n', encoding='utf-8', newline='\n')
+    return {'pages': len(pages), 'demos': len(record['demos']) + 1, 'presentation': 'captured-native-engine', 'publication': current['visibility'], 'output': str(out), 'files': len(manifest) + 1}
 
 
 if __name__ == '__main__':

@@ -20,6 +20,7 @@ class DeploymentTests(unittest.TestCase):
                 return super().do_GET()
             def guess_type(self, path):
                 if path.endswith('index.html') and self.mode == 'wrong_mime': return 'text/plain'
+                if path.endswith(('.mp4', '.webp')) and self.mode == 'wrong_media_mime': return 'text/plain'
                 return super().guess_type(path)
         self.served = Path(self.temp.name) / 'served'; shutil.copytree(self.root, self.served)
         self.handler = Handler
@@ -43,6 +44,13 @@ class DeploymentTests(unittest.TestCase):
                 item = next(f for f in r['files'] if f['path'] == 'index.html')
                 self.assertFalse(r['passed']); self.assertEqual(item['status'], status)
                 if mode == 'wrong_mime': self.assertFalse(item['mime_match'])
+    def test_recorded_media_and_webp_mime_enforced(self):
+        self.handler.mode = 'wrong_media_mime'
+        result = verify(self.root, self.base)
+        self.assertFalse(result['passed'])
+        media = [x for x in result['files'] if x['path'].endswith(('.mp4', '.webp'))]
+        self.assertTrue(media)
+        self.assertTrue(all(x['bytes_match'] and not x['mime_match'] for x in media))
     def test_invalid_local_build_sends_nothing(self):
         (self.root / 'build-manifest.json').write_text('{}', encoding='utf-8')
         r = verify(self.root, self.base); self.assertFalse(r['passed']); self.assertEqual(r['network_requests'], 0)

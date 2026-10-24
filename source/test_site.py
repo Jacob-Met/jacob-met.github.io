@@ -106,8 +106,8 @@ class BuildTests(Built):
 
 class ContentTests(Built):
     """Demos-first: every demo shows captured output, a one-line description and its source."""
-    BANNED = ('anime', 'manga', 'cosplay', 'tornadocos', 'myanimelist', 'umamusume', 'uma-sim', 'schauz', 'spire',
-              'togishi', 'otama', 'shinogi', 'jihada', 'passionate', 'journey', 'leverage', 'robust', 'ai-assistance', 'ai-written')
+    BANNED = ('anime', 'manga', 'cosplay', 'tornadocos', 'myanimelist', 'umamusume', 'uma-sim', 'schauz',
+              'togishi', 'otama', 'shinogi', 'jihada', 'passionate', 'leverage', 'robust', 'ai-assistance', 'ai-written')
     def test_no_old_profile_or_ai_assistance_copy(self):
         # "Hamon Engine" is the public name of Jacob's game engine; internal agent names stay banned.
         # "Spire of Octaves" is Jacob's public fiction world (spireofoctaves.com); the pen name stays banned.
@@ -117,75 +117,71 @@ class ContentTests(Built):
             with self.subTest(word=word): self.assertNotIn(word, low)
     def test_no_executable_scripts_or_embeds_in_body(self):
         m = self.main()
-        for tag in ('<svg', '<video', '<script', '<iframe', '<form', '<canvas', '<object', '<embed'):
+        for tag in ('<script', '<iframe', '<form', '<canvas', '<object', '<embed'):
             with self.subTest(tag=tag): self.assertNotIn(tag, m)
-        self.assertNotIn('<script src', self.page())
-    def test_demos_first_section_order(self):
+        self.assertEqual(self.page().count('<script src="detail.js" defer integrity="sha256-'), 1)
+        self.assertEqual(m.count('<video controls playsinline preload="none"'), 1)
+        self.assertNotIn('autoplay', m)
+        self.assertNotIn('WebAssembly', self.page())
+
+    def test_captured_section_order(self):
         m = self.main()
-        pos = [m.index(f'<section id="{i}"') for i, _ in build.SECTIONS]
-        self.assertEqual(pos, sorted(pos))
-        self.assertLess(m.index('class="hero"'), pos[0])
+        positions = [m.index(f'id="{key}"') for key in ('forge', 'engine', 'research', 'hackathons', 'projects', 'about-art')]
+        self.assertEqual(positions, sorted(positions))
         self.assertEqual(self.page().count('<h1'), 1)
-        self.assertIn('<a class="skip" href="#main">Skip to content</a>', self.page())
+        self.assertIn('<a class="skip" href="#projects">Skip to projects</a>', self.page())
+
     def test_every_demo_is_a_captured_live_link(self):
-        cards = re.findall(r'<article class="demo[^\"]*"[^>]*>(.*?)</article>', self.main(), re.S)
-        self.assertEqual(len(cards), len(self.data['demos']))
-        for card in cards:
-            with self.subTest(card=re.sub(r'<[^>]+>', ' ', card)[:60]):
-                self.assertIn('<img ', card)
-                self.assertNotIn('<pre', card)
-                self.assertIn('class="line"', card)
-                self.assertRegex(card, r'href="https://github\.com/Jacob-Met/[^\"]+"')
+        from portfolio import public_demo
+        for demo in self.data['demos']:
+            card = public_demo(demo)
+            self.assertIn(card, self.main())
+            self.assertIn(demo['play']['url'], card)
+            self.assertIn(demo['repo'], card)
+            for shot in demo['shots'].values(): self.assertIn(shot['src'], card)
         self.assertNotIn('before_conflict', self.main())
+
     def test_every_capture_has_alt_and_size(self):
         for img in re.findall(r'<img [^>]+>', self.main()):
             with self.subTest(img=img[:60]):
                 self.assertRegex(img, r'alt="[^"]{20,}"'); self.assertRegex(img, r'width="\d+" height="\d+"')
-    def test_how_section_states_who_builds(self):
-        sec = re.search(r'<section id="how"[^>]*>(.*?)</section>', self.main(), re.S).group(1)
-        self.assertEqual(sec.count('<li>'), len(self.data['how']['steps']))
-        self.assertIn('carry out what i ask', self.data['hero']['title'].lower())
-        self.assertIn('software included', self.data['hero']['lede'].lower())
-        for phrase in ('home estate of several machines', 'research reports', 'disk and ops cleanup', 'building this site'):
-            self.assertIn(phrase, self.data['hero']['lede'].lower())
-        self.assertIn('I set the bar and decide what ships', self.data['hero']['lede'])
-        self.assertIn('carry out whatever i direct', self.data['how']['line'].lower())
-        self.assertEqual(self.data['how']['steps'][0]['name'], 'I pick the work')
-        self.assertEqual(self.data['how']['steps'][1]['name'], 'I set the bar')
-        self.assertEqual(self.data['how']['steps'][2]['name'], 'Agents carry it out')
-        self.assertIn('home estate of several machines', self.data['about']['lines'][1].lower())
-        self.assertIn('software included', build.DESC.lower())
-        self.assertIn('whatever i direct', build.SHARE_ALT.lower())
-        self.assertIn('carry out what i ask', build.TITLE.lower())
-        card = Path(__file__).with_name('make_images.py').read_text(encoding='utf-8')
-        self.assertIn("lines = ('AI agents carry out', 'what I direct.', 'I set the bar.')", card)
-        visible = ' '.join((self.data['hero']['lede'], self.data['how']['line'], *self.data['about']['lines'])).lower()
-        for blocked in ('coursework', 'canvas', 'finances', 'purchases', 'private accounts'):
-            self.assertNotIn(blocked, visible)
-        self.assertNotIn('write all the code', visible)
-    def test_engine_slot_status_matches_actual_builds_without_media(self):
-        slot = re.search(r'<aside class="slot"[^>]*>(.*?)</aside>', self.main(), re.S)
-        self.assertIsNotNone(slot)
-        assert slot is not None
-        self.assertNotIn('<img', slot.group(1))
-        playable = any(g['build'] is not None for g in self.data['games'])
-        self.assertIn('Playable now' if playable else 'Coming soon', slot.group(1))
-        self.assertNotIn('Coming soon' if playable else 'Playable now', slot.group(1))
+    def test_identity_and_research_replace_agent_director_copy(self):
+        self.assertNotIn('id="how"', self.main())
+        self.assertNotIn('how', self.data)
+        self.assertEqual(build.TITLE, 'Jacob Metoyer')
+        self.assertIn('computer science', build.DESC.lower())
+        for phrase in ('AI agents carry out', 'I set the bar', 'I direct AI agents'):
+            self.assertNotIn(phrase.lower(), (self.page() + (build.ROOT / 'make_images.py').read_text()).lower())
+        self.assertIn('CSULB', self.main())
+        self.assertIn('Academic collaboration', self.main())
+        self.assertIn('Independent investigations', self.main())
+
+    def test_game_availability_tracks_verified_build(self):
+        data = copy.deepcopy(self.data)
+        for game in data['games']: game['build'] = None
+        markup = build.render_index(data)
+        self.assertIn('No verified playable build is currently listed.', markup)
+        self.assertNotIn('Play the published game', markup)
+        self.assertNotIn('Play the published snapshot', markup)
+        self.assertIn('not a live 3D walkthrough', markup)
+
     def test_engine_section_tops_demos_without_claiming_them(self):
         m = self.main()
-        eng = re.search(r'<section id="engine"[^>]*>(.*?)</section>', m, re.S).group(1)
-        self.assertIn('>Hamon Engine</h2>', eng); self.assertIn('A Rust game engine built for AI agents', eng)
-        self.assertLess(m.index('id="engine"'), m.index('id="demos"'))
-        self.assertIn('Playable demos', m)
-        demos = re.search(r'<section id="demos"[^>]*>(.*?)</section>', m, re.S).group(1)
-        self.assertNotIn('hamon', demos.lower())
+        self.assertLess(m.index('id="engine"'), m.index('id="towerops-airspace"'))
+        self.assertIn('Captured stylized rendering study', m)
+        self.assertIn('not browser-performance footage', m)
+        self.assertIn('The engine source is private.', m)
+        from portfolio import public_demo
+        for demo in self.data['demos']: self.assertNotIn('hamon', public_demo(demo).lower())
+
     def test_games_are_playable_only_with_verified_build(self):
         m = self.main()
-        engine = re.search(r'<section id="engine"[^>]*>(.*?)</section>', m, re.S).group(1)
-        self.assertIn('Playable · build verified', engine)
-        spire = re.search(r'<li id="game-spire-of-octaves">(.*?)</li>', m, re.S).group(1)
-        self.assertNotIn('Play ', spire)
-        self.assertIn('short story published on Royal Road', spire)
+        self.assertIn('Play the published game', m)
+        self.assertIn('not the whole current engine', m)
+        self.assertIn('WebGPU', m)
+        self.assertIsNone(next(g for g in self.data['games'] if g['id'] == 'spire-of-octaves')['build'])
+        self.assertIn('href="https://spireofoctaves.com/"', m)
+
     def test_unverified_or_offsite_build_refused(self):
         data = copy.deepcopy(self.data)
         data['games'][0]['build'] = {'play_url': 'https://spireofoctaves.com/play', 'verified_at': '2026-10-10', 'evidence': 'frame checked'}
@@ -196,21 +192,14 @@ class ContentTests(Built):
         build.validate(data)
     def test_spire_links_its_own_site(self):
         self.assertIn('href="https://spireofoctaves.com/"', self.main())
-    def test_lanternwake_is_top_feature_spire_is_secondary_only(self):
-        m=self.main()
-        self.assertLess(m.index('Lanternwake'),m.index('Spire of Octaves'))
-        engine=re.search(r'<section id="engine"[^>]*>(.*?)</section>',m,re.S)
-        assert engine is not None
-        self.assertIn('Playable game',engine.group(1))
-        self.assertIn('href="https://jacobmetoyer.com/games/lanternwake/"',engine.group(1))
-        self.assertNotIn('Spire',engine.group(1))
-        self.assertNotIn('Coming soon',engine.group(1))
-        spire=re.search(r'<li id="game-spire-of-octaves">(.*?)</li>',m,re.S)
-        assert spire is not None
-        self.assertNotIn('class="btn"',spire.group(1))
-        self.assertNotIn('In progress',spire.group(1))
-        self.assertIn('Explore the world →',spire.group(1))
-        self.assertIsNone(next(g for g in self.data['games'] if g['id']=='spire-of-octaves')['build'])
+    def test_primary_destinations_and_game_snapshot_scope(self):
+        m = self.main()
+        self.assertLess(m.index('class="world research"'), m.index('id="hamon"'))
+        self.assertLess(m.index('id="hamon"'), m.index('class="world spire"'))
+        self.assertIn('href="https://jacobmetoyer.com/games/lanternwake/"', m)
+        self.assertIn('published browser-game snapshot', m)
+        self.assertIn('physical-phone and Safari behavior have not been verified', m)
+
     def test_game_verification_record_link_is_explicit(self):
         self.assertIn('href="https://jacobmetoyer.com/games/lanternwake/evidence.json"',self.main())
     def test_presence_record_is_consistent(self):
@@ -225,8 +214,10 @@ class ContentTests(Built):
             self.assertNotIn(word, blob)
         self.assertFalse(p['linkedin']['managed'] and p['linkedin']['headline'] is None)
     def test_demo_detail_is_progressive(self):
-        for card in re.findall(r'<article class="demo[^"]*"[^>]*>(.*?)</article>', self.main(), re.S):
-            self.assertRegex(card, r'<details class="more-detail"><summary>[^<]+</summary><p class="detail">')
+        from portfolio import public_demo
+        for demo in self.data['demos']:
+            self.assertIn('<details><summary>Current scope</summary><p>', public_demo(demo))
+
     def test_no_mojibake(self):
         for name in ('index.html', '404.html'):
             page = self.page(name)
@@ -263,7 +254,7 @@ class CheckerTests(Built):
         build.build(self.root, self.data)
         self.assertIn("index.html: CSP default-src must be 'none'", self.rewrite('index.html', "default-src 'none'", "default-src *"))
         build.build(self.root, self.data)
-        self.assertIn('404.html: CSP has undeclared directives: script-src', self.rewrite('404.html', "form-action 'none'", "form-action 'none'; script-src 'self'"))
+        self.assertIn('404.html: CSP contains duplicate directive: script-src', self.rewrite('404.html', "form-action 'none'", "form-action 'none'; script-src 'self'"))
     def test_css_surface(self):
         for css in ('@import "https://example.invalid/a.css";', 'body{background:url(https://example.invalid/p)}', '@font-face{font-family:x;src:url(x.woff2)}', 'a{behavior:url(l.htc)}'):
             with self.subTest(css=css):
@@ -297,10 +288,16 @@ class NotFoundTests(Built):
             if ref.startswith('#'): continue
             path = urlsplit(urljoin('https://jacobmetoyer.com/research/old/deeper', ref)).path.lstrip('/') or 'index.html'
             with self.subTest(ref=ref): self.assertTrue((self.root / path).is_file(), ref)
+    def test_not_found_keeps_readable_spacing_and_return_target(self):
+        css = (self.root / 'experience.css').read_text()
+        self.assertIn('.not-found', css)
+        self.assertRegex(css, r'\.not-found\s*\{[^}]*padding:')
+        self.assertRegex(css, r'\.not-found \.btn\s*\{[^}]*min-height:\s*44px')
+        self.assertIn('Back to the work', self.page('404.html'))
     def test_index_stays_relative(self):
         self.assertFalse([v for v in self.refs('index.html') if v.startswith('/')])
     def test_root_relative_outside_404_rejected(self):
-        self.assertIn('index.html: unsafe local link /style.css', self.rewrite('index.html', 'href="style.css"', 'href="/style.css"'))
+        self.assertIn('index.html: unsafe local link /experience.css', self.rewrite('index.html', 'href="experience.css"', 'href="/experience.css"'))
 
 
 # ---------------------------------------------------------------------------
