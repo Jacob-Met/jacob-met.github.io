@@ -22,6 +22,8 @@
     <symbol id="i-about" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5"/><circle class="fill" cx="12" cy="7.8" r=".9"/></symbol>
     <symbol id="i-add" viewBox="0 0 24 24"><rect x="3.5" y="6" width="13" height="12" rx="1.5"/><path d="M20 6v6M17 9h6"/></symbol>
     <symbol id="i-sound" viewBox="0 0 24 24"><path d="M4 10v4h3.5L12 18V6L7.5 10Z"/><path class="wave" d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.400-6.500 11-6.500 11Z"/><circle cx="12" cy="10" r="2.300"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></symbol>
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h13M13 7l5 5-5 5"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
   </svg>
@@ -30,6 +32,7 @@
   <div class="veil" id="veil" aria-hidden="true"></div>
   <header class="topbar chrome">
     <button id="overview" class="wordmark" aria-label="Wildside overview"><svg viewBox="0 0 28 28" aria-hidden="true"><path d="M5 24C7 11 12 4 24 3c1 12-6 20-15 17M8 21 20 8"/></svg> wildside<span class="brand-dot">.</span></button>
+    <div class="place-nav"><button id="place-pill" class="place-pill" aria-expanded="false" aria-controls="places"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg><span class="place-pill-label">Places</span><span id="place-pill-name" class="place-pill-name"></span><svg class="i chev" aria-hidden="true"><use href="#i-chevron"/></svg></button><span id="places-prompt" class="places-prompt" aria-hidden="true">Explore other places <svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span></div>
     <nav aria-label="Place actions" class="place-actions">
       <button id="sources" class="chip ghost" aria-label="About this place"><svg class="i" aria-hidden="true"><use href="#i-about"/></svg><span class="action-text">About this place</span></button>
       <button id="observe" class="chip ghost" aria-label="Add a view"><svg class="i" aria-hidden="true"><use href="#i-add"/></svg><span class="action-text">Add a view</span></button>
@@ -64,6 +67,12 @@
       <button tabindex="-1" id="rain-toggle" aria-pressed="false" title="Imagine rain · R" aria-label="Imagine rain" aria-keyshortcuts="R"><svg class="i" aria-hidden="true"><use href="#i-rain"/></svg></button>
       <button tabindex="-1" id="motion-toggle" aria-pressed="false" title="Pause simulated life · P" aria-label="Pause simulated life" aria-keyshortcuts="P"><svg class="i when-off" aria-hidden="true"><use href="#i-pause"/></svg><svg class="i when-on" aria-hidden="true"><use href="#i-play"/></svg></button>
     </div><button tabindex="-1" id="save-view-image" title="Save a picture of the current view as PNG" aria-label="Save picture as PNG"><svg class="i" aria-hidden="true"><use href="#i-frame"/></svg></button></div>
+  <section id="places" class="places-panel" role="dialog" aria-modal="false" aria-labelledby="places-title" hidden>
+    <header class="drawer-header"><h2 id="places-title">Places to explore</h2><button class="drawer-close" id="places-close" aria-label="Close places"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></header>
+    <div class="places-list" id="places-list"></div>
+    <p class="places-note">Courtyard and the other imagined places are illustrations, not records of real wildlife. The Kyoto block is a historical city model with imagined life.</p>
+  </section>
+  <div class="title-card" id="title-card" hidden aria-live="polite"><span class="title-tag"></span><h2 class="title-name"></h2><p class="title-line"></p></div>
   <section id="world-drawer" class="world-drawer" role="dialog" aria-modal="false" aria-labelledby="world-drawer-title" hidden>
     <header class="drawer-header"><h2 id="world-drawer-title">Look &amp; weather</h2><button class="drawer-close" id="world-drawer-close" aria-label="Close world settings"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></header>
     <div class="drawer-sections" id="drawer-sections"></div>

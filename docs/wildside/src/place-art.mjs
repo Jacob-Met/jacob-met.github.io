@@ -1,0 +1,13 @@
+/** Small painted thumbnails for the Places picker (inline SVG, no assets). Illustrations, not photographs. */
+const sky=(id,a,b)=>`<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient>`;
+const SCENES={
+ courtyard:`<defs>${sky('s','#9fc6ea','#f3ead0')}</defs><rect width="240" height="150" fill="url(#s)"/><rect y="62" width="240" height="14" fill="#8f8a84"/><path d="M0 76h240v74H0z" fill="#7fae55"/><path d="M96 150l18-74h14l22 74z" fill="#d9c79a"/><path d="M52 98c-20-4-26-34-4-46 4-16 30-16 34 0 20 8 14 40-6 46z" fill="#3f7f3f"/><rect x="62" y="96" width="7" height="30" fill="#6a4a32"/><rect x="168" y="96" width="46" height="18" rx="3" fill="#b9806c"/>`,
+ kyoto:`<defs>${sky('s','#b9a8dc','#f6dcc0')}</defs><rect width="240" height="150" fill="url(#s)"/><path d="M0 92c40-30 70-22 110-4s90 4 130-14v76H0z" fill="#6f8f6a"/><path d="M0 110c60-14 120-10 240 4v36H0z" fill="#8fae7a"/><g fill="#5b4a46"><path d="M40 112l18-12 18 12v18H40z"/><path d="M96 108l22-14 22 14v22H96z"/><path d="M158 114l16-11 16 11v16h-32z"/></g><path d="M0 138h240" stroke="#d8c9a8" stroke-width="8"/>`,
+ lake:`<defs>${sky('s','#f0b27a','#f9e2b8')}</defs><rect width="240" height="150" fill="url(#s)"/><path d="M0 70c50-20 90-10 130-2s80 4 110-6v88H0z" fill="#b5502e"/><rect y="88" width="240" height="62" fill="#6aa0b0"/><path d="M20 100h60M110 116h90M60 130h70" stroke="#f6e6c8" stroke-width="2" opacity=".6"/><circle cx="64" cy="58" r="22" fill="#d9692f"/><circle cx="92" cy="52" r="18" fill="#e28c3a"/><circle cx="186" cy="56" r="20" fill="#c0462a"/>`,
+ coast:`<defs>${sky('s','#8cc8ee','#e8f3f4')}</defs><rect width="240" height="150" fill="url(#s)"/><rect y="70" width="240" height="40" fill="#4f9bb8"/><path d="M0 110c40-8 80 8 120 0s80-8 120 0v40H0z" fill="#e8d8aa"/><path d="M0 76c40 6 80-6 120 0s80 6 120 0" stroke="#fff" stroke-width="3" fill="none" opacity=".7"/><path d="M170 110l16-34 14 34z" fill="#6c7a74"/>`,
+ street:`<defs>${sky('s','#c8b6d8','#f6e0c6')}</defs><rect width="240" height="150" fill="url(#s)"/><path d="M0 40h70l20 20v90H0z" fill="#7a5a4a"/><path d="M240 36h-72l-22 24v90h94z" fill="#8b6a52"/><path d="M90 60h56l16 90H74z" fill="#d8c8a0"/><g fill="#f4d98a"><rect x="14" y="70" width="16" height="22"/><rect x="40" y="70" width="16" height="22"/><rect x="186" y="70" width="16" height="22"/><rect x="212" y="70" width="14" height="22"/></g><circle cx="120" cy="52" r="6" fill="#d9532f"/>`,
+};
+export function thumbSvg(kind){
+ const body=SCENES[kind]??SCENES.courtyard;
+ return `<svg viewBox="0 0 240 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">${body}</svg>`;
+}

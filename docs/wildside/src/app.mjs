@@ -37,9 +37,12 @@ import {listKeptMoments,replacementChoices,admitKeptMoment} from './moment-libra
 import {mountHamonView,wantsHamon} from './hamon-view.mjs';
 import {registerControl,refreshControls,controlSlot} from './controls.mjs';
 import {mountWorldDrawer,mountVisitChrome} from './visit-chrome.mjs';
+import {registerPlace} from './places-registry.mjs';
+import {createExamplePlace} from './example-place.mjs';
+import {mountPlacesPicker} from './places-picker.mjs';
 const $=id=>document.getElementById(id), el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
 const uid=prefix=>`${prefix}-${crypto.randomUUID()}`;
-let store,session,saveFault=null,frameLoop=null;
+let store,session,saveFault=null,frameLoop=null,placesPicker=null;
 const requestWorldFrame=()=>frameLoop?.invalidate();
 try{store=createSessionStore(localStorage);session=store.load();}catch(e){saveFault=e.message;session=defaultSession();}
 let place=session.places.find(p=>p.id===session.activePlaceId),displayPlace=place,historical=false;
@@ -222,6 +225,7 @@ function rebuild(p,{keepPose=false}={}){
  worldReady=true;updateLabels();
 }
 function updateLabels(){
+ placesPicker?.refresh();
  if(overview||sourceView||underwaterFocus||webFocus||skaterFocus||$('panel').open||(birdFocus&&nav.pose().mode!=='bird')||(crawlerFocus&&nav.pose().mode!=='insect'))releaseResidentFocus();
  void syncSoundState();
  $('sound-toggle').setAttribute('aria-pressed',String(soundscape.isEnabled()));
@@ -853,6 +857,10 @@ addEventListener('pageshow',()=>{if(worldReady)updateLabels();});
 renderer.domElement.addEventListener('webglcontextlost',()=>{cancelPicture();shadowResourceEpoch++;shadowReuse.invalidate();});
 renderer.domElement.addEventListener('webglcontextrestored',()=>{shadowResourceEpoch++;shadowReuse=createShadowReuseGuard(THREE);renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;requestWorldFrame();});
 registerCoreControls();
+registerCorePlaces();
+placesPicker=mountPlacesPicker({pill:$('place-pill'),nameEl:$('place-pill-name'),panel:$('places'),list:$('places-list'),close:$('places-close'),titleCard:$('title-card'),prompt:$('places-prompt'),getPlaceName:()=>displayPlace.name,notify,isBlocked:()=>$('panel').open,
+ onArrive:()=>{try{requestAnimationFrame(()=>{if(overview)enter('human');});}catch{}}});
+registerControl({id:'places-open',section:'place',order:0,mount({container,kit}){container.append(kit.action({label:'Choose another place',onClick:()=>{worldDrawer.close();placesPicker.open();}}).element);}});
 rebuild(displayPlace);requestWorldFrame();if(saveFault)notify(saveFault,true);
 window.__wildsideInspect=()=>({overviewZoom:overviewZoom.value(),overviewPan:overviewPan.position(art?.bounds,overviewZoom.value()),hamon:hamon?.state()??null,hamonTrees:hamon?.trees??[],crawlerFocus:crawlerFocus?.controller.snapshot()??null,birdFocus:birdFocus?.controller.snapshot()??null,sourceView:sourceView?{observationId:sourceView.observationId,sourceId:sourceView.sourceId,rms:sourceView.rmsImageHeightFraction,imageAspect:sourceView.imageAspect}:null,mode:underwaterFocus?'underwater':sourceView?'source-view':overview?'overview':nav.pose().mode,pose:underwaterFocus?submergedView.pose():nav.pose(),placeId:place.id,revision:place.revision,memoryCount:session.memories.filter(m=>m.placeId===place.id).length,rain,rainField:{visible:rainLines.visible,segments:rainFieldStats.segments,supportQueries:rainFieldStats.supportQueries,cachedColumns:rainFieldStats.cachedColumns},paused,soundEnabled:soundscape.isEnabled(),simulationTime:worldTime,frameCount,anchorCount:place.anchors.length,anchorIds:place.anchors.map(a=>a.id),historical,birdDetail:{activity:sim.snapshot().bird.activity,forageAmount:sim.snapshot().bird.forageAmount,attention:sim.snapshot().bird.attention,reason:sim.snapshot().bird.reason,perchId:sim.snapshot().bird.perchId,targetId:sim.snapshot().bird.targetId,position:sim.snapshot().bird.position,wingLeft:sim.snapshot().bird.wingLeft,feet:sim.snapshot().bird.feet.map(f=>({toe:f.toe,contact:f.contact}))},foliageDetail:art.detailSnapshot(),publicContext:place.observations.find(o=>o.geographicContext)?.geographicContext??null,contextForms:place.anchors.filter(a=>a.contextForm).map(a=>({id:a.id,form:a.contextForm})),renderer:{calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures},bird:sim.snapshot().bird.state,crawler:crawler?.snapshot().crawler??null,orbWeb:orbWeaver?.snapshot()??null,orbSilk:orbWeaver?.getWeb()?.silkGeometry??null,webVisitor:orbArt?.visitorInspection()??null,webResident:orbArt?.residentInspection()??null,webFocus,pondSkater:pondSkater?.snapshot()??null,skaterFocus,underwaterFocus,submergedLife:submergedLife?.snapshot()??null,camera:{position:camera.position.toArray(),forward:camera.getWorldDirection(new THREE.Vector3()).toArray(),up:new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld,1).toArray(),fov:camera.fov,aspect:camera.aspect,near:camera.near,far:camera.far}});
 
@@ -891,4 +899,26 @@ function registerCoreControls(){
   for(const [k,v] of [['W A S D','move'],['E / Q','rise / sink'],['1 2 3','human · bird · insect'],['R','imagine rain'],['P','pause life'],['K','keep a moment'],['Esc','overview']]){const dt=document.createElement('dt'),dd=document.createElement('dd');const kbd=document.createElement('kbd');kbd.textContent=k;dt.append(kbd);dd.textContent=v;list.append(dt,dd);}
   container.append(list);
  }});
+}
+
+/** Places a visitor can travel to. Other modules add theirs with registerPlace (src/places-registry.mjs). */
+async function activatePlace(find,make){
+ const made=session.places.some(find)?null:await make();
+ await changeSession(s=>{const have=s.places.find(find);if(have)return {...s,activePlaceId:have.id};return {...s,places:[...s.places,made],activePlaceId:made.id};});
+ displayPlace=place;historical=false;rebuild(place);overview=true;updateLabels();
+}
+function registerCorePlaces(){
+ registerPlace({id:'courtyard',name:'Courtyard',line:'A leaning tree, a stone path and a robin. Imagined.',kind:'courtyard',honesty:'Imagined',order:0,
+  current:()=>place.id==='imagined-courtyard'||(!place.anchors.some(a=>a.mapGeometry)&&place.observations.every(o=>o.source?.kind==='imagined')),
+  async travel(){await activatePlace(p=>p.id==='imagined-courtyard',()=>createExamplePlace());}});
+ registerPlace({id:'kyoto-block',name:'Kyoto block',line:'A hillside neighbourhood from public maps, with imagined life.',kind:'kyoto',honesty:'Public map · imagined life',order:10,
+  current:()=>place.anchors.some(a=>a.mapGeometry),
+  async travel(){
+   await activatePlace(p=>p.anchors.some(a=>a.mapGeometry),async()=>{
+    const response=await fetch('data/kyoto-public-block.json');if(!response.ok)throw new Error('The bundled public map is unavailable. You are still where you were.');
+    const {parseTransfer}=await import('./transfer.mjs');const parsed=await parseTransfer(await response.text());
+    if(parsed.data.places.length!==1)throw new Error('The bundled map has an unsupported layout.');return parsed.data.places[0];});
+  }});
+ for(const [id,name,line,kind,order] of [['autumn-lake','Autumn Lake','Maples at the water’s edge and a heron in the reeds.','lake',20],['coast','Coast','Tide pools, wind and a long grey shore.','coast',30],['old-town-street','Old Town Street','Lantern light on a quiet lane.','street',40]])
+  registerPlace({id,name,line,kind,status:'soon',order});
 }
