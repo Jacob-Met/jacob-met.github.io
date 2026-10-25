@@ -14,7 +14,7 @@ class Built(unittest.TestCase):
     def setUp(self):
         self.data = record()
         self.temp = tempfile.TemporaryDirectory(); self.addCleanup(self.temp.cleanup)
-        self.root = Path(self.temp.name) / 'out'; build.build(self.root, self.data)
+        self.root = Path(self.temp.name) / 'out'; build.build(self.root, self.data, preview=True)
 
     def page(self, name='index.html'):
         return (self.root / name).read_text(encoding='utf-8')
@@ -27,7 +27,7 @@ class Built(unittest.TestCase):
         page.write_text(text.replace(old, new), encoding='utf-8', newline='\n')
         mp = self.root / 'build-manifest.json'; m = json.loads(mp.read_text())
         m['sha256'][name] = hashlib.sha256(page.read_bytes()).hexdigest(); mp.write_text(json.dumps(m), encoding='utf-8')
-        return check(self.root)['failures']
+        return check(self.root, preview=True)['failures']
 
 
 class RecordTests(unittest.TestCase):
@@ -67,9 +67,12 @@ class RecordTests(unittest.TestCase):
 
 
 class BuildTests(Built):
-    def test_output_passes_checks(self): self.assertTrue(check(self.root)['passed'], check(self.root))
+    def test_dynamic_still_endpoints_are_exact(self):
+        failures=self.rewrite('index.html','data-arrival-src="assets/scene/forge-arrival-1280.png"','data-arrival-src="https://example.org/unreviewed.png"')
+        self.assertTrue(any('scene endpoint' in failure for failure in failures))
+    def test_output_passes_checks(self): self.assertTrue(check(self.root, preview=True)['passed'], check(self.root, preview=True))
     def test_deterministic(self):
-        a = (self.root / 'build-manifest.json').read_bytes(); build.build(self.root, self.data)
+        a = (self.root / 'build-manifest.json').read_bytes(); build.build(self.root, self.data, preview=True)
         self.assertEqual(a, (self.root / 'build-manifest.json').read_bytes())
     def test_manifest_sorted_and_complete(self):
         m = json.loads((self.root / 'build-manifest.json').read_text())['sha256']
@@ -81,10 +84,10 @@ class BuildTests(Built):
     def test_unexpected_output_file_refused(self):
         with tempfile.TemporaryDirectory() as t:
             p = Path(t) / 'out'; p.mkdir(); (p / 'notes.txt').write_text('keep')
-            with self.assertRaises(ValueError): build.build(p, self.data)
+            with self.assertRaises(ValueError): build.build(p, self.data, preview=True)
             self.assertEqual((p / 'notes.txt').read_text(), 'keep')
     def test_output_cannot_be_source(self):
-        with self.assertRaises(ValueError): build.build(build.ROOT, self.data)
+        with self.assertRaises(ValueError): build.build(build.ROOT, self.data, preview=True)
     def test_only_two_html_routes(self):
         self.assertEqual({f.name for f in self.root.glob('*.html')}, {'index.html', '404.html'})
     def test_icons_and_share_card(self):
@@ -119,8 +122,10 @@ class ContentTests(Built):
         m = self.main()
         for tag in ('<script', '<iframe', '<form', '<canvas', '<object', '<embed'):
             with self.subTest(tag=tag): self.assertNotIn(tag, m)
-        self.assertEqual(self.page().count('<script src="detail.js" defer integrity="sha256-'), 1)
-        self.assertEqual(m.count('<video controls playsinline preload="none"'), 1)
+        self.assertNotIn('<script src="detail.js"', self.page())
+        for name in ('lobby-journey.js', 'scene-handoff.js', 'lobby.js'):
+            self.assertEqual(self.page().count(f'<script src="{name}" defer integrity="sha256-'), 1)
+        self.assertEqual(self.page().count('<video id="route-'), 6)
         self.assertNotIn('autoplay', m)
         self.assertNotIn('WebAssembly', self.page())
 
@@ -129,12 +134,13 @@ class ContentTests(Built):
         positions = [m.index(f'id="{key}"') for key in ('forge', 'engine', 'research', 'hackathons', 'projects', 'about-art')]
         self.assertEqual(positions, sorted(positions))
         self.assertEqual(self.page().count('<h1'), 1)
-        self.assertIn('<a class="skip" href="#projects">Skip to projects</a>', self.page())
+        self.assertIn('<a class="skip" href="#engine" data-engine data-skip>Skip to the work</a>', self.page())
 
     def test_every_demo_is_a_captured_live_link(self):
         from portfolio import public_demo
         for demo in self.data['demos']:
-            card = public_demo(demo)
+            from figure_policy import load_figures
+            card = public_demo(demo, load_figures(build.ROOT).get(demo['id']))
             self.assertIn(card, self.main())
             self.assertIn(demo['play']['url'], card)
             self.assertIn(demo['repo'], card)
@@ -144,7 +150,9 @@ class ContentTests(Built):
     def test_every_capture_has_alt_and_size(self):
         for img in re.findall(r'<img [^>]+>', self.main()):
             with self.subTest(img=img[:60]):
-                self.assertRegex(img, r'alt="[^"]{20,}"'); self.assertRegex(img, r'width="\d+" height="\d+"')
+                if 'alt=""' in img:
+                    self.assertTrue('forge-arrival-1280.png' in img or 'id="scene-buffer"' in img)
+                else: self.assertRegex(img, r'alt="[^"]{20,}"'); self.assertRegex(img, r'width="\d+" height="\d+"')
     def test_identity_and_research_replace_agent_director_copy(self):
         self.assertNotIn('id="how"', self.main())
         self.assertNotIn('how', self.data)
@@ -159,17 +167,17 @@ class ContentTests(Built):
     def test_game_availability_tracks_verified_build(self):
         data = copy.deepcopy(self.data)
         for game in data['games']: game['build'] = None
-        markup = build.render_index(data)
+        markup = build.render_index(data, preview=True)
         self.assertIn('No verified playable build is currently listed.', markup)
         self.assertNotIn('Play the published game', markup)
         self.assertNotIn('Play the published snapshot', markup)
-        self.assertIn('not a live 3D walkthrough', markup)
+        self.assertIn('prerecorded camera journeys', markup)
 
     def test_engine_section_tops_demos_without_claiming_them(self):
         m = self.main()
         self.assertLess(m.index('id="engine"'), m.index('id="towerops-airspace"'))
-        self.assertIn('Captured stylized rendering study', m)
-        self.assertIn('not browser-performance footage', m)
+        self.assertIn('Native HAMON Engine render', m)
+        self.assertIn('prerecorded camera journeys', m)
         self.assertIn('The engine source is private.', m)
         from portfolio import public_demo
         for demo in self.data['demos']: self.assertNotIn('hamon', public_demo(demo).lower())
@@ -177,7 +185,7 @@ class ContentTests(Built):
     def test_games_are_playable_only_with_verified_build(self):
         m = self.main()
         self.assertIn('Play the published game', m)
-        self.assertIn('not the whole current engine', m)
+        self.assertIn('published browser-game snapshot', m)
         self.assertIn('WebGPU', m)
         self.assertIsNone(next(g for g in self.data['games'] if g['id'] == 'spire-of-octaves')['build'])
         self.assertIn('href="https://spireofoctaves.com/"', m)
@@ -194,11 +202,11 @@ class ContentTests(Built):
         self.assertIn('href="https://spireofoctaves.com/"', self.main())
     def test_primary_destinations_and_game_snapshot_scope(self):
         m = self.main()
-        self.assertLess(m.index('class="world research"'), m.index('id="hamon"'))
-        self.assertLess(m.index('id="hamon"'), m.index('class="world spire"'))
+        self.assertLess(m.index('href="#research" class="destination destination-research"'), m.index('id="hamon"'))
+        self.assertLess(m.index('id="hamon"'), m.index('href="https://spireofoctaves.com/" class="destination destination-spire"'))
         self.assertIn('href="https://jacobmetoyer.com/games/lanternwake/"', m)
         self.assertIn('published browser-game snapshot', m)
-        self.assertIn('physical-phone and Safari behavior have not been verified', m)
+        self.assertIn('every movement can be skipped', m)
 
     def test_game_verification_record_link_is_explicit(self):
         self.assertIn('href="https://jacobmetoyer.com/games/lanternwake/evidence.json"',self.main())
@@ -216,7 +224,7 @@ class ContentTests(Built):
     def test_demo_detail_is_progressive(self):
         from portfolio import public_demo
         for demo in self.data['demos']:
-            self.assertIn('<details><summary>Current scope</summary><p>', public_demo(demo))
+            self.assertIn('<details class="feature-details"><summary>Source, captures &amp; scope</summary><p>', public_demo(demo))
 
     def test_no_mojibake(self):
         for name in ('index.html', '404.html'):
@@ -225,9 +233,9 @@ class ContentTests(Built):
                 self.assertNotIn(bad, page)
     def test_escaping(self):
         data = copy.deepcopy(self.data); data['demos'][0]['detail'] = "\"a\" & 'b'"
-        build.build(self.root, data)
+        build.build(self.root, data, preview=True)
         self.assertIn('&quot;a&quot; &amp; &#x27;b&#x27;', self.page())
-        self.assertTrue(check(self.root)['passed'])
+        self.assertTrue(check(self.root, preview=True)['passed'])
     def test_external_hosts_are_only_verifiable_ones(self):
         hosts = {urlsplit(u).hostname for u in re.findall(r'href="(https://[^"]+)"', self.main())}
         self.assertTrue(hosts <= build.ALLOWED_HOSTS, hosts)
@@ -236,7 +244,7 @@ class ContentTests(Built):
 
 class CheckerTests(Built):
     def test_corruption_detected(self):
-        (self.root / 'index.html').write_text('<h1>broken</h1>'); self.assertFalse(check(self.root)['passed'])
+        (self.root / 'index.html').write_text('<h1>broken</h1>'); self.assertFalse(check(self.root, preview=True)['passed'])
     def test_injected_surface_rejected(self):
         for fragment in ('<script src="site.js"></script>', '<script>void(0)</script>', '<img src="assets/mark.svg" alt="x">',
                          '<img src="assets/demos/returnby-desktop.webp" width="1" height="1" alt="">', '<img src="assets/demos/returnby-desktop.webp" alt="no size">',
@@ -247,32 +255,32 @@ class CheckerTests(Built):
             with self.subTest(fragment=fragment):
                 failures = self.rewrite('index.html', '</main>', fragment + '</main>')
                 self.assertTrue(failures); self.assertFalse(any('Hash mismatch' in f for f in failures))
-                build.build(self.root, self.data)
+                build.build(self.root, self.data, preview=True)
     def test_csp_enforced(self):
         self.assertEqual(build.CSP, '; '.join(f'{k} {v}' for k, v in check_module.CSP_REQUIRED.items()))
         self.assertIn('index.html: expected exactly one Content-Security-Policy meta', self.rewrite('index.html', f'<meta http-equiv="Content-Security-Policy" content="{build.CSP}">', ''))
-        build.build(self.root, self.data)
+        build.build(self.root, self.data, preview=True)
         self.assertIn("index.html: CSP default-src must be 'none'", self.rewrite('index.html', "default-src 'none'", "default-src *"))
-        build.build(self.root, self.data)
+        build.build(self.root, self.data, preview=True)
         self.assertIn('404.html: CSP contains duplicate directive: script-src', self.rewrite('404.html', "form-action 'none'", "form-action 'none'; script-src 'self'"))
     def test_css_surface(self):
         for css in ('@import "https://example.invalid/a.css";', 'body{background:url(https://example.invalid/p)}', '@font-face{font-family:x;src:url(x.woff2)}', 'a{behavior:url(l.htc)}'):
             with self.subTest(css=css):
                 (self.root / 'style.css').write_text(css, encoding='utf-8')
                 mp = self.root / 'build-manifest.json'; m = json.loads(mp.read_text()); m['sha256']['style.css'] = hashlib.sha256((self.root / 'style.css').read_bytes()).hexdigest(); mp.write_text(json.dumps(m))
-                self.assertFalse(check(self.root)['passed'])
+                self.assertFalse(check(self.root, preview=True)['passed'])
     def test_svg_surface(self):
         for fragment in ('<script>void(0)</script>', '<image href="https://example.invalid/p"/>', '<g onload="void(0)"/>', '<foreignObject/>'):
             with self.subTest(fragment=fragment):
                 (self.root / 'assets' / 'mark.svg').write_text('<svg xmlns="http://www.w3.org/2000/svg">' + fragment + '</svg>', encoding='utf-8')
                 mp = self.root / 'build-manifest.json'; m = json.loads(mp.read_text()); m['sha256']['assets/mark.svg'] = hashlib.sha256((self.root / 'assets' / 'mark.svg').read_bytes()).hexdigest(); mp.write_text(json.dumps(m))
-                self.assertFalse(check(self.root)['passed'])
+                self.assertFalse(check(self.root, preview=True)['passed'])
     def test_manifest_cannot_escape(self):
         mp = self.root / 'build-manifest.json'; m = json.loads(mp.read_text()); m['sha256']['../secret'] = '0' * 64; mp.write_text(json.dumps(m))
-        self.assertIn('Unsafe or malformed manifest entry', check(self.root)['failures'])
+        self.assertIn('Unsafe or malformed manifest entry', check(self.root, preview=True)['failures'])
     def test_malformed_manifest_is_a_failure_not_a_crash(self):
         for value in ('{bad', '[]', '{"sha256":[]}'):
-            (self.root / 'build-manifest.json').write_text(value, encoding='utf-8'); self.assertFalse(check(self.root)['passed'])
+            (self.root / 'build-manifest.json').write_text(value, encoding='utf-8'); self.assertFalse(check(self.root, preview=True)['passed'])
     def test_local_path(self):
         for v in ('../p', '/abs', '//r/a', 'https://r', '%2e%2e/p', r'..\p', 'a?t=x', 'a%00b'): self.assertFalse(check_module.local_path(v), v)
         self.assertTrue(check_module.local_path('assets/mark.svg'))
@@ -359,6 +367,13 @@ class PrecommitHookTests(unittest.TestCase):
         self.work = Path(self.tmp.name) / 'site'
         shutil.copytree(self.repo_root / 'source', self.work / 'source')
         shutil.copytree(self.repo_root / '.githooks', self.work / '.githooks')
+        # Simulate a qualified projection only inside this disposable hook fixture.
+        # The production lane remains separately covered; review-lane index cases
+        # live in test_review_hook.py without full media-tree copies.
+        p = self.work / 'source' / 'lobby-manifest.json'
+        route = json.loads(p.read_text()); route['visibility'] = 'public-captured'
+        p.write_text(json.dumps(route))
+        p=self.work/'source'/'branch-routes.json';route=json.loads(p.read_text());route['visibility']='public-captured';p.write_text(json.dumps(route))
         # Match the real checkout's LF and binary rules, including on Windows.
         shutil.copy2(self.repo_root / '.gitattributes', self.work / '.gitattributes')
         self.git('init', '-q')
@@ -409,6 +424,14 @@ class PrecommitHookTests(unittest.TestCase):
     def test_clean_tree_passes(self):
         code, _ = self.hook()
         self.assertEqual(code, 0)
+
+    def test_preview_source_without_matching_preview_docs_is_rejected(self):
+        p = self.work / 'source' / 'lobby-manifest.json'
+        data = json.loads(p.read_text()); data['visibility'] = 'local-preview'
+        p.write_text(json.dumps(data)); self.git('add', 'source/lobby-manifest.json')
+        code, error = self.hook()
+        self.assertEqual(code, 1)
+        self.assertIn('staged docs/', error)
 
     def test_unstaged_changes_only_pass(self):
         # Fast path: nothing staged -> hook validates nothing, working tree

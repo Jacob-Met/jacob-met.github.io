@@ -1,5 +1,5 @@
 """Local HTTP integration tests for the deployment verifier; no request to the public host."""
-import functools, shutil, tempfile, threading, unittest
+import hashlib, json, functools, shutil, tempfile, threading, unittest
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 import build
@@ -9,7 +9,12 @@ from verify_deployment import verify, validate_base
 class DeploymentTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(); self.addCleanup(self.temp.cleanup)
-        self.root = Path(self.temp.name) / 'site'; build.build(self.root)
+        self.root = Path(self.temp.name) / 'site'; build.build(self.root, preview=True)
+        # This local server fixture simulates a future qualified projection.
+        # It does not change the source manifest or publish the preview.
+        route_path=self.root/'lobby-manifest.json';route=json.loads(route_path.read_text());route['visibility']='public-captured';route_path.write_text(json.dumps(route))
+        manifest_path=self.root/'build-manifest.json';manifest=json.loads(manifest_path.read_text());manifest['publication']='public-captured';manifest['sha256']['lobby-manifest.json']=hashlib.sha256(route_path.read_bytes()).hexdigest();
+        branch_path=self.root/'branch-routes.json';branches=json.loads(branch_path.read_text());branches['visibility']='public-captured';branch_path.write_text(json.dumps(branches));manifest['sha256']['branch-routes.json']=hashlib.sha256(branch_path.read_bytes()).hexdigest();manifest_path.write_text(json.dumps(manifest))
         class Handler(SimpleHTTPRequestHandler):
             mode = 'normal'
             def log_message(self, *args): pass
@@ -54,6 +59,10 @@ class DeploymentTests(unittest.TestCase):
     def test_invalid_local_build_sends_nothing(self):
         (self.root / 'build-manifest.json').write_text('{}', encoding='utf-8')
         r = verify(self.root, self.base); self.assertFalse(r['passed']); self.assertEqual(r['network_requests'], 0)
+    def test_unreceived_preview_is_not_a_deployment_candidate(self):
+        p=self.root/'lobby-manifest.json';data=json.loads(p.read_text());data['visibility']='local-preview';p.write_text(json.dumps(data))
+        result=verify(self.root,self.base)
+        self.assertFalse(result['passed']);self.assertEqual(result['network_requests'],0)
     def test_base_validation(self):
         for base in ('http://example.invalid', 'https://u:p@example.invalid', 'https://example.invalid?t=x', 'https://example.invalid#x'):
             with self.subTest(base=base), self.assertRaises(ValueError): validate_base(base)

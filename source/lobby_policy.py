@@ -1,0 +1,180 @@
+"""One explicit prerecorded native camera route, never a live-engine claim.
+
+This policy is prepared independently of the renderer. Production loading rejects
+private studies by default. It does not authorize scripts or widen other media.
+"""
+import hashlib
+import json
+import math
+import re
+import struct
+from pathlib import Path
+
+MANIFEST = 'lobby-manifest.json'
+MEDIA = {
+    'entrance': 'assets/scene/forge-lobby-entrance.png',
+    'arrival': 'assets/scene/forge-engine-arrival.png',
+    'forward': 'assets/scene/forge-engine-forward.mp4',
+    'reverse': 'assets/scene/forge-engine-reverse.mp4',
+}
+SHA = re.compile(r'[a-f0-9]{64}\Z')
+
+
+def exact(value, fields):
+    if not isinstance(value, dict) or set(value) != set(fields):
+        raise ValueError('Unexpected recorded-route fields')
+
+
+def boxes(raw, start=0, end=None):
+    """Bounded ISO-BMFF box walk; reject truncation and zero-size ambiguity."""
+    end = len(raw) if end is None else end
+    while start < end:
+        if end - start < 8:
+            raise ValueError('Truncated media box')
+        size, kind = struct.unpack_from('>I4s', raw, start)
+        header = 8
+        if size == 1:
+            if end - start < 16:
+                raise ValueError('Truncated extended media box')
+            size = struct.unpack_from('>Q', raw, start + 8)[0]
+            header = 16
+        if size < header or size > end - start:
+            raise ValueError('Invalid media box extent')
+        yield kind, start + header, start + size
+        start += size
+
+
+def one(raw, parent, kind):
+    found = [(a, b) for k, a, b in boxes(raw, *parent) if k == kind]
+    if len(found) != 1:
+        raise ValueError('Missing or duplicate required media box')
+    return found[0]
+
+
+def recorded_video(raw):
+    """Inspect the actual single-video-track duration, sample count and size.
+
+    Decoded frame-to-native comparison remains separate receiving evidence;
+    these checks prevent a manifest from merely asserting the media geometry.
+    """
+    root = (0, len(raw))
+    one(raw, root, b'ftyp')
+    one(raw, root, b'mdat')
+    moov = one(raw, root, b'moov')
+    tracks = [(a, b) for k, a, b in boxes(raw, *moov) if k == b'trak']
+    if len(tracks) != 1:
+        raise ValueError('Route must contain exactly one video track and no audio')
+    mdia = one(raw, tracks[0], b'mdia')
+    a, b = one(raw, mdia, b'hdlr')
+    if b - a < 12 or raw[a + 8:a + 12] != b'vide':
+        raise ValueError('Route track is not video')
+    a, b = one(raw, mdia, b'mdhd')
+    if b - a < 20 or raw[a] != 0:
+        raise ValueError('Unexpected route media timing header')
+    timescale, duration = struct.unpack_from('>II', raw, a + 12)
+    if timescale == 0:
+        raise ValueError('Zero media timescale')
+    table = one(raw, one(raw, mdia, b'minf'), b'stbl')
+    a, b = one(raw, table, b'stsd')
+    if b - a < 8 or struct.unpack_from('>I', raw, a + 4)[0] != 1:
+        raise ValueError('Unexpected route sample descriptions')
+    samples = list(boxes(raw, a + 8, b))
+    if len(samples) != 1 or samples[0][0] != b'avc1':
+        raise ValueError('Route must use the reviewed AVC video format')
+    _, a, b = samples[0]
+    if b - a < 28:
+        raise ValueError('Truncated visual sample')
+    width, height = struct.unpack_from('>HH', raw, a + 24)
+    a, b = one(raw, table, b'stsz')
+    if b - a < 12:
+        raise ValueError('Truncated sample sizes')
+    sample_size, frames = struct.unpack_from('>II', raw, a + 4)
+    if b - a != 12 + (4 * frames if sample_size == 0 else 0):
+        raise ValueError('Invalid sample-size table')
+    a, b = one(raw, table, b'stts')
+    if b - a < 8:
+        raise ValueError('Truncated sample timing')
+    count = struct.unpack_from('>I', raw, a + 4)[0]
+    if count < 1 or count > 120 or b - a != 8 + count * 8:
+        raise ValueError('Invalid timing table')
+    entries = [struct.unpack_from('>II', raw, a + 8 + i * 8) for i in range(count)]
+    if sum(n for n, _ in entries) != frames or sum(n * dt for n, dt in entries) != duration:
+        raise ValueError('Inconsistent sample timing')
+    if any(n == 0 or dt == 0 or dt * 20 != timescale for n, dt in entries):
+        raise ValueError('Route is not constant20fps')
+    return width, height, frames, duration / timescale
+
+
+def read_media(root, record, name):
+    exact(record, {'src', 'sha256'})
+    if record['src'] != name or not isinstance(record['sha256'], str) or not SHA.fullmatch(record['sha256']):
+        raise ValueError('Unapproved recorded-route resource')
+    path = root / name
+    if any(p.is_symlink() for p in (path, *path.parents) if p != root.parent):
+        raise ValueError('Symlinked recorded-route resource')
+    if not path.is_file() or not path.resolve().is_relative_to(root.resolve()) or not 1 <= path.stat().st_size <= 2_000_000:
+        raise ValueError('Missing or oversized recorded-route resource')
+    raw = path.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != record['sha256']:
+        raise ValueError('Recorded-route resource checksum differs')
+    return raw
+
+
+def load_lobby(root, *, allow_private_preview=False):
+    root = Path(root)
+    path = root / MANIFEST
+    if not path.is_file() or path.is_symlink() or path.stat().st_size > 10_000:
+        raise ValueError('Missing recorded-route manifest')
+    data = json.loads(path.read_text())
+    exact(data, {'schema', 'visibility', 'route', 'media', 'provenance', 'proof'})
+    permitted = {'public-captured'} | ({'local-preview'} if allow_private_preview else set())
+    if type(data['schema']) is not int or data['schema'] != 1 or not isinstance(data['visibility'], str) or data['visibility'] not in permitted:
+        raise ValueError('Recorded route lacks explicit publication projection')
+    route = data['route']
+    dimensions = (route.get('width'), route.get('height')) if isinstance(route, dict) else ()
+    if dimensions not in ((800, 500), (640, 400)):
+        raise ValueError('Unreviewed recorded-route dimensions')
+    expected = {'id': 'engine', 'mode': 'recorded-native', 'width': dimensions[0], 'height': dimensions[1],
+                'frames': 80, 'playbackFps': 20, 'containerSeconds': 4, 'frameSpanSeconds': 3.95}
+    if route != expected or any(type(route.get(k)) is bool for k in expected):
+        raise ValueError('Unexpected recorded-route contract')
+    exact(data['media'], MEDIA)
+    for key, name in MEDIA.items():
+        raw = read_media(root, data['media'][key], name)
+        if key in ('entrance', 'arrival'):
+            if len(raw) < 33 or raw[:8] != b'\x89PNG\r\n\x1a\n' or raw[12:16] != b'IHDR' or struct.unpack_from('>II', raw, 16) != dimensions:
+                raise ValueError('Route endpoint dimensions differ')
+        elif recorded_video(raw) != (*dimensions, 80, 4.0):
+            raise ValueError('Actual route video differs from reviewed contract')
+    proof = data['proof']
+    exact(proof, {'src', 'sha256', 'width', 'height', 'alt', 'label'})
+    if (proof['width'], proof['height']) != dimensions or any(type(proof[k]) is not int for k in ('width', 'height')):
+        raise ValueError('Workbench proof must match route dimensions')
+    for key in ('alt', 'label'):
+        if not isinstance(proof[key], str) or not 1 <= len(proof[key]) <= 400 or any(c in proof[key] for c in '<>\x00'):
+            raise ValueError('Invalid workbench proof text')
+    raw = read_media(root, {k: proof[k] for k in ('src', 'sha256')}, 'assets/scene/forge-workbench.png')
+    if len(raw) < 33 or raw[:8] != b'\x89PNG\r\n\x1a\n' or raw[12:16] != b'IHDR' or struct.unpack_from('>II', raw, 16) != dimensions:
+        raise ValueError('Workbench proof must match route dimensions')
+    p = data['provenance']
+    exact(p, {'cameraSequenceSha256', 'nativeReceiptSha256', 'nativeJobSeconds'})
+    if any(not isinstance(p[k], str) or not SHA.fullmatch(p[k]) for k in ('cameraSequenceSha256', 'nativeReceiptSha256')):
+        raise ValueError('Invalid recorded-route provenance hash')
+    seconds = p['nativeJobSeconds']
+    if type(seconds) not in (int, float) or not math.isfinite(seconds) or not 1 <= seconds <= 3600:
+        raise ValueError('Invalid native capture duration')
+    return data
+
+
+def lobby_files(data):
+    return {MANIFEST, *(r['src'] for r in data['media'].values()), data['proof']['src']}
+
+
+def route_video_errors(attrs, data):
+    allowed = {'id': ('route-forward', 'route-reverse'), 'muted': (None, ''),
+               'playsinline': (None, ''), 'preload': ('none',), 'hidden': (None, '')}
+    return [] if set(attrs) == set(allowed) and all(attrs[k] in v for k, v in allowed.items()) else ['video: outside exact click-driven recorded route']
+
+
+def route_source_errors(attrs, data):
+    return [] if set(attrs) == {'src', 'type'} and attrs['type'] == 'video/mp4' and attrs['src'] in {data['media'][k]['src'] for k in ('forward', 'reverse')} else ['source: outside exact declared route videos']

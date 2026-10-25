@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "figures": {
+    "towerops-airspace": {
+      "src": "assets/figures/towerops-airspace-computed.svg",
+      "width": 1200,
+      "height": 460,
+      "sha256": "c5e68611d86c36fffc561ff4eaff45c1c63cdd569afc0a75b8b9275c19966fac",
+      "alt": "Two modeled flights: initial paths share a predicted conflict window; changing one path removes that conflict in this five-minute example.",
+      "label": "Computed model \u00b7 1 \u2192 0 conflicts in this case.",
+      "mobile": {
+        "src": "assets/figures/towerops-airspace-computed-mobile.svg",
+        "width": 600,
+        "height": 916,
+        "sha256": "5968d85378fc594e65882f565eaf83cdb777a16d5dffa9400bae0668f05f713c"
+      }
+    },
+    "recallweave": {
+      "src": "assets/figures/recallweave-computed.svg",
+      "width": 1000,
+      "height": 480,
+      "sha256": "8c17a306ac48787f639b8a7ad900e2a00a22f6b15852669ed0097243810c411d",
+      "alt": "Computed feedback traces under one rule: an exact zero stays flat while a small initial displacement alternates and grows.",
+      "label": "Computed feedback model \u00b7 one rule, two starting states.",
+      "mobile": {
+        "src": "assets/figures/recallweave-computed-mobile.svg",
+        "width": 640,
+        "height": 520,
+        "sha256": "bf827eff2e24a88cacd426f5d5697276a1edbd56afb7aa9537d1ae9f34053379"
+      }
+    },
+    "worldlaw": {
+      "src": "assets/figures/worldlaw-computed.svg",
+      "width": 960,
+      "height": 460,
+      "sha256": "1f389a1f4e300708f56854aaaf6fcad9207a1cf3564ce0a2935b3b006ae21439",
+      "alt": "Normalized restoring-torque magnitudes \u03b8 and sin \u03b8 nearly overlap at small angles. Formulas use radians; at 90 degrees, the spring curve predicts 1.57 and gravity 1.00.",
+      "label": "Computed illustration \u00b7 normalized model curves, not measured data. Formulas use radians.",
+      "mobile": {
+        "src": "assets/figures/worldlaw-computed-mobile.svg",
+        "width": 600,
+        "height": 620,
+        "sha256": "23726586e7843e02d1715a88f1d3c03f9df00f35f11ec140080e6a525830d732"
+      }
+    }
+  }
+}

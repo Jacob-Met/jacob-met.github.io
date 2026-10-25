@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "visibility": "local-preview",
+  "route": {
+    "id": "engine",
+    "mode": "recorded-native",
+    "width": 640,
+    "height": 400,
+    "frames": 80,
+    "playbackFps": 20,
+    "containerSeconds": 4,
+    "frameSpanSeconds": 3.95
+  },
+  "media": {
+    "entrance": {
+      "src": "assets/scene/forge-lobby-entrance.png",
+      "sha256": "e85274967a5e89dace34f1e008f37e12c1e043b72c05aa2c8515e6bf4c1a0818"
+    },
+    "arrival": {
+      "src": "assets/scene/forge-engine-arrival.png",
+      "sha256": "18c5c569ef7207859d59c72320faac8445c1fe3afda45d7b87204a02de15b7ec"
+    },
+    "forward": {
+      "src": "assets/scene/forge-engine-forward.mp4",
+      "sha256": "0c766fa5813f64ee9406ba26495aa056b8860e09dfcec64cfc8231a2a8817ca4"
+    },
+    "reverse": {
+      "src": "assets/scene/forge-engine-reverse.mp4",
+      "sha256": "092d64364e9ed8cba81025b5996055e9cfb8961cde912af212e6cf72cd62aa15"
+    }
+  },
+  "proof": {
+    "src": "assets/scene/forge-workbench.png",
+    "width": 640,
+    "height": 400,
+    "sha256": "262459031987b79002205b2c9cadb2e5d2b7447b1cf5964384700e61a96c00d1",
+    "alt": "A native HAMON Engine view of the swordsmith workshop, with anvil, tools, finished blades and a warm charcoal hearth.",
+    "label": "Native HAMON Engine render"
+  },
+  "provenance": {
+    "cameraSequenceSha256": "5943e379160c2c82f4f12a6d4eac0f02cb4f67a8833f1d05e900af3364568915",
+    "nativeReceiptSha256": "6de45c9a9361d3970257cef433f1adf82df7eab78a3fc915b55cc313976bb79f",
+    "nativeJobSeconds": 92.081560618
+  }
+}
