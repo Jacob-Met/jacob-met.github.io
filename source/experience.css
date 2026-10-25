@@ -80,6 +80,33 @@ body .work-section.forge-room{--arrival-height:clamp(230px,33svh,340px);backgrou
 .engine-style-study img{display:block;width:100%;height:auto}
 .engine-style-study figcaption{margin-top:12px;font-size:13px;line-height:1.6;color:var(--quiet)}
 
+/* Design pass: navigation, typography, hover/focus, motion. */
+.ws-top nav a{position:relative;padding:0 2px;font-size:15px;letter-spacing:.01em;color:#dbe8ec}
+.ws-top nav a::after{content:"";position:absolute;left:2px;right:2px;bottom:8px;height:1px;background:#ffcf8a;transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
+.ws-top nav a:hover::after,.ws-top nav a:focus-visible::after,.ws-top nav a[aria-current="page"]::after{transform:scaleX(1)}
+.ws-top nav a[aria-current="page"]{color:#fff}
+header nav a{transition:color .2s ease}header nav a:hover{color:var(--leaf)}
+footer .foot-links{display:flex;gap:18px;align-items:center}footer .foot-links a{color:#bcd0d8}footer .foot-links a:hover{color:var(--leaf)}
+.ws-main h1,.ws-main h2,.ws-main h3,.hamon-headline{text-wrap:balance}.ws-main p{text-wrap:pretty}
+.hamon-section h2{font-size:clamp(34px,4.6vw,54px);letter-spacing:-.045em;line-height:1.05}
+.hamon-caps li,.hamon-instruments li{transition:border-color .25s ease,background-color .25s ease;border-radius:0 0 8px 8px}
+.hamon-caps li:hover,.hamon-instruments li:hover{border-top-color:#ffcf8a;background:linear-gradient(180deg,#ffcf8a12,transparent 70%)}
+.hamon-caps li:hover h3,.hamon-instruments li:hover h3{color:#ffe4b8}
+.hamon-frame{box-shadow:0 18px 50px #0006;transition:box-shadow .3s ease,transform .3s ease}.hamon-frame:hover{box-shadow:0 24px 64px #0009;transform:translateY(-2px)}
+.hamon-frame:focus-visible{outline:3px solid #ffcf8a;outline-offset:5px}
+.home-flagship{transition:border-color .25s ease,transform .25s ease,box-shadow .25s ease}.home-flagship:hover,.home-flagship:focus-within{border-color:#ffcf8a99;transform:translateY(-2px);box-shadow:0 14px 40px #0008}
+.ws-play{transition:background-color .2s ease,transform .2s ease,box-shadow .2s ease}.ws-play:hover{transform:translateY(-1px);box-shadow:0 8px 24px #ffcf8a40}
+.hamon-secondary{transition:color .2s ease,border-color .2s ease}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.hamon-hero-copy>*,.ws-hero-copy>*{animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+.hamon-hero-copy>:nth-child(2),.ws-hero-copy>:nth-child(2){animation-delay:.08s}.hamon-hero-copy>:nth-child(3),.ws-hero-copy>:nth-child(3){animation-delay:.16s}.hamon-hero-copy>:nth-child(4),.ws-hero-copy>:nth-child(4){animation-delay:.24s}.hamon-hero-copy>:nth-child(5),.ws-hero-copy>:nth-child(5){animation-delay:.32s}
+@keyframes lift{from{transform:translateY(18px)}to{transform:none}}
+@supports (animation-timeline:view()){.hamon-section,.ws-section{animation:lift linear both;animation-timeline:view();animation-range:entry 0% entry 35%}}
+@media(prefers-reduced-motion:reduce){.hamon-hero-copy>*,.ws-hero-copy>*,.hamon-section,.ws-section{animation:none!important;opacity:1!important;transform:none!important}.hamon-frame,.home-flagship,.ws-play{transition:none!important;transform:none!important}}
+@media(max-width:760px){
+ .ws-top{flex-wrap:wrap;row-gap:2px}.ws-top nav{width:100%;gap:4px 14px;flex-wrap:wrap}.ws-top nav a{font-size:15px}
+ .ws-hero-copy,.hamon-hero-copy{padding-top:150px}
+}
 /* A selected question on the existing WORLDLAW plot, not another dashboard. */
 .worldlaw-experiment fieldset{border:0;padding:0;margin:0;min-width:0}
 .worldlaw-experiment legend{padding:0;margin-bottom:16px;font-size:21px;line-height:1.4;color:var(--paper)}
@@ -205,3 +232,4 @@ body.ws{background:#08121d;color:#e5eef0}
 }
 @media(max-height:550px) and (orientation:landscape){.ws-hero-copy{padding-top:88px;padding-bottom:28px}.ws-hero h1{font-size:clamp(44px,12vh,72px)}}
 .hamon-headline{font-size:clamp(26px,3.2vw,38px);letter-spacing:-.04em;line-height:1.15;color:#ffd9a0;margin:6px 0 14px}
+

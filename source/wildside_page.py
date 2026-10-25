@@ -35,6 +35,14 @@ def video_files(root: Path) -> tuple[str, ...]:
     return (VIDEO,) if video_present(root) else ()
 
 
+def site_nav(current: str) -> str:
+    """One site-wide navigation for the secondary pages: Home, HAMON, Wildside, Projects, About."""
+    items = [('index.html', 'Home', 'home'), ('hamon.html', 'HAMON', 'hamon'), (PAGE, 'Wildside', 'wildside'),
+             ('index.html#projects', 'Projects', 'projects'), ('index.html#about', 'About', 'about')]
+    links = ''.join(f'<a href="{h}"' + (' aria-current="page"' if k == current else '') + f'>{t}</a>' for h, t, k in items)
+    return f'<nav aria-label="Site">{links}</nav>'
+
+
 def card() -> str:
     """Featured card for the homepage Projects section."""
     return (f'<article class="wildside-card"><a class="wildside-card-image" href="{PAGE}" aria-label="Wildside project page">'
@@ -55,7 +63,7 @@ def body(has_video: bool) -> str:
         demo = ('<figure class="ws-video ws-video-slot" data-wildside-video-placeholder><div role="img" aria-label="Demo video placeholder">'
                 '<strong>Demo video coming soon</strong><span>Placeholder: this slot fills automatically when wildside-demo-1080.mp4 is added to source/wildside-media/ and the site is rebuilt.</span></div></figure>')
     return (f'<a class="skip" href="#main">Skip to content</a><header class="ws-top"><a class="identity" href="index.html">Jacob Metoyer</a>'
-            '<nav aria-label="Site"><a href="hamon.html">HAMON</a><a href="index.html#projects">Projects</a><a href="index.html">Home</a></nav></header>'
+            + site_nav('wildside') + '</header>'
             '<main id="main" class="ws-main">'
             f'<section class="ws-hero"><img fetchpriority="high" decoding="async" src="{HERO}" width="{HERO_SIZE[0]}" height="{HERO_SIZE[1]}" alt="{e(HERO_ALT)}">'
             '<div class="ws-hero-copy"><p class="section-context">A <a class="kicker-link" href="hamon.html">HAMON</a> WORLD · MADE FOR MARINAHACKS</p><h1>Wildside</h1><p class="ws-tagline">Step into the WildSide</p>'

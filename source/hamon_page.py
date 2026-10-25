@@ -65,7 +65,7 @@ def body(wildside_page) -> str:
     return (
         '<a class="skip" href="#main">Skip to content</a>'
         '<header class="ws-top hamon-top"><a class="identity" href="index.html" aria-label="Jacob Metoyer, home">Jacob Metoyer</a>'
-        f'<nav aria-label="Site"><a href="#engine">Engine</a><a href="{ws}">Wildside</a><a href="index.html">Home</a></nav></header>'
+        + wildside_page.site_nav('hamon') + '</header>'
         '<main id="main" class="ws-main hamon-main">'
         f'<section class="hamon-hero"><img fetchpriority="high" decoding="async" src="{hero}" width="{hero_size[0]}" height="{hero_size[1]}" alt="{e(hero_alt)}">'
         '<div class="hamon-hero-copy">'
