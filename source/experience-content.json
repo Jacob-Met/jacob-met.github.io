@@ -574,13 +574,23 @@
         },
         {
           "id": "replay-forge",
-          "name": "Replay Forge",
+          "name": "Replay Forge · court reconstruction",
           "category": "Amazon Developer Hackathon",
           "purpose": "Turn source-bound basketball footage into a navigable court study with authored alternatives.",
           "status": "Amazon submission package prepared.",
           "limit": "Incomplete tracking and geometric reconstruction; alternatives are authored, not predicted outcomes.",
           "projectId": "replay-forge",
           "publicUrl": null
+        },
+        {
+          "id": "replayforge-debugging",
+          "name": "ReplayForge · replay debugging",
+          "category": "Life After Code · GitLab",
+          "purpose": "Compare a recorded run with a baseline, find the first differing state, and preserve it as a regression test.",
+          "status": "Submitted to Life After Code.",
+          "limit": "One synthetic reference simulator. The demonstrated fault and restoration are intentional, not an independently discovered repair.",
+          "projectId": null,
+          "publicUrl": "https://devpost.com/software/replayforge-ypvoia"
         },
         {
           "id": "shadewindow",

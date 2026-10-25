@@ -79,3 +79,60 @@ body .work-section.forge-room{--arrival-height:clamp(230px,33svh,340px);backgrou
 .engine-style-study{max-width:480px;margin:24px 0 30px}
 .engine-style-study img{display:block;width:100%;height:auto}
 .engine-style-study figcaption{margin-top:12px;font-size:13px;line-height:1.6;color:var(--quiet)}
+
+/* A selected question on the existing WORLDLAW plot, not another dashboard. */
+.worldlaw-experiment fieldset{border:0;padding:0;margin:0;min-width:0}
+.worldlaw-experiment legend{padding:0;margin-bottom:16px;font-size:21px;line-height:1.4;color:var(--paper)}
+.worldlaw-choice,.worldlaw-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.worldlaw-choice+label{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:56px;min-height:44px;padding:8px 10px;margin:0 8px 18px 0;border-bottom:2px solid var(--line);color:var(--quiet);font-size:17px;line-height:1.4;cursor:pointer}
+.worldlaw-choice+label::before{content:'';width:8px;height:8px;border:1px solid currentColor;border-radius:50%}
+.worldlaw-choice:checked+label{border-color:var(--leaf);color:var(--leaf)}
+.worldlaw-choice:checked+label::before{background:currentColor}
+.worldlaw-choice:focus-visible+label{outline:2px solid var(--ice);outline-offset:4px}
+.worldlaw-stage{position:relative}
+.worldlaw-stage picture{display:block}
+.worldlaw-probe{display:none;position:absolute;top:0;bottom:0;width:1px;pointer-events:none}
+.worldlaw-guide{position:absolute;top:24.347826%;height:52.608696%;border-left:1px dashed #b7cbd0;opacity:.65}
+.worldlaw-spring,.worldlaw-gravity{position:absolute;left:0;box-sizing:border-box;transform:translate(-50%,-50%);border-radius:50%}
+.worldlaw-spring{top:var(--spring-y);width:14px;height:14px;border:2px solid #e9ac83;background:#0b1921}
+.worldlaw-gravity{top:var(--gravity-y);width:7px;height:7px;background:#9edcc9;border:1px solid #0b1921}
+.worldlaw-readings{margin-top:19px}
+.worldlaw-experiment .worldlaw-reading{display:none;gap:5px 22px;flex-wrap:wrap;max-width:none;margin:0;font-size:16px;line-height:1.7;font-variant-numeric:tabular-nums;color:var(--quiet)}
+.worldlaw-reading span{white-space:nowrap}
+.worldlaw-reading strong{font-weight:500;color:var(--paper)}
+.worldlaw-angle{color:var(--paper)}
+.worldlaw-spring-value{color:#e9ac83}
+.worldlaw-gravity-value{color:#9edcc9}
+.worldlaw-probe-5{left:11.898148%;--spring-y:74.405980%;--gravity-y:74.409216%}
+.worldlaw-probe-30{left:29.722222%;--spring-y:61.653273%;--gravity-y:62.342995%}
+.worldlaw-probe-60{left:51.111111%;--spring-y:46.350023%;--gravity-y:51.645151%}
+.worldlaw-probe-90{left:72.500000%;--spring-y:31.046774%;--gravity-y:47.729469%}
+@media(max-width:800px){
+.worldlaw-guide{top:30.645161%;height:46.451613%}
+.worldlaw-probe-5{left:16.314815%;--spring-y:74.844736%;--gravity-y:74.847594%}
+.worldlaw-probe-30{left:37.888889%;--spring-y:63.584548%;--gravity-y:64.193548%}
+.worldlaw-probe-60{left:63.777778%;--spring-y:50.072321%;--gravity-y:54.747732%}
+.worldlaw-probe-90{left:89.666667%;--spring-y:36.560095%;--gravity-y:51.290323%}
+}
+#worldlaw-angle-5:checked~.worldlaw-stage .worldlaw-probe-5{display:block}
+#worldlaw-angle-5:checked~.worldlaw-readings .worldlaw-reading-5{display:flex}
+#worldlaw-angle-30:checked~.worldlaw-stage .worldlaw-probe-30{display:block}
+#worldlaw-angle-30:checked~.worldlaw-readings .worldlaw-reading-30{display:flex}
+#worldlaw-angle-60:checked~.worldlaw-stage .worldlaw-probe-60{display:block}
+#worldlaw-angle-60:checked~.worldlaw-readings .worldlaw-reading-60{display:flex}
+#worldlaw-angle-90:checked~.worldlaw-stage .worldlaw-probe-90{display:block}
+#worldlaw-angle-90:checked~.worldlaw-readings .worldlaw-reading-90{display:flex}
+@media(max-width:700px){
+.worldlaw-experiment fieldset{padding-top:2px}
+.worldlaw-experiment legend,.worldlaw-experiment .worldlaw-readings{margin-left:7%;margin-right:7%}
+.worldlaw-experiment .worldlaw-choice:first-of-type+label{margin-left:7%}
+.worldlaw-choice+label{min-width:51px;padding:8px 7px;margin-right:4px;font-size:16px;gap:6px}
+.worldlaw-experiment .worldlaw-reading{gap:3px 17px;font-size:15px}
+}
+@media(forced-colors:active){
+.worldlaw-choice+label{color:CanvasText;border-color:CanvasText}
+.worldlaw-choice:checked+label{color:Highlight;border-color:Highlight}
+.worldlaw-choice:focus-visible+label{outline-color:Highlight}
+.worldlaw-probe{display:none!important}
+.worldlaw-reading span,.worldlaw-reading strong{color:CanvasText}
+}

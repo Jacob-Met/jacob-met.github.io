@@ -104,9 +104,11 @@
     "test_lobby_runtime.py",
     "test_profile_generation.py",
     "test_project_order.py",
+    "test_replayforge_identity.py",
     "test_review_hook.py",
     "test_screenshot_access.py",
     "test_site.py",
+    "test_worldlaw_probe.py",
     "verify_deployment.py",
     "verify_game_browser.py"
   ]

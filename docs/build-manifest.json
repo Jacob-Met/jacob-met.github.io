@@ -45,8 +45,8 @@
     "capture-manifest.json": "a68fbb4b771e9aaaad473a4c6534218b5eea9d29f2bc78fbd92eabd55098ab0c",
     "cv.json": "8bf265836cadd04aecb6ab3bcc71debbde250e7cead76289c87f48ebc89b167d",
     "detail.js": "b23eacae390e33b424cdbace4039fbe5418311ab256232d7946ed2993ebadc0a",
-    "experience-content.json": "b4d856352b63d649044687a3b79e241f354cf980190664ded24795bac851c671",
-    "experience.css": "b075beba1d1d72e25387adb9bccbea43b30e68aa4b23e38e64b2627db5088e9e",
+    "experience-content.json": "80671ddaa2d429de7071423efd5e8268d2d0f404d9c109dd23d715d3b1ac7cd6",
+    "experience.css": "84f132324de0d62acfb3b71e024dd548ff9a62c965a3269ebc572b4b69b01835",
     "favicon.ico": "fe0deb2a0efa8c76fdcca3619db3e5036779ccf5aae7927108bd34d02bd6d0ba",
     "games/lanternwake/build-info.json": "a0cfabeef8c3d89ea5f28eca998a25ac9c7bfa98c57c778c239ba9c17ec25a28",
     "games/lanternwake/desktop.png": "2405736059c1d6fc5757057d9161346dab8bdf3cd50cc6ab14bcbc04a21d40a0",
@@ -59,7 +59,7 @@
     "games/lanternwake/poster.svg": "1ee8b5c9154f1f52b9bad22b5216de44a172ff47bef6c7752d785c84e87e3175",
     "games/lanternwake/style.css": "6a4c0e20a4316051c77f9b13d0cf581019c47d19918fae8f18d09bef2f36fd72",
     "games/lanternwake/webgpu-compat.js": "95b4487d37462f3e60f159abfedff03bcd6810960339ae2a65e0311863954822",
-    "index.html": "c09b95c2dc5589a54bc12be43414bc82fc41c5f93d1f95073b4ca96b3ed459af",
+    "index.html": "8663e2b8980d19e3be9e0f95f6444990cdb09d630427711c634c677eb956c696",
     "lobby-journey.js": "3f7e383b84dc6034b65cf571666f28297df4e20113670c7280b47b7b13bc2d24",
     "lobby-manifest.json": "4981ec3c671d36ecc892ac9472c69f24e875c114b35621ae6e7d20d0e631ba82",
     "lobby.js": "36adc74e32f4c62917e559ee6b8a6efa1beb5e221c3dd1a4b99e8e1f29886759",
@@ -68,6 +68,6 @@
     "robots.txt": "60d463caa67aaa008b827bdec75236dcec7a9c82c49f529ad1da2de1c847c47e",
     "scene-handoff.js": "dceb03ad79736cc96a37fed78c04d63663889be596d52b200e71bdf433d8a39e",
     "sitemap.xml": "2eed0d0b00ceeb3428b333b551ac7a157d1610fc06c64641c3a855e5cf266c5b",
-    "style.css": "b075beba1d1d72e25387adb9bccbea43b30e68aa4b23e38e64b2627db5088e9e"
+    "style.css": "84f132324de0d62acfb3b71e024dd548ff9a62c965a3269ebc572b4b69b01835"
   }
 }

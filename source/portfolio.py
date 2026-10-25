@@ -44,6 +44,35 @@ def computed_figure(figure):
               f'<figcaption>{e(figure["label"])}</figcaption></figure>' if figure else '')
 
 
+def worldlaw_experiment(figure):
+    """Four computed model probes; no JS, measured data, or form submission."""
+    if not figure:
+        return ''
+    from math import radians, sin
+    choices = (5, 30, 60, 90)
+    controls, probes, readings = [], [], []
+    for degrees in choices:
+        spring = radians(degrees)
+        gravity = sin(spring)
+        gap = spring - gravity
+        key = f'worldlaw-angle-{degrees}'
+        checked = ' checked' if degrees == 90 else ''
+        values = f'Spring {spring:.4f}; gravity {gravity:.4f}; prediction gap {gap:.4f}. Normalized torque magnitude.'
+        controls.append(f'<input class="worldlaw-choice" type="radio" name="worldlaw-angle" id="{key}" value="{degrees}"{checked}>'
+                        f'<label for="{key}">{degrees}°<span class="worldlaw-sr">. {e(values)}</span></label>')
+        probes.append(f'<span class="worldlaw-probe worldlaw-probe-{degrees}" aria-hidden="true"><span class="worldlaw-guide"></span><span class="worldlaw-spring"></span><span class="worldlaw-gravity"></span></span>')
+        readings.append(f'<p class="worldlaw-reading worldlaw-reading-{degrees}"><span class="worldlaw-angle">At {degrees}°</span> '
+                        f'<span class="worldlaw-spring-value">Spring <strong>{spring:.4f}</strong></span> '
+                        f'<span class="worldlaw-gravity-value">Gravity <strong>{gravity:.4f}</strong></span> '
+                        f'<span>Prediction gap <strong>{gap:.4f}</strong></span></p>')
+    mobile = figure['mobile']
+    chart = (f'<picture><source media="(max-width: 800px)" type="image/svg+xml" srcset="{e(mobile["src"])}" width="{mobile["width"]}" height="{mobile["height"]}">'
+             f'<img loading="lazy" src="{e(figure["src"])}" width="{figure["width"]}" height="{figure["height"]}" alt="{e(figure["alt"])}"></picture>')
+    return ('<figure class="project-figure worldlaw-experiment"><fieldset><legend>Where would you measure?</legend>'
+            + ''.join(controls) + '<div class="worldlaw-stage">' + chart + ''.join(probes) + '</div>'
+            + '<div class="worldlaw-readings">' + ''.join(readings) + '</div></fieldset>'
+            + '<figcaption>Computed model predictions, not measurements. Normalized torque magnitude; formulas use radians.</figcaption></figure>')
+
 def public_demo(d, figure=None):
     # Native computations are explanatory illustrations, never passed off as UI captures.
     hooks = {'towerops-airspace': ('See the conflict. Change the outcome.',
@@ -74,7 +103,7 @@ def research_section(experience, figures=None):
     academic = ''.join(f'<div><dt>{e(x["name"])}</dt><dd>{e(x["focus"])}</dd></div>' for x in work['academic'])
     independent = ''.join(
         f'<article class="research-entry" id="{e(x["id"])}"><p class="section-context">{e(x["name"])}</p>'
-        f'<h3>{e(x["question"])}</h3><p>{e(x["output"])}</p>{computed_figure((figures or {}).get(x["id"]))}<details><summary>Inside the study</summary>'
+        f'<h3>{e(x["question"])}</h3><p>{e(x["output"])}</p>{worldlaw_experiment((figures or {}).get(x["id"])) if x["id"] == "worldlaw" else computed_figure((figures or {}).get(x["id"]))}<details><summary>Inside the study</summary>'
         f'<p>{e(x["detail"])}</p><p class="scope-copy">{e(x["limit"])}</p></details></article>'
         for x in work['independent'])
     return (f'<section class="work-section" id="research" tabindex="-1"><span id="about" class="section-alias"></span>'
