@@ -87,6 +87,23 @@ export function looks_json(): string;
 export function open_view(canvas: HTMLCanvasElement): Promise<HamonView>;
 
 /**
+ * The input resident `i` is steered with on the next ticks (see `hamon_sculpt::residents::Drive`).
+ */
+export function resident_drive(i: number, forward: number, turn: number, up: number, run: boolean, act: boolean): void;
+
+/**
+ * `[{kind, pos: [x, y, z], yaw, airborne, activity}]` for every resident, live (every frame's
+ * latest tick). `yaw` is the Engine heading about +Y: 0 faces +X and positive turns left.
+ */
+export function resident_poses_json(): string;
+
+/**
+ * Steer resident `i` from now on (one at a time); a negative `i` hands every resident back to
+ * its own behaviour. False when there is no such resident.
+ */
+export function resident_possess(i: number): boolean;
+
+/**
  * `[{kind, pos: [x, y, z], activity}]` for the residents of the current view (updated twice
  * a second), for inspection and browser checks.
  */
@@ -116,12 +133,15 @@ export interface InitOutput {
     readonly hamonview_stats: (a: number) => [number, number];
     readonly looks_json: () => [number, number];
     readonly open_view: (a: any) => any;
+    readonly resident_drive: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
+    readonly resident_poses_json: () => [number, number];
+    readonly resident_possess: (a: number) => number;
     readonly resident_states_json: () => [number, number];
     readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___js_sys_522f2cbc6d838fb6___Function_fn_wasm_bindgen_569c88abdbd95b4d___JsValue_____wasm_bindgen_569c88abdbd95b4d___sys__Undefined___js_sys_522f2cbc6d838fb6___Function_fn_wasm_bindgen_569c88abdbd95b4d___JsValue_____wasm_bindgen_569c88abdbd95b4d___sys__Undefined_______true_: (a: number, b: number, c: any, d: any) => void;
     readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___wasm_bindgen_569c88abdbd95b4d___JsValue__core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_569c88abdbd95b4d___JsError___true_: (a: number, b: number, c: any) => [number, number];
     readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___wasm_bindgen_569c88abdbd95b4d___sys__JsNullable_wgpu_f96de166a00bd368___backend__webgpu__webgpu_sys__gen_GpuError__GpuError___core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_569c88abdbd95b4d___JsError___true_: (a: number, b: number, c: any) => [number, number];
-    readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___wasm_bindgen_569c88abdbd95b4d___sys__JsNullable_wgpu_f96de166a00bd368___backend__webgpu__webgpu_sys__gen_GpuError__GpuError___core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_569c88abdbd95b4d___JsError___true__23: (a: number, b: number, c: any) => [number, number];
-    readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___wasm_bindgen_569c88abdbd95b4d___sys__JsNullable_wgpu_f96de166a00bd368___backend__webgpu__webgpu_sys__gen_GpuError__GpuError___core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_569c88abdbd95b4d___JsError___true__24: (a: number, b: number, c: any) => [number, number];
+    readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___wasm_bindgen_569c88abdbd95b4d___sys__JsNullable_wgpu_f96de166a00bd368___backend__webgpu__webgpu_sys__gen_GpuError__GpuError___core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_569c88abdbd95b4d___JsError___true__26: (a: number, b: number, c: any) => [number, number];
+    readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___wasm_bindgen_569c88abdbd95b4d___sys__JsNullable_wgpu_f96de166a00bd368___backend__webgpu__webgpu_sys__gen_GpuError__GpuError___core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_569c88abdbd95b4d___JsError___true__27: (a: number, b: number, c: any) => [number, number];
     readonly __wbindgen_malloc: (a: number, b: number) => number;
     readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
     readonly __wbindgen_exn_store: (a: number) => void;

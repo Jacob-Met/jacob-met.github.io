@@ -17,6 +17,8 @@ import {createNavigator,fitOverview,captureVisit,resolveVisit,MODES} from './vis
 import {createHabitatSimulation} from './habitat.mjs';
 import {createCrawlerSimulation,CRAWLER_BODY} from './crawler.mjs';
 import {createCrawlerArt} from './crawler-art.mjs';
+import {createSalamanderSimulation,SALAMANDER_BODY} from './salamander-motion.mjs';
+import {createSalamanderArt} from './salamander-art.mjs';
 import {createOrbWeaver,nearestSilkPoint} from './orb-web.mjs';
 import {createOrbWebArt} from './orb-web-art.mjs';
 import {createPondSkater} from './pond-skater.mjs';
@@ -56,6 +58,7 @@ const requestWorldFrame=()=>frameLoop?.invalidate();
 try{store=createSessionStore(localStorage);session=store.load();}catch(e){saveFault=e.message;session=defaultSession();}
 let place=session.places.find(p=>p.id===session.activePlaceId),displayPlace=place,historical=false;
 let simContext=null,crawlerContext=null,crawler=null,crawlerArt=null,crawlerNear=false;
+let salamanderContext=null,salamander=null,salamanderArt=null;
 let orbWeaver=null,orbArt=null,orbContext=null,webFocus=false;
 let pondSkater=null,skaterArt=null,skaterContext=null,skaterFocus=false;
 let submergedLife=null,submergedArt=null,submergedView=null,submergedContext=null,underwaterFocus=false;
@@ -99,13 +102,13 @@ function updateLookPicker(s){
  hamonState=s;hamonResidents.setVisible(!!hamon&&s.phase==='ready');refreshControls();try{registerCorePlaces();}catch{}
  if(s.phase==='failed'&&s.error&&!hamonNoticeShown){hamonNoticeShown=true;notify(/WebGPU is not available/i.test(s.error)?webgpuNotice(s.error,mobile.device,navigator.userAgent):'Wildside is showing its standard view here: this device can’t draw the painted view just now. Your place is unchanged.');}
 }
-function hamonContext(){return {sim,bird,crawler,crawlerArt,orbWeaver,orbArt,pondSkater,skaterArt,submergedLife,submergedArt,nav,place:displayPlace,art,embody};}
+function hamonContext(){return {sim,bird,crawler,crawlerArt,salamander,salamanderArt,orbWeaver,orbArt,pondSkater,skaterArt,submergedLife,submergedArt,nav,place:displayPlace,art,embody};}
 // Watch or become an animal (embody.mjs). The host supplies the simulation and applies the camera.
 const embodyRay=new THREE.Raycaster();
 const embodyProbe=new THREE.Vector3();
 let embodyClock=0;
 const embody=createEmbodiment({
-  context:()=>({sim,nav,groundAt:art?.groundAt,crawler,pondSkater,orbWeaver,submergedLife,hamon}),
+  context:()=>({sim,nav,groundAt:art?.groundAt,crawler,salamander,pondSkater,orbWeaver,submergedLife,hamon}),
  hamonActive:()=>!!hamon?.active,
  occlude:(from,to,{foliage=false}={})=>{
   const d=to.map((v,i)=>v-from[i]),length=Math.hypot(...d);if(length<1e-9||!art)return null;
@@ -135,7 +138,7 @@ const embodyUI=mountEmbodyUI(embody,{notify});
 let residentEncounter=null;
 if(hamon){hamonResidents.onChange=()=>syncHamonWorld();
  registerControl({id:'hamon-residents',section:'life',order:5,when:()=>!!hamonState&&hamonState.phase==='ready',mount({container}){hamonResidents.mount(container);return {update(){hamonResidents.refresh();}};}});}
-function hamonDynamicRoots(){return [bird,crawlerArt,orbArt,skaterArt,submergedArt].filter(Boolean).map(a=>({group:a.group,role:'creature'}));}
+function hamonDynamicRoots(){return [bird,crawlerArt,salamanderArt,orbArt,skaterArt,submergedArt].filter(Boolean).map(a=>({group:a.group,role:'creature'}));}
 function syncHamonWorld(){if(!hamon&&liveIdOf(displayPlace))notify('This imagined place is drawn by the HAMON Engine. Open Wildside with ?hamon=1 (WebGPU) to see it.');if(hamon&&art)void hamon.ready.then(ok=>{if(ok&&art){const shown=hamon.setWorld(art,displayPlace,hamonDynamicRoots(),hamonContext());return Promise.resolve(shown).then(()=>{adoptLiveWalk();if(ok)hamon.setRain(rain);requestWorldFrame();});}if(ok)hamon.setRain(rain);requestWorldFrame();});}
 // An Engine live place (hamon-places.mjs): walk its own ground, buildings and trunks, not the token patch Wildside built.
 function adoptLiveWalk(){
@@ -191,6 +194,16 @@ function rainSupportAt(x,z){
 }
 const cameraTarget=new THREE.Vector3();
 function world(){return {bounds:art.bounds,obstacles:art.obstacles,groundAt:art.groundAt,surfaceAt:art.surfaceAt,groundCoverageRequired:art.groundCoverageRequired,surfaceContact:art.surfaceContact};}
+// An imagined large salamander on the bank: the authored slow crawl of salamander-motion.mjs, on supported ground near water.
+function salamanderWorld(){return {surfaceAt:art.surfaceAt,bounds:art.bounds,obstacles:art.obstacles,routeXZ:[]};}
+function spawnSalamander(p){
+ const candidates=[],{min,max}=art.bounds;
+ for(const a of p.anchors??[])if(a.kind==='water')for(let k=0;k<16;k++){const t=k/16*Math.PI*2,r=Math.max(a.size[0],a.size[2])*.5+.55;candidates.push([a.position[0]+Math.cos(t)*r,a.position[2]+Math.sin(t)*r,t]);}
+ for(let z=0;z<9;z++)for(let x=0;x<9;x++)candidates.push([min[0]+(max[0]-min[0])*(x+.5)/9,min[2]+(max[2]-min[2])*(z+.5)/9,(x*7+z*3)%6]);
+ for(const [x,z,yaw] of candidates){const y=art.surfaceAt(x,z);if(y===null)continue;
+  try{const sim=createSalamanderSimulation(salamanderWorld(),{position:[x,y+SALAMANDER_BODY.clearance,z],yaw,seed:17,initialRest:3});if(sim.snapshot().salamander.state!=='unplaced')return sim;}catch{}}
+ return null;
+}
 function spawnGroundCrawler(p){
  const candidates=[];
  for(const a of p.anchors)if(['ground','path'].includes(a.kind))candidates.push([a.position[0]+a.size[0]*.22,a.position[2]+a.size[2]*.22],[a.position[0],a.position[2]]);
@@ -302,6 +315,9 @@ function rebuild(p,{keepPose=false}={}){
  if(!bird){bird=createBirdArt();scene.add(bird.group);}const habitat={perches:art.perches,foragingSites:birdForagingSites(art),obstacles:art.obstacles,groundY:art.groundAt?.(0,0)||0};
  const context=p.id+':'+(historical?'revision-'+p.revision:'current');
  if(sim&&simContext===context)sim.setHabitat(habitat);else sim=createHabitatSimulation(habitat,{seed:42});simContext=context;sim.setWeather({rain:rain?1:0});
+ if(!salamanderArt){salamanderArt=createSalamanderArt();scene.add(salamanderArt.group);}
+ if(!salamander||salamanderContext!==context){salamander=spawnSalamander(p);}else salamander.setWorld(salamanderWorld());salamanderContext=context;
+ if(salamander)salamanderArt.update(salamander.snapshot().salamander);else salamanderArt.group.visible=false;
  if(!crawlerArt){crawlerArt=createCrawlerArt();scene.add(crawlerArt.group);}
  if(!crawler||crawlerContext!==context){crawler=spawnGroundCrawler(p);crawlerNear=false;}else crawler.setWorld(world());crawlerContext=context;
  if(crawler)crawlerArt.update(crawler.snapshot().crawler);else crawlerArt.group.visible=false;
@@ -903,14 +919,16 @@ function advanceWorld(dt){if(!worldReady)return;if(!paused&&!document.hidden)wor
   if(!overview&&!underwaterFocus){const visitor=nav.pose(),c=crawler.snapshot().crawler,feet=[visitor.position[0],visitor.position[1]-visitor.eye,visitor.position[2]],distance=Math.hypot(...feet.map((v,i)=>v-c.position[i])),radius=visitor.mode==='human'?.3:visitor.mode==='bird'?.12:.035;
    if(distance<radius&&!crawlerNear){crawler.disturb();crawlerNear=true;}else if(distance>radius*1.5)crawlerNear=false;
   }crawler.step(dt);
- }}
+ }
+  if(salamander)salamander.step(Math.min(dt,.25));
+ }
 }
 function animate(){if(!worldReady)return;
  if(!birdFocus&&!crawlerFocus)updateViewCamera();
  if(embody.active){const now=performance.now(),dt=embodyClock?Math.min(.1,(now-embodyClock)/1000):1/60;embodyClock=now;embody.applyCamera(camera,dt);}
  embodyUI.sync();
  if(pendingMode&&!nav.pose().transitioning){if(nav.pose().mode!==pendingMode)notify('There is not enough clearance to change scale here. Move to an open part of the place.');pendingMode=null;updateLabels();}$('save-memory').disabled=historical||(!underwaterFocus&&nav.pose().transitioning);
-const snap=sim.snapshot();bird.update(snap.bird);if(crawler)crawlerArt.update(crawler.snapshot().crawler);if(orbArt)orbArt.update(orbWeaver.snapshot(),{rain});if(skaterArt)skaterArt.update(pondSkater.snapshot());if(submergedArt){const aquatic=submergedLife.snapshot();submergedArt.update(aquatic);submergedArt.group.visible=aquatic.swimmers.some(s=>camera.position.distanceTo(new THREE.Vector3(...s.position))<.20);}art.update(worldTime,{rain});
+const snap=sim.snapshot();bird.update(snap.bird);if(crawler)crawlerArt.update(crawler.snapshot().crawler);if(salamander)salamanderArt.update(salamander.snapshot().salamander);if(orbArt)orbArt.update(orbWeaver.snapshot(),{rain});if(skaterArt)skaterArt.update(pondSkater.snapshot());if(submergedArt){const aquatic=submergedLife.snapshot();submergedArt.update(aquatic);submergedArt.group.visible=aquatic.swimmers.some(s=>camera.position.distanceTo(new THREE.Vector3(...s.position))<.20);}art.update(worldTime,{rain});
  if(birdFocus||crawlerFocus){updateResidentFocus(birdFocus?snap.bird:crawler?.snapshot().crawler);updateViewCamera();}
  soundscape.update({listener:camera.position.toArray(),forward:camera.getWorldDirection(soundForward).toArray(),up:soundUp.setFromMatrixColumn(camera.matrixWorld,1).toArray(),mode:overview?'human':nav.pose().mode,bird:snap.bird,crawler:crawler?.snapshot().crawler??null,rain,paused:paused||underwaterFocus,hidden:document.hidden});
  if(frameCount%15===0)updateEncounter();

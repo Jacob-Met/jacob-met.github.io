@@ -110,4 +110,23 @@ export const RESIDENT_CREATURES=[
       return steeredDriver({steer:v=>submergedLife.steer(v),release:()=>submergedLife.steer(null),read,map:input=>({forward:input.forward,turn:-input.right,up:input.up})});
     },
   },
+  {
+    id:'salamander',name:'Salamander',article:'the salamander',kind:'crawler',
+    camera:{
+      outside:{distance:1.7,min:.6,max:9,pitch:.3,height:.1,near:.03},
+      shoulder:{back:.9,height:.36,side:.05,fov:60,near:.02},
+      eyes:{ahead:.44,height:.11,fov:96,near:.01},
+    },
+    controls:'W crawl \u00b7 A / D turn \u00b7 drag to look \u00b7 V change view \u00b7 Esc leave',
+    locate({salamander}){
+      const c=salamander?.snapshot().salamander;if(!c||!present(c.state))return null;
+      return {position:c.position.slice(),yaw:c.yaw,activity:c.state==='turning'?'avoiding an edge':c.state,state:c.state};
+    },
+    canBecome:true,
+    become({salamander}){
+      if(!salamander)return null;
+      const read=()=>{const c=salamander.snapshot().salamander;return {position:c.position,forward:[Math.sin(c.yaw),0,Math.cos(c.yaw)]};};
+      return steeredDriver({steer:v=>salamander.steer(v),release:()=>salamander.steer(null),read});
+    },
+  },
 ];
