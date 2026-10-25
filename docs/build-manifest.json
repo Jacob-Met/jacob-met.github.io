@@ -79,12 +79,13 @@
     "assets/scene/forge-workbench.png": "262459031987b79002205b2c9cadb2e5d2b7447b1cf5964384700e61a96c00d1",
     "assets/scene/hamon-engine-study.webp": "82a8d85623aad37e633fcf6da2b1cb7548a829bd379067043d6a9952e4642034",
     "assets/scene/research-observatory.svg": "7dd1c072fd7545cda6f55180ef84e1c9f6344e0da82076f21cc288e00215873c",
+    "assets/wildside/wildside-hero.webp": "b08cd01ca0d7f3144d255eeea983a05e6cd8c39b53a6487d2fd8c155dcb87381",
     "branch-routes.json": "e766516e1d3b0128bd8f85c43c703688e280cf711adca70e0c5a614fc281a3df",
     "capture-manifest.json": "a68fbb4b771e9aaaad473a4c6534218b5eea9d29f2bc78fbd92eabd55098ab0c",
     "cv.json": "8bf265836cadd04aecb6ab3bcc71debbde250e7cead76289c87f48ebc89b167d",
     "detail.js": "b23eacae390e33b424cdbace4039fbe5418311ab256232d7946ed2993ebadc0a",
-    "experience-content.json": "191738626f346ef769805e3f3dfbd32ce6607ce172e7d256301ca68e55c8dfae",
-    "experience.css": "84f132324de0d62acfb3b71e024dd548ff9a62c965a3269ebc572b4b69b01835",
+    "experience-content.json": "572cc6282019a70481007843674ccd6888eb137633c7eb6e35a1ea5640a3ccd6",
+    "experience.css": "bb87039757069daf91914fdff6d02f06ca538bde0740569238cb2c1c5728b33f",
     "favicon.ico": "fe0deb2a0efa8c76fdcca3619db3e5036779ccf5aae7927108bd34d02bd6d0ba",
     "games/lanternwake/build-info.json": "a0cfabeef8c3d89ea5f28eca998a25ac9c7bfa98c57c778c239ba9c17ec25a28",
     "games/lanternwake/desktop.png": "2405736059c1d6fc5757057d9161346dab8bdf3cd50cc6ab14bcbc04a21d40a0",
@@ -97,7 +98,7 @@
     "games/lanternwake/poster.svg": "1ee8b5c9154f1f52b9bad22b5216de44a172ff47bef6c7752d785c84e87e3175",
     "games/lanternwake/style.css": "6a4c0e20a4316051c77f9b13d0cf581019c47d19918fae8f18d09bef2f36fd72",
     "games/lanternwake/webgpu-compat.js": "95b4487d37462f3e60f159abfedff03bcd6810960339ae2a65e0311863954822",
-    "index.html": "0005c646a2f7a15f6d90ed3fb669ab7d722cdafe1aa16d17f37a55ecad974cc4",
+    "index.html": "72aeb83b05db8b49ad425fd2c4b323d32a2ec1b975170a22ffae3cb1ae18fb7b",
     "lobby-journey.js": "3f7e383b84dc6034b65cf571666f28297df4e20113670c7280b47b7b13bc2d24",
     "lobby-manifest.json": "2766431d493f51bc72154c76671e1a2c4ddbf4fb78e4d2b776c8f6ed3598164a",
     "lobby.js": "36adc74e32f4c62917e559ee6b8a6efa1beb5e221c3dd1a4b99e8e1f29886759",
@@ -105,7 +106,8 @@
     "project-figures.json": "24e8f312424765109ed2afa6e539d662d10a71308788a23fa22d18683e3f8a5b",
     "robots.txt": "60d463caa67aaa008b827bdec75236dcec7a9c82c49f529ad1da2de1c847c47e",
     "scene-handoff.js": "dceb03ad79736cc96a37fed78c04d63663889be596d52b200e71bdf433d8a39e",
-    "sitemap.xml": "2eed0d0b00ceeb3428b333b551ac7a157d1610fc06c64641c3a855e5cf266c5b",
-    "style.css": "84f132324de0d62acfb3b71e024dd548ff9a62c965a3269ebc572b4b69b01835"
+    "sitemap.xml": "e7219ca2f8cff4f941714d0a7db21deb90912cab69c34ffaf48d000c2f823c2f",
+    "style.css": "bb87039757069daf91914fdff6d02f06ca538bde0740569238cb2c1c5728b33f",
+    "wildside-project.html": "9a25a4fee4176840f1a1ce8cc059482754b18ff517a0e8f8ec73d209177b2eb0"
   }
 }

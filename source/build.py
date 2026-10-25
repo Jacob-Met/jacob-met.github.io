@@ -17,6 +17,7 @@ from game_assets import game_files
 from site_policy import (FONT_FILES, validate_fonts, SCENE_ASSETS, SCENE_FILES, SCRIPT_FILES, LOADED_SCRIPT_FILES,
                          EXPERIENCE_CSS, audit_scripts, script_integrity, ART_FILES, validate_art, EDITORIAL_FILES, validate_editorial, PRESENTATION_STILLS, DELIVERY_STILLS, PRESENTATION_FILES, validate_presentation_stills)
 import portfolio
+import wildside_page
 from capture_policy import CAPTURE_FILES, load_capture
 from lobby_policy import load_lobby, lobby_files, validate_retained_engine_media
 from figure_policy import load_figures, figure_files
@@ -238,7 +239,7 @@ def output_files(record: dict, lobby=None, figures=None, branches=None) -> set[s
     return {'index.html', '404.html', 'style.css', EXPERIENCE_CSS, '.nojekyll', 'CNAME',
             'robots.txt', 'sitemap.xml', 'cv.json', 'build-manifest.json', 'portfolio.json',
             'assets/mark.svg', SHARE_CARD, *ROOT_ICONS, *FONT_FILES, *SCENE_FILES, *ART_FILES, *EDITORIAL_FILES, *PRESENTATION_FILES,
-            *SCRIPT_FILES, *CAPTURE_FILES, *route_files, *illustrations, *branch_files(branches), EXPERIENCE_FILE, *shot_files(record), *game_files(ROOT, record)}
+            wildside_page.PAGE, *wildside_page.FILES, *wildside_page.video_files(ROOT), *SCRIPT_FILES, *CAPTURE_FILES, *route_files, *illustrations, *branch_files(branches), EXPERIENCE_FILE, *shot_files(record), *game_files(ROOT, record)}
 
 
 def build(out: Path, data: dict | None = None, *, preview=False) -> dict:
@@ -262,6 +263,8 @@ def build(out: Path, data: dict | None = None, *, preview=False) -> dict:
     if out.exists():
         for f in out.rglob('*'):
             rel = f.relative_to(out).as_posix()
+            if rel.startswith(wildside_page.APP_DIR + '/') and not f.is_symlink():
+                continue  # the deployed static Wildside app is preserved untouched
             if f.is_symlink() or (f.is_file() and rel not in allowed and not SHOT_RE.fullmatch(rel)):
                 raise ValueError('Output contains unexpected material; refuse to overwrite it')
         stale = out / 'assets' / 'demos'
@@ -270,6 +273,7 @@ def build(out: Path, data: dict | None = None, *, preview=False) -> dict:
     out.mkdir(parents=True, exist_ok=True)
     pages = {
         'index.html': (TITLE, DESC, render_index(record, current, preview=preview)),
+        wildside_page.PAGE: (wildside_page.TITLE, wildside_page.DESC, wildside_page.body(wildside_page.video_present(ROOT))),
         '404.html': ('Not found · Jacob Metoyer', 'Return to Jacob Metoyer’s work.',
                      '<a class="skip" href="#main">Skip to content</a><main id="main" class="not-found"><h1>Nothing here.</h1>'
                      '<p><a class="btn" href="index.html">Back to the work</a></p></main>'),
@@ -292,6 +296,9 @@ def build(out: Path, data: dict | None = None, *, preview=False) -> dict:
     for rel in {*FONT_FILES, *SCENE_FILES, *ART_FILES, *EDITORIAL_FILES, *PRESENTATION_FILES}:
         (out / rel).parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / rel, out / rel)
+    for rel in (*wildside_page.FILES, *wildside_page.video_files(ROOT)):
+        (out / rel).parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(ROOT / rel, out / rel)
     for rel in games:
         (out / rel).parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / rel, out / rel)
@@ -300,11 +307,11 @@ def build(out: Path, data: dict | None = None, *, preview=False) -> dict:
     (out / '.nojekyll').write_text('', encoding='utf-8', newline='\n')
     (out / 'CNAME').write_text('jacobmetoyer.com\n', encoding='utf-8', newline='\n')
     (out / 'robots.txt').write_text(f'User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n', encoding='utf-8', newline='\n')
-    sm = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>{BASE}/</loc><lastmod>{record["updated"]}</lastmod></url></urlset>'
+    sm = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>{BASE}/</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{wildside_page.PAGE}</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{wildside_page.APP_DIR}/</loc><lastmod>{record["updated"]}</lastmod></url></urlset>'
     (out / 'sitemap.xml').write_text(sm, encoding='utf-8', newline='\n')
     (out / 'cv.json').write_text(json.dumps(record, indent=2, ensure_ascii=False) + '\n', encoding='utf-8', newline='\n')
     (out / 'portfolio.json').write_text(json.dumps(current, indent=2, ensure_ascii=False) + '\n', encoding='utf-8', newline='\n')
-    files = [f for f in out.rglob('*') if f.is_file() and f.name != 'build-manifest.json']
+    files = [f for f in out.rglob('*') if f.is_file() and f.name != 'build-manifest.json' and not f.relative_to(out).as_posix().startswith(wildside_page.APP_DIR + '/')]
     manifest = {f.relative_to(out).as_posix(): hashlib.sha256(f.read_bytes()).hexdigest()
                 for f in sorted(files, key=lambda f: f.relative_to(out).as_posix())}
     (out / 'build-manifest.json').write_text(json.dumps({'schema': 7, 'date': record['updated'], 'publication': lobby['visibility'], 'sha256': manifest}, indent=2) + '\n', encoding='utf-8', newline='\n')

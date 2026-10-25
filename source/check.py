@@ -17,12 +17,14 @@ from lobby_policy import load_lobby, route_video_errors, route_source_errors, va
 from figure_policy import load_figures, picture_source_errors
 from branch_policy import load_branches, branch_video_errors, branch_source_errors, BRANCHES, DIRECTIONS, validate_retained_branch_media
 from experience_policy import load_experience
+import wildside_page
 from site_policy import (FONT_PROPERTIES, validate_fonts, SCRIPT_FILES, LOADED_SCRIPT_FILES,
                          audit_scripts, script_element_errors, canvas_element_errors, ART_FILES, validate_art, EDITORIAL_FILES, EDITORIAL_ART, validate_editorial, PRESENTATION_FILES, PRESENTATION_STILLS, DELIVERY_STILLS, validate_presentation_stills)
 
 ROOT_RELATIVE_PAGES = frozenset({'404.html'})
 CSP_REQUIRED = {'default-src': "'none'", 'style-src': "'self'", 'script-src': "'self'", 'img-src': "'self'", 'media-src': "'self'", 'font-src': "'self'", 'connect-src': "'none'", 'object-src': "'none'", 'frame-src': "'none'", 'worker-src': "'none'", 'base-uri': "'none'", 'form-action': "'none'"}
-EXPECTED_HTML = {'index.html', '404.html'}
+EXPECTED_HTML = {'index.html', '404.html', wildside_page.PAGE}
+APP_PREFIX = wildside_page.APP_DIR + '/'  # static deployed Wildside app: preserved, audited by its own project
 
 
 def rooted_ref(page: str, value: str) -> str | None:
@@ -71,7 +73,7 @@ class Page(HTMLParser):
                 if src == record['src'] and (a.get('width'), a.get('height')) != (str(record['width']), str(record['height'])):
                     self.errors.append('img: native presentation dimensions differ')
             if src in EDITORIAL_ART and (a.get('width'),a.get('height')) != tuple(str(EDITORIAL_ART[src][k]) for k in ('width','height')): self.errors.append('img: editorial artwork dimensions differ')
-            approved = {CAPTURE_FILE, PROOF_FILE, 'games/lanternwake/desktop.png', *ART_FILES, *EDITORIAL_FILES, *PRESENTATION_FILES} | {r['src'] for r in self.figures.values()}
+            approved = {*wildside_page.FILES, CAPTURE_FILE, PROOF_FILE, 'games/lanternwake/desktop.png', *ART_FILES, *EDITORIAL_FILES, *PRESENTATION_FILES} | {r['src'] for r in self.figures.values()}
             approved |= {r['still']['src'] for r in self.branches.values()}
             if self.lobby:
                 approved |= {self.lobby['media'][k]['src'] for k in ('entrance', 'arrival')} | {self.lobby['proof']['src']}
@@ -88,7 +90,7 @@ class Page(HTMLParser):
             self.in_picture = True
         if tag == 'video':
             self.videos.append(a); self.current_video = a.get('id')
-            self.errors.extend(branch_video_errors(a,self.branches) if 'data-route' in a else route_video_errors(a, self.lobby) if self.lobby else video_element_errors(a))
+            self.errors.extend(wildside_video_errors(a) if 'data-wildside-demo' in a else branch_video_errors(a,self.branches) if 'data-route' in a else route_video_errors(a, self.lobby) if self.lobby else video_element_errors(a))
             if a.get('poster'): self.resources.append(a['poster'])
         if tag == 'source':
             if self.in_picture:
@@ -96,7 +98,7 @@ class Page(HTMLParser):
                 if a.get('srcset'): self.resources.append(a['srcset'])
             else:
                 self.sources.append((self.current_video, a))
-                self.errors.extend(branch_source_errors(a,self.current_video,self.branches) if self.current_video not in ('route-forward','route-reverse',None) else route_source_errors(a, self.lobby) if self.lobby else source_element_errors(a))
+                self.errors.extend(([] if a=={'src':wildside_page.VIDEO,'type':'video/mp4'} else ['source: outside declared Wildside demo']) if self.current_video=='wildside' else branch_source_errors(a,self.current_video,self.branches) if self.current_video not in ('route-forward','route-reverse',None) else route_source_errors(a, self.lobby) if self.lobby else source_element_errors(a))
         if tag == 'canvas':
             self.canvases.append(a)
             self.errors.extend(canvas_element_errors(a))
@@ -120,6 +122,12 @@ class Page(HTMLParser):
             self.errors.extend(script_element_errors(self.script_attrs, source, self.hashes))
             self.script_entries.append((self.script_attrs, source))
             self.script_type = None; self.script_attrs = None
+
+
+def wildside_video_errors(a):
+    w, h = wildside_page.VIDEO_SIZE
+    ok = a == {'controls': None, 'playsinline': None, 'preload': 'none', 'width': str(w), 'height': str(h), 'poster': wildside_page.HERO, 'data-wildside-demo': None, 'id': 'wildside', 'aria-label': 'Wildside demo video'}
+    return [] if ok else ['video: outside the declared Wildside demo']
 
 
 def csp_errors(p: Page) -> list[str]:
@@ -212,6 +220,7 @@ def check(root: Path, *, preview=False) -> dict:
             failures.append('Game publication boundary: ' + str(error))
     for f in sorted(root.rglob('*')):
         rel = f.relative_to(root).as_posix()
+        if rel.startswith(APP_PREFIX) and not f.is_symlink(): continue
         if f.is_symlink(): failures.append(f'{rel}: symlink outside declared output surface'); continue
         if not f.is_file(): continue
         if rel.startswith(GAME_PATH + '/'):
@@ -253,6 +262,8 @@ def check(root: Path, *, preview=False) -> dict:
             expected_sources = [(f'route-{direction}', {'src': lobby['media'][direction]['src'], 'type': 'video/mp4'}) for direction in ('forward', 'reverse')] if name == 'index.html' else []
             if name == 'index.html':
                 expected_sources += [(f'route-{key}-{direction}', {'src':branches[key]['media'][direction]['src'],'type':'video/mp4'}) for key in BRANCHES if key in branches for direction in DIRECTIONS]
+            if name == wildside_page.PAGE:
+                expected_sources = [('wildside', {'src': wildside_page.VIDEO, 'type': 'video/mp4'})] if (root / wildside_page.VIDEO).is_file() else []
             if p.sources != expected_sources or len(p.videos) != len(expected_sources):
                 failures.append(f'{name}: incorrect route video/source inventory')
         if p.canvases: failures.append(f'{name}: incorrect canvas inventory')
@@ -286,7 +297,7 @@ def check(root: Path, *, preview=False) -> dict:
         load_experience(root); load_capture(root)
         route = load_lobby(root, allow_private_preview=preview)
         expected_files = build.output_files(public_record, route, load_figures(root), load_branches(root, allow_private_preview=preview))
-        actual_files = {f.relative_to(root).as_posix() for f in root.rglob('*') if f.is_file()}
+        actual_files = {f.relative_to(root).as_posix() for f in root.rglob('*') if f.is_file() and not f.relative_to(root).as_posix().startswith(APP_PREFIX)}
         if actual_files != expected_files:
             failures.append('Output inventory differs from explicit artifact allowlist')
     except (ValueError, OSError, UnicodeError, TypeError, KeyError) as error:
@@ -304,7 +315,7 @@ def check(root: Path, *, preview=False) -> dict:
         f = root / name
         if not f.resolve().is_relative_to(root) or f.is_symlink(): failures.append('Manifest entry escapes output'); continue
         if not f.is_file() or hashlib.sha256(f.read_bytes()).hexdigest() != sha: failures.append(f'Hash mismatch {name}')
-    actual = {f.relative_to(root).as_posix() for f in root.rglob('*') if f.is_file()}
+    actual = {f.relative_to(root).as_posix() for f in root.rglob('*') if f.is_file() and not f.relative_to(root).as_posix().startswith(APP_PREFIX)}
     if actual != set(manifest) | {'build-manifest.json'}: failures.append('Manifest does not cover all files')
     return {'passed': not failures, 'html_pages': len(parsed), 'files': len(actual), 'failures': failures}
 

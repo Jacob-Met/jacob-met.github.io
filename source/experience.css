@@ -136,3 +136,15 @@ body .work-section.forge-room{--arrival-height:clamp(230px,33svh,340px);backgrou
 .worldlaw-probe{display:none!important}
 .worldlaw-reading span,.worldlaw-reading strong{color:CanvasText}
 }
+
+/* Wildside featured card and project page. */
+body.ws{background:#08121d;color:#e5eef0}
+.ws-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px clamp(20px,5vw,56px);position:absolute;top:0;left:0;right:0;z-index:5}.ws-top a{color:#e5eef0;text-decoration:none}.ws-top .identity{font-size:22px}.ws-top nav{display:flex;gap:20px}
+.ws-hero{position:relative;min-height:min(86svh,820px);display:flex;align-items:flex-end;overflow:hidden}.ws-hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.ws-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#08121d66 0,transparent 30%,#08121dcc 78%,#08121d 100%)}
+.ws-hero-copy{position:relative;z-index:2;max-width:900px;padding:140px clamp(20px,5vw,56px) 56px}.ws-hero h1{font-size:clamp(56px,9vw,112px);line-height:.95;letter-spacing:-.05em;font-weight:400;margin:6px 0 10px}.ws-tagline{font-size:clamp(20px,2.6vw,30px);color:#ffd9a0;margin:0 0 18px}.ws-lede{font-size:clamp(17px,1.6vw,21px);line-height:1.6;max-width:720px;margin:0 0 26px}
+.ws-play{display:inline-flex;align-items:center;min-height:52px;padding:0 32px;border-radius:999px;background:#ffcf8a;color:#2a1608;font-size:19px;font-weight:700;text-decoration:none}.ws-play:hover,.ws-play:focus-visible{background:#fff0cf;outline:3px solid #fff;outline-offset:3px}.ws-note{color:#c7d6dc;font-size:15px;margin:14px 0 0}
+.ws-main{max-width:none}.ws-section{max-width:960px;margin:0 auto;padding:64px clamp(20px,5vw,56px) 8px;font-size:18px;line-height:1.7}.ws-section h2{font-weight:400;font-size:clamp(30px,4vw,46px);letter-spacing:-.04em;margin:0 0 20px}.ws-honest{color:#b4ccd5;font-size:16px}.ws-section:last-child{padding-bottom:96px}.ws-section .public-action{margin-left:14px}
+.ws-video{margin:0}.ws-video video{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#000;border-radius:10px}.ws-video figcaption{color:#a9c1cc;font-size:14px;margin-top:10px}.ws-video-slot>div{display:flex;flex-direction:column;gap:8px;align-items:center;justify-content:center;text-align:center;aspect-ratio:16/9;border:2px dashed #ffcf8a;border-radius:10px;background:#0d1d2b;padding:24px}.ws-video-slot strong{font-size:24px;color:#ffcf8a}.ws-video-slot span{color:#a9c1cc;font-size:14px;max-width:520px}
+.wildside-card{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(20px,3vw,40px);align-items:center;margin:0 0 56px}.wildside-card-image img{display:block;width:100%;height:auto;border-radius:10px}.wildside-card h3{font-size:clamp(34px,4vw,52px);font-weight:400;letter-spacing:-.045em;margin:6px 0}.wildside-card .public-action{margin-right:16px}
+@media(max-width:760px){.wildside-card{grid-template-columns:1fr}.ws-hero{min-height:88svh}.ws-top nav{gap:14px;font-size:14px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}

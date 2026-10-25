@@ -2,6 +2,7 @@
 Build validation and ordered script/SRI insertion are owned by build.py.
 """
 from html import escape
+import wildside_page
 
 
 def e(value):
@@ -162,7 +163,7 @@ def projects_section(data, legacy, experience, figures=None, route=None):
                       f'<p>{e(r["stage"])}. {e(r["limit"])}</p></details></article>' for r in experience['relatedWork'])
     return (f'<section class="work-section forge-room" id="projects" tabindex="-1">{branch_arrival(route)}<span id="work" class="section-alias"></span>'
             f'{room_nav("projects")}<p class="section-context">HAMON / PROJECTS</p><h2>Use it.<br> Change something.</h2><p>A few tools and worlds you can try.</p>'
-            + ''.join(public_demo(d, figures.get(d['id'])) for d in legacy['demos']) + '<details class="related-experiments"><summary>More tools &amp; experiments</summary>' + ''.join(entries) + '</details>'
+            + wildside_page.card() + ''.join(public_demo(d, figures.get(d['id'])) for d in legacy['demos']) + '<details class="related-experiments"><summary>More tools &amp; experiments</summary>' + ''.join(entries) + '</details>'
             + f'<details class="related-experiments"><summary>More experiments</summary>{related}</details><details class="related-experiments"><summary>More public source</summary>{sources}</details>'
             '<a href="#forge" class="return-link">← Return to the forge</a></section>')
 

@@ -92,7 +92,7 @@ class BuildTests(Built):
     def test_output_cannot_be_source(self):
         with self.assertRaises(ValueError): build.build(build.ROOT, self.data, preview=True)
     def test_only_two_html_routes(self):
-        self.assertEqual({f.name for f in self.root.glob('*.html')}, {'index.html', '404.html'})
+        self.assertEqual({f.name for f in self.root.glob('*.html')}, {'index.html', '404.html', 'wildside-project.html'})
     def test_icons_and_share_card(self):
         import struct
         def png_size(b): self.assertEqual(b[:8], b'\x89PNG\r\n\x1a\n'); return struct.unpack('>II', b[16:24])
@@ -102,9 +102,9 @@ class BuildTests(Built):
         self.assertIn(f'<meta property="og:image" content="{build.BASE}/{build.SHARE_CARD}">', self.page())
     def test_cv_json_is_the_record(self):
         self.assertEqual(json.loads((self.root / 'cv.json').read_text(encoding='utf-8')), self.data)
-    def test_sitemap_has_only_the_front_page(self):
+    def test_sitemap_lists_front_page_and_wildside(self):
         sm = (self.root / 'sitemap.xml').read_text(encoding='utf-8')
-        self.assertEqual(sm.count('<loc>'), 1); self.assertIn(f'<loc>{build.BASE}/</loc>', sm)
+        self.assertEqual(sm.count('<loc>'), 3); self.assertIn(f'<loc>{build.BASE}/</loc>', sm)
     def test_only_declared_captures_ship(self):
         shots = {f.relative_to(self.root).as_posix() for f in (self.root / 'assets' / 'demos').iterdir()}
         self.assertEqual(shots, set(build.shot_files(self.data)))
