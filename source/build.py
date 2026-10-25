@@ -18,6 +18,7 @@ from site_policy import (FONT_FILES, validate_fonts, SCENE_ASSETS, SCENE_FILES, 
                          EXPERIENCE_CSS, audit_scripts, script_integrity, ART_FILES, validate_art, EDITORIAL_FILES, validate_editorial, PRESENTATION_STILLS, DELIVERY_STILLS, PRESENTATION_FILES, validate_presentation_stills)
 import portfolio
 import wildside_page
+import hamon_page
 from capture_policy import CAPTURE_FILES, load_capture
 from lobby_policy import load_lobby, lobby_files, validate_retained_engine_media
 from figure_policy import load_figures, figure_files
@@ -27,9 +28,9 @@ from source_policy import validate_source_publication
 
 ROOT = Path(__file__).resolve().parent
 BASE = 'https://jacobmetoyer.com'
-TITLE = 'Jacob Metoyer'
-DESC = 'Computer science and physics at Cal State Long Beach. Explore Jacob Metoyer’s research tools, interactive media, games, and the fiction world Spire of Octaves.'
-SHARE_ALT = 'Jacob Metoyer. Computer science and physics at Cal State Long Beach.'
+TITLE = 'Jacob Metoyer · Founder of HAMON'
+DESC = 'Jacob Metoyer founded and builds HAMON, a studio for living worlds, and studies computer science and physics at Cal State Long Beach. Play Wildside, explore the HAMON Engine, research, and the fiction world Spire of Octaves.'
+SHARE_ALT = 'Jacob Metoyer, founder of HAMON, a studio for living worlds. Computer science and physics at Cal State Long Beach.'
 ALLOWED_HOSTS = {'github.com', 'jacobmetoyer.com', 'spireofoctaves.com', 'www.linkedin.com', 'mango.blender.org', 'creativecommons.org', 'commons.wikimedia.org', 'www.royalroad.com', 'devpost.com'}
 PLAY_HOST = 'jacobmetoyer.com'
 CSP = "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self'; media-src 'self'; font-src 'self'; connect-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'"
@@ -207,6 +208,10 @@ def render_index(r: dict, portfolio_data: dict | None = None, *, preview=False) 
 def page_html(name: str, title: str, desc: str, body: str, data: dict) -> str:
     schema = {'@context': 'https://schema.org', '@type': 'Person', 'name': data['name'], 'url': BASE,
               'sameAs': ['https://github.com/Jacob-Met', 'https://www.linkedin.com/in/jacob-metoyer-15b701352']}
+    schema['jobTitle'] = 'Founder, HAMON'
+    schema['description'] = DESC
+    social = {wildside_page.PAGE: wildside_page.SOCIAL, hamon_page.PAGE: hamon_page.SOCIAL}.get(name)
+    image, iw, ih, ialt = social or (SHARE_CARD, 1200, 630, SHARE_ALT)
     structured = json.dumps(schema, ensure_ascii=False).replace('<', '\\u003c').replace('>', '\\u003e')
     canonical = BASE + '/' + ('' if name == 'index.html' else name)
     enhancement = ''
@@ -217,7 +222,7 @@ def page_html(name: str, title: str, desc: str, body: str, data: dict) -> str:
 <title>{esc(title)}</title><meta name="description" content="{esc(desc)}"><meta name="theme-color" content="#060c17"><meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="canonical" href="{canonical}"><link rel="icon" href="assets/mark.svg" type="image/svg+xml"><link rel="icon" href="favicon.ico" sizes="48x48"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="stylesheet" href="experience.css">{enhancement}
 <meta property="og:type" content="website"><meta property="og:title" content="{esc(title)}"><meta property="og:description" content="{esc(desc)}"><meta property="og:url" content="{canonical}">
-<meta property="og:image" content="{BASE}/{SHARE_CARD}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="{esc(SHARE_ALT)}"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:site_name" content="Jacob Metoyer"><meta property="og:image" content="{BASE}/{image}"><meta property="og:image:width" content="{iw}"><meta property="og:image:height" content="{ih}"><meta property="og:image:alt" content="{esc(ialt)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{esc(title)}"><meta name="twitter:description" content="{esc(desc)}"><meta name="twitter:image" content="{BASE}/{image}"><meta name="twitter:image:alt" content="{esc(ialt)}">
 <script type="application/ld+json">{structured}</script></head>
 <body>{body}</body></html>'''
 
@@ -239,7 +244,7 @@ def output_files(record: dict, lobby=None, figures=None, branches=None) -> set[s
     return {'index.html', '404.html', 'style.css', EXPERIENCE_CSS, '.nojekyll', 'CNAME',
             'robots.txt', 'sitemap.xml', 'cv.json', 'build-manifest.json', 'portfolio.json',
             'assets/mark.svg', SHARE_CARD, *ROOT_ICONS, *FONT_FILES, *SCENE_FILES, *ART_FILES, *EDITORIAL_FILES, *PRESENTATION_FILES,
-            wildside_page.PAGE, *wildside_page.FILES, *wildside_page.video_files(ROOT), *SCRIPT_FILES, *CAPTURE_FILES, *route_files, *illustrations, *branch_files(branches), EXPERIENCE_FILE, *shot_files(record), *game_files(ROOT, record)}
+            wildside_page.PAGE, hamon_page.PAGE, *wildside_page.FILES, *hamon_page.FILES, *wildside_page.video_files(ROOT), *SCRIPT_FILES, *CAPTURE_FILES, *route_files, *illustrations, *branch_files(branches), EXPERIENCE_FILE, *shot_files(record), *game_files(ROOT, record)}
 
 
 def build(out: Path, data: dict | None = None, *, preview=False) -> dict:
@@ -274,9 +279,11 @@ def build(out: Path, data: dict | None = None, *, preview=False) -> dict:
     pages = {
         'index.html': (TITLE, DESC, render_index(record, current, preview=preview)),
         wildside_page.PAGE: (wildside_page.TITLE, wildside_page.DESC, wildside_page.body(wildside_page.video_present(ROOT))),
+        hamon_page.PAGE: (hamon_page.TITLE, hamon_page.DESC, hamon_page.body(wildside_page)),
         '404.html': ('Not found · Jacob Metoyer', 'Return to Jacob Metoyer’s work.',
                      '<a class="skip" href="#main">Skip to content</a><main id="main" class="not-found"><h1>Nothing here.</h1>'
-                     '<p><a class="btn" href="index.html">Back to the work</a></p></main>'),
+                     '<p>That page does not exist, or it has moved. These are good places to start.</p>'
+                     '<nav class="not-found-links" aria-label="Pages"><a class="btn" href="index.html">Home</a><a class="btn" href="hamon.html">HAMON</a><a class="btn" href="wildside-project.html">Wildside</a></nav></main>'),
     }
     for name, (title, desc, body) in pages.items():
         (out / name).write_text(root_links(name, page_html(name, title, desc, body, record)), encoding='utf-8', newline='\n')
@@ -296,7 +303,7 @@ def build(out: Path, data: dict | None = None, *, preview=False) -> dict:
     for rel in {*FONT_FILES, *SCENE_FILES, *ART_FILES, *EDITORIAL_FILES, *PRESENTATION_FILES}:
         (out / rel).parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / rel, out / rel)
-    for rel in (*wildside_page.FILES, *wildside_page.video_files(ROOT)):
+    for rel in (*wildside_page.FILES, *hamon_page.FILES, *wildside_page.video_files(ROOT)):
         (out / rel).parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / rel, out / rel)
     for rel in games:
@@ -307,7 +314,7 @@ def build(out: Path, data: dict | None = None, *, preview=False) -> dict:
     (out / '.nojekyll').write_text('', encoding='utf-8', newline='\n')
     (out / 'CNAME').write_text('jacobmetoyer.com\n', encoding='utf-8', newline='\n')
     (out / 'robots.txt').write_text(f'User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n', encoding='utf-8', newline='\n')
-    sm = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>{BASE}/</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{wildside_page.PAGE}</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{wildside_page.APP_DIR}/</loc><lastmod>{record["updated"]}</lastmod></url></urlset>'
+    sm = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>{BASE}/</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{hamon_page.PAGE}</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{wildside_page.PAGE}</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{wildside_page.APP_DIR}/</loc><lastmod>{record["updated"]}</lastmod></url></urlset>'
     (out / 'sitemap.xml').write_text(sm, encoding='utf-8', newline='\n')
     (out / 'cv.json').write_text(json.dumps(record, indent=2, ensure_ascii=False) + '\n', encoding='utf-8', newline='\n')
     (out / 'portfolio.json').write_text(json.dumps(current, indent=2, ensure_ascii=False) + '\n', encoding='utf-8', newline='\n')

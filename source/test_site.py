@@ -92,7 +92,7 @@ class BuildTests(Built):
     def test_output_cannot_be_source(self):
         with self.assertRaises(ValueError): build.build(build.ROOT, self.data, preview=True)
     def test_only_two_html_routes(self):
-        self.assertEqual({f.name for f in self.root.glob('*.html')}, {'index.html', '404.html', 'wildside-project.html'})
+        self.assertEqual({f.name for f in self.root.glob('*.html')}, {'index.html', '404.html', 'wildside-project.html', 'hamon.html'})
     def test_icons_and_share_card(self):
         import struct
         def png_size(b): self.assertEqual(b[:8], b'\x89PNG\r\n\x1a\n'); return struct.unpack('>II', b[16:24])
@@ -104,7 +104,7 @@ class BuildTests(Built):
         self.assertEqual(json.loads((self.root / 'cv.json').read_text(encoding='utf-8')), self.data)
     def test_sitemap_lists_front_page_and_wildside(self):
         sm = (self.root / 'sitemap.xml').read_text(encoding='utf-8')
-        self.assertEqual(sm.count('<loc>'), 3); self.assertIn(f'<loc>{build.BASE}/</loc>', sm)
+        self.assertEqual(sm.count('<loc>'), 4); self.assertIn(f'<loc>{build.BASE}/</loc>', sm)
     def test_only_declared_captures_ship(self):
         shots = {f.relative_to(self.root).as_posix() for f in (self.root / 'assets' / 'demos').iterdir()}
         self.assertEqual(shots, set(build.shot_files(self.data)))
@@ -159,7 +159,7 @@ class ContentTests(Built):
     def test_identity_and_research_replace_agent_director_copy(self):
         self.assertNotIn('id="how"', self.main())
         self.assertNotIn('how', self.data)
-        self.assertEqual(build.TITLE, 'Jacob Metoyer')
+        self.assertEqual(build.TITLE, 'Jacob Metoyer · Founder of HAMON')
         self.assertIn('computer science', build.DESC.lower())
         for phrase in ('AI agents carry out', 'I set the bar', 'I direct AI agents'):
             self.assertNotIn(phrase.lower(), (self.page() + (build.ROOT / 'make_images.py').read_text()).lower())
@@ -304,7 +304,7 @@ class NotFoundTests(Built):
         self.assertIn('.not-found', css)
         self.assertRegex(css, r'\.not-found\s*\{[^}]*padding:')
         self.assertRegex(css, r'\.not-found \.btn\s*\{[^}]*min-height:\s*44px')
-        self.assertIn('Back to the work', self.page('404.html'))
+        self.assertIn('href="/index.html">Home</a>', self.page('404.html'))
     def test_index_stays_relative(self):
         self.assertFalse([v for v in self.refs('index.html') if v.startswith('/')])
     def test_root_relative_outside_404_rejected(self):

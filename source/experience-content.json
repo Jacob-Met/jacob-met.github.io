@@ -4,7 +4,7 @@
   "visibility": "public-captured",
   "entry": {
     "heading": "Jacob Metoyer",
-    "lead": "Research, working tools, and imagined worlds.",
+    "lead": "Founder of HAMON, a studio for living worlds. I also do research and write fiction.",
     "browseLabel": "Explore HAMON",
     "returnLabel": "Back to the overview",
     "journeyNote": "Research to understand systems. HAMON to build with them. Spire to imagine new ones."
@@ -439,7 +439,7 @@
       {
         "id": "hamon",
         "title": "HAMON",
-        "summary": "Engines, tools, and experiments.",
+        "summary": "A studio for living worlds.",
         "description": "My software-building estate: Hamon Engine, research tools, applications, games, and hackathon projects.",
         "action": {
           "label": "Explore HAMON",

@@ -11,9 +11,13 @@ HERO_SIZE = (1600, 900)
 VIDEO = 'wildside-media/wildside-demo-1080.mp4'   # drop the file in source/ at this path and rebuild
 VIDEO_SIZE = (1920, 1080)
 MAX_VIDEO_BYTES = 50_000_000
-FILES = (HERO,)
-TITLE = 'Wildside · Step into the WildSide'
-DESC = 'Wildside turns real places into living, painted worlds you explore at human, bird and insect scale, rendered live by the HAMON Engine in your browser. Made for MarinaHacks.'
+THUMB = 'assets/wildside/wildside-thumbnail.jpg'   # share image: the Wildside hero frame
+CARD = 'assets/wildside/wildside-card.webp'      # 800x450 for cards and previews
+CARD_SIZE = (800, 450)
+FILES = (HERO, CARD, THUMB)
+SOCIAL = (THUMB, 1280, 720, 'An autumn lake at golden hour in Wildside: painted maple trees reflected in still water, a dirt path and a swing set.')
+TITLE = 'Wildside · A HAMON world you can walk through'
+DESC = 'Wildside, a HAMON product, turns real places into living, painted worlds you explore at human, bird and insect scale, rendered live by the HAMON Engine in your browser. Made for MarinaHacks.'
 HERO_ALT = 'An autumn lake at golden hour in Wildside: painted maple trees reflected in still water, a dirt path, wildflowers and a swing set.'
 e = html.escape
 
@@ -34,8 +38,8 @@ def video_files(root: Path) -> tuple[str, ...]:
 def card() -> str:
     """Featured card for the homepage Projects section."""
     return (f'<article class="wildside-card"><a class="wildside-card-image" href="{PAGE}" aria-label="Wildside project page">'
-            f'<img loading="lazy" src="{HERO}" width="{HERO_SIZE[0]}" height="{HERO_SIZE[1]}" alt="{e(HERO_ALT)}"></a>'
-            '<div><p class="section-context">FEATURED PROJECT · MARINAHACKS</p><h3>Wildside</h3><p><em>Step into the WildSide.</em></p>'
+            f'<img loading="lazy" decoding="async" src="{CARD}" width="{CARD_SIZE[0]}" height="{CARD_SIZE[1]}" alt="{e(HERO_ALT)}"></a>'
+            '<div><p class="section-context">FEATURED · A HAMON WORLD · MARINAHACKS</p><h3>Wildside</h3><p><em>Step into the WildSide.</em></p>'
             '<p>Real places you care about, turned into living Violet Evergarden-style worlds you explore at human, bird and insect scale, rendered live by the HAMON Engine in your browser.</p>'
             f'<p><a class="public-action" href="{APP_URL}">Play Wildside ↗</a> <a class="public-action" href="{PAGE}">About the project</a></p>'
             '<p class="scope-copy">Best in desktop Chrome or Edge (WebGPU).</p></div></article>')
@@ -51,17 +55,17 @@ def body(has_video: bool) -> str:
         demo = ('<figure class="ws-video ws-video-slot" data-wildside-video-placeholder><div role="img" aria-label="Demo video placeholder">'
                 '<strong>Demo video coming soon</strong><span>Placeholder: this slot fills automatically when wildside-demo-1080.mp4 is added to source/wildside-media/ and the site is rebuilt.</span></div></figure>')
     return (f'<a class="skip" href="#main">Skip to content</a><header class="ws-top"><a class="identity" href="index.html">Jacob Metoyer</a>'
-            '<nav aria-label="Site"><a href="index.html#projects">Projects</a><a href="index.html">Home</a></nav></header>'
+            '<nav aria-label="Site"><a href="hamon.html">HAMON</a><a href="index.html#projects">Projects</a><a href="index.html">Home</a></nav></header>'
             '<main id="main" class="ws-main">'
-            f'<section class="ws-hero"><img src="{HERO}" width="{HERO_SIZE[0]}" height="{HERO_SIZE[1]}" alt="{e(HERO_ALT)}">'
-            '<div class="ws-hero-copy"><p class="section-context">A MARINAHACKS PROJECT</p><h1>Wildside</h1><p class="ws-tagline">Step into the WildSide</p>'
+            f'<section class="ws-hero"><img fetchpriority="high" decoding="async" src="{HERO}" width="{HERO_SIZE[0]}" height="{HERO_SIZE[1]}" alt="{e(HERO_ALT)}">'
+            '<div class="ws-hero-copy"><p class="section-context">A <a class="kicker-link" href="hamon.html">HAMON</a> WORLD · MADE FOR MARINAHACKS</p><h1>Wildside</h1><p class="ws-tagline">Step into the WildSide</p>'
             '<p class="ws-lede">Real places you care about, turned into living Violet Evergarden-style worlds you explore at human, bird and insect scale, rendered live by the HAMON Engine in your browser.</p>'
-            f'<p><a class="ws-play" href="{APP_URL}">Play Wildside</a></p>'
+            f'<p class="hamon-actions"><a class="ws-play" href="{APP_URL}">Play Wildside</a><a class="hamon-secondary" href="#wildside-demo">Watch the demo</a></p>'
             '<p class="ws-note">Works best in desktop Chrome or Edge, which provide WebGPU. Nothing to install and no account.</p></div></section>'
-            f'<section class="ws-section"><h2>Watch</h2>{demo}</section>'
+            f'<section class="ws-section" id="wildside-demo"><h2>Watch</h2>{demo}</section>'
             '<section class="ws-section"><h2>What it is</h2>'
             '<p>Wildside is built around recognition: the tree you pass, the pond near school, the beach your family returns to. A place becomes a painted world you can walk through, see from a bird&#8217;s height or a beetle&#8217;s, and return to as the light and weather change.</p>'
-            '<p>The look aims at the hand-painted warmth of Kyoto Animation&#8217;s <em>Violet Evergarden</em>. Everything is drawn live in your browser by the HAMON Engine, my Rust engine compiled to WebAssembly and rendered with WebGPU.</p>'
+            '<p>The look aims at the hand-painted warmth of Kyoto Animation&#8217;s <em>Violet Evergarden</em>. Everything is drawn live in your browser by the HAMON Engine, my Rust engine compiled to WebAssembly and rendered with WebGPU. Wildside is the flagship world of <a class="public-action-inline" href="hamon.html">HAMON</a>, the studio I am building around that engine.</p>'
             '<p class="ws-honest">Honest scope: the places are interpreted, imagined worlds, not surveys, and the wildlife is simulated, not a live feed. This is a work in progress.</p></section>'
             '<section class="ws-section"><h2>Made for MarinaHacks</h2>'
             '<p>Wildside is my MarinaHacks project: a way to build emotional attachment to the living places around us, which is where caring for them starts. There are no quizzes, streaks or chores, only a world worth visiting.</p>'

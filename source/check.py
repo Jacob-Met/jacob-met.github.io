@@ -18,12 +18,13 @@ from figure_policy import load_figures, picture_source_errors
 from branch_policy import load_branches, branch_video_errors, branch_source_errors, BRANCHES, DIRECTIONS, validate_retained_branch_media
 from experience_policy import load_experience
 import wildside_page
+import hamon_page
 from site_policy import (FONT_PROPERTIES, validate_fonts, SCRIPT_FILES, LOADED_SCRIPT_FILES,
                          audit_scripts, script_element_errors, canvas_element_errors, ART_FILES, validate_art, EDITORIAL_FILES, EDITORIAL_ART, validate_editorial, PRESENTATION_FILES, PRESENTATION_STILLS, DELIVERY_STILLS, validate_presentation_stills)
 
 ROOT_RELATIVE_PAGES = frozenset({'404.html'})
 CSP_REQUIRED = {'default-src': "'none'", 'style-src': "'self'", 'script-src': "'self'", 'img-src': "'self'", 'media-src': "'self'", 'font-src': "'self'", 'connect-src': "'none'", 'object-src': "'none'", 'frame-src': "'none'", 'worker-src': "'none'", 'base-uri': "'none'", 'form-action': "'none'"}
-EXPECTED_HTML = {'index.html', '404.html', wildside_page.PAGE}
+EXPECTED_HTML = {'index.html', '404.html', wildside_page.PAGE, hamon_page.PAGE}
 APP_PREFIX = wildside_page.APP_DIR + '/'  # static deployed Wildside app: preserved, audited by its own project
 
 
@@ -73,7 +74,7 @@ class Page(HTMLParser):
                 if src == record['src'] and (a.get('width'), a.get('height')) != (str(record['width']), str(record['height'])):
                     self.errors.append('img: native presentation dimensions differ')
             if src in EDITORIAL_ART and (a.get('width'),a.get('height')) != tuple(str(EDITORIAL_ART[src][k]) for k in ('width','height')): self.errors.append('img: editorial artwork dimensions differ')
-            approved = {*wildside_page.FILES, CAPTURE_FILE, PROOF_FILE, 'games/lanternwake/desktop.png', *ART_FILES, *EDITORIAL_FILES, *PRESENTATION_FILES} | {r['src'] for r in self.figures.values()}
+            approved = {*wildside_page.FILES, *hamon_page.FILES, CAPTURE_FILE, PROOF_FILE, 'games/lanternwake/desktop.png', *ART_FILES, *EDITORIAL_FILES, *PRESENTATION_FILES} | {r['src'] for r in self.figures.values()}
             approved |= {r['still']['src'] for r in self.branches.values()}
             if self.lobby:
                 approved |= {self.lobby['media'][k]['src'] for k in ('entrance', 'arrival')} | {self.lobby['proof']['src']}
