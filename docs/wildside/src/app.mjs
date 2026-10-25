@@ -782,10 +782,8 @@ function updateViewCamera(){
    camera.fov=sourceView.verticalFovDegrees;camera.aspect=sourceView.imageAspect;camera.near=.02;camera.far=200;
   }else if(overview){camera.up.set(0,1,0);camera.aspect=innerWidth/innerHeight;const direction=[Math.sin(.5+orbit)*.9,.48,Math.cos(.5+orbit)];const pose=fitOverview(art.bounds,innerWidth<=750?Math.max(camera.aspect,.78):camera.aspect,direction,48,1.05);camera.position.fromArray(pose.target).lerp(new THREE.Vector3(...pose.position),1/overviewZoom.value());cameraTarget.fromArray(pose.target);const pan=overviewPan.position(art.bounds,overviewZoom.value());camera.position.x+=pan.x;camera.position.z+=pan.z;cameraTarget.x+=pan.x;cameraTarget.z+=pan.z;cameraTarget.y+=innerWidth<=750?1.4:-.4;if(innerWidth>750)cameraTarget.x-=2;camera.up.fromArray(pose.up);camera.lookAt(cameraTarget);camera.fov=48;camera.near=.05;camera.far=Math.max(200,pose.far);}else{camera.up.set(0,1,0);camera.aspect=innerWidth/innerHeight;const pose=nav.pose();camera.position.fromArray(pose.position);cameraTarget.fromArray(pose.position.map((v,i)=>v+pose.forward[i]));camera.up.fromArray(pose.up);camera.lookAt(cameraTarget);camera.fov=(skaterFocus||!webFocus&&pose.mode==='bird')&&focusFov?2*Math.atan(Math.tan(focusFov*Math.PI/360)/Math.min(1,camera.aspect))*180/Math.PI:focusFov||pose.fov;camera.near=pose.near;camera.far=Math.max(150,Math.hypot(...art.bounds.max.map((v,i)=>v-art.bounds.min[i]))*1.2);}camera.updateProjectionMatrix();
 }
-function animate(dt){if(!worldReady)return;if(!paused&&!document.hidden)worldTime+=dt;
+function advanceWorld(dt){if(!worldReady)return;if(!paused&&!document.hidden)worldTime+=dt;
  if(!overview&&!$('panel').open)(underwaterFocus?submergedView:nav).step({forward:Number(Boolean(pressed.has('KeyW')||pressed.has('ArrowUp')||touch.forward))-Number(Boolean(pressed.has('KeyS')||pressed.has('ArrowDown')||touch.back)),right:Number(Boolean(pressed.has('KeyD')||pressed.has('ArrowRight')||touch.right))-Number(Boolean(pressed.has('KeyA')||pressed.has('ArrowLeft')||touch.left)),up:Number(Boolean(pressed.has('KeyE')||touch.up))-Number(Boolean(pressed.has('KeyQ')||touch.down))},dt);
- if(!birdFocus&&!crawlerFocus)updateViewCamera();
- if(pendingMode&&!nav.pose().transitioning){if(nav.pose().mode!==pendingMode)notify('There is not enough clearance to change scale here. Move to an open part of the place.');pendingMode=null;updateLabels();}$('save-memory').disabled=historical||(!underwaterFocus&&nav.pose().transitioning);
  if(!paused&&!document.hidden){
   const visitor=!overview&&!sourceView&&!underwaterFocus&&!$('panel').open?nav.pose():null;
   sim.setVisitor(visitor?{position:visitor.position,radius:visitor.mode==='human'?1.1:visitor.mode==='bird'?.65:.045}:null);
@@ -793,7 +791,12 @@ function animate(dt){if(!worldReady)return;if(!paused&&!document.hidden)worldTim
   if(!overview&&!underwaterFocus){const visitor=nav.pose(),c=crawler.snapshot().crawler,feet=[visitor.position[0],visitor.position[1]-visitor.eye,visitor.position[2]],distance=Math.hypot(...feet.map((v,i)=>v-c.position[i])),radius=visitor.mode==='human'?.3:visitor.mode==='bird'?.12:.035;
    if(distance<radius&&!crawlerNear){crawler.disturb();crawlerNear=true;}else if(distance>radius*1.5)crawlerNear=false;
   }crawler.step(dt);
- }}const snap=sim.snapshot();bird.update(snap.bird);if(crawler)crawlerArt.update(crawler.snapshot().crawler);if(orbArt)orbArt.update(orbWeaver.snapshot(),{rain});if(skaterArt)skaterArt.update(pondSkater.snapshot());if(submergedArt){const aquatic=submergedLife.snapshot();submergedArt.update(aquatic);submergedArt.group.visible=aquatic.swimmers.some(s=>camera.position.distanceTo(new THREE.Vector3(...s.position))<.20);}art.update(worldTime,{rain});
+ }}
+}
+function animate(){if(!worldReady)return;
+ if(!birdFocus&&!crawlerFocus)updateViewCamera();
+ if(pendingMode&&!nav.pose().transitioning){if(nav.pose().mode!==pendingMode)notify('There is not enough clearance to change scale here. Move to an open part of the place.');pendingMode=null;updateLabels();}$('save-memory').disabled=historical||(!underwaterFocus&&nav.pose().transitioning);
+const snap=sim.snapshot();bird.update(snap.bird);if(crawler)crawlerArt.update(crawler.snapshot().crawler);if(orbArt)orbArt.update(orbWeaver.snapshot(),{rain});if(skaterArt)skaterArt.update(pondSkater.snapshot());if(submergedArt){const aquatic=submergedLife.snapshot();submergedArt.update(aquatic);submergedArt.group.visible=aquatic.swimmers.some(s=>camera.position.distanceTo(new THREE.Vector3(...s.position))<.20);}art.update(worldTime,{rain});
  if(birdFocus||crawlerFocus){updateResidentFocus(birdFocus?snap.bird:crawler?.snapshot().crawler);updateViewCamera();}
  soundscape.update({listener:camera.position.toArray(),forward:camera.getWorldDirection(soundForward).toArray(),up:soundUp.setFromMatrixColumn(camera.matrixWorld,1).toArray(),mode:overview?'human':nav.pose().mode,bird:snap.bird,crawler:crawler?.snapshot().crawler??null,rain,paused:paused||underwaterFocus,hidden:document.hidden});
  if(frameCount%15===0)updateEncounter();
@@ -835,7 +838,7 @@ function animate(dt){if(!worldReady)return;if(!paused&&!document.hidden)worldTim
   }
   frameCount++;
 }
-frameLoop=createFrameLoop({draw:animate,hidden:()=>document.hidden,continuous:()=>!paused||(!overview&&!$('panel').open&&(pressed.size>0||Object.values(touch).some(Boolean)||(!underwaterFocus&&nav.pose().transitioning)))});
+frameLoop=createFrameLoop({draw:animate,advance:advanceWorld,maxCatchUpSteps:3,hidden:()=>document.hidden,continuous:()=>!paused||(!overview&&!$('panel').open&&(pressed.size>0||Object.values(touch).some(Boolean)||(!underwaterFocus&&nav.pose().transitioning)))});
 document.addEventListener('visibilitychange',()=>{void soundscape.setHidden(document.hidden).catch(()=>{});if(document.hidden){cancelPicture();pressed.clear();Object.keys(touch).forEach(k=>delete touch[k]);resetOverviewTouch();}frameLoop.visibilityChanged();});
 addEventListener('pagehide',()=>{void soundscape.dispose().catch(()=>{});});
 addEventListener('pageshow',()=>{if(worldReady)updateLabels();});
