@@ -11,7 +11,7 @@
   "sha256": {
     "detail.js": "b23eacae390e33b424cdbace4039fbe5418311ab256232d7946ed2993ebadc0a",
     "lobby-journey.js": "3f7e383b84dc6034b65cf571666f28297df4e20113670c7280b47b7b13bc2d24",
-    "lobby.js": "36adc74e32f4c62917e559ee6b8a6efa1beb5e221c3dd1a4b99e8e1f29886759",
+    "lobby.js": "9cf495cc0467b95fe61d1c091fc30bb751d13b66d4d7951899d91a2642ad99e8",
     "scene-handoff.js": "dceb03ad79736cc96a37fed78c04d63663889be596d52b200e71bdf433d8a39e"
   }
 }

@@ -7,7 +7,11 @@ const routeMedia={engine:{forward,reverse}};
 for(const video of document.querySelectorAll('video[data-route]')){const id=video.getAttribute('data-route'),direction=video.getAttribute('data-direction');if(['hackathons','projects'].includes(id)&&['forward','reverse'].includes(direction)){routeMedia[id]??={};routeMedia[id][direction]=video;}}
 for(const id of ['hackathons','projects'])if(!routeMedia[id]?.forward||!routeMedia[id]?.reverse)delete routeMedia[id];
 const allVideos=Object.values(routeMedia).flatMap(pair=>[pair.forward,pair.reverse]);
-const places={engine:'the hearth',hackathons:'the anvil',projects:'the workbench'},routeNames={engine:'Engine',hackathons:'Hackathons',projects:'Projects'};
+const warmed=new Set();
+function warm(id,both){const pair=routeMedia[id];if(!pair||warmed.has(id+(both?'+':'')))return;warmed.add(id+(both?'+':''));for(const v of both?[pair.forward,pair.reverse]:[pair.forward]){try{v.preload='auto';v.load();}catch{}}const src=still.getAttribute(id==='engine'?'data-arrival-src':'data-'+id+'-src');if(src){const img=new Image();img.decoding='async';img.src=src;}}
+for(const a of document.querySelectorAll('a[href^="#"]')){const id=a.getAttribute('href').slice(1);if(!routeMedia[id])continue;for(const ev of ['pointerenter','focus','touchstart'])a.addEventListener(ev,()=>warm(id,true),{passive:true,once:true});}
+addEventListener('load',()=>{const idle=window.requestIdleCallback||(f=>setTimeout(f,900));idle(()=>warm('engine',false));});
+const places={engine:'the anvil',hackathons:'the hearth',projects:'the tool wall'},routeNames={engine:'Engine',hackathons:'Hackathons',projects:'Projects'};
 const motion=matchMedia('(prefers-reduced-motion: reduce)');
 let active=null,shownVideo=null,mediaEpoch=0,mediaTimer=null,opener=links.find(x=>!x.hasAttribute('data-skip')),target=null,leaving=false,reenterPending=null,viewEpoch=0,boot=true,journey,desiredSection=null;
 function span(v){return Math.max(.001,v.duration-.05);}

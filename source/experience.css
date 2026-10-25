@@ -51,7 +51,6 @@ body .work-section.forge-room{--arrival-height:clamp(230px,33svh,340px);backgrou
 /* Optional object-anchored entry points. The ordinary menu is always available.
    Coordinates are from the 1280×800 native entrance: fire opening (634,412),
    anvil working face (686,458), and hammer on the bench (970,428). */
-.scene-portals{display:none}
 .scene-beacon{position:absolute;display:flex;align-items:center;gap:10px;min-height:44px;min-width:44px;padding:0;transform:translate(-22px,-22px);pointer-events:auto;color:#e0ece7;font-size:14px;line-height:1.35;white-space:nowrap}
 .scene-beacon::before{content:'';display:block;flex:0 0 44px;width:44px;height:44px;border:1px solid #c6dfc1a8;border-radius:50%;background:#08121d33}
 .scene-beacon::after{content:'';position:absolute;left:20px;top:20px;width:4px;height:4px;border-radius:50%;background:#c5e6a9}
@@ -59,8 +58,6 @@ body .work-section.forge-room{--arrival-height:clamp(230px,33svh,340px);backgrou
 .scene-beacon:hover,.scene-beacon:focus-visible{color:#eaf6df}
 .scene-beacon:hover::before,.scene-beacon:focus-visible::before{border-color:#d3f1b9;background:#17312777}
 .scene-beacon:hover span,.scene-beacon:focus-visible span{border-bottom-color:#c5e6a9}
-.beacon-engine{left:49.5%;top:51.5%}.beacon-hackathons{left:53.6%;top:57.25%}.beacon-projects{left:75.8%;top:53.5%}
-@media(min-width:1200px) and (min-height:650px) and (min-aspect-ratio:3/2){.environment img,.environment video{object-position:left center}.enhanced[data-room="forge"][data-scene="forge"] .scene-portals{display:block;position:fixed;left:0;top:50svh;width:max(100vw,160svh);height:max(62.5vw,100svh);transform:translateY(-50%);z-index:3;pointer-events:none}}
 @media(forced-colors:active){.scene-portals{display:none!important}}
 
 /* Spire is another authored world, reached directly on its own site.
@@ -245,3 +242,29 @@ body.ws{background:#08121d;color:#e5eef0}
 @media(max-width:760px){.hamon-games{grid-template-columns:1fr}}
 @media(max-width:760px){.ws-top nav{gap:0 13px;flex-wrap:nowrap;justify-content:space-between}.ws-top nav a{font-size:14px;padding:0}.ws-top{row-gap:0}.ws-hero-copy,.hamon-hero-copy{padding-top:140px}}
 @media(max-width:350px){.ws-top nav{gap:0 8px}.ws-top nav a{font-size:13px}}
+
+/* Forge entrance: the world is the navigation. Hotspots sit on the real objects in the entrance render. */
+.entrance{padding-top:118px}
+.intro{max-width:560px}
+.intro h1{font-size:clamp(54px,5vw,88px);text-shadow:0 2px 26px #08121dd0}
+.intro>p:last-child{font-size:clamp(17px,1.35vw,20px);color:#dbe8ec;max-width:430px;text-shadow:0 1px 14px #08121d}
+.reading-light{background:linear-gradient(90deg,#08121dbf,#08121d66 22%,#08121d00 44%),linear-gradient(0deg,#08121d99,transparent 24%,transparent 84%,#08121d55)}
+.environment img,.environment video{object-position:center}
+.scene-portals{display:flex;flex-wrap:wrap;gap:2px 20px;margin:24px 0 0;max-width:430px}
+.scene-beacon{position:static;transform:none;min-height:44px;min-width:0;display:inline-flex;align-items:center}
+.scene-beacon::before,.scene-beacon::after{display:none}
+.scene-beacon span{color:#e6f1f3;border-bottom:1px solid #789e83;padding:2px 0}
+.scene-beacon:hover span,.scene-beacon:focus-visible span{border-bottom-color:#c5e6a9;color:#fff}
+.beacon-engine{left:52.4%;top:53.1%}.beacon-hackathons{left:35.2%;top:55%}.beacon-projects{left:60.8%;top:36.7%}.beacon-wildside{left:75.8%;top:36.3%}.beacon-spire{left:76.5%;top:49.1%}.beacon-research{left:64.2%;top:52.7%}
+@media(min-width:900px) and (min-aspect-ratio:5/4){
+ .scene-portals{display:block;position:fixed;left:50%;top:50svh;width:max(100vw,160svh);height:max(62.5vw,100svh);max-width:none;margin:0;transform:translate(-50%,-50%);z-index:3;pointer-events:none}
+ .scene-beacon{position:absolute;display:flex;transform:translate(-22px,-22px);min-width:44px;pointer-events:auto}
+ .scene-beacon::before,.scene-beacon::after{display:block}
+ .scene-beacon span{border-bottom:1px solid transparent;padding:3px 0;font-size:15px;letter-spacing:.01em}
+ .scene-beacon:hover span,.scene-beacon:focus-visible span{border-bottom-color:#c5e6a9}
+ .scene-beacon::before{border-color:#ffe9b8cc;background:#08121d40;box-shadow:0 0 18px #ffcf8a55;transition:transform .25s ease,background-color .25s ease,border-color .25s ease}
+ .scene-beacon::after{background:#ffd9a0;box-shadow:0 0 8px #ffcf8a}
+ .scene-beacon:hover::before,.scene-beacon:focus-visible::before{transform:scale(1.18);background:#ffcf8a33;border-color:#fff3d4}
+ .beacon-spire,.beacon-wildside{flex-direction:row}
+}
+@media(max-width:700px){.entrance{padding-top:104px}.intro h1{font-size:56px}.scene-portals{max-width:none;gap:0 18px}.scene-beacon span{font-size:15px}.reading-light{background:linear-gradient(180deg,#08121dd0,#08121d80 34%,#08121d00 60%),linear-gradient(0deg,#08121dc0,transparent 40%)}.environment img,.environment video{object-position:38% center}}

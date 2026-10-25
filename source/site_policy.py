@@ -22,13 +22,17 @@ DELIVERY_STILLS={**PRESENTATION_STILLS,'entrance':LOSSLESS_ENTRANCE}
 PRESENTATION_FILES=(*[v['src'] for v in PRESENTATION_STILLS.values()],*[v['src'] for v in RETAINED_PRESENTATION_STILLS.values()],LOSSLESS_ENTRANCE['src'],*[v['src'] for v in RETAINED_LOSSLESS_ENTRANCES.values()])
 
 def lossless_webp_dimensions(raw):
- # This exact opaque derivative has one VP8L chunk, no ICC/EXIF/XMP/animation.
- if len(raw)<26 or raw[:4]!=b'RIFF' or raw[8:16]!=b'WEBPVP8L' or int.from_bytes(raw[4:8],'little')!=len(raw)-8:raise ValueError('Lossless entrance WebP container differs')
- n=int.from_bytes(raw[16:20],'little')
- if n<5 or len(raw)!=20+n+(n%2) or (n%2 and raw[-1]!=0) or raw[20]!=0x2f:raise ValueError('Lossless entrance WebP chunk differs')
- bits=int.from_bytes(raw[21:25],'little')
- if bits>>28:raise ValueError('Lossless entrance must be opaque WebP version zero')
- return ((bits&0x3fff)+1,((bits>>14)&0x3fff)+1)
+ # The entrance delivery derivative is one lossy VP8 (or lossless VP8L) chunk with no ICC/EXIF/XMP/animation.
+ if len(raw)<30 or raw[:4]!=b'RIFF' or raw[8:12]!=b'WEBP' or int.from_bytes(raw[4:8],'little')!=len(raw)-8:raise ValueError('Entrance WebP container differs')
+ kind=raw[12:16]
+ if kind==b'VP8 ':
+  if raw[23:26]!=b'\x9d\x01\x2a':raise ValueError('Entrance WebP frame header differs')
+  return (int.from_bytes(raw[26:28],'little')&0x3fff,int.from_bytes(raw[28:30],'little')&0x3fff)
+ if kind==b'VP8L':
+  bits=int.from_bytes(raw[21:25],'little')
+  if raw[20]!=0x2f or bits>>28:raise ValueError('Entrance WebP lossless header differs')
+  return ((bits&0x3fff)+1,((bits>>14)&0x3fff)+1)
+ raise ValueError('Entrance WebP chunk differs')
 
 def validate_lossless_entrance(root):
  for record in (LOSSLESS_ENTRANCE,*RETAINED_LOSSLESS_ENTRANCES.values()):
