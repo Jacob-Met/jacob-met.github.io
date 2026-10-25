@@ -61,7 +61,7 @@ def body(has_video: bool) -> str:
             '<div class="ws-hero-copy"><p class="section-context">A <a class="kicker-link" href="hamon.html">HAMON</a> WORLD · MADE FOR MARINAHACKS</p><h1>Wildside</h1><p class="ws-tagline">Step into the WildSide</p>'
             '<p class="ws-lede">Real places you care about, turned into living Violet Evergarden-style worlds you explore at human, bird and insect scale, rendered live by the HAMON Engine in your browser.</p>'
             f'<p class="hamon-actions"><a class="ws-play" href="{APP_URL}">Play Wildside</a><a class="hamon-secondary" href="#wildside-demo">Watch the demo</a></p>'
-            '<p class="ws-note">Works best in desktop Chrome or Edge, which provide WebGPU. Nothing to install and no account.</p></div></section>'
+            '<p class="ws-note">Best in a browser with WebGPU: desktop Chrome or Edge, Android Chrome, or Safari on iOS 26. Phones and tablets get touch controls: one thumb moves, the other drags to look, two fingers pinch to zoom. Elsewhere you get a simpler view. Nothing to install and no account.</p></div></section>'
             f'<section class="ws-section" id="wildside-demo"><h2>Watch</h2>{demo}</section>'
             '<section class="ws-section"><h2>What it is</h2>'
             '<p>Wildside is built around recognition: the tree you pass, the pond near school, the beach your family returns to. A place becomes a painted world you can walk through, see from a bird&#8217;s height or a beetle&#8217;s, and return to as the light and weather change.</p>'

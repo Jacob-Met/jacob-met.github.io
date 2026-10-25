@@ -190,3 +190,17 @@ body.ws{background:#08121d;color:#e5eef0}
 .ws-hero-copy .section-context,.hamon-hero-copy .section-context{color:#d8ecf2;text-shadow:0 1px 10px #08121d}
 .ws-hero h1,.ws-lede,.ws-note{text-shadow:0 2px 18px #08121dcc}
 @media(max-width:760px){.ws-hero::before{background:linear-gradient(180deg,#08121d55 0,#08121d99 45%,#08121dcc 100%)}}
+
+/* Wildside project page on phones: thumb-sized actions, no sideways scroll */
+.ws-main{overflow-x:clip}
+.ws-top nav a,.ws-main .hamon-secondary,.ws-main .public-action,.ws-main .public-action-inline,.ws-main .kicker-link,body footer a{display:inline-flex;align-items:center;min-height:44px}
+.ws-top nav a{padding:0 4px}
+.ws-main p .public-action-inline{display:inline;min-height:0}
+@media(max-width:700px){
+ .ws-play{width:100%;justify-content:center;min-height:56px}
+ .ws-section .public-action{display:inline-flex;align-items:center;min-height:48px;margin:12px 0 0}
+ .ws-lede{font-size:17px}.ws-note{font-size:15px;line-height:1.5}
+ .ws-section{font-size:17px}
+ .ws-hero-copy{padding-top:110px}
+}
+@media(max-height:550px) and (orientation:landscape){.ws-hero-copy{padding-top:88px;padding-bottom:28px}.ws-hero h1{font-size:clamp(44px,12vh,72px)}}
