@@ -54,7 +54,9 @@ export function mountHamonView(parent,{onState=()=>{},skyContainer=null,requestF
    engine=await import('../hamon/hamon_browser.js');await engine.default();
    looks=JSON.parse(engine.looks_json());const saved=read(LOOK_KEY);look=looks.some(l=>l.id===saved)?saved:engine.default_look();
    fit();view=await engine.open_view(canvas);view.resize(size.width,size.height,size.scale);
-   if(!view.set_look(look))look=view.look();
+   // the engine resolves retired ids (a look saved under its old name), so saved choices survive renames
+   if(saved&&!looks.some(l=>l.id===saved)&&view.set_look(saved)){look=view.look();write(LOOK_KEY,look);}
+   else if(!view.set_look(look))look=view.look();
    applyQuality();
    phase='waiting';emit();
    const controls={setSky(v){skyState=v??null;view?.set_sky_json(JSON.stringify(skyState));},state:()=>({sky:skyState,look}),place:()=>currentPlace,requestFrame};
