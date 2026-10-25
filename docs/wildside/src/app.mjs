@@ -35,6 +35,8 @@ import {commitTransfer} from './transfer.mjs';
 import {createSessionStore,defaultSession,removePlaceSource,discardEmptyPlace,SESSION_KEY} from './session.mjs';
 import {listKeptMoments,replacementChoices,admitKeptMoment} from './moment-library.mjs';
 import {mountHamonView,wantsHamon} from './hamon-view.mjs';
+import {registerControl,refreshControls,controlSlot} from './controls.mjs';
+import {mountWorldDrawer,mountVisitChrome} from './visit-chrome.mjs';
 const $=id=>document.getElementById(id), el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
 const uid=prefix=>`${prefix}-${crypto.randomUUID()}`;
 let store,session,saveFault=null,frameLoop=null;
@@ -63,16 +65,23 @@ try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference
 renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.18;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 $('world').append(renderer.domElement);renderer.domElement.setAttribute('aria-label','Living garden scene');
 // Opt-in HAMON Engine renderer (WebGPU). three.js keeps the scene graph and remains the fallback.
-const hamon=wantsHamon()?mountHamonView($('world'),{onState:s=>updateLookPicker(s),skyContainer:$('look-picker')?.parentElement??null,requestFrame:()=>requestWorldFrame()}):null;
+// World drawer: features register controls (src/controls.mjs); the drawer gives them one home.
+const worldDrawer=mountWorldDrawer({drawer:$('world-drawer'),toggle:$('world-toggle'),close:$('world-drawer-close'),sectionsRoot:$('drawer-sections'),isBlocked:()=>$('panel').open});
+mountVisitChrome({panel:$('panel'),drawer:worldDrawer});
+let hamonState=null;
+const hamon=wantsHamon()?mountHamonView($('world'),{onState:s=>updateLookPicker(s),skyContainer:controlSlot('time'),requestFrame:()=>requestWorldFrame()}):null;
+if(hamon)registerControl({id:'hamon-look',section:'style',order:0,when:()=>!!hamonState&&hamonState.phase!=='failed'&&hamonState.looks.length>0,
+ mount({container,kit}){
+  const options=()=>(hamonState?.looks??[]).map(l=>({value:l.id,label:l.name,hint:l.summary}));
+  const c=kit.choice({label:'Rendering style',options:options(),value:hamonState?.look,onChange:id=>{if(hamon.setLook(id))requestWorldFrame();}});
+  c.element.id='look-picker';container.append(c.element);let shown=0;
+  return {update(){const list=options();if(list.length!==shown){shown=list.length;c.setOptions(list,hamonState?.look);}else c.set(hamonState?.look);}};
+ }});
 let hamonNoticeShown=false;
 function updateLookPicker(s){
- const wrap=$('look-picker'),select=$('look-select');if(!wrap||!select)return;
- wrap.hidden=!hamon||s.phase==='failed'||!s.looks.length;
- if(select.options.length!==s.looks.length){select.replaceChildren(...s.looks.map(l=>{const o=el('option',l.name);o.value=l.id;o.title=l.summary;return o;}));}
- if(s.look)select.value=s.look;select.title=s.looks.find(l=>l.id===s.look)?.summary??'';
+ hamonState=s;refreshControls();
  if(s.phase==='failed'&&s.error&&!hamonNoticeShown){hamonNoticeShown=true;notify('Wildside is showing its standard view here: this device can’t draw the painted view just now. Your place is unchanged.');}
 }
-$('look-select').addEventListener('change',e=>{if(hamon?.setLook(e.target.value))requestWorldFrame();});
 function hamonContext(){return {sim,bird,crawler,crawlerArt,orbWeaver,orbArt,pondSkater,skaterArt,submergedLife,submergedArt,nav};}
 function hamonDynamicRoots(){return [bird,crawlerArt,orbArt,skaterArt,submergedArt].filter(Boolean).map(a=>({group:a.group,role:'creature'}));}
 function syncHamonWorld(){if(hamon&&art)void hamon.ready.then(ok=>{if(ok&&art)hamon.setWorld(art,displayPlace,hamonDynamicRoots(),hamonContext());if(ok)hamon.setRain(rain);requestWorldFrame();});}
@@ -125,21 +134,20 @@ function updateEncounter(){
  $('encounter').hidden=(!inhabitant||inhabitant.state==='unplaced')&&!hasWeb&&!hasSkater&&!hasAquatic;
  $('encounter-title').textContent=underwaterFocus?'A world within the water':skaterFocus?'On a silver surface':webFocus?'A world held by silk':small?'Between the stems':['foraging','hopping'].includes(robin.activity)?'A closer look at the ground':'A pause between flights';
  $('bird-state').textContent=underwaterFocus&&!hasAquatic?'A kept underwater viewpoint':`Simulated ${underwaterFocus?'water flea':skaterFocus?'water strider':webFocus?'orb-weaver':small?'ground beetle':'robin'} · ${inhabitant?.activity==='hopping'?'hopping':inhabitant?.activity==='foraging'?'searching':inhabitant?.state.replaceAll('-',' ')||'no supported ground'}`;
- $('watch-bird').textContent=birdFocus?'Stop following':'Look closer ↗';$('watch-bird').setAttribute('aria-pressed',String(!!birdFocus));$('watch-bird').hidden=small||webFocus||skaterFocus||underwaterFocus;$('watch-crawler').hidden=!small||webFocus||skaterFocus||underwaterFocus;
- $('watch-underwater').hidden=!hasAquatic;$('watch-underwater').textContent=underwaterFocus?'Find the swimmers ↗':'Below the surface ↗';
+ $('watch-bird').textContent=birdFocus?'Stop following':'Look closer';$('watch-bird').setAttribute('aria-pressed',String(!!birdFocus));$('watch-bird').hidden=small||webFocus||skaterFocus||underwaterFocus;$('watch-crawler').hidden=!small||webFocus||skaterFocus||underwaterFocus;
+ $('watch-underwater').hidden=!hasAquatic;$('watch-underwater').textContent=underwaterFocus?'Find the swimmers':'Underwater';
  $('watch-skater').hidden=!hasSkater;$('ripple-water').hidden=!hasSkater||!skaterFocus;
- $('watch-skater').textContent=skaterFocus?'Find the skater ↗':'Life on the water ↗';
+ $('watch-skater').textContent=skaterFocus?'Find the skater':'On the water';
  if(webFocus&&web.awareness?.responding){$('bird-state').textContent=`Simulated neighbors · ${web.spider.reason}`;}
  else if(webFocus&&web.encounter?.visible){const visitor=web.encounter;const activity=visitor.phase==='flying'?'A winged visitor drifts past':visitor.phase==='escaping'?'The visitor slips free':web.spider.reason;$('bird-state').textContent=`Simulated life · ${activity}`;}
  $('watch-web').hidden=!hasWeb;$('watch-spider').hidden=!hasWeb||!webFocus;
  $('watch-visitor').hidden=!hasWeb||!webFocus||!web.encounter?.visible;
- $('watch-visitor').textContent=['flying','escaping'].includes(web.encounter?.phase)?'Meet the visitor ↗':'Look at the catch ↗';
+ $('watch-visitor').textContent=['flying','escaping'].includes(web.encounter?.phase)?'Meet the visitor':'Look at the catch';
  $('brush-web').hidden=!hasWeb||!webFocus;$('brush-web').disabled=paused;
  $('brush-web').title=paused?'Resume simulated life to brush a strand':'Send a ripple along the silk';
- $('watch-crawler').textContent=crawlerFocus?'Stop following':'Look closer ↗';$('watch-crawler').setAttribute('aria-pressed',String(!!crawlerFocus));
- $('navigation-hint').textContent=overview&&!sourceView?'Drag to orbit · Shift-drag or two fingers to pan · Scroll or pinch to zoom':crawlerFocus?'Following the beetle · Drag or move to explore · Esc for overview':birdFocus?'Following the robin · Drag or move to explore · Esc for overview':underwaterFocus?'Drag to look · W A S D to swim · E / Q to rise / sink · Esc to surface':webFocus?'Tap a strand · Drag to look · W A S D to move · Esc for overview':'Drag to look · W A S D to move · E / Q to fly · Esc for overview';
-
- $('watch-web').textContent=webFocus?'See the whole web ↗':'Find a web ↗';
+ $('watch-crawler').textContent=crawlerFocus?'Stop following':'Look closer';$('watch-crawler').setAttribute('aria-pressed',String(!!crawlerFocus));
+ $('navigation-hint').textContent=touchHint(overview&&!sourceView?'Drag to orbit · Shift-drag or two fingers to pan · Scroll or pinch to zoom':crawlerFocus?'Following the beetle · Drag or move to explore · Esc for overview':birdFocus?'Following the robin · Drag or move to explore · Esc for overview':underwaterFocus?'Drag to look · W A S D to swim · E / Q to rise / sink · Esc to surface':webFocus?'Tap a strand · Drag to look · W A S D to move · Esc for overview':(nav.pose().mode==='bird'?'Drag to look around · W A S D to fly · E / Q for up and down · Esc to step back':'Drag to look around · W A S D to walk · Esc to step back'));
+ $('watch-web').textContent=webFocus?'See the whole web':'Find a web';
 }
 function safeStart(mode='human'){
  const b=art.bounds,cx=(b.min[0]+b.max[0])/2,cz=(b.min[2]+b.max[2])/2,eye=mode==='human'?1.62:mode==='insect'?.018:2.8;
@@ -224,8 +232,8 @@ function updateLabels(){
  $('place-name').textContent=imagined?'A little closer\nto the living world.':displayPlace.name;$('place-name').style.whiteSpace='pre-line';
  $('place-description').textContent=imagined?'A leaning tree. A quiet patch of sun.\nA whole world, when you stop to look.':displayPlace.anchors.length?'Your views, held together in one place.\nReturn, look closer, and let it grow.':'A familiar place begins with one view.\nAdd a photo and mark what matters.';$('place-description').style.whiteSpace='pre-line';
  $('memory-count').textContent=String(session.memories.filter(m=>m.placeId===place.id).length);document.body.classList.toggle('exploring',!overview);for(const btn of document.querySelectorAll('[data-mode]'))btn.setAttribute('aria-pressed',String(!overview&&!underwaterFocus&&nav.pose().mode===btn.dataset.mode));
- $('rain-toggle').setAttribute('aria-pressed',String(rain));$('motion-toggle').setAttribute('aria-pressed',String(paused));$('motion-toggle').textContent=paused?'▷':'Ⅱ';$('motion-toggle').title=paused?'Resume simulated life':'Pause simulated life';
- $('observe').disabled=historical;$('save-memory').disabled=historical;$('save-memory').title='Keep this viewpoint';for(const control of document.querySelectorAll('[data-move="up"],[data-move="down"]'))control.hidden=nav.pose().mode!=='bird'&&!underwaterFocus;updateEncounter();requestWorldFrame();
+ $('rain-toggle').setAttribute('aria-pressed',String(rain));$('motion-toggle').setAttribute('aria-pressed',String(paused));$('motion-toggle').title=paused?'Resume simulated life · P':'Pause simulated life · P';$('motion-toggle').setAttribute('aria-label',paused?'Resume simulated life':'Pause simulated life');
+ $('observe').disabled=historical;$('save-memory').disabled=historical;$('save-memory').title='Keep this viewpoint · K';for(const control of document.querySelectorAll('[data-move="up"],[data-move="down"]'))control.hidden=nav.pose().mode!=='bird'&&!underwaterFocus;updateEncounter();refreshControls();requestWorldFrame();
 }
 async function changeSession(transform){
  if(saveFault)throw new Error(saveFault);
@@ -844,6 +852,7 @@ addEventListener('pagehide',()=>{void soundscape.dispose().catch(()=>{});});
 addEventListener('pageshow',()=>{if(worldReady)updateLabels();});
 renderer.domElement.addEventListener('webglcontextlost',()=>{cancelPicture();shadowResourceEpoch++;shadowReuse.invalidate();});
 renderer.domElement.addEventListener('webglcontextrestored',()=>{shadowResourceEpoch++;shadowReuse=createShadowReuseGuard(THREE);renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;requestWorldFrame();});
+registerCoreControls();
 rebuild(displayPlace);requestWorldFrame();if(saveFault)notify(saveFault,true);
 window.__wildsideInspect=()=>({overviewZoom:overviewZoom.value(),overviewPan:overviewPan.position(art?.bounds,overviewZoom.value()),hamon:hamon?.state()??null,hamonTrees:hamon?.trees??[],crawlerFocus:crawlerFocus?.controller.snapshot()??null,birdFocus:birdFocus?.controller.snapshot()??null,sourceView:sourceView?{observationId:sourceView.observationId,sourceId:sourceView.sourceId,rms:sourceView.rmsImageHeightFraction,imageAspect:sourceView.imageAspect}:null,mode:underwaterFocus?'underwater':sourceView?'source-view':overview?'overview':nav.pose().mode,pose:underwaterFocus?submergedView.pose():nav.pose(),placeId:place.id,revision:place.revision,memoryCount:session.memories.filter(m=>m.placeId===place.id).length,rain,rainField:{visible:rainLines.visible,segments:rainFieldStats.segments,supportQueries:rainFieldStats.supportQueries,cachedColumns:rainFieldStats.cachedColumns},paused,soundEnabled:soundscape.isEnabled(),simulationTime:worldTime,frameCount,anchorCount:place.anchors.length,anchorIds:place.anchors.map(a=>a.id),historical,birdDetail:{activity:sim.snapshot().bird.activity,forageAmount:sim.snapshot().bird.forageAmount,attention:sim.snapshot().bird.attention,reason:sim.snapshot().bird.reason,perchId:sim.snapshot().bird.perchId,targetId:sim.snapshot().bird.targetId,position:sim.snapshot().bird.position,wingLeft:sim.snapshot().bird.wingLeft,feet:sim.snapshot().bird.feet.map(f=>({toe:f.toe,contact:f.contact}))},foliageDetail:art.detailSnapshot(),publicContext:place.observations.find(o=>o.geographicContext)?.geographicContext??null,contextForms:place.anchors.filter(a=>a.contextForm).map(a=>({id:a.id,form:a.contextForm})),renderer:{calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures},bird:sim.snapshot().bird.state,crawler:crawler?.snapshot().crawler??null,orbWeb:orbWeaver?.snapshot()??null,orbSilk:orbWeaver?.getWeb()?.silkGeometry??null,webVisitor:orbArt?.visitorInspection()??null,webResident:orbArt?.residentInspection()??null,webFocus,pondSkater:pondSkater?.snapshot()??null,skaterFocus,underwaterFocus,submergedLife:submergedLife?.snapshot()??null,camera:{position:camera.position.toArray(),forward:camera.getWorldDirection(new THREE.Vector3()).toArray(),up:new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld,1).toArray(),fov:camera.fov,aspect:camera.aspect,near:camera.near,far:camera.far}});
 
@@ -851,3 +860,35 @@ window.__wildsideInspect=()=>({overviewZoom:overviewZoom.value(),overviewPan:ove
 
 
 
+
+/** On touch screens, describe the on-screen pad rather than keys. */
+function touchHint(text){
+ if(!matchMedia('(pointer: coarse)').matches)return text;
+ return text.replace('W A S D to walk','use the pad to walk').replace('W A S D to fly','use the pad to fly').replace(' · E / Q for up and down','').replace(' · Esc to step back','').replace('W A S D to move','use the pad to move').replace('W A S D to swim','use the pad to swim').replace(' · E / Q to fly','').replace(' · E / Q to rise / sink','').replace(' · Esc for overview','').replace(' · Esc to surface','').replace('Drag or move to explore','Drag or move to explore');
+}
+/** Wildside's own world controls, in the same drawer other features use. */
+function registerCoreControls(){
+ registerControl({id:'imagined-rain',section:'weather',order:0,mount({container,kit}){
+  const c=kit.toggle({label:'Rain',hint:'An imagined shower to see how water and life respond. Not a forecast or a record.',pressed:rain,onChange:()=>$('rain-toggle').click()});
+  container.append(c.element);return {update(){c.set(rain);}};
+ }});
+ registerControl({id:'simulated-life',section:'life',order:0,mount({container,kit}){
+  const c=kit.toggle({label:'Animals move',hint:'Turn off to hold every animal still. They are simulated, not live.',pressed:!paused,onChange:()=>$('motion-toggle').click()});
+  container.append(c.element);return {update(){c.set(!paused);}};
+ }});
+ registerControl({id:'save-picture',section:'style',order:90,mount({container,kit}){const c=kit.action({label:'Save a picture of this view',onClick:()=>{worldDrawer.close();$('save-view-image').click();}});container.append(c.element);return {update(){c.element.disabled=$('save-view-image').disabled;}};}});
+ registerControl({id:'imagined-sound',section:'sound',order:0,mount({container,kit}){
+  const c=kit.toggle({label:'Sound',hint:'Imagined habitat sounds, not field recordings.',pressed:soundscape.isEnabled(),onChange:()=>$('sound-toggle').click()});
+  container.append(c.element);return {update(){c.set(soundscape.isEnabled());}};
+ }});
+ registerControl({id:'honesty-legend',section:'about',order:0,mount({container,kit}){
+  const list=document.createElement('dl');list.className='honesty-legend';
+  for(const [term,text] of [['Observed','Shapes and colours from the views you brought.'],['Interpreted','Our best reading of those views: geometry, ground and landmarks.'],['Simulated','Inhabitants, weather and sound. Illustrations of possibility, never sightings.']]){const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=term;dd.textContent=text;list.append(dt,dd);}
+  container.append(list,kit.action({label:'About this place',onClick:()=>{worldDrawer.close();$('sources').click();}}).element);
+ }});
+ registerControl({id:'keys',section:'keys',order:0,when:()=>matchMedia('(pointer: fine)').matches,mount({container}){
+  const list=document.createElement('dl');list.className='key-legend';
+  for(const [k,v] of [['W A S D','move'],['E / Q','rise / sink'],['1 2 3','human · bird · insect'],['R','imagine rain'],['P','pause life'],['K','keep a moment'],['Esc','overview']]){const dt=document.createElement('dt'),dd=document.createElement('dd');const kbd=document.createElement('kbd');kbd.textContent=k;dt.append(kbd);dd.textContent=v;list.append(dt,dd);}
+  container.append(list);
+ }});
+}
