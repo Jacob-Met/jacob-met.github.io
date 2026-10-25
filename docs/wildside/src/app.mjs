@@ -64,12 +64,13 @@ renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setSize(innerWid
 $('world').append(renderer.domElement);renderer.domElement.setAttribute('aria-label','Living garden scene');
 // Opt-in HAMON Engine renderer (WebGPU). three.js keeps the scene graph and remains the fallback.
 const hamon=wantsHamon()?mountHamonView($('world'),{onState:s=>updateLookPicker(s),skyContainer:$('look-picker')?.parentElement??null,requestFrame:()=>requestWorldFrame()}):null;
+let hamonNoticeShown=false;
 function updateLookPicker(s){
  const wrap=$('look-picker'),select=$('look-select');if(!wrap||!select)return;
  wrap.hidden=!hamon||s.phase==='failed'||!s.looks.length;
  if(select.options.length!==s.looks.length){select.replaceChildren(...s.looks.map(l=>{const o=el('option',l.name);o.value=l.id;o.title=l.summary;return o;}));}
  if(s.look)select.value=s.look;select.title=s.looks.find(l=>l.id===s.look)?.summary??'';
- if(s.phase==='failed'&&s.error)notify('The HAMON view could not open here ('+s.error+'). Showing the standard renderer; your place is unchanged.');
+ if(s.phase==='failed'&&s.error&&!hamonNoticeShown){hamonNoticeShown=true;notify('Wildside is showing its standard view here: this device can’t draw the painted view just now. Your place is unchanged.');}
 }
 $('look-select').addEventListener('change',e=>{if(hamon?.setLook(e.target.value))requestWorldFrame();});
 function hamonContext(){return {sim,bird,crawler,crawlerArt,orbWeaver,orbArt,pondSkater,skaterArt,submergedLife,submergedArt,nav};}
@@ -535,6 +536,18 @@ $('discover-ecology').onclick=openEcologyDiscovery;
 $('sources').onclick=openSources;$('observe').onclick=()=>observation();$('new-place').onclick=newPlace;$('save-memory').onclick=keepMoment;$('memories').onclick=moments;
 $('overview').onclick=()=>{leaveUnderwater();if(historical)returnCurrent();webFocus=false;skaterFocus=false;sourceView=null;overview=true;updateLabels();};
 function enter(mode){try{releaseResidentFocus();leaveUnderwater();webFocus=false;skaterFocus=false;sourceView=null;focusFov=null;if(overview){const start=safeStart(mode);if(!start)throw new Error('This scale has no clear starting location in the current geometry.');nav=start;overview=false;pendingMode=null;}else{nav.changeMode(mode,{duration:paused?.05:1.2});pendingMode=mode;}updateLabels();$('world').focus({preventScroll:true});if(mode==='insect')notify('At ground level, small edges become a landscape. Move slowly and look upward.');}catch(e){notify(e.message);}}
+/** Metres of `a`→`b` that pass through an Engine crown (their leaf masses fill the lens when the camera sits inside). */
+function crownChord(a,b){
+ if(!hamon?.active)return 0;
+ const trees=hamon.trees;if(!trees.length)return 0;
+ const n=48,length=Math.hypot(...b.map((v,i)=>v-a[i])),step=length/n;let inside=0;
+ for(let i=0;i<=n;i++){
+  const t=i/n,x=a[0]+(b[0]-a[0])*t,y=a[1]+(b[1]-a[1])*t,z=a[2]+(b[2]-a[2])*t;
+  if(inCrown(trees,x,y,z))inside+=step;
+ }
+ return inside;
+}
+const inCrown=(trees,x,y,z)=>trees.some(c=>Math.hypot(x-c.pos[0],z-c.pos[2])<c.radius*1.45&&y>c.pos[1]+.8&&y<c.pos[1]+c.height+2.5);
 function birdFocusRules(){
  const probe=createNavigator(world(),{mode:'bird'}),ray=new THREE.Raycaster();
  const rayClear=(a,b,trim=0)=>{
@@ -544,7 +557,7 @@ function birdFocusRules(){
  };
  return {
   admit:pose=>{const result=probe.restore(pose);return result.ok&&!result.adjusted;},
-  visible:(position,target)=>rayClear(position,target,.13),
+  visible:(position,target)=>rayClear(position,target,.13)&&(!hamon?.active||!inCrown(hamon.trees,...position)&&crownChord(position,target)<=1.5),
   clear:(a,b)=>flightSegmentClear(a,b,art.obstacles,.09)&&rayClear(a,b)
  };
 }
@@ -562,7 +575,7 @@ $('watch-bird').onclick=()=>{
  leaveUnderwater();webFocus=false;skaterFocus=false;
  const birdState=sim.snapshot().bird;if(birdState.state==='unplaced')return;const target=birdState.position,rules=birdFocusRules();
  scene.updateMatrixWorld(true);
- for(const radius of [1.4,2.1,2.8])for(const height of [.12,-.12,.55])for(const angle of [birdState.yaw,birdState.yaw+.8,birdState.yaw-.8,birdState.yaw+1.6,birdState.yaw-1.6,birdState.yaw+Math.PI]){
+ for(const radius of [1.4,2.1,2.8,3.6,4.6])for(const height of [.12,-.12,.55,1.2,-.9])for(const angle of [birdState.yaw,birdState.yaw+.8,birdState.yaw-.8,birdState.yaw+1.6,birdState.yaw-1.6,birdState.yaw+Math.PI]){
   const position=[target[0]+Math.sin(angle)*radius,target[1]+height,target[2]+Math.cos(angle)*radius],pose=residentView(position,target);
   if(!pose||!rules.visible(position,target)||!rules.admit(pose))continue;
   const result=nav.restore(pose);
@@ -829,7 +842,7 @@ addEventListener('pageshow',()=>{if(worldReady)updateLabels();});
 renderer.domElement.addEventListener('webglcontextlost',()=>{cancelPicture();shadowResourceEpoch++;shadowReuse.invalidate();});
 renderer.domElement.addEventListener('webglcontextrestored',()=>{shadowResourceEpoch++;shadowReuse=createShadowReuseGuard(THREE);renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;requestWorldFrame();});
 rebuild(displayPlace);requestWorldFrame();if(saveFault)notify(saveFault,true);
-window.__wildsideInspect=()=>({overviewZoom:overviewZoom.value(),overviewPan:overviewPan.position(art?.bounds,overviewZoom.value()),hamon:hamon?.state()??null,crawlerFocus:crawlerFocus?.controller.snapshot()??null,birdFocus:birdFocus?.controller.snapshot()??null,sourceView:sourceView?{observationId:sourceView.observationId,sourceId:sourceView.sourceId,rms:sourceView.rmsImageHeightFraction,imageAspect:sourceView.imageAspect}:null,mode:underwaterFocus?'underwater':sourceView?'source-view':overview?'overview':nav.pose().mode,pose:underwaterFocus?submergedView.pose():nav.pose(),placeId:place.id,revision:place.revision,memoryCount:session.memories.filter(m=>m.placeId===place.id).length,rain,rainField:{visible:rainLines.visible,segments:rainFieldStats.segments,supportQueries:rainFieldStats.supportQueries,cachedColumns:rainFieldStats.cachedColumns},paused,soundEnabled:soundscape.isEnabled(),simulationTime:worldTime,frameCount,anchorCount:place.anchors.length,anchorIds:place.anchors.map(a=>a.id),historical,birdDetail:{activity:sim.snapshot().bird.activity,forageAmount:sim.snapshot().bird.forageAmount,attention:sim.snapshot().bird.attention,reason:sim.snapshot().bird.reason,perchId:sim.snapshot().bird.perchId,targetId:sim.snapshot().bird.targetId,position:sim.snapshot().bird.position,wingLeft:sim.snapshot().bird.wingLeft,feet:sim.snapshot().bird.feet.map(f=>({toe:f.toe,contact:f.contact}))},foliageDetail:art.detailSnapshot(),publicContext:place.observations.find(o=>o.geographicContext)?.geographicContext??null,contextForms:place.anchors.filter(a=>a.contextForm).map(a=>({id:a.id,form:a.contextForm})),renderer:{calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures},bird:sim.snapshot().bird.state,crawler:crawler?.snapshot().crawler??null,orbWeb:orbWeaver?.snapshot()??null,orbSilk:orbWeaver?.getWeb()?.silkGeometry??null,webVisitor:orbArt?.visitorInspection()??null,webResident:orbArt?.residentInspection()??null,webFocus,pondSkater:pondSkater?.snapshot()??null,skaterFocus,underwaterFocus,submergedLife:submergedLife?.snapshot()??null,camera:{position:camera.position.toArray(),forward:camera.getWorldDirection(new THREE.Vector3()).toArray(),up:new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld,1).toArray(),fov:camera.fov,aspect:camera.aspect,near:camera.near,far:camera.far}});
+window.__wildsideInspect=()=>({overviewZoom:overviewZoom.value(),overviewPan:overviewPan.position(art?.bounds,overviewZoom.value()),hamon:hamon?.state()??null,hamonTrees:hamon?.trees??[],crawlerFocus:crawlerFocus?.controller.snapshot()??null,birdFocus:birdFocus?.controller.snapshot()??null,sourceView:sourceView?{observationId:sourceView.observationId,sourceId:sourceView.sourceId,rms:sourceView.rmsImageHeightFraction,imageAspect:sourceView.imageAspect}:null,mode:underwaterFocus?'underwater':sourceView?'source-view':overview?'overview':nav.pose().mode,pose:underwaterFocus?submergedView.pose():nav.pose(),placeId:place.id,revision:place.revision,memoryCount:session.memories.filter(m=>m.placeId===place.id).length,rain,rainField:{visible:rainLines.visible,segments:rainFieldStats.segments,supportQueries:rainFieldStats.supportQueries,cachedColumns:rainFieldStats.cachedColumns},paused,soundEnabled:soundscape.isEnabled(),simulationTime:worldTime,frameCount,anchorCount:place.anchors.length,anchorIds:place.anchors.map(a=>a.id),historical,birdDetail:{activity:sim.snapshot().bird.activity,forageAmount:sim.snapshot().bird.forageAmount,attention:sim.snapshot().bird.attention,reason:sim.snapshot().bird.reason,perchId:sim.snapshot().bird.perchId,targetId:sim.snapshot().bird.targetId,position:sim.snapshot().bird.position,wingLeft:sim.snapshot().bird.wingLeft,feet:sim.snapshot().bird.feet.map(f=>({toe:f.toe,contact:f.contact}))},foliageDetail:art.detailSnapshot(),publicContext:place.observations.find(o=>o.geographicContext)?.geographicContext??null,contextForms:place.anchors.filter(a=>a.contextForm).map(a=>({id:a.id,form:a.contextForm})),renderer:{calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures},bird:sim.snapshot().bird.state,crawler:crawler?.snapshot().crawler??null,orbWeb:orbWeaver?.snapshot()??null,orbSilk:orbWeaver?.getWeb()?.silkGeometry??null,webVisitor:orbArt?.visitorInspection()??null,webResident:orbArt?.residentInspection()??null,webFocus,pondSkater:pondSkater?.snapshot()??null,skaterFocus,underwaterFocus,submergedLife:submergedLife?.snapshot()??null,camera:{position:camera.position.toArray(),forward:camera.getWorldDirection(new THREE.Vector3()).toArray(),up:new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld,1).toArray(),fov:camera.fov,aspect:camera.aspect,near:camera.near,far:camera.far}});
 
 
 

@@ -31,7 +31,7 @@ export function hamonResolution(width,height,pixelRatio=1){
 
 export function mountHamonView(parent,{onState=()=>{},skyContainer=null,requestFrame=()=>{}}={}){
  const canvas=document.createElement('canvas');canvas.className='hamon-canvas';canvas.setAttribute('aria-label','Living place rendered by HAMON Engine');canvas.hidden=true;parent.append(canvas);
- let engine=null,view=null,phase='loading',error=null,stream=null,looks=[],look=null,size=null,busy=false,inhabitants=[],skyState=null,currentPlace=null;const skyMounts=[];
+ let worldTrees=[],engine=null,view=null,phase='loading',error=null,stream=null,looks=[],look=null,size=null,busy=false,inhabitants=[],skyState=null,currentPlace=null;const skyMounts=[];
  const state=()=>({phase,error:error?String(error.message??error):null,look,looks,adapter:view?.adapter()??null,stats:view?JSON.parse(view.stats()):null});
  const emit=()=>{parent.dataset.renderer=phase==='ready'?'hamon':'three';onState(state());};
  const fail=e=>{error=e;phase='failed';canvas.hidden=true;try{view?.free();}catch{}view=null;emit();console.error('HAMON view unavailable:',e);};
@@ -55,6 +55,8 @@ export function mountHamonView(parent,{onState=()=>{},skyContainer=null,requestF
  })();
  const api={canvas,ready,state,
   get active(){return phase==='ready'&&!!view;},
+  /** The Engine's crowns, for camera rules (the three.js stand-ins are not what is drawn). */
+  get trees(){return worldTrees;},
   /** Send a rebuilt place: `art` from buildWorldArt, `dynamicRoots` = [{group, role}] of
    * three.js creature art, `ctx` the simulation context for inhabitant extensions. */
   setWorld(art,place,dynamicRoots,ctx={}){
@@ -65,7 +67,7 @@ export function mountHamonView(parent,{onState=()=>{},skyContainer=null,requestF
     const placeExt=HAMON_EXTENSIONS.places.filter(x=>x.matches?.({place,art})).flatMap(x=>x.contribute({place,art})??[]);
     inhabitants=HAMON_EXTENSIONS.inhabitants.filter(x=>x.state&&(!x.replaces||x.replaces(ctx)));
     const replaced=new Set(inhabitants.map(x=>x.replaces?.(ctx)).filter(Boolean));
-    const packet=exportPlaceForHamon(art,place,dynamicRoots.filter(r=>!replaced.has(r.group)),{places:placeExt,inhabitants:inhabitants.map(x=>({kind:x.kind,params:x.params??{}}))});view.set_world(JSON.stringify(packet.desc),packet.verts,packet.indices,packet.texels);stream=packet.stream;phase='ready';emit();return true;}
+    const packet=exportPlaceForHamon(art,place,dynamicRoots.filter(r=>!replaced.has(r.group)),{places:placeExt,inhabitants:inhabitants.map(x=>({kind:x.kind,params:x.params??{}}))});view.set_world(JSON.stringify(packet.desc),packet.verts,packet.indices,packet.texels);stream=packet.stream;worldTrees=packet.desc?.trees??[];phase='ready';emit();return true;}
    catch(e){fail(e);return false;}
   },
   setLook(id){
