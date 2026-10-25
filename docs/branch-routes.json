@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "visibility": "local-preview",
+  "visibility": "public-captured",
   "routes": {
     "hackathons": {
       "mode": "recorded-native",

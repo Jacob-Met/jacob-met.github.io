@@ -1,7 +1,7 @@
 {
   "schema": 7,
   "date": "2026-10-24",
-  "publication": "local-preview",
+  "publication": "public-captured",
   "sha256": {
     ".nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "404.html": "71277f8be45ec6327a8ead98ff8cfd41f1e837c523b15e2f867e5f895c1f5c0a",
@@ -45,7 +45,7 @@
     "assets/scene/forge-workbench.png": "eac784ac5a4fbe216abd35ff7e54fe620503f24dc2a6adfee6d4daed4c31acea",
     "assets/scene/hamon-engine-study.webp": "82a8d85623aad37e633fcf6da2b1cb7548a829bd379067043d6a9952e4642034",
     "assets/scene/research-observatory.svg": "7dd1c072fd7545cda6f55180ef84e1c9f6344e0da82076f21cc288e00215873c",
-    "branch-routes.json": "edcbcfa0568f55c77a46a606e69855e0ccf860d6cb37c55b8e64ebe88fd30766",
+    "branch-routes.json": "05dff92230950af78f651fba1a9e22dd14327b52b3fc406711aa011f97195f26",
     "capture-manifest.json": "a68fbb4b771e9aaaad473a4c6534218b5eea9d29f2bc78fbd92eabd55098ab0c",
     "cv.json": "8bf265836cadd04aecb6ab3bcc71debbde250e7cead76289c87f48ebc89b167d",
     "detail.js": "b23eacae390e33b424cdbace4039fbe5418311ab256232d7946ed2993ebadc0a",
@@ -65,7 +65,7 @@
     "games/lanternwake/webgpu-compat.js": "95b4487d37462f3e60f159abfedff03bcd6810960339ae2a65e0311863954822",
     "index.html": "86f0b7e48572a464f72219e02ab40c708b24f1ed2aeebb28387947cd6c613500",
     "lobby-journey.js": "3f7e383b84dc6034b65cf571666f28297df4e20113670c7280b47b7b13bc2d24",
-    "lobby-manifest.json": "51dea6c199542675aacf61338397e82f4563e62ea286499c26fc4e7d58d10573",
+    "lobby-manifest.json": "427df776bc16cf0baf9ec29eb935bec63e64469317c08c5be991dc44c2e76412",
     "lobby.js": "36adc74e32f4c62917e559ee6b8a6efa1beb5e221c3dd1a4b99e8e1f29886759",
     "portfolio.json": "0447487e7c5576d5fa7a546889a57f6f94f3744918d921e33930d950f8be4b69",
     "project-figures.json": "24e8f312424765109ed2afa6e539d662d10a71308788a23fa22d18683e3f8a5b",
