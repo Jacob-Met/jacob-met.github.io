@@ -11,9 +11,9 @@ import struct
 from pathlib import Path
 
 MANIFEST = 'lobby-manifest.json'
-MEDIA={'entrance': 'assets/scene/forge-warm-lobby-entrance.png', 'arrival': 'assets/scene/forge-warm-engine-arrival.png', 'forward': 'assets/scene/forge-warm-engine-forward.mp4', 'reverse': 'assets/scene/forge-warm-engine-reverse.mp4'}
+MEDIA={'entrance': 'assets/scene/forge-tools-lobby-entrance.png', 'arrival': 'assets/scene/forge-tools-engine-arrival.png', 'forward': 'assets/scene/forge-tools-engine-forward.mp4', 'reverse': 'assets/scene/forge-tools-engine-reverse.mp4'}
 # Preserve the previous live URLs; new selected filenames avoid stale-clip caches.
-RETAINED_ENGINE_MEDIA={'assets/scene/forge-engine-arrival.png': '18c5c569ef7207859d59c72320faac8445c1fe3afda45d7b87204a02de15b7ec', 'assets/scene/forge-engine-forward.mp4': '0c766fa5813f64ee9406ba26495aa056b8860e09dfcec64cfc8231a2a8817ca4', 'assets/scene/forge-engine-reverse.mp4': '092d64364e9ed8cba81025b5996055e9cfb8961cde912af212e6cf72cd62aa15', 'assets/scene/forge-workbench.png': '262459031987b79002205b2c9cadb2e5d2b7447b1cf5964384700e61a96c00d1', 'assets/scene/forge-lobby-entrance.png': 'e85274967a5e89dace34f1e008f37e12c1e043b72c05aa2c8515e6bf4c1a0818', 'assets/scene/forge-engine-wide-arrival.png': '999e219bd6339ce2f042dc2a174f11b58d07aa50a95d5ad9977ac8ee3b54c937', 'assets/scene/forge-engine-wide-forward.mp4': 'da905c2803187f8a1c90640efa95b6cc50a118e23f59dd454c59a9ac4811be2e', 'assets/scene/forge-engine-wide-reverse.mp4': 'fe6e4485565801ef6abe40f1b8576c964801d519e4df07665958450f3c5e63dd', 'assets/scene/forge-engine-wide-proof.png': 'eac784ac5a4fbe216abd35ff7e54fe620503f24dc2a6adfee6d4daed4c31acea'}
+RETAINED_ENGINE_MEDIA={'assets/scene/forge-engine-arrival.png': '18c5c569ef7207859d59c72320faac8445c1fe3afda45d7b87204a02de15b7ec', 'assets/scene/forge-engine-forward.mp4': '0c766fa5813f64ee9406ba26495aa056b8860e09dfcec64cfc8231a2a8817ca4', 'assets/scene/forge-engine-reverse.mp4': '092d64364e9ed8cba81025b5996055e9cfb8961cde912af212e6cf72cd62aa15', 'assets/scene/forge-workbench.png': '262459031987b79002205b2c9cadb2e5d2b7447b1cf5964384700e61a96c00d1', 'assets/scene/forge-lobby-entrance.png': 'e85274967a5e89dace34f1e008f37e12c1e043b72c05aa2c8515e6bf4c1a0818', 'assets/scene/forge-engine-wide-arrival.png': '999e219bd6339ce2f042dc2a174f11b58d07aa50a95d5ad9977ac8ee3b54c937', 'assets/scene/forge-engine-wide-forward.mp4': 'da905c2803187f8a1c90640efa95b6cc50a118e23f59dd454c59a9ac4811be2e', 'assets/scene/forge-engine-wide-reverse.mp4': 'fe6e4485565801ef6abe40f1b8576c964801d519e4df07665958450f3c5e63dd', 'assets/scene/forge-engine-wide-proof.png': 'eac784ac5a4fbe216abd35ff7e54fe620503f24dc2a6adfee6d4daed4c31acea', 'assets/scene/forge-warm-lobby-entrance.png': 'abf0b8efedf6391185af21d71fad774eba32b277f30af295bd6f53f13780e475', 'assets/scene/forge-warm-engine-arrival.png': '3c05c5cae6c242cad165de1ed166f27e6608a016e676dd2bbfd2180167c92492', 'assets/scene/forge-warm-engine-forward.mp4': '21fd1e60e08a269ec06613cb4e7b0b63b2286febff82577fe8fb4c824599172f', 'assets/scene/forge-warm-engine-reverse.mp4': '28c2b6bdb71c39d8ee7a1ea3296675e7220277ac560a93e63fa261fbb605605b', 'assets/scene/forge-warm-workbench.png': 'ea6026a6500226268c132c12775f5ce65f313aeb51c228b2e5ae2a2b59dec981'}
 SHA = re.compile(r'[a-f0-9]{64}\Z')
 
 
@@ -155,7 +155,7 @@ def load_lobby(root, *, allow_private_preview=False):
     for key in ('alt', 'label'):
         if not isinstance(proof[key], str) or not 1 <= len(proof[key]) <= 400 or any(c in proof[key] for c in '<>\x00'):
             raise ValueError('Invalid workbench proof text')
-    raw = read_media(root, {k: proof[k] for k in ('src', 'sha256')}, 'assets/scene/forge-warm-workbench.png')
+    raw = read_media(root, {k: proof[k] for k in ('src', 'sha256')}, 'assets/scene/forge-tools-workbench.png')
     if len(raw) < 33 or raw[:8] != b'\x89PNG\r\n\x1a\n' or raw[12:16] != b'IHDR' or struct.unpack_from('>II', raw, 16) != dimensions:
         raise ValueError('Workbench proof must match route dimensions')
     p = data['provenance']

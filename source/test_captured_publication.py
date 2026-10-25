@@ -37,8 +37,8 @@ class CapturedPublication(unittest.TestCase):
         self.assertIn('assets/figures/worldlaw-computed.svg',markup)
         self.assertIn('assets/figures/worldlaw-computed-mobile.svg',markup)
         self.assertIn('Computed model predictions, not measurements.',markup)
-        self.assertIn('loading="lazy" src="assets/scene/forge-warm-arrival-960.png"',markup)
-        self.assertIn('src="assets/scene/forge-warm-arrival-960.png" width="960" height="600"',markup)
+        self.assertIn('loading="lazy" src="assets/scene/forge-tools-arrival-960.png"',markup)
+        self.assertIn('src="assets/scene/forge-tools-arrival-960.png" width="960" height="600"',markup)
     def test_all_loaded_scripts_parse(self):
         node=shutil.which('node');self.assertIsNotNone(node)
         for name in LOADED_SCRIPT_FILES:
@@ -62,12 +62,12 @@ class CapturedPublication(unittest.TestCase):
         self.assertEqual({p.name for p in (build.ROOT/'assets/scene').iterdir()}, {*(Path(p).name for p in branch_files(load_branches(build.ROOT,allow_private_preview=True)) if p.startswith('assets/scene/')),*(Path(p).name for p in PRESENTATION_FILES),'research-observatory.svg','forge-native.png','forge-native-motion.mp4','hamon-engine-study.webp','forge-workbench.png',*(Path(p).name for p in lobby_files(load_lobby(build.ROOT,allow_private_preview=True)) if p.startswith('assets/scene/'))})
     def test_previous_engine_media_urls_are_still_exact(self):
         validate_retained_engine_media(build.ROOT)
-        self.assertEqual(len(RETAINED_ENGINE_MEDIA),9)
+        self.assertEqual(len(RETAINED_ENGINE_MEDIA),14)
         selected=load_lobby(build.ROOT)
         self.assertTrue(all(selected['media'][k]['src'] not in RETAINED_ENGINE_MEDIA for k in ('forward','reverse','arrival')))
     def test_previous_branch_media_urls_are_still_exact(self):
         validate_retained_branch_media(build.ROOT)
-        self.assertEqual(len(RETAINED_BRANCH_MEDIA),8)
+        self.assertEqual(len(RETAINED_BRANCH_MEDIA),16)
         selected=load_branches(build.ROOT)
         self.assertTrue(all(v['src'] not in RETAINED_BRANCH_MEDIA for route in selected.values() for v in [*route['media'].values(),route['still']]))
         with tempfile.TemporaryDirectory() as tmp:
