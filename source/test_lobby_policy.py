@@ -39,7 +39,7 @@ class LobbyPolicy(unittest.TestCase):
             p.parent.mkdir(parents=True, exist_ok=True)
             p.write_bytes(raw)
             data['media'][key] = {'src': name, 'sha256': hashlib.sha256(raw).hexdigest()}
-        name = 'assets/scene/forge-engine-wide-proof.png'
+        name = 'assets/scene/forge-warm-workbench.png'
         (root / name).write_bytes(png)
         data['proof'] = {'src': name, 'sha256': hashlib.sha256(png).hexdigest(),
                          'width': 800, 'height': 500, 'alt': 'Native rendered workbench.',

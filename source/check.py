@@ -15,7 +15,7 @@ from game_assets import GAME_PATH, audit_game_bundle
 from capture_policy import load_capture, video_element_errors, source_element_errors, CAPTURE_FILE, PROOF_FILE
 from lobby_policy import load_lobby, route_video_errors, route_source_errors, validate_retained_engine_media
 from figure_policy import load_figures, picture_source_errors
-from branch_policy import load_branches, branch_video_errors, branch_source_errors, BRANCHES, DIRECTIONS
+from branch_policy import load_branches, branch_video_errors, branch_source_errors, BRANCHES, DIRECTIONS, validate_retained_branch_media
 from experience_policy import load_experience
 from site_policy import (FONT_PROPERTIES, validate_fonts, SCRIPT_FILES, LOADED_SCRIPT_FILES,
                          audit_scripts, script_element_errors, canvas_element_errors, ART_FILES, validate_art, EDITORIAL_FILES, EDITORIAL_ART, validate_editorial, PRESENTATION_FILES, PRESENTATION_STILLS, DELIVERY_STILLS, validate_presentation_stills)
@@ -200,6 +200,7 @@ def check(root: Path, *, preview=False) -> dict:
         validate_editorial(root)
         validate_presentation_stills(root)
         validate_retained_engine_media(root)
+        validate_retained_branch_media(root)
     except (ValueError, OSError, UnicodeError) as error:
         failures.append('Font publication boundary: ' + str(error))
     if (root / 'games').exists():

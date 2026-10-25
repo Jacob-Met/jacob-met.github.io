@@ -13,9 +13,9 @@ class BranchPolicy(unittest.TestCase):
             return {'src':name,'sha256':hashlib.sha256(raw).hexdigest()}
         for key in ('hackathons','projects'):
             media={}
-            for direction in ('forward','reverse'):media[direction]=put(f'assets/scene/forge-{key}-{direction}.mp4',video(width=640,height=400,frames=60))
-            media['endpoint']=put(f'assets/scene/forge-{key}-endpoint.png',png(640,400))
-            still={**put(f'assets/scene/forge-{key}-1280.png',png(1280,800)),'width':1280,'height':800,'alt':'A native view of this distinct forge destination.'}
+            for direction in ('forward','reverse'):media[direction]=put(f'assets/scene/forge-warm-{key}-{direction}.mp4',video(width=640,height=400,frames=60))
+            media['endpoint']=put(f'assets/scene/forge-warm-{key}-endpoint.png',png(640,400))
+            still={**put(f'assets/scene/forge-warm-{key}-1280.png',png(1280,800)),'width':1280,'height':800,'alt':'A native view of this distinct forge destination.'}
             data['routes'][key]={'mode':'recorded-native','width':640,'height':400,'frames':60,'playbackFps':20,'containerSeconds':3,'label':key,'location':'The forge','media':media,'still':still,'provenance':{'cameraSequenceSha256':'a'*64,'nativeReceiptSha256':'b'*64,'nativeJobSeconds':75.5}}
         return data
     def write(self,root,data):(root/'branch-routes.json').write_text(json.dumps(data))
@@ -40,11 +40,11 @@ class BranchPolicy(unittest.TestCase):
                 d=copy.deepcopy(base);r=d['routes']['projects']['media']['forward'];(root/r['src']).write_bytes(raw);r['sha256']=hashlib.sha256(raw).hexdigest();self.write(root,d)
                 with self.assertRaises(ValueError):load_branches(root,allow_private_preview=True)
     def test_source_and_video_attributes_bind_exact_route(self):
-        routes={'projects':{'media':{'forward':{'src':'assets/scene/forge-projects-forward.mp4'}}}}
+        routes={'projects':{'media':{'forward':{'src':'assets/scene/forge-warm-projects-forward.mp4'}}}}
         attrs={'id':'route-projects-forward','data-route':'projects','data-direction':'forward','muted':None,'playsinline':None,'preload':'none','hidden':None}
         self.assertEqual(branch_video_errors(attrs,routes),[])
         self.assertTrue(branch_video_errors({**attrs,'autoplay':None},routes))
         self.assertTrue(branch_video_errors({**attrs,'data-route':'hackathons'},routes))
-        source={'src':'assets/scene/forge-projects-forward.mp4','type':'video/mp4'}
+        source={'src':'assets/scene/forge-warm-projects-forward.mp4','type':'video/mp4'}
         self.assertEqual(branch_source_errors(source,'route-projects-forward',routes),[])
-        self.assertTrue(branch_source_errors({**source,'src':'assets/scene/forge-hackathons-forward.mp4'},'route-projects-forward',routes))
+        self.assertTrue(branch_source_errors({**source,'src':'assets/scene/forge-warm-hackathons-forward.mp4'},'route-projects-forward',routes))

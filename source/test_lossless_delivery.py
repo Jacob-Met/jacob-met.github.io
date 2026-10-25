@@ -13,14 +13,17 @@ class LosslessDelivery(unittest.TestCase):
  def test_exact_opaque_lossless_bytes_and_dimensions(self):
   validate_lossless_entrance(ROOT)
   raw=(ROOT/LOSSLESS_ENTRANCE['src']).read_bytes()
-  self.assertEqual(len(raw),496048);self.assertEqual(lossless_webp_dimensions(raw),(1280,800))
-  self.assertEqual(LOSSLESS_ENTRANCE['rgbaSha256'],'4e8d2b4c9980bc5b1de739aa52e1db1dc6040ac96460624c147106bbda8aa602')
- def test_original_native_png_and_url_remain_exact(self):
+  self.assertEqual(len(raw),554960);self.assertEqual(lossless_webp_dimensions(raw),(1280,800))
+  self.assertEqual(LOSSLESS_ENTRANCE['rgbaSha256'],'f1a01579785b92235fe2ce69ff6f7ab7f60a60e589b46810b25712c5628d03de')
+ def test_selected_native_png_and_previous_public_urls_remain_exact(self):
   source=PRESENTATION_STILLS['entrance'];raw=(ROOT/source['src']).read_bytes()
-  self.assertEqual(source['src'],'assets/scene/forge-entrance-1280.png')
-  self.assertEqual(hashlib.sha256(raw).hexdigest(),'5289a46ef28008084a794c3d85040fb577c927126cdf3b87720dba4ef3d077d2')
+  self.assertEqual(source['src'],'assets/scene/forge-warm-entrance-1280.png')
+  self.assertEqual(hashlib.sha256(raw).hexdigest(),'aa98b75fd837beb69d5c83dcaf20879ec7b228bab7d8c83bf569d1e5b928f5df')
   self.assertIn(source['src'],PRESENTATION_FILES);self.assertIn(LOSSLESS_ENTRANCE['src'],PRESENTATION_FILES)
-  self.assertEqual(len(raw)-len((ROOT/LOSSLESS_ENTRANCE['src']).read_bytes()),325535)
+  self.assertEqual(len(raw)-len((ROOT/LOSSLESS_ENTRANCE['src']).read_bytes()),365915)
+  for name,digest in [('forge-entrance-1280.png','5289a46ef28008084a794c3d85040fb577c927126cdf3b87720dba4ef3d077d2'),('forge-entrance-1280.webp','0e3c6614e72335640a8aa068902e0f8bf510bdbd1a74b7b7ff5c87347dcb21b8')]:
+   self.assertEqual(hashlib.sha256((ROOT/'assets/scene'/name).read_bytes()).hexdigest(),digest)
+   self.assertIn('assets/scene/'+name,PRESENTATION_FILES)
  def test_only_entrance_delivery_changes(self):
   self.assertEqual(DELIVERY_STILLS['arrival'],PRESENTATION_STILLS['arrival'])
   self.assertEqual(set(DELIVERY_STILLS),set(PRESENTATION_STILLS))
