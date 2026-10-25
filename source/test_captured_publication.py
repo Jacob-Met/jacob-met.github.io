@@ -35,7 +35,7 @@ class CapturedPublication(unittest.TestCase):
         self.assertIn('Conceptual illustration · not experimental data',markup)
         self.assertIn('assets/figures/worldlaw-computed.svg',markup)
         self.assertIn('assets/figures/worldlaw-computed-mobile.svg',markup)
-        self.assertIn('not measured data',markup)
+        self.assertIn('Computed model predictions, not measurements.',markup)
         self.assertIn('loading="lazy" src="assets/scene/forge-arrival-1280.png"',markup)
     def test_all_loaded_scripts_parse(self):
         node=shutil.which('node');self.assertIsNotNone(node)

@@ -18,7 +18,7 @@ from figure_policy import load_figures, picture_source_errors
 from branch_policy import load_branches, branch_video_errors, branch_source_errors, BRANCHES, DIRECTIONS
 from experience_policy import load_experience
 from site_policy import (FONT_PROPERTIES, validate_fonts, SCRIPT_FILES, LOADED_SCRIPT_FILES,
-                         audit_scripts, script_element_errors, canvas_element_errors, ART_FILES, validate_art, EDITORIAL_FILES, EDITORIAL_ART, validate_editorial, PRESENTATION_FILES, PRESENTATION_STILLS, validate_presentation_stills)
+                         audit_scripts, script_element_errors, canvas_element_errors, ART_FILES, validate_art, EDITORIAL_FILES, EDITORIAL_ART, validate_editorial, PRESENTATION_FILES, PRESENTATION_STILLS, validate_presentation_stills, CAPTIONVERSE_CAPTURES, CAPTIONVERSE_FILES, validate_captionverse_captures, captionverse_picture_source_errors)
 
 ROOT_RELATIVE_PAGES = frozenset({'404.html'})
 CSP_REQUIRED = {'default-src': "'none'", 'style-src': "'self'", 'script-src': "'self'", 'img-src': "'self'", 'media-src': "'self'", 'font-src': "'self'", 'connect-src': "'none'", 'object-src': "'none'", 'frame-src': "'none'", 'worker-src': "'none'", 'base-uri': "'none'", 'form-action': "'none'"}
@@ -68,7 +68,10 @@ class Page(HTMLParser):
                 expected.update({f'data-{key}-src':route['still']['src'] for key,route in self.branches.items()})
                 if any(a.get(k) != v for k,v in expected.items()): self.errors.append('img: scene endpoint attributes outside exact native stills')
             if src in EDITORIAL_ART and (a.get('width'),a.get('height')) != tuple(str(EDITORIAL_ART[src][k]) for k in ('width','height')): self.errors.append('img: editorial artwork dimensions differ')
-            approved = {CAPTURE_FILE, PROOF_FILE, 'games/lanternwake/desktop.png', *ART_FILES, *EDITORIAL_FILES, *PRESENTATION_FILES} | {r['src'] for r in self.figures.values()}
+            for record in CAPTIONVERSE_CAPTURES.values():
+                if src == record['src'] and (a.get('width'), a.get('height')) != (str(record['width']), str(record['height'])):
+                    self.errors.append('img: Captionverse capture dimensions differ')
+            approved = {CAPTURE_FILE, PROOF_FILE, 'games/lanternwake/desktop.png', *ART_FILES, *EDITORIAL_FILES, *PRESENTATION_FILES, *CAPTIONVERSE_FILES} | {r['src'] for r in self.figures.values()}
             approved |= {r['still']['src'] for r in self.branches.values()}
             if self.lobby:
                 approved |= {self.lobby['media'][k]['src'] for k in ('entrance', 'arrival')} | {self.lobby['proof']['src']}
@@ -81,7 +84,7 @@ class Page(HTMLParser):
         if tag in ('form', 'iframe', 'object', 'embed', 'base', 'style', 'audio', 'svg'):
             self.errors.append(f'{tag}: outside declared surface')
         if tag == 'picture':
-            if self.in_picture or a or not self.figures: self.errors.append('picture: outside declared computed figures')
+            if self.in_picture or a or not self.figures: self.errors.append('picture: outside declared project figures')
             self.in_picture = True
         if tag == 'video':
             self.videos.append(a); self.current_video = a.get('id')
@@ -89,7 +92,10 @@ class Page(HTMLParser):
             if a.get('poster'): self.resources.append(a['poster'])
         if tag == 'source':
             if self.in_picture:
-                self.errors.extend(picture_source_errors(a, self.figures))
+                if a.get('srcset') == CAPTIONVERSE_CAPTURES['phone']['src']:
+                    self.errors.extend(captionverse_picture_source_errors(a))
+                else:
+                    self.errors.extend(picture_source_errors(a, self.figures))
                 if a.get('srcset'): self.resources.append(a['srcset'])
             else:
                 self.sources.append((self.current_video, a))
@@ -196,6 +202,7 @@ def check(root: Path, *, preview=False) -> dict:
         validate_art(root)
         validate_editorial(root)
         validate_presentation_stills(root)
+        validate_captionverse_captures(root)
     except (ValueError, OSError, UnicodeError) as error:
         failures.append('Font publication boundary: ' + str(error))
     if (root / 'games').exists():

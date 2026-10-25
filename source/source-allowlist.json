@@ -2,6 +2,8 @@
   "schema": 1,
   "files": [
     "assets/apple-touch-icon.png",
+    "assets/demos/captionverse-reading-desktop.png",
+    "assets/demos/captionverse-reading-phone.png",
     "assets/demos/recallweave-desktop.webp",
     "assets/demos/recallweave-mobile.webp",
     "assets/demos/returnby-desktop.webp",
@@ -93,6 +95,7 @@
     "source_policy.py",
     "style.css",
     "test_branch_policy.py",
+    "test_captionverse_capture.py",
     "test_captured_publication.py",
     "test_deployment.py",
     "test_editorial_art.py",

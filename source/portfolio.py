@@ -141,6 +141,26 @@ def hackathon_section(experience, route=None):
             '<a href="#forge" class="return-link">← Return to the forge</a></section>')
 
 
+
+def captionverse_capture():
+    """A dated, attributed capture inside the existing project disclosure only."""
+    from site_policy import CAPTIONVERSE_CAPTURES
+    desktop, phone = (CAPTIONVERSE_CAPTURES[key] for key in ('desktop', 'phone'))
+    return (f'<figure class="captionverse-capture"><div class="captionverse-capture-frame"><picture>'
+            f'<source media="(max-width: 800px)" type="image/png" srcset="{e(phone["src"])}" width="{phone["width"]}" height="{phone["height"]}">'
+            f'<img loading="lazy" decoding="async" src="{e(desktop["src"])}" width="{desktop["width"]}" height="{desktop["height"]}" '
+            'alt="Actual Captionverse capture: a paused video leaves the completed dialogue visible with a Continue video button."></picture></div>'
+            '<figcaption><p><strong>A moment to read.</strong> The video has paused; the complete passage stays visible until the viewer continues.</p>'
+            '<p class="captionverse-capture-meta">Reading-pause detail · static browser capture, 23 Oct 2026 · local prototype. '
+            'Phone capture uses 200% reading text.</p>'
+            '<div class="captionverse-capture-links">'
+            f'<a href="{e(desktop["src"])}" aria-label="Captionverse: full desktop reading-pause capture">Full desktop capture ↗</a>'
+            f'<a href="{e(phone["src"])}" aria-label="Captionverse: full phone reading-pause capture">Full phone capture ↗</a></div>'
+            '<p class="captionverse-capture-credit">Film: <a href="https://mango.blender.org/"><cite>Tears of Steel</cite> — Blender Foundation</a>, '
+            '<a href="https://creativecommons.org/licenses/by/3.0/" rel="license">CC BY 3.0</a>. '
+            '44-second excerpt (3:12–3:56), trimmed and re-encoded. Desktop shown as a detail; original captures unchanged.</p></figcaption></figure>')
+
+
 def projects_section(data, legacy, experience, figures=None, route=None):
     figures = figures or {}
     stories = {s['projectId']: s for s in experience['projectStories']}
@@ -154,8 +174,9 @@ def projects_section(data, legacy, experience, figures=None, route=None):
             proof = (f'<a class="public-action" href="{e(game["build"]["play_url"])}">Play the published snapshot ↗</a>'
                      '<p class="scope-copy">WebGPU required. The published game is a snapshot, not the whole current engine.</p>'
                      if game.get('build') else '<p class="scope-copy">No verified playable build is currently listed.</p>')
+        capture = captionverse_capture() if pid == 'captionverse' else ''
         entries.append(f'<article class="research-entry" id="{e(pid)}" tabindex="-1"><h3>{e(name)}</h3>'
-                       f'<p>{e(story["question"])}</p><details><summary>Explore the idea</summary><p>{e(story["opening"])}</p>{proof}</details></article>')
+                       f'<p>{e(story["question"])}</p><details><summary>Explore the idea</summary><p>{e(story["opening"])}</p>{capture}{proof}</details></article>')
     sources = ''.join(f'<article class="research-entry"><h3>{e(p["name"])}</h3><p>{e(p["line"])}</p><a class="public-action" href="{e(p["url"])}">Public source ↗</a></article>' for p in legacy['projects'] if p['name'] != 'CaptureSuite')
     related = ''.join(f'<article class="research-entry"><h3>{e(r["name"])}</h3><p>{e(r["question"])}</p>'
                       f'<p>{e(r["description"])}</p><details><summary>Current scope</summary>'
