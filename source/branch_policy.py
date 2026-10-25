@@ -8,6 +8,12 @@ from lobby_policy import exact, read_media, recorded_video, SHA
 MANIFEST = 'branch-routes.json'
 BRANCHES = ('hackathons', 'projects')
 DIRECTIONS = ('forward', 'reverse')
+RETAINED_BRANCH_MEDIA = {'assets/scene/forge-hackathons-forward.mp4': 'a4ba79077deede4e80359f4d79fa539e5b2b24ecdb371a0cde53fecff7390362', 'assets/scene/forge-hackathons-reverse.mp4': '0f3e9f40bcd14f858a66428aeeb3cbdada23146d7ec39240e99717649092be2d', 'assets/scene/forge-hackathons-endpoint.png': '77da82ffb81bbc69ab1f413e90007a9bab1fe267f0ff2fe3150b1a6b65fc96c8', 'assets/scene/forge-hackathons-1280.png': '0f0cf91edaeb090921be2399cd46c40bc6400d170b026f315126cdc79d596a49', 'assets/scene/forge-projects-forward.mp4': '0a4197150a1d0ecd99e8691f7fccaed2bbad0776c1dd2e91ea898d363f6f25e2', 'assets/scene/forge-projects-reverse.mp4': '47e446e467cffc4dca0bd1cf878b6ab7ddb5472a2428e6f6cafc66bd775a89f8', 'assets/scene/forge-projects-endpoint.png': '1db97d296f506c390d73f627c49cc9d8ba291f10c32d8e084a2e6c0709c71e58', 'assets/scene/forge-projects-1280.png': '0a7d611b63d4e19c17109da0a89eb3d024c521f58bf7a86cb33545ee60e8263b'}
+
+def validate_retained_branch_media(root):
+    for name,digest in RETAINED_BRANCH_MEDIA.items():
+        read_media(Path(root), {'src':name,'sha256':digest}, name)
+
 
 
 def load_branches(root, *, allow_private_preview=False):
@@ -36,7 +42,7 @@ def load_branches(root, *, allow_private_preview=False):
         exact(route['media'], {'forward','reverse','endpoint'})
         for kind, record in route['media'].items():
             ext = 'png' if kind == 'endpoint' else 'mp4'
-            raw = read_media(root, record, f'assets/scene/forge-{key}-{kind}.{ext}')
+            raw = read_media(root, record, f'assets/scene/forge-warm-{key}-{kind}.{ext}')
             if kind == 'endpoint':
                 if len(raw)<33 or raw[:8]!=b'\x89PNG\r\n\x1a\n' or raw[12:16]!=b'IHDR' or struct.unpack_from('>II',raw,16)!=(640,400):
                     raise ValueError('Branch endpoint dimensions differ')
@@ -47,7 +53,7 @@ def load_branches(root, *, allow_private_preview=False):
             raise ValueError('Unreviewed branch still dimensions')
         if not isinstance(still['alt'],str) or not 20<=len(still['alt'])<=400 or any(c in still['alt'] for c in '<>\x00'):
             raise ValueError('Invalid branch still description')
-        raw=read_media(root,{k:still[k] for k in ('src','sha256')},f'assets/scene/forge-{key}-1280.png')
+        raw=read_media(root,{k:still[k] for k in ('src','sha256')},f'assets/scene/forge-warm-{key}-1280.png')
         if len(raw)<33 or raw[:8]!=b'\x89PNG\r\n\x1a\n' or raw[12:16]!=b'IHDR' or struct.unpack_from('>II',raw,16)!=(1280,800):
             raise ValueError('Branch still bytes differ from declared dimensions')
         provenance=route['provenance'];exact(provenance,{'cameraSequenceSha256','nativeReceiptSha256','nativeJobSeconds'})
@@ -61,7 +67,7 @@ def load_branches(root, *, allow_private_preview=False):
 
 def branch_files(routes):
     return ({MANIFEST} | {v['src'] for r in routes.values() for v in r['media'].values()}
-            | {r['still']['src'] for r in routes.values()}) if routes else set()
+            | {r['still']['src'] for r in routes.values()} | set(RETAINED_BRANCH_MEDIA)) if routes else set()
 
 
 def branch_video_errors(attrs, routes):

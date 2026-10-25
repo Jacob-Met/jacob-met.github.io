@@ -20,7 +20,7 @@ import portfolio
 from capture_policy import CAPTURE_FILES, load_capture
 from lobby_policy import load_lobby, lobby_files, validate_retained_engine_media
 from figure_policy import load_figures, figure_files
-from branch_policy import load_branches, branch_files
+from branch_policy import load_branches, branch_files, validate_retained_branch_media
 from experience_policy import EXPERIENCE_FILE, load_experience
 from source_policy import validate_source_publication
 
@@ -182,6 +182,7 @@ def validate_portfolio(data: dict) -> None:
     validate_editorial(ROOT)
     validate_presentation_stills(ROOT)
     validate_retained_engine_media(ROOT)
+    validate_retained_branch_media(ROOT)
 
 
 def portfolio_record() -> dict:
