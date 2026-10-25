@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the approved captured portfolio from public content and one small UI script.
+"""Build the approved captured portfolio from public content and exact local UI scripts.
 
 Public demo/game records remain separately validated. The captured-public projection excludes experimental engine code and raw scene inputs. `docs/` is generated; never edit it.
 """
@@ -14,10 +14,13 @@ import struct
 from pathlib import Path
 from urllib.parse import urlsplit
 from game_assets import game_files
-from site_policy import (FONT_FILES, validate_fonts, SCENE_ASSETS, SCENE_FILES, SCRIPT_FILES,
-                         EXPERIENCE_CSS, audit_scripts, script_integrity)
+from site_policy import (FONT_FILES, validate_fonts, SCENE_ASSETS, SCENE_FILES, SCRIPT_FILES, LOADED_SCRIPT_FILES,
+                         EXPERIENCE_CSS, audit_scripts, script_integrity, ART_FILES, validate_art, EDITORIAL_FILES, validate_editorial, PRESENTATION_STILLS, PRESENTATION_FILES, validate_presentation_stills)
 import portfolio
 from capture_policy import CAPTURE_FILES, load_capture
+from lobby_policy import load_lobby, lobby_files
+from figure_policy import load_figures, figure_files
+from branch_policy import load_branches, branch_files
 from experience_policy import EXPERIENCE_FILE, load_experience
 from source_policy import validate_source_publication
 
@@ -175,6 +178,9 @@ def validate_portfolio(data: dict) -> None:
         if asset.is_symlink() or not asset.is_file() or webp_size(asset)!=(width,height):
             raise ValueError('Public proof image differs from declared dimensions')
     validate_fonts(ROOT)
+    validate_art(ROOT)
+    validate_editorial(ROOT)
+    validate_presentation_stills(ROOT)
 
 
 def portfolio_record() -> dict:
@@ -183,10 +189,16 @@ def portfolio_record() -> dict:
     return data
 
 
-def render_index(r: dict, portfolio_data: dict | None = None) -> str:
+def render_index(r: dict, portfolio_data: dict | None = None, *, preview=False) -> str:
     current = portfolio_record() if portfolio_data is None else portfolio_data
     validate_portfolio(current)
-    return portfolio.render(current, r, load_experience(ROOT), load_capture(ROOT))
+    forge = load_capture(ROOT)
+    forge['lobby'] = load_lobby(ROOT, allow_private_preview=preview)
+    forge['presentationStills'] = PRESENTATION_STILLS
+    forge['lobbyProof'] = forge['lobby']['proof']
+    forge['branches'] = load_branches(ROOT, allow_private_preview=preview)
+    forge['projectFigures'] = load_figures(ROOT)
+    return portfolio.render(current, r, load_experience(ROOT), forge)
 
 
 def page_html(name: str, title: str, desc: str, body: str, data: dict) -> str:
@@ -196,8 +208,8 @@ def page_html(name: str, title: str, desc: str, body: str, data: dict) -> str:
     canonical = BASE + '/' + ('' if name == 'index.html' else name)
     enhancement = ''
     if name == 'index.html':
-        digest = audit_scripts(ROOT)['detail.js']
-        enhancement = f'<script src="detail.js" defer integrity="{script_integrity(digest)}"></script>'
+        hashes = audit_scripts(ROOT)
+        enhancement = ''.join(f'<script src="{script}" defer integrity="{script_integrity(hashes[script])}"></script>' for script in LOADED_SCRIPT_FILES)
     return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="{CSP}"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{esc(title)}</title><meta name="description" content="{esc(desc)}"><meta name="theme-color" content="#060c17"><meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="canonical" href="{canonical}"><link rel="icon" href="assets/mark.svg" type="image/svg+xml"><link rel="icon" href="favicon.ico" sizes="48x48"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="stylesheet" href="experience.css">{enhancement}
@@ -217,27 +229,33 @@ def shot_files(record: dict) -> list[str]:
     return sorted({s['src'] for d in record['demos'] for s in d['shots'].values()})
 
 
-def output_files(record: dict) -> set[str]:
+def output_files(record: dict, lobby=None, figures=None, branches=None) -> set[str]:
+    branches = load_branches(ROOT) if branches is None else branches
+    route_files = lobby_files(load_lobby(ROOT) if lobby is None else lobby)
+    illustrations = figure_files(load_figures(ROOT) if figures is None else figures)
     return {'index.html', '404.html', 'style.css', EXPERIENCE_CSS, '.nojekyll', 'CNAME',
             'robots.txt', 'sitemap.xml', 'cv.json', 'build-manifest.json', 'portfolio.json',
-            'assets/mark.svg', SHARE_CARD, *ROOT_ICONS, *FONT_FILES, *SCENE_FILES,
-            *SCRIPT_FILES, *CAPTURE_FILES, EXPERIENCE_FILE, *shot_files(record), *game_files(ROOT, record)}
+            'assets/mark.svg', SHARE_CARD, *ROOT_ICONS, *FONT_FILES, *SCENE_FILES, *ART_FILES, *EDITORIAL_FILES, *PRESENTATION_FILES,
+            *SCRIPT_FILES, *CAPTURE_FILES, *route_files, *illustrations, *branch_files(branches), EXPERIENCE_FILE, *shot_files(record), *game_files(ROOT, record)}
 
 
-def build(out: Path, data: dict | None = None) -> dict:
+def build(out: Path, data: dict | None = None, *, preview=False) -> dict:
     validate_source_publication(ROOT)
     record = json.loads((ROOT / 'content.json').read_text(encoding='utf-8')) if data is None else json.loads(json.dumps(data))
     validate(record)
     current = portfolio_record()
     audit_scripts(ROOT)
     load_capture(ROOT)
+    lobby = load_lobby(ROOT, allow_private_preview=preview)
+    figures = load_figures(ROOT)
+    branches = load_branches(ROOT, allow_private_preview=preview)
     load_experience(ROOT)
     out = out.resolve()
     if out == ROOT or ROOT.is_relative_to(out):
         raise ValueError('Output must not replace source')
     shots = shot_files(record)
     games = game_files(ROOT, record)
-    allowed = output_files(record)
+    allowed = output_files(record, lobby, figures, branches)
     allowed_prefix = 'assets/demos/'
     if out.exists():
         for f in out.rglob('*'):
@@ -249,7 +267,7 @@ def build(out: Path, data: dict | None = None) -> dict:
             shutil.rmtree(stale)
     out.mkdir(parents=True, exist_ok=True)
     pages = {
-        'index.html': (TITLE, DESC, render_index(record, current)),
+        'index.html': (TITLE, DESC, render_index(record, current, preview=preview)),
         '404.html': ('Not found · Jacob Metoyer', 'Return to Jacob Metoyer’s work.',
                      '<a class="skip" href="#main">Skip to content</a><main id="main" class="not-found"><h1>Nothing here.</h1>'
                      '<p><a class="btn" href="index.html">Back to the work</a></p></main>'),
@@ -260,7 +278,7 @@ def build(out: Path, data: dict | None = None) -> dict:
     css = (ROOT / EXPERIENCE_CSS).read_text(encoding='utf-8')
     for name in ('style.css', EXPERIENCE_CSS):
         (out / name).write_text(css, encoding='utf-8', newline='\n')
-    for name in (*SCRIPT_FILES, *CAPTURE_FILES, EXPERIENCE_FILE):
+    for name in (*SCRIPT_FILES, *CAPTURE_FILES, *sorted(lobby_files(lobby)), *sorted(figure_files(figures)), *sorted(branch_files(branches)), EXPERIENCE_FILE):
         (out / name).parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / name, out / name)
     (out / 'assets' / 'demos').mkdir(parents=True, exist_ok=True)
@@ -269,7 +287,7 @@ def build(out: Path, data: dict | None = None) -> dict:
     for rel in shots:
         assert rel.startswith(allowed_prefix)
         shutil.copyfile(ROOT / rel, out / rel)
-    for rel in {*FONT_FILES, *SCENE_FILES}:
+    for rel in {*FONT_FILES, *SCENE_FILES, *ART_FILES, *EDITORIAL_FILES, *PRESENTATION_FILES}:
         (out / rel).parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / rel, out / rel)
     for rel in games:
@@ -287,12 +305,13 @@ def build(out: Path, data: dict | None = None) -> dict:
     files = [f for f in out.rglob('*') if f.is_file() and f.name != 'build-manifest.json']
     manifest = {f.relative_to(out).as_posix(): hashlib.sha256(f.read_bytes()).hexdigest()
                 for f in sorted(files, key=lambda f: f.relative_to(out).as_posix())}
-    (out / 'build-manifest.json').write_text(json.dumps({'schema': 6, 'date': record['updated'], 'publication': current['visibility'], 'sha256': manifest}, indent=2) + '\n', encoding='utf-8', newline='\n')
-    return {'pages': len(pages), 'demos': len(record['demos']) + 1, 'presentation': 'captured-native-engine', 'publication': current['visibility'], 'output': str(out), 'files': len(manifest) + 1}
+    (out / 'build-manifest.json').write_text(json.dumps({'schema': 7, 'date': record['updated'], 'publication': lobby['visibility'], 'sha256': manifest}, indent=2) + '\n', encoding='utf-8', newline='\n')
+    return {'pages': len(pages), 'demos': len(record['demos']) + 1, 'presentation': 'recorded-native-engine-route', 'publication': lobby['visibility'], 'output': str(out), 'files': len(manifest) + 1}
 
 
 if __name__ == '__main__':
     p = argparse.ArgumentParser()
     p.add_argument('--out', type=Path, default=ROOT.parent / 'docs')
+    p.add_argument('--preview', action='store_true', help='Build an explicitly local-preview route; does not qualify or authorize publication')
     a = p.parse_args()
-    print(json.dumps(build(a.out), indent=2))
+    print(json.dumps(build(a.out, preview=a.preview), indent=2))

@@ -6,7 +6,7 @@ from pathlib import Path
 
 EXPERIENCE_FILE = 'experience-content.json'
 PROJECT_IDS = {'phantom-window', 'captionverse', 'domino', 'replay-forge', 'spire', 'hamon-engine', 'lanternwake'}
-RELATED_IDS = {'threadline', 'familiar-memories', 'threshold', 'ledgerdock', 'teachback', 'wild-neighbors', 'clearway'}
+RELATED_IDS = {'threadline', 'familiar-memories', 'threshold', 'ledgerdock', 'teachback', 'wildside', 'clearway'}
 CONTACT_URLS = {'https://github.com/Jacob-Met', 'https://www.linkedin.com/in/jacob-metoyer-15b701352'}
 PUBLIC_LINKS = CONTACT_URLS | {'https://github.com/Jacob-Met/CaptureSuite', 'https://spireofoctaves.com/',
                              'https://www.royalroad.com/fiction/183255/seamwork',
@@ -100,12 +100,14 @@ def validate_experience(data):
         if expected_id != 'hackathons':
             if entries != []: raise ValueError('Only the reviewed hackathon branch has additional records')
             continue
-        if not isinstance(entries, list) or len(entries) != 4: raise ValueError('Expected four reviewed competition-built entries')
-        for entry, entry_id in zip(entries, ['domino', 'phantom-window', 'replay-forge', 'shadewindow']):
+        if not isinstance(entries, list) or len(entries) != 5: raise ValueError('Expected five reviewed competition-built entries')
+        for entry, entry_id in zip(entries, ['domino', 'phantom-window', 'replay-forge', 'replayforge-debugging', 'shadewindow']):
             fields = {'id', 'name', 'category', 'purpose', 'status', 'limit', 'projectId', 'publicUrl'}
             exact(entry, fields, 'hackathon entry'); texts(entry, fields - {'projectId', 'publicUrl'})
             if entry['id'] != entry_id: raise ValueError('Unknown competition-built project')
-            project_id, url = (None, 'https://devpost.com/software/shadewindow') if entry_id == 'shadewindow' else (entry_id, None)
+            public_entries = {'shadewindow': 'https://devpost.com/software/shadewindow',
+                              'replayforge-debugging': 'https://devpost.com/software/replayforge-ypvoia'}
+            project_id, url = (None, public_entries[entry_id]) if entry_id in public_entries else (entry_id, None)
             if entry['projectId'] != project_id or entry['publicUrl'] != url: raise ValueError('Hackathon entry has an unreviewed destination or private-source link')
     journeys = data['journeys']
     if not isinstance(journeys, list) or len(journeys) != 3: raise ValueError('Expected three reviewed paths through the work')

@@ -35,10 +35,10 @@ class ScreenshotAccess(unittest.TestCase):
     def check_access(self, record):
         with tempfile.TemporaryDirectory() as temp:
             out = Path(temp) / "site"
-            build.build(out, record)
+            build.build(out, record, preview=True)
             markup = (out / "index.html").read_text(encoding="utf-8")
             links = Links(markup).links
-            shots = [a for a in links if "screenshot-link" in a["attrs"].get("class", "").split()]
+            shots = [a for a in links if a["attrs"].get("href") in {shot["src"] for demo in record["demos"] for shot in demo["shots"].values()}]
             expected = [
                 (demo, device, demo["shots"][key])
                 for demo in record["demos"]
@@ -48,7 +48,7 @@ class ScreenshotAccess(unittest.TestCase):
             for link, (demo, device, shot) in zip(shots, expected):
                 with self.subTest(demo=demo["id"], device=device):
                     self.assertEqual(link["text"], device.title() + " capture")
-                    self.assertEqual(link["attrs"]["aria-label"], f"{demo['name']}: full {device} screenshot")
+                    self.assertEqual(link["attrs"]["aria-label"], f"{demo['name']}: full {device} capture")
                     self.assertEqual(link["attrs"]["href"], shot["src"])
                     self.assertNotIn("download", link["attrs"])
                     self.assertNotIn("target", link["attrs"])
@@ -57,7 +57,7 @@ class ScreenshotAccess(unittest.TestCase):
                 self.assertIn(demo["play"]["url"], [a["attrs"]["href"] for a in links])
                 self.assertIn(demo["repo"], [a["attrs"]["href"] for a in links])
             self.assertEqual(json.loads((out / "cv.json").read_text(encoding="utf-8")), record)
-            self.assertTrue(check(out)["passed"])
+            self.assertTrue(check(out, preview=True)["passed"])
 
     def test_all_screens_open_exact_local_assets_and_keep_live_actions(self):
         self.check_access(json.loads((build.ROOT / "content.json").read_text(encoding="utf-8")))

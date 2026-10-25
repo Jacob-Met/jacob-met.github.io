@@ -1,22 +1,22 @@
 {
   "schema": 1,
-  "updated": "2026-10-24",
+  "updated": "2026-10-25",
   "visibility": "public-captured",
   "entry": {
     "heading": "Jacob Metoyer",
-    "lead": "I study computer science and physics at CSULB. My work connects research, the software I build through HAMON, and the original universe Spire of Octaves.",
+    "lead": "Research, working tools, and imagined worlds.",
     "browseLabel": "Explore HAMON",
     "returnLabel": "Back to the overview",
-    "journeyNote": "Research, HAMON, and Spire of Octaves: three ways into my work."
+    "journeyNote": "Research to understand systems. HAMON to build with them. Spire to imagine new ones."
   },
   "publicBio": {
     "name": "Jacob Metoyer",
-    "intro": "I study computer science and physics at Cal State Long Beach. My work spans academic and independent research, the software estate HAMON, and the original multimedia universe Spire of Octaves.",
-    "research": "I’m a BUILD Scholar with a biology minor, working toward MD/PhD training. My collaborative research experience spans gait and rehabilitation, behavioral neurobiology, protein molecular dynamics, and surgical ergonomics.",
+    "intro": "I study computer science and physics at Cal State Long Beach. I work across collaborative research, independent software, and the original multimedia universe Spire of Octaves.",
+    "research": "I’m a CSULB BUILD Scholar studying computer science and physics, with a minor in biology, and working toward MD/PhD training.",
     "interests": "I’m interested in neuroscience, movement and behavior, scientific computing, and tools for investigating complex systems.",
-    "researchHeading": "Academic and independent inquiry.",
-    "researchLead": "I work across academic collaboration and independent investigation. The common thread is using experiments, computation, and models to understand movement, behavior, and complex systems.",
-    "contactLead": "Research, software, or a world worth building?",
+    "researchHeading": "What would change our explanation?",
+    "researchLead": "From human movement to computational models, I’m interested in how we observe a system, test an idea, and learn from what does not fit. My work spans academic collaboration and independent investigations, including research developed through HAMON.",
+    "contactLead": "Have a question we could explore together?",
     "links": [
       {
         "label": "GitHub",
@@ -29,24 +29,24 @@
     ],
     "researchResource": {
       "name": "CaptureSuite",
-      "description": "Independent research software for collecting multiple streams into sealed sessions. Its public example runs the offline QC workflow on a synthetic package.",
-      "limit": "The example uses metadata and placeholder segments, not measured signal quality or patient data.",
-      "actionLabel": "Inspect the public research tool",
+      "description": "Research software for recording multiple streams in one session and keeping the source material intact for later analysis. The public example walks through an offline quality-control report.",
+      "limit": "The example uses synthetic metadata and placeholder segments. It does not measure signal quality or contain patient data.",
+      "actionLabel": "Explore CaptureSuite on GitHub",
       "url": "https://github.com/Jacob-Met/CaptureSuite"
     },
     "researchSections": [
       {
         "id": "academic",
         "title": "Academic research",
-        "lead": "Collaborative work across biology, movement, and computation.",
+        "lead": "Collaborative work across movement, biology, and computation.",
         "detail": "My research experience spans gait and rehabilitation, behavioral neurobiology, protein molecular dynamics, and surgical ergonomics.",
         "projectIds": []
       },
       {
         "id": "independent",
         "title": "Independent research",
-        "lead": "Questions pursued through custom software and explicit models—including research developed through HAMON.",
-        "detail": "Examples below ask how to distinguish physical models, search for correct and efficient GPU implementations, and update computational memory. Visual-computing and causal-model prototypes offer further investigations.",
+        "lead": "Independent questions explored through software, including research developed through HAMON.",
+        "detail": "Compare competing physical explanations, test GPU implementations against independent numerical checks, and investigate how computational memory should change with new evidence.",
         "projectIds": [
           "phantom-window",
           "domino",
@@ -87,7 +87,7 @@
         {
           "projectId": "research",
           "prompt": "How do experiments, computation, and models help us understand a system?",
-          "body": "Explore collaborative research in movement, neurobiology, molecular dynamics, and ergonomics, alongside independent investigations and scientific software.",
+          "body": "Follow questions in movement, neurobiology, molecular dynamics, and ergonomics, alongside independent investigations and the software that supports them.",
           "actionLabel": "Academic & independent research",
           "interactionId": "research-background"
         }
@@ -104,12 +104,12 @@
       "id": "follow-mechanism",
       "title": "Explore HAMON",
       "audience": "Technical builder",
-      "lead": "An engineering estate led by Hamon Engine, with applications, tools, and interactive experiments.",
+      "lead": "My software-building estate, with Hamon Engine at its center.",
       "steps": [
         {
           "projectId": "hamon-engine",
           "prompt": "What does it take to build the engine itself?",
-          "body": "Hamon Engine brings rendering, replayable simulation, animation, physics, content authoring, and programmable control into a custom Rust + wgpu workspace.",
+          "body": "Build the scene, define how it behaves, and make tools to inspect and change it. Hamon Engine brings those parts together in a custom Rust + wgpu workspace.",
           "actionLabel": "Explore Hamon Engine",
           "interactionId": "engine-overview"
         },
@@ -135,8 +135,8 @@
       "projectId": "spire",
       "question": "A world still being composed.",
       "opening": "Spire of Octaves is my original multimedia universe: cities stacked on cities, shaped by an unfinished sacred song. It is a setting for stories, games, music, and animation.",
-      "capability": "Worldbuilding, language work, character and place design, and multiple writing projects all belong to Spire. Seamwork is a public entrance into that much larger body of work.",
-      "tryThis": "Visit Spire’s own site to explore the wider universe. Seamwork offers one entrance through its writing.",
+      "capability": "Languages, characters, places, and multiple writing projects give the universe its depth. Seamwork is one public entrance into that larger body of work.",
+      "tryThis": "Explore the universe on Spire’s own site, or enter through the writing in Seamwork.",
       "stage": "Original multimedia universe",
       "limit": "Seamwork’s serialization is currently on hiatus.",
       "previewMode": "World introduction",
@@ -157,12 +157,12 @@
     },
     {
       "projectId": "hamon-engine",
-      "question": "The machinery for making worlds.",
-      "opening": "Hamon Engine is a custom Rust + wgpu engine bringing rendering, simulation, content tools, and programmable control into one engineering project.",
-      "capability": "Its maintained workspace includes physically based and stylized rendering, skeletal animation, rigid-body physics, replayable simulation, editable mesh recipes, asset cooking, and CLI, JSON-RPC, and MCP control. These tools make the world itself something you can build, inspect, and change.",
-      "tryThis": "Explore the engine’s systems, then open Lanternwake for a small public playable example.",
+      "question": "Make a world. Give it rules.",
+      "opening": "A custom engine for building worlds you can see, change, and inspect.",
+      "capability": "Build scenes with physically based or stylized rendering, animate characters, give objects physical behavior, and replay simulations. Editable mesh recipes, asset cooking, and CLI, JSON-RPC, and MCP interfaces connect content creation to programmable control in the Rust + wgpu workspace.",
+      "tryThis": "See a room rendered by the engine, explore its systems, then play Lanternwake, a small public browser snapshot.",
       "stage": "Active engine development",
-      "limit": "The source remains private. Public browser games are published snapshots, not the whole current engine.",
+      "limit": "The engine source is private. Public browser games are published snapshots, not the whole current engine.",
       "previewMode": "Engine overview",
       "next": {
         "projectId": "spire",
@@ -185,12 +185,12 @@
     },
     {
       "projectId": "captionverse",
-      "question": "What if a caption had a place in the scene?",
-      "opening": "A line can be quiet, shouted, interrupted, or spoken behind someone else. Captionverse explores what changes when those differences affect the presentation of the words.",
-      "capability": "The local-video workbench combines editable subtitles, speaker-linked layouts, experimental depth-aware text, phrase recall, and interval replay. Original subtitles and reviewed revisions stay separate.",
+      "question": "What if the film waited for you?",
+      "opening": "A line disappears before you finish reading. Captionverse can pause after a passage and keep the complete dialogue visible until you choose to continue.",
+      "capability": "The local-video workbench combines spatial captions, phrase replay, and reviewed editing. Adjust the handover between two lines or name selected dialogue while keeping original subtitle bytes separate from the accepted revision.",
       "tryThis": "Switch between depth overlap, emphasis, and two speakers. All three examples use the same pop-out style on one licensed film excerpt.",
       "stage": "Local prototype",
-      "limit": "Automatic transcription and placement remain drafts to review.",
+      "limit": "Local prototype. Automatic transcription and placement remain drafts to review. Authored speaker labels do not verify identity.",
       "previewMode": "Captured examples",
       "next": {
         "projectId": "phantom-window",
@@ -200,8 +200,8 @@
     {
       "projectId": "domino",
       "question": "Why did the door unlock when nobody was home?",
-      "opening": "A familiar visitor rings. One rule welcomes them; another should protect an empty house. DOMINO makes the resulting event chain small enough to reason about.",
-      "capability": "Replay the modeled observations, inspect rule guards and competing commands, reduce the counterexample, and compare repairs against behavior that should still work.",
+      "opening": "A familiar visitor rings after the resident leaves. Which rule still lets them in? DOMINO lets you compose that sequence, follow the commands it triggers, and compare a repair without losing the original case.",
+      "capability": "Compose and save your own local scenarios, replay their event chains, reduce a counterexample, and compare repairs against behavior that should still work. Reopen a case to inspect the original and repaired rules.",
       "tryThis": "Compare the recorded outcomes of changing a delay, disabling the rules, and requiring the resident to be home. Removing a visible conflict is not the same as fixing the case.",
       "stage": "Local simulation",
       "limit": "Invented events and finite model checks; no real-home connection.",
@@ -363,9 +363,9 @@
       "name": "Threshold",
       "theme": "Human decisions",
       "question": "What should the door say back?",
-      "description": "Review an arrival and the exact proposed response before approving it in a local practice workflow.",
+      "description": "Read a visitor’s stated needs, preview the exact reply, and approve only those words. A same-computer rehearsal shows the resident and visitor sides, with a saved decision to revisit.",
       "stage": "Local prototype",
-      "limit": "No message delivery, identity verification, or lock control.",
+      "limit": "Authored visits in a local rehearsal; no external delivery, identity verification, or lock control.",
       "publicSourceUrl": null,
       "relatedTo": "domino",
       "connectionLabel": "Before a response becomes an action.",
@@ -398,17 +398,17 @@
       "connectionDescription": "Teachback explores quantitative understanding through authored problems, explicit help, and later revisits."
     },
     {
-      "id": "wild-neighbors",
-      "name": "Wild Neighbors",
-      "theme": "Observation to habitat",
-      "question": "How could an observation become part of a living habitat?",
-      "description": "Prototype components for reviewing wildlife observations, recovering work, and preparing habitat intake.",
-      "stage": "Component work",
-      "limit": "The habitat integration remains illustrative, not a complete connected product.",
+      "id": "wildside",
+      "name": "Wildside",
+      "theme": "Places and perspective",
+      "question": "What if you could revisit a place at a different scale?",
+      "description": "Explore one continuing place at human, bird, and insect scales. Bring in manually mapped photos or video moments—or start from a real Kyoto city model—and keep viewpoints to revisit as the place changes.",
+      "stage": "Local prototype",
+      "limit": "Manually calibrated geometry and simulated wildlife; not automatic reconstruction or a live wildlife feed.",
       "publicSourceUrl": null,
-      "relatedTo": "spire",
-      "connectionLabel": "From an observation toward a habitat.",
-      "connectionDescription": "A separate early software experiment explores the components for a world shaped by reviewed observations; it is not a Spire adaptation."
+      "relatedTo": "phantom-window",
+      "connectionLabel": "One moment, or a place you can return to.",
+      "connectionDescription": "Phantom Window shifts the view inside a recorded moment. Wildside keeps an interpreted place that can change through further observations."
     },
     {
       "id": "clearway",
@@ -429,8 +429,8 @@
       {
         "id": "research",
         "title": "Research",
-        "summary": "Academic and independent inquiry.",
-        "description": "Neuroscience, movement, scientific computing, and model-based investigation—including research developed through HAMON.",
+        "summary": "Observe. Model. Question.",
+        "description": "Academic and independent research in movement, neuroscience, and scientific computing, including work developed through HAMON.",
         "action": {
           "label": "Explore the research",
           "route": "research"
@@ -439,8 +439,8 @@
       {
         "id": "hamon",
         "title": "HAMON",
-        "summary": "Engineering, tools, and experiments.",
-        "description": "Hamon Engine is the centerpiece of a wider body of applications, research tools, and interactive experiments.",
+        "summary": "Engines, tools, and experiments.",
+        "description": "My software-building estate: Hamon Engine, research tools, applications, games, and hackathon projects.",
         "action": {
           "label": "Explore HAMON",
           "route": "hamon"
@@ -449,8 +449,8 @@
       {
         "id": "spire",
         "title": "Spire of Octaves",
-        "summary": "An original multimedia universe.",
-        "description": "A world for stories, games, music, and animation, with its own dedicated home.",
+        "summary": "Cities stacked on cities.",
+        "description": "Fantasy about the people who keep worlds alive.",
         "action": {
           "label": "Enter Spire of Octaves",
           "url": "https://spireofoctaves.com/"
@@ -503,31 +503,31 @@
       {
         "id": "worldlaw",
         "name": "WORLDLAW",
-        "question": "What measurement would distinguish two explanations of the same motion?",
-        "output": "An executable torque-model workbench that compares candidate explanations, proposes a discriminating measurement, and replays predictions.",
-        "detail": "The virtual instrument begins with small-angle data that fit both spring and gravity models. A proposed wide-angle measurement changes the selected model to gravity; withheld predictions update. Motion Lab also uses a declared fixed pivot and a tracked video marker to produce angular observations, retaining gaps and corrections.",
+        "question": "Which experiment would separate two explanations?",
+        "output": "Compare competing models of motion, choose a revealing measurement, and see how their predictions change.",
+        "detail": "WORLDLAW starts with spring and gravity models that fit the same small-angle data. A synthetic wide-angle measurement separates them. Coupling Lab explores interacting coordinates and conditional motion; Motion Lab turns tracked video markers into angular observations with explicit calibration. Further experiments test whether a preparation-history effect could instead come from acquisition order or sensor drift.",
         "stage": "Experimental scientific workbench",
-        "limit": "Finite seven-term scalar torque library; default experiments are synthetic. Video tracking requires declared calibration and does not establish physical laws.",
+        "limit": "The model families and assumptions are declared and bounded. Default instruments are synthetic; imported observations are user-declared. Fitting a model does not establish a physical law or its cause.",
         "publicUrl": null
       },
       {
         "id": "kernel-garden",
         "name": "Kernel Garden",
-        "question": "Can a faster implementation survive independent correctness checks?",
-        "output": "Generate CUDA candidates, compile and measure them on a real GPU, reject incorrect variants, and export the measured winner.",
-        "detail": "Retained trials cover float32 vector addition on one RTX 4070. Bounded block-size search adds a held-out size; an exported winner was separately compiled and checked with new inputs. A complementary CPU arena explores compiled AXPY variants.",
+        "question": "Can a faster kernel keep the right answer?",
+        "output": "Generate competing CUDA implementations, run them on a real GPU, and remove candidates that fail independent numerical checks.",
+        "detail": "Retained trials compare float32 vector-addition implementations on one RTX 4070. The workbench measures the correct candidates and exports the selected kernel. A bounded search tries new launch sizes and an unseen input size; a separate CPU arena explores compiled AXPY variants.",
         "stage": "Experimental optimization workbench",
-        "limit": "One GPU device and one GPU operator; parameter search, not general algorithm invention or an established speedup over vendor libraries.",
+        "limit": "One GPU device and one GPU operator. The search changes launch parameters; it does not establish general algorithm invention or a speedup over vendor libraries.",
         "publicUrl": null
       },
       {
         "id": "computational-memory",
         "name": "Computational memory",
-        "question": "When should a system revise what it remembers?",
-        "output": "Retrieval-plasticity and consolidation experiments test how records are reweighted and when repeated episodes justify reusable lessons.",
-        "detail": "Bounded per-record strengths reorder retrieval within fixed trust tiers. A separate consolidation prototype preserves raw records and evaluates proposed lessons on chronological holdouts, retaining conflicting interpretations rather than overwriting them.",
+        "question": "When should a system change what it remembers?",
+        "output": "Explore how new evidence should change retrieval, and when repeated episodes justify a reusable lesson.",
+        "detail": "One prototype reweights records within fixed trust tiers. Another keeps the raw episodes while testing proposed lessons against later, withheld examples. Conflicting interpretations remain available instead of being overwritten.",
         "stage": "Exploratory research prototypes",
-        "limit": "Offline and synthetic replays; some mechanisms remained staged at the recorded study checkpoint. Not a biological memory model or an established learning-gain result.",
+        "limit": "Offline, synthetic studies; some mechanisms were still staged at the recorded checkpoint. These are computational experiments, not a biological memory model or measured learning gains.",
         "publicUrl": null
       }
     ]
@@ -536,7 +536,7 @@
     {
       "id": "engine",
       "title": "Hamon Engine",
-      "lead": "The flagship: rendering, simulation, content tools, and programmable control in a custom engine.",
+      "lead": "The centerpiece: a custom engine for shaping worlds and the systems inside them.",
       "projectIds": [
         "hamon-engine"
       ],
@@ -545,7 +545,7 @@
     {
       "id": "hackathons",
       "title": "Hackathons",
-      "lead": "Competition-built projects: focused questions turned into working prototypes.",
+      "lead": "Focused questions turned into working prototypes under competition constraints.",
       "projectIds": [
         "domino",
         "phantom-window",
@@ -574,13 +574,23 @@
         },
         {
           "id": "replay-forge",
-          "name": "Replay Forge",
+          "name": "Replay Forge · court reconstruction",
           "category": "Amazon Developer Hackathon",
           "purpose": "Turn source-bound basketball footage into a navigable court study with authored alternatives.",
           "status": "Amazon submission package prepared.",
           "limit": "Incomplete tracking and geometric reconstruction; alternatives are authored, not predicted outcomes.",
           "projectId": "replay-forge",
           "publicUrl": null
+        },
+        {
+          "id": "replayforge-debugging",
+          "name": "ReplayForge · replay debugging",
+          "category": "Life After Code · GitLab",
+          "purpose": "Compare a recorded run with a baseline, find the first differing state, and preserve it as a regression test.",
+          "status": "Submitted to Life After Code.",
+          "limit": "One synthetic reference simulator. The demonstrated fault and restoration are intentional, not an independently discovered repair.",
+          "projectId": null,
+          "publicUrl": "https://devpost.com/software/replayforge-ypvoia"
         },
         {
           "id": "shadewindow",
@@ -597,7 +607,7 @@
     {
       "id": "projects",
       "title": "Projects",
-      "lead": "Applications, research tools, and smaller interactive experiments beyond the engine.",
+      "lead": "Applications, research tools, and playable experiments from across HAMON.",
       "projectIds": [
         "phantom-window",
         "captionverse",

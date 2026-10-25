@@ -40,7 +40,27 @@ if ! git -C "$REPO_ROOT" checkout-index -a --prefix="$SCRATCH/staged/"; then
     exit 1
 fi
 
-if ! python3 "$SCRATCH/staged/source/build.py" --out "$SCRATCH/checked-site" \
+# This guard proves staged source/docs correspondence, not release eligibility.
+# Review mode is read ONLY from the materialized index. The default production
+# builder/checker and deployment verifier continue to reject local-preview.
+BUILD_MODE="$(python3 - "$SCRATCH/staged/source/lobby-manifest.json" <<'MODE'
+import json, sys
+from pathlib import Path
+p = Path(sys.argv[1])
+if p.is_symlink():
+    raise SystemExit('staged route manifest cannot be a symlink')
+print(json.loads(p.read_text(encoding='utf-8')).get('visibility', '') if p.exists() else '')
+MODE
+)" || {
+    echo "pre-commit: cannot read staged route mode; refusing to commit" >&2
+    exit 1
+}
+set --
+if [ "$BUILD_MODE" = "local-preview" ]; then
+    set -- --preview
+fi
+
+if ! python3 "$SCRATCH/staged/source/build.py" "$@" --out "$SCRATCH/checked-site" \
         >"$SCRATCH/build.log" 2>&1; then
     echo "pre-commit: site build failed on the staged source/; fix the build errors before committing" >&2
     tail -5 "$SCRATCH/build.log" >&2 || true
@@ -49,9 +69,17 @@ fi
 
 if ! diff -qr "$SCRATCH/staged/docs" "$SCRATCH/checked-site" >/dev/null 2>&1; then
     echo "pre-commit: staged docs/ differs from a fresh build of the staged source/" >&2
-    echo "pre-commit: run 'python3 source/build.py --out docs && git add docs'" >&2
+    if [ "$BUILD_MODE" = "local-preview" ]; then
+        echo "pre-commit: run 'python3 source/build.py --preview --out docs && git add docs'" >&2
+    else
+        echo "pre-commit: run 'python3 source/build.py --out docs && git add docs'" >&2
+    fi
     echo "pre-commit: then commit the source change and regenerated docs/ together" >&2
     exit 1
+fi
+
+if [ "$BUILD_MODE" = "local-preview" ]; then
+    echo "pre-commit: staged local-preview source/docs match; review only, not production eligibility" >&2
 fi
 
 exit 0
