@@ -70,4 +70,4 @@ def body(has_video: bool) -> str:
             '<section class="ws-section"><h2>Made for MarinaHacks</h2>'
             '<p>Wildside is my MarinaHacks project: a way to build emotional attachment to the living places around us, which is where caring for them starts. There are no quizzes, streaks or chores, only a world worth visiting.</p>'
             f'<p><a class="ws-play" href="{APP_URL}">Play Wildside</a> <a class="public-action" href="index.html#projects">Back to projects</a></p></section>'
-            '</main>')
+            '</main><footer class="hamon-foot"><p>Wildside is a world from <a href="hamon.html">HAMON</a>, a studio for living worlds, founded and built by Jacob Metoyer. <a href="index.html">Home</a></p></footer>')
