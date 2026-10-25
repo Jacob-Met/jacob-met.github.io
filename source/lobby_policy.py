@@ -13,10 +13,12 @@ from pathlib import Path
 MANIFEST = 'lobby-manifest.json'
 MEDIA = {
     'entrance': 'assets/scene/forge-lobby-entrance.png',
-    'arrival': 'assets/scene/forge-engine-arrival.png',
-    'forward': 'assets/scene/forge-engine-forward.mp4',
-    'reverse': 'assets/scene/forge-engine-reverse.mp4',
+    'arrival': 'assets/scene/forge-engine-wide-arrival.png',
+    'forward': 'assets/scene/forge-engine-wide-forward.mp4',
+    'reverse': 'assets/scene/forge-engine-wide-reverse.mp4',
 }
+# Preserve the previous live URLs; new selected filenames avoid stale-clip caches.
+RETAINED_ENGINE_MEDIA = {'assets/scene/forge-engine-arrival.png': '18c5c569ef7207859d59c72320faac8445c1fe3afda45d7b87204a02de15b7ec', 'assets/scene/forge-engine-forward.mp4': '0c766fa5813f64ee9406ba26495aa056b8860e09dfcec64cfc8231a2a8817ca4', 'assets/scene/forge-engine-reverse.mp4': '092d64364e9ed8cba81025b5996055e9cfb8961cde912af212e6cf72cd62aa15', 'assets/scene/forge-workbench.png': '262459031987b79002205b2c9cadb2e5d2b7447b1cf5964384700e61a96c00d1'}
 SHA = re.compile(r'[a-f0-9]{64}\Z')
 
 
@@ -120,6 +122,11 @@ def read_media(root, record, name):
     return raw
 
 
+def validate_retained_engine_media(root):
+    for name,digest in RETAINED_ENGINE_MEDIA.items():
+        read_media(Path(root), {'src':name,'sha256':digest}, name)
+
+
 def load_lobby(root, *, allow_private_preview=False):
     root = Path(root)
     path = root / MANIFEST
@@ -153,7 +160,7 @@ def load_lobby(root, *, allow_private_preview=False):
     for key in ('alt', 'label'):
         if not isinstance(proof[key], str) or not 1 <= len(proof[key]) <= 400 or any(c in proof[key] for c in '<>\x00'):
             raise ValueError('Invalid workbench proof text')
-    raw = read_media(root, {k: proof[k] for k in ('src', 'sha256')}, 'assets/scene/forge-workbench.png')
+    raw = read_media(root, {k: proof[k] for k in ('src', 'sha256')}, 'assets/scene/forge-engine-wide-proof.png')
     if len(raw) < 33 or raw[:8] != b'\x89PNG\r\n\x1a\n' or raw[12:16] != b'IHDR' or struct.unpack_from('>II', raw, 16) != dimensions:
         raise ValueError('Workbench proof must match route dimensions')
     p = data['provenance']
@@ -167,7 +174,7 @@ def load_lobby(root, *, allow_private_preview=False):
 
 
 def lobby_files(data):
-    return {MANIFEST, *(r['src'] for r in data['media'].values()), data['proof']['src']}
+    return {MANIFEST, *(r['src'] for r in data['media'].values()), data['proof']['src'], *RETAINED_ENGINE_MEDIA}
 
 
 def route_video_errors(attrs, data):
