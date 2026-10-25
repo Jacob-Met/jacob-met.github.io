@@ -57,7 +57,9 @@ const CASES = Object.freeze([
 
 const SIMULATED = Object.freeze({
   robin:'an imagined robin',beetle:'an imagined ground beetle','orb-weaver':'an imagined orb-weaver',
-  'water-strider':'an imagined water strider','water-flea':'an imagined water flea'
+  'water-strider':'an imagined water strider','water-flea':'an imagined water flea',
+  squirrel:'an imagined squirrel',rabbit:'an imagined rabbit',songbird:'an imagined songbird',
+  butterfly:'an imagined butterfly',gull:'an imagined gull'
 });
 
 /** Returns a fresh, source-attributed view model. No place data is recorded. */

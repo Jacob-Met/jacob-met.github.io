@@ -304,6 +304,8 @@ body.encounter-dismissed .encounter{display:none}
  .world-drawer{max-height:calc(100dvh - 80px);bottom:62px}
 }
 
+/* Simulated residents (HAMON view): a section of the World drawer's Life group. */
+.resident-notes{display:grid;gap:8px;font:400 13px/1.4 var(--sans)}.resident-notes[hidden]{display:none}.resident-notes>div{display:grid;gap:6px}.resident-notes p{margin:0}.resident-notes .resident-note{color:var(--ink-3)}.resident-notes ul{margin:0;padding-left:18px}.resident-notes label{display:flex;gap:8px;align-items:center;min-height:32px}
 /* Places: where you are, and one door to everywhere else. */
 .topbar{align-items:flex-start}
 .place-nav{position:relative;margin-right:auto;margin-left:10px;margin-top:4px;min-width:0}

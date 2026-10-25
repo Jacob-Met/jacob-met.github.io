@@ -1,6 +1,7 @@
 /** HAMON view: Wildside's simulated inhabitants drawn with Engine creatures
  * (see hamon-extensions.mjs). Wildside's simulation stays the source of truth;
  * these only read its snapshots each frame. */
+import {hamonResidents} from './hamon-residents.mjs';
 const robinState=new Float32Array(6);
 export default [
  {
@@ -14,4 +15,7 @@ export default [
    return robinState;
   },
  },
+ // simulated residents (squirrels, songbirds, rabbits, butterflies, gulls) and the
+ // third-person traveller: Engine hamon_sculpt::residents, see hamon-residents.mjs
+ ...hamonResidents.extensions,
 ];

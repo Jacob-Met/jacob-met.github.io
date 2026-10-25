@@ -86,6 +86,12 @@ export function looks_json(): string;
  */
 export function open_view(canvas: HTMLCanvasElement): Promise<HamonView>;
 
+/**
+ * `[{kind, pos: [x, y, z], activity}]` for the residents of the current view (updated twice
+ * a second), for inspection and browser checks.
+ */
+export function resident_states_json(): string;
+
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
@@ -110,11 +116,12 @@ export interface InitOutput {
     readonly hamonview_stats: (a: number) => [number, number];
     readonly looks_json: () => [number, number];
     readonly open_view: (a: any) => any;
+    readonly resident_states_json: () => [number, number];
     readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___js_sys_522f2cbc6d838fb6___Function_fn_wasm_bindgen_569c88abdbd95b4d___JsValue_____wasm_bindgen_569c88abdbd95b4d___sys__Undefined___js_sys_522f2cbc6d838fb6___Function_fn_wasm_bindgen_569c88abdbd95b4d___JsValue_____wasm_bindgen_569c88abdbd95b4d___sys__Undefined_______true_: (a: number, b: number, c: any, d: any) => void;
     readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___wasm_bindgen_569c88abdbd95b4d___JsValue__core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_569c88abdbd95b4d___JsError___true_: (a: number, b: number, c: any) => [number, number];
     readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___wasm_bindgen_569c88abdbd95b4d___sys__JsNullable_wgpu_f96de166a00bd368___backend__webgpu__webgpu_sys__gen_GpuError__GpuError___core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_569c88abdbd95b4d___JsError___true_: (a: number, b: number, c: any) => [number, number];
-    readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___wasm_bindgen_569c88abdbd95b4d___sys__JsNullable_wgpu_f96de166a00bd368___backend__webgpu__webgpu_sys__gen_GpuError__GpuError___core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_569c88abdbd95b4d___JsError___true__22: (a: number, b: number, c: any) => [number, number];
     readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___wasm_bindgen_569c88abdbd95b4d___sys__JsNullable_wgpu_f96de166a00bd368___backend__webgpu__webgpu_sys__gen_GpuError__GpuError___core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_569c88abdbd95b4d___JsError___true__23: (a: number, b: number, c: any) => [number, number];
+    readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___wasm_bindgen_569c88abdbd95b4d___sys__JsNullable_wgpu_f96de166a00bd368___backend__webgpu__webgpu_sys__gen_GpuError__GpuError___core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_569c88abdbd95b4d___JsError___true__24: (a: number, b: number, c: any) => [number, number];
     readonly __wbindgen_malloc: (a: number, b: number) => number;
     readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
     readonly __wbindgen_exn_store: (a: number) => void;

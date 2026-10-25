@@ -35,6 +35,7 @@ import {commitTransfer} from './transfer.mjs';
 import {createSessionStore,defaultSession,removePlaceSource,discardEmptyPlace,SESSION_KEY} from './session.mjs';
 import {listKeptMoments,replacementChoices,admitKeptMoment} from './moment-library.mjs';
 import {mountHamonView,wantsHamon} from './hamon-view.mjs';
+import {hamonResidents,residentLine} from './hamon-residents.mjs';
 import {buildPlacesList} from './places-list.mjs';
 import {LIVE_PLACES,liveIdOf,createLiveImaginedPlace,liveWalkWorld} from './hamon-places.mjs';
 import {registerControl,refreshControls,controlSlot} from './controls.mjs';
@@ -92,10 +93,14 @@ if(hamon)registerControl({id:'hamon-look',section:'style',order:0,when:()=>!!ham
  }});
 let hamonNoticeShown=false;
 function updateLookPicker(s){
- hamonState=s;refreshControls();try{registerCorePlaces();}catch{}
+ hamonState=s;hamonResidents.setVisible(!!hamon&&s.phase==='ready');refreshControls();try{registerCorePlaces();}catch{}
  if(s.phase==='failed'&&s.error&&!hamonNoticeShown){hamonNoticeShown=true;notify('Wildside is showing its standard view here: this device can’t draw the painted view just now. Your place is unchanged.');}
 }
-function hamonContext(){return {sim,bird,crawler,crawlerArt,orbWeaver,orbArt,pondSkater,skaterArt,submergedLife,submergedArt,nav};}
+function hamonContext(){return {sim,bird,crawler,crawlerArt,orbWeaver,orbArt,pondSkater,skaterArt,submergedLife,submergedArt,nav,place:displayPlace,art};}
+// Simulated residents and the third-person traveller (HAMON view only; see hamon-residents.mjs).
+let residentEncounter=null;
+if(hamon){hamonResidents.onChange=()=>syncHamonWorld();
+ registerControl({id:'hamon-residents',section:'life',order:5,when:()=>!!hamonState&&hamonState.phase==='ready',mount({container}){hamonResidents.mount(container);return {update(){hamonResidents.refresh();}};}});}
 function hamonDynamicRoots(){return [bird,crawlerArt,orbArt,skaterArt,submergedArt].filter(Boolean).map(a=>({group:a.group,role:'creature'}));}
 function syncHamonWorld(){if(!hamon&&liveIdOf(displayPlace))notify('This imagined place is drawn by the HAMON Engine. Open Wildside with ?hamon=1 (WebGPU) to see it.');if(hamon&&art)void hamon.ready.then(ok=>{if(ok&&art){hamon.setWorld(art,displayPlace,hamonDynamicRoots(),hamonContext());adoptLiveWalk();}if(ok)hamon.setRain(rain);requestWorldFrame();});}
 // An Engine live place (hamon-places.mjs): walk its own ground, buildings and trunks, not the token patch Wildside built.
@@ -185,6 +190,9 @@ function updateEncounter(){
  $('watch-web').hidden=!hasWeb;$('watch-spider').hidden=!hasWeb||!webFocus;
  $('watch-visitor').hidden=!hasWeb||!webFocus||!web.encounter?.visible;
  $('watch-visitor').textContent=['flying','escaping'].includes(web.encounter?.phase)?'Meet the visitor':'Look at the catch';
+ // HAMON view: a simulated resident nearby in Human view takes the card (labelled simulated)
+ residentEncounter=hamon?.active&&!overview&&!webFocus&&!skaterFocus&&!underwaterFocus&&!birdFocus&&nav.pose().mode==='human'?hamonResidents.encounter(camera):null;
+ if(residentEncounter){$('encounter').hidden=false;$('encounter-title').textContent={squirrel:'A life up and down the trunk',songbird:'Voices in the crown',rabbit:'Out on the grass',butterfly:'Among the flowers',gull:'Over open water'}[residentEncounter.kind];$('bird-state').textContent=residentLine(residentEncounter);$('watch-bird').hidden=true;$('watch-crawler').hidden=true;}
  $('brush-web').hidden=!hasWeb||!webFocus;$('brush-web').disabled=paused;
  $('brush-web').title=paused?'Resume simulated life to brush a strand':'Send a ripple along the silk';
  $('watch-crawler').textContent=crawlerFocus?'Stop following':'Look closer';$('watch-crawler').setAttribute('aria-pressed',String(!!crawlerFocus));
@@ -591,7 +599,7 @@ function moments(){
 
 function openEcologyDiscovery(){
  // A simulated inhabitant invites an optional comparison, never a sighting claim.
- const encounter=underwaterFocus?'water-flea':skaterFocus?'water-strider':webFocus?'orb-weaver':!overview&&nav.pose().mode==='insect'?'beetle':'robin';
+ const encounter=residentEncounter?.kind??(underwaterFocus?'water-flea':skaterFocus?'water-strider':webFocus?'orb-weaver':!overview&&nav.pose().mode==='insect'?'beetle':'robin');
  const region=[...displayPlace.observations].reverse().find(o=>o.geographicContext)?.geographicContext.region??null;
  editor=mountEcologyDiscovery(openPanel('Every life has a place'),{encounter,region,onClose:closePanel});
 }
@@ -793,6 +801,7 @@ function finishWorldPointer(e){
 for(const type of ['pointerup','pointercancel','lostpointercapture'])$('world').addEventListener(type,finishWorldPointer);
 addEventListener('keydown',e=>{
  if($('panel').open||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
+ if(e.code==='KeyV'&&hamon?.active){hamonResidents.toggleTraveller();return;}
  if(e.key==='Escape'&&overview&&!sourceView&&!worldDrawer.isOpen&&!settingsDrawer.isOpen&&document.body.classList.contains('has-entered')){settingsDrawer.open();return;}
  if(e.key==='Escape'){leaveUnderwater();sourceView=null;webFocus=false;skaterFocus=false;overview=true;updateLabels();return;}
  if(overview&&!sourceView&&['Equal','Minus','NumpadAdd','NumpadSubtract','Digit0','Numpad0'].includes(e.code)){
@@ -884,7 +893,7 @@ const snap=sim.snapshot();bird.update(snap.bird);if(crawler)crawlerArt.update(cr
    renderer.setViewport(x,y,w,h);renderer.setScissor(x,y,w,h);renderer.setScissorTest(true);
    renderWorld(h);
    renderer.setScissorTest(false);renderer.setViewport(0,0,innerWidth,innerHeight);
-  }else if(hamon?.active){hamon.frame(camera,worldTime,hamonContext());}
+  }else if(hamon?.active){hamon.frame(hamonResidents.view(camera,{nav,art,follow:!overview&&!birdFocus&&!crawlerFocus&&!underwaterFocus}),worldTime,hamonContext());}
   else{renderer.setScissorTest(false);renderer.setViewport(0,0,innerWidth,innerHeight);renderWorld(innerHeight);}
   // Snapshot the complete presented view in the same rendering task before
   // an unpreserved WebGL drawing buffer can be cleared by composition.

@@ -65,9 +65,9 @@ export function mountHamonView(parent,{onState=()=>{},skyContainer=null,requestF
    if(changed)for(const m of skyMounts)try{m?.placeChanged?.(place);}catch(e){console.error('HAMON sky control',e);}
    try{
     const placeExt=HAMON_EXTENSIONS.places.filter(x=>x.matches?.({place,art})).flatMap(x=>x.contribute({place,art})??[]);
-    inhabitants=HAMON_EXTENSIONS.inhabitants.filter(x=>x.state&&(!x.replaces||x.replaces(ctx)));
+    inhabitants=HAMON_EXTENSIONS.inhabitants.filter(x=>x.state&&(x.enabled?.(ctx)??true)&&(!x.replaces||x.replaces(ctx)));
     const replaced=new Set(inhabitants.map(x=>x.replaces?.(ctx)).filter(Boolean));
-    const packet=exportPlaceForHamon(art,place,dynamicRoots.filter(r=>!replaced.has(r.group)),{places:placeExt,inhabitants:inhabitants.map(x=>({kind:x.kind,params:x.params??{}}))});view.set_world(JSON.stringify(packet.desc),packet.verts,packet.indices,packet.texels);stream=packet.stream;worldTrees=packet.desc?.trees??[];
+    const packet=exportPlaceForHamon(art,place,dynamicRoots.filter(r=>!replaced.has(r.group)),{places:placeExt,inhabitants:inhabitants.map(x=>({kind:x.kind,params:(typeof x.params==='function'?x.params(ctx):x.params)??{}}))});view.set_world(JSON.stringify(packet.desc),packet.verts,packet.indices,packet.texels);stream=packet.stream;worldTrees=packet.desc?.trees??[];
     // an Engine live place (hamon-places.mjs) reports its walkable layout
     const walk=packet.desc.places?.some(x=>x.kind.startsWith('live:'))?JSON.parse(view.place_walk()):null;live=walk?{walk,heights:view.place_heights()}:null;
     phase='ready';emit();return true;}
