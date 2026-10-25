@@ -204,3 +204,4 @@ body.ws{background:#08121d;color:#e5eef0}
  .ws-hero-copy{padding-top:110px}
 }
 @media(max-height:550px) and (orientation:landscape){.ws-hero-copy{padding-top:88px;padding-bottom:28px}.ws-hero h1{font-size:clamp(44px,12vh,72px)}}
+.hamon-headline{font-size:clamp(26px,3.2vw,38px);letter-spacing:-.04em;line-height:1.15;color:#ffd9a0;margin:6px 0 14px}

@@ -59,7 +59,7 @@ def share_card() -> Image.Image:
     result = Image.new('RGB', (1200, 630), PAPER)
     draw = ImageDraw.Draw(result)
     draw.text((80, 96), 'Jacob Metoyer', font=font(112, 500), fill=INK)
-    draw.text((86, 272), 'Founder of HAMON, a studio for living worlds.', font=font(36, 400), fill=INK)
+    draw.text((86, 272), 'Founder of HAMON: engines, worlds and instruments.', font=font(36, 400), fill=INK)
     draw.text((86, 332), 'Computer science + physics, Cal State Long Beach', font=font(28, 400), fill=MUTED)
     draw.line((86, 476, 1114, 476), fill='#85e8f0', width=2)
     draw.text((86, 521), 'jacobmetoyer.com', font=font(25, 400), fill=MUTED)
@@ -82,7 +82,7 @@ def hamon_card(frame: Path) -> Image.Image:
     draw = ImageDraw.Draw(art)
     end = spaced(draw, (76, 190), 'HAMON', font(132, 500), INK, 22)
     draw.line((80, 352, 80 + 520, 352), fill='#ffcf8a', width=3)
-    draw.text((82, 388), 'A studio for living worlds.', font=font(38, 400), fill=INK)
+    draw.text((82, 388), 'Engines, worlds and instruments.', font=font(38, 400), fill=INK)
     draw.text((82, 450), 'Founded by Jacob Metoyer', font=font(26, 400), fill=MUTED)
     draw.text((82, 556), 'jacobmetoyer.com/hamon.html', font=font(22, 400), fill=MUTED)
     return art

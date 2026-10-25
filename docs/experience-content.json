@@ -4,7 +4,7 @@
   "visibility": "public-captured",
   "entry": {
     "heading": "Jacob Metoyer",
-    "lead": "Founder of HAMON, a studio for living worlds. I also do research and write fiction.",
+    "lead": "Founder of HAMON: engines, worlds and research instruments. I also write fiction.",
     "browseLabel": "Explore HAMON",
     "returnLabel": "Back to the overview",
     "journeyNote": "Research to understand systems. HAMON to build with them. Spire to imagine new ones."
@@ -158,8 +158,8 @@
     {
       "projectId": "hamon-engine",
       "question": "Make a world. Give it rules.",
-      "opening": "A custom engine for building worlds you can see, change, and inspect.",
-      "capability": "Build scenes with physically based or stylized rendering, animate characters, give objects physical behavior, and replay simulations. Editable mesh recipes, asset cooking, and CLI, JSON-RPC, and MCP interfaces connect content creation to programmable control in the Rust + wgpu workspace.",
+      "opening": "An AI-native engine for everything: worlds, games, simulation, authoring and tools that agents can drive directly.",
+      "capability": "A Rust and wgpu workspace of 27 crates: a deterministic ECS runtime with replay, physics, animation, audio, scripting, lockstep networking, an asset pipeline, procedural mesh and world authoring, materials, and a style system with 17 selectable looks. A CLI, JSON-RPC and MCP control surface lets AI agents drive it, and a prototype native editor sits beside it. It runs natively and in the browser.",
       "tryThis": "See a room rendered by the engine, explore its systems, then play Lanternwake, a small public browser snapshot.",
       "stage": "Active engine development",
       "limit": "The engine source is private. Public browser games are published snapshots, not the whole current engine.",
@@ -439,7 +439,7 @@
       {
         "id": "hamon",
         "title": "HAMON",
-        "summary": "A studio for living worlds.",
+        "summary": "Engines, worlds and instruments.",
         "description": "My software-building estate: Hamon Engine, research tools, applications, games, and hackathon projects.",
         "action": {
           "label": "Explore HAMON",

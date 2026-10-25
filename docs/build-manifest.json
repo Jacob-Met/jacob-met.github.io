@@ -4,7 +4,7 @@
   "publication": "public-captured",
   "sha256": {
     ".nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "404.html": "0741dab762c1edf9dccb34d86577cd10ee31592d4de01b9ec367ae7da3112073",
+    "404.html": "5813cc5eb6349f1b4a3e6a0051a998eb9b058e2219162bbbfff45b9d2f469f55",
     "CNAME": "7e89b4b8e0d23220fae91b16a6c40497117ef427d16ca984e7a8c720f14d8527",
     "apple-touch-icon.png": "7165c837849e675fa88bbb7181bfdd71769b20f72c82b492d0ec7f8bee707a71",
     "assets/demos/recallweave-desktop.webp": "7f09210bd45edb2ac8fa157b5e380988ea5f28a820300cf319fb7fb55f683565",
@@ -20,9 +20,9 @@
     "assets/figures/worldlaw-computed.svg": "1f389a1f4e300708f56854aaaf6fcad9207a1cf3564ce0a2935b3b006ae21439",
     "assets/fonts/OFL.txt": "c6dec685825f73b18c20926fddc65e8315642e12986f15db0699170940a09efc",
     "assets/fonts/space-grotesk.woff": "0cebd5ca855d0aea379a7e70240aa096e89f76efea057fad7b888370574662f6",
-    "assets/hamon/hamon-share.jpg": "2bf64843d5e0e718f0edb37dda20db7637ac3d992929124835519ac48b61b8ec",
+    "assets/hamon/hamon-share.jpg": "70af78c1614386116a0e19401be12188c4fdf0b959becb3e39c18afbf7a83ad4",
     "assets/mark.svg": "d3db3974f3ef1188c03880311ed5cc3308b7f38cb673bc1660df363b40fa7d8c",
-    "assets/og-card.png": "c5211450c67904bb39152c0c1d3c23469b5b08b5569fc3b2ba5235ce8020ec33",
+    "assets/og-card.png": "10688d7df2b9ab252af46cf4478bdb1b2999cdbf2aeffb272dd870995a50a73a",
     "assets/scene/forge-arrival-1280.png": "37f712ef3718d7d02faffc6952a363906e34a9e921623d16470e425bcd8ec9dd",
     "assets/scene/forge-arrival-960.png": "7f510954f85e241920f75fd32c007d428930adf40b207b7d5f041d46f642b24a",
     "assets/scene/forge-engine-arrival.png": "18c5c569ef7207859d59c72320faac8445c1fe3afda45d7b87204a02de15b7ec",
@@ -87,8 +87,8 @@
     "capture-manifest.json": "a68fbb4b771e9aaaad473a4c6534218b5eea9d29f2bc78fbd92eabd55098ab0c",
     "cv.json": "8bf265836cadd04aecb6ab3bcc71debbde250e7cead76289c87f48ebc89b167d",
     "detail.js": "b23eacae390e33b424cdbace4039fbe5418311ab256232d7946ed2993ebadc0a",
-    "experience-content.json": "2a0f08097c69b17d14df2f5a3c05dcd094336595ec473f4abbe962b8c8f47aca",
-    "experience.css": "75161e1c53153bedb1e4403c50a23d27aac54689aab6519c99a67c0f5aad223c",
+    "experience-content.json": "197c774fd3fb6495b42092e4881bfe8a2d357bdb8f3c48a4c6498fa88efa2df8",
+    "experience.css": "7fcccab2ac1e07e4a34d122af14a81b133d5fec0cb7944fe0ac6725f73c0454e",
     "favicon.ico": "fe0deb2a0efa8c76fdcca3619db3e5036779ccf5aae7927108bd34d02bd6d0ba",
     "games/lanternwake/build-info.json": "a0cfabeef8c3d89ea5f28eca998a25ac9c7bfa98c57c778c239ba9c17ec25a28",
     "games/lanternwake/desktop.png": "2405736059c1d6fc5757057d9161346dab8bdf3cd50cc6ab14bcbc04a21d40a0",
@@ -101,8 +101,8 @@
     "games/lanternwake/poster.svg": "1ee8b5c9154f1f52b9bad22b5216de44a172ff47bef6c7752d785c84e87e3175",
     "games/lanternwake/style.css": "6a4c0e20a4316051c77f9b13d0cf581019c47d19918fae8f18d09bef2f36fd72",
     "games/lanternwake/webgpu-compat.js": "95b4487d37462f3e60f159abfedff03bcd6810960339ae2a65e0311863954822",
-    "hamon.html": "035abfdf11b981f230941b294da6b3aa13e1622ccdd557e832938c531aff0af9",
-    "index.html": "2c30d17f1e0f48f4429ac9714c7c8a73bbf5f12fd792354d63dbe03e4b227e54",
+    "hamon.html": "c5d50cf6c3b79c223d15d17df4fea83fb93dcc428bf9f83390319844ea074356",
+    "index.html": "14b6fa0df7935c4c7dc6a76702020642e042a5a0c3ec8c34e8fd9387c4632d69",
     "lobby-journey.js": "3f7e383b84dc6034b65cf571666f28297df4e20113670c7280b47b7b13bc2d24",
     "lobby-manifest.json": "2766431d493f51bc72154c76671e1a2c4ddbf4fb78e4d2b776c8f6ed3598164a",
     "lobby.js": "36adc74e32f4c62917e559ee6b8a6efa1beb5e221c3dd1a4b99e8e1f29886759",
@@ -111,8 +111,8 @@
     "robots.txt": "60d463caa67aaa008b827bdec75236dcec7a9c82c49f529ad1da2de1c847c47e",
     "scene-handoff.js": "dceb03ad79736cc96a37fed78c04d63663889be596d52b200e71bdf433d8a39e",
     "sitemap.xml": "cc303225594a4a7101d16012aef74b49d365b8192adc3a466e0b419c7c3febeb",
-    "style.css": "75161e1c53153bedb1e4403c50a23d27aac54689aab6519c99a67c0f5aad223c",
+    "style.css": "7fcccab2ac1e07e4a34d122af14a81b133d5fec0cb7944fe0ac6725f73c0454e",
     "wildside-media/wildside-demo-1080.mp4": "73975dbed6d439a93352b207203a20b3d53cf756eb7fa197e9a01b160dee017e",
-    "wildside-project.html": "86e154818b0c6c6226b1fb22318275cc946681400de50b00768ac09c66c39266"
+    "wildside-project.html": "71c5d25a59b3f5863e56d37fcb7fb31115b01916cd8a1b3ed4a095b5f38b85d2"
   }
 }
