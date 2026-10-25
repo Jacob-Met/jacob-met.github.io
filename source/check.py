@@ -18,7 +18,7 @@ from figure_policy import load_figures, picture_source_errors
 from branch_policy import load_branches, branch_video_errors, branch_source_errors, BRANCHES, DIRECTIONS
 from experience_policy import load_experience
 from site_policy import (FONT_PROPERTIES, validate_fonts, SCRIPT_FILES, LOADED_SCRIPT_FILES,
-                         audit_scripts, script_element_errors, canvas_element_errors, ART_FILES, validate_art, EDITORIAL_FILES, EDITORIAL_ART, validate_editorial, PRESENTATION_FILES, PRESENTATION_STILLS, validate_presentation_stills)
+                         audit_scripts, script_element_errors, canvas_element_errors, ART_FILES, validate_art, EDITORIAL_FILES, EDITORIAL_ART, validate_editorial, PRESENTATION_FILES, PRESENTATION_STILLS, DELIVERY_STILLS, validate_presentation_stills)
 
 ROOT_RELATIVE_PAGES = frozenset({'404.html'})
 CSP_REQUIRED = {'default-src': "'none'", 'style-src': "'self'", 'script-src': "'self'", 'img-src': "'self'", 'media-src': "'self'", 'font-src': "'self'", 'connect-src': "'none'", 'object-src': "'none'", 'frame-src': "'none'", 'worker-src': "'none'", 'base-uri': "'none'", 'form-action': "'none'"}
@@ -64,7 +64,7 @@ class Page(HTMLParser):
         if tag == 'img':
             src = a.get('src') or ''
             if a.get('id') == 'scene-still':
-                expected = {'src': PRESENTATION_STILLS['entrance']['src'], 'data-entrance-src': PRESENTATION_STILLS['entrance']['src'], 'data-arrival-src': PRESENTATION_STILLS['arrival']['src'], 'width': '1280', 'height': '800'}
+                expected = {'src': DELIVERY_STILLS['entrance']['src'], 'data-entrance-src': DELIVERY_STILLS['entrance']['src'], 'data-arrival-src': PRESENTATION_STILLS['arrival']['src'], 'width': '1280', 'height': '800'}
                 expected.update({f'data-{key}-src':route['still']['src'] for key,route in self.branches.items()})
                 if any(a.get(k) != v for k,v in expected.items()): self.errors.append('img: scene endpoint attributes outside exact native stills')
             if src in EDITORIAL_ART and (a.get('width'),a.get('height')) != tuple(str(EDITORIAL_ART[src][k]) for k in ('width','height')): self.errors.append('img: editorial artwork dimensions differ')

@@ -481,22 +481,22 @@
       {
         "id": "gait-rehabilitation",
         "name": "Gait & rehabilitation",
-        "focus": "Human movement and its role in rehabilitation research."
+        "focus": "Helped with participant sessions, labeled motion-capture markers, and fixed errors in gait-analysis code."
       },
       {
         "id": "behavioral-neurobiology",
         "name": "Behavioral neurobiology",
-        "focus": "Connections between nervous-system function and behavior."
+        "focus": "Scored mouse behavior from video, checked automated tracking by hand, and analyzed data in GraphPad Prism."
       },
       {
         "id": "molecular-dynamics",
         "name": "Protein molecular dynamics",
-        "focus": "Computational study of molecular motion."
+        "focus": "Cleaned protein-simulation data and wrote checks for the physical plausibility of proposed protein structures."
       },
       {
         "id": "surgical-ergonomics",
         "name": "Surgical ergonomics",
-        "focus": "The physical demands of surgical work."
+        "focus": "Built video-tracking workflows and helped record and analyze muscle activity, heart rate, and movement."
       }
     ],
     "independent": [
