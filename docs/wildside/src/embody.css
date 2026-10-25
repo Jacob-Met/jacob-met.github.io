@@ -1,0 +1,33 @@
+/* Watch or become an animal. Quiet, small, and out of the way of the world. */
+.embody-root{position:fixed;inset:0;pointer-events:none;z-index:14;font:13px/1.4 system-ui,sans-serif;color:var(--ink,#233b31)}
+.embody-root button{pointer-events:auto;font:inherit;border:1px solid rgba(35,59,49,.28);background:rgba(251,248,239,.92);color:inherit;border-radius:999px;padding:7px 13px;min-height:36px;cursor:pointer;backdrop-filter:blur(8px)}
+.embody-root button:hover{background:#fff}
+.embody-root button:focus-visible,.embody-root summary:focus-visible,.embody-root a:focus-visible{outline:2px solid #285b4b;outline-offset:2px}
+.embody-root button[disabled]{opacity:.45;cursor:default}
+.embody-root button[aria-pressed="true"]{background:#2c4639;color:#fbf8ef;border-color:#2c4639}
+.embody-root .embody-primary{background:#2c4639;color:#fbf8ef;border-color:#2c4639}
+.embody-root .embody-primary:hover{background:#38594a}
+.embody-root .embody-quiet{background:transparent;border-color:transparent;text-decoration:underline;text-underline-offset:3px}
+.embody-bar[hidden],.embody-story[hidden]{display:none}
+.embody-bar{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 24px);padding:10px 14px 9px;border-radius:18px;background:rgba(251,248,239,.93);border:1px solid rgba(35,59,49,.2);box-shadow:0 8px 30px rgba(35,59,49,.16);text-align:center;pointer-events:auto}
+.embody-kicker{font-size:10px;letter-spacing:.16em;font-weight:700;color:#4f6c58}
+.embody-controls{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:6px}
+.embody-seg{display:inline-flex;gap:4px}
+.embody-hint{margin:7px 0 0;font-size:11.5px;color:#52675a}
+.embody-story-button.fresh{animation:embody-glow 1.6s ease-in-out infinite}
+@keyframes embody-glow{50%{box-shadow:0 0 0 5px rgba(225,239,187,.9)}}
+.embody-story{position:fixed;left:50%;bottom:132px;transform:translateX(-50%);width:min(34rem,calc(100vw - 24px));max-height:calc(100vh - 220px);overflow:auto;padding:18px 20px 14px;border-radius:18px;background:rgba(251,248,239,.96);border:1px solid rgba(35,59,49,.2);box-shadow:0 10px 36px rgba(35,59,49,.2);pointer-events:auto}
+.embody-story h3{font:normal 26px/1.15 Georgia,serif;margin:6px 0 10px}
+.embody-prose{font:normal 17px/1.62 Georgia,serif;color:#344b3d;margin:0 0 12px}
+.embody-meter{height:5px;border-radius:3px;background:rgba(35,59,49,.14);margin:6px 0 12px;overflow:hidden}
+.embody-meter span{display:block;height:100%;background:#4f7a5f}
+.embody-story-nav{display:flex;gap:8px;align-items:center}
+.embody-note{margin:12px 0 4px;font-size:11.5px;color:#52675a;border-left:2px solid #c8b888;padding-left:9px}
+.embody-sources{font-size:12px;overflow-wrap:anywhere}
+.embody-sources summary{cursor:pointer;padding:6px 0;font-weight:600}
+.embody-sources a{color:#285b4b}
+body.embodied .visit-bar,body.embodied .place-heading,body.embodied #encounter,body.embodied .navigation-hint,body.embodied .vignette{display:none!important}
+@media(max-width:600px){.embody-bar{bottom:10px}.embody-story{bottom:150px}}
+@media(prefers-reduced-motion:reduce){.embody-story-button.fresh{animation:none}}
+
+.embody-list{display:grid;gap:6px;margin-bottom:10px}.embody-row{display:grid;gap:6px;padding-top:8px}

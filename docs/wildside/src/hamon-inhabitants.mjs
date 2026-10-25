@@ -9,6 +9,9 @@ export default [
   // Engine VE robin (robin_groom + robin_motion + robin_behavior) replaces the three.js bird art.
   replaces:ctx=>ctx.bird?.group??null,
   state(ctx){
+   // Inside the robin (embody.mjs): its body is the one you steer, not the wild individual.
+   const mine=ctx.embody?.bodyState('robin');
+   if(mine){robinState.set([mine.position[0],mine.position[1],mine.position[2],mine.yaw,mine.flying?1:0,1]);return robinState;}
    const b=ctx.sim?.snapshot().bird;
    if(!b||b.state==='unplaced'){robinState[5]=0;return robinState;}
    robinState.set([b.position[0],b.position[1],b.position[2],b.yaw,b.state==='flight'?1:0,1]);

@@ -352,3 +352,18 @@ body.exploring .place-pill-name{text-shadow:none}
 @media(max-width:750px){.settings-drawer{top:auto;bottom:calc(var(--dock-bottom) + 62px);max-height:64dvh}}
 @media(min-width:751px){.places-panel{width:min(760px,calc(100vw - 2*var(--gutter)))}.places-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
 body:has(#status.visible) .navigation-hint{opacity:0}
+/* Landscape phones: controls to the sides so nothing stacks; the pad left, the dock right. */
+@media(max-height:520px) and (orientation:landscape){
+ .visit-bar{left:auto;right:12px;bottom:8px;transform:none;max-width:calc(100vw - 190px)}
+ body.chrome-idle .visit-bar{transform:translateY(8px)}
+ #touch-controls{left:10px;bottom:8px;grid-template-columns:repeat(3,36px);gap:4px}#touch-controls button{width:36px;height:36px;font-size:15px}
+ .place-nav{margin-top:0}.place-pill{min-height:34px}
+ .topbar{flex-wrap:nowrap}.place-nav{order:0;flex-basis:auto;margin:0 0 0 10px}
+ .places-panel{top:56px;left:10px;width:min(640px,calc(100vw - 20px));max-height:calc(100dvh - 66px)}
+ .places-list{grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.place-line,.places-note{display:none}.place-text{padding:6px 8px 8px}.place-name{font-size:14px}.place-art{aspect-ratio:16/9}
+ .drawer-header{padding:10px 12px 6px 16px}.drawer-header h2{font-size:18px}
+ .world-drawer{bottom:auto;top:56px;max-height:calc(100dvh - 66px)}
+ .navigation-hint{bottom:54px;top:auto;left:50%;font-size:12px;padding:6px 12px}
+ .encounter{top:56px}
+}
+@media(max-width:750px){.encounter-actions{flex-wrap:wrap;overflow:visible}.encounter-actions button{min-height:28px}}
