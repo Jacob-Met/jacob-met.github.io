@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "visibility": "local-preview",
+  "visibility": "public-captured",
   "route": {
     "id": "engine",
     "mode": "recorded-native",

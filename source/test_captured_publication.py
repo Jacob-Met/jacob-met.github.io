@@ -35,7 +35,7 @@ class CapturedPublication(unittest.TestCase):
         self.assertIn('Conceptual illustration · not experimental data',markup)
         self.assertIn('assets/figures/worldlaw-computed.svg',markup)
         self.assertIn('assets/figures/worldlaw-computed-mobile.svg',markup)
-        self.assertIn('not measured data',markup)
+        self.assertIn('Computed model predictions, not measurements.',markup)
         self.assertIn('loading="lazy" src="assets/scene/forge-arrival-1280.png"',markup)
     def test_all_loaded_scripts_parse(self):
         node=shutil.which('node');self.assertIsNotNone(node)
@@ -74,12 +74,17 @@ class CapturedPublication(unittest.TestCase):
     def test_forbidden_script_capabilities(self):
         for snippet in ('eval("x")','new Function("x")','import x from "x"','fetch("x")','new Worker("x")','WebAssembly.instantiate(x)','navigator.sendBeacon("x")','document.write("x")'):
             with self.subTest(snippet=snippet):self.assertTrue(script_source_errors(snippet))
-    def test_new_route_is_unpublished_until_ui_receiving(self):
-        self.assertEqual(load_lobby(build.ROOT,allow_private_preview=True)['visibility'],'local-preview')
-        with self.assertRaises(ValueError):load_lobby(build.ROOT)
+    def test_public_captured_projection_uses_default_build_and_check(self):
+        # Public disclosure/build eligibility is not a universal browser claim.
+        # Synthetic local-preview rejection remains tested in both route policies.
+        self.assertEqual(load_lobby(build.ROOT)['visibility'],'public-captured')
+        self.assertEqual(set(load_branches(build.ROOT)),{'hackathons','projects'})
+        from check import check
         with tempfile.TemporaryDirectory() as tmp:
-            with self.assertRaises(ValueError):build.build(Path(tmp)/'out')
-            self.assertFalse((Path(tmp)/'out').exists())
+            out=Path(tmp)/'out'
+            summary=build.build(out)
+            self.assertEqual(summary['publication'],'public-captured')
+            self.assertTrue(check(out)['passed'])
 
     def test_capture_is_explicitly_public_and_byte_pinned(self):
         data=load_capture(build.ROOT)
