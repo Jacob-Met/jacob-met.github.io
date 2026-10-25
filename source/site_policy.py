@@ -12,11 +12,13 @@ ART_ASSETS={'assets/scene/research-observatory.svg': {'width':860,'height':720,'
 ART_FILES=tuple(ART_ASSETS)
 EDITORIAL_ART={'assets/editorial/spire-world.webp': {'width':1200,'height':675,'sha256':'0e30e92a60c4a8f702a5fa806b5bd0b28e6a017110341f84474101cbb9e22696','sourceUrl':'https://spireofoctaves.com/assets/hero-1200.webp'}}
 EDITORIAL_FILES=tuple(EDITORIAL_ART)
-PRESENTATION_STILLS={'entrance': {'src': 'assets/scene/forge-entrance-1280.png', 'width': 1280, 'height': 800, 'sha256': '5289a46ef28008084a794c3d85040fb577c927126cdf3b87720dba4ef3d077d2'}, 'arrival': {'src': 'assets/scene/forge-arrival-1280.png', 'width': 1280, 'height': 800, 'sha256': '37f712ef3718d7d02faffc6952a363906e34a9e921623d16470e425bcd8ec9dd'}}
+PRESENTATION_STILLS={'entrance': {'src': 'assets/scene/forge-entrance-1280.png', 'width': 1280, 'height': 800, 'sha256': '5289a46ef28008084a794c3d85040fb577c927126cdf3b87720dba4ef3d077d2'}, 'arrival': {'src': 'assets/scene/forge-arrival-960.png', 'width': 960, 'height': 600, 'sha256': '7f510954f85e241920f75fd32c007d428930adf40b207b7d5f041d46f642b24a'}}
+# Existing public URL remains exact; it is no longer the selected Engine view.
+RETAINED_PRESENTATION_STILLS={'previous-arrival': {'src': 'assets/scene/forge-arrival-1280.png', 'width': 1280, 'height': 800, 'sha256': '37f712ef3718d7d02faffc6952a363906e34a9e921623d16470e425bcd8ec9dd'}}
 # Delivery derivative only: original PNGs remain the native provenance/compatibility URLs.
 LOSSLESS_ENTRANCE={'src':'assets/scene/forge-entrance-1280.webp','width':1280,'height':800,'sha256':'0e3c6614e72335640a8aa068902e0f8bf510bdbd1a74b7b7ff5c87347dcb21b8','rgbaSha256':'4e8d2b4c9980bc5b1de739aa52e1db1dc6040ac96460624c147106bbda8aa602'}
 DELIVERY_STILLS={**PRESENTATION_STILLS,'entrance':LOSSLESS_ENTRANCE}
-PRESENTATION_FILES=(*[v['src'] for v in PRESENTATION_STILLS.values()],LOSSLESS_ENTRANCE['src'])
+PRESENTATION_FILES=(*[v['src'] for v in PRESENTATION_STILLS.values()],*[v['src'] for v in RETAINED_PRESENTATION_STILLS.values()],LOSSLESS_ENTRANCE['src'])
 
 def lossless_webp_dimensions(raw):
  # This exact opaque derivative has one VP8L chunk, no ICC/EXIF/XMP/animation.
@@ -36,7 +38,7 @@ def validate_lossless_entrance(root):
 
 
 def validate_presentation_stills(root):
- for record in PRESENTATION_STILLS.values():
+ for record in (*PRESENTATION_STILLS.values(),*RETAINED_PRESENTATION_STILLS.values()):
   path=root/record['src']
   if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(root.resolve()):raise ValueError('Missing native presentation still')
   raw=path.read_bytes()

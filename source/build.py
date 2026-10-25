@@ -18,7 +18,7 @@ from site_policy import (FONT_FILES, validate_fonts, SCENE_ASSETS, SCENE_FILES, 
                          EXPERIENCE_CSS, audit_scripts, script_integrity, ART_FILES, validate_art, EDITORIAL_FILES, validate_editorial, PRESENTATION_STILLS, DELIVERY_STILLS, PRESENTATION_FILES, validate_presentation_stills)
 import portfolio
 from capture_policy import CAPTURE_FILES, load_capture
-from lobby_policy import load_lobby, lobby_files
+from lobby_policy import load_lobby, lobby_files, validate_retained_engine_media
 from figure_policy import load_figures, figure_files
 from branch_policy import load_branches, branch_files
 from experience_policy import EXPERIENCE_FILE, load_experience
@@ -181,6 +181,7 @@ def validate_portfolio(data: dict) -> None:
     validate_art(ROOT)
     validate_editorial(ROOT)
     validate_presentation_stills(ROOT)
+    validate_retained_engine_media(ROOT)
 
 
 def portfolio_record() -> dict:
