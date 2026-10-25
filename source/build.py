@@ -15,7 +15,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 from game_assets import game_files
 from site_policy import (FONT_FILES, validate_fonts, SCENE_ASSETS, SCENE_FILES, SCRIPT_FILES, LOADED_SCRIPT_FILES,
-                         EXPERIENCE_CSS, audit_scripts, script_integrity, ART_FILES, validate_art, EDITORIAL_FILES, validate_editorial, PRESENTATION_STILLS, PRESENTATION_FILES, validate_presentation_stills, CAPTIONVERSE_FILES, validate_captionverse_captures)
+                         EXPERIENCE_CSS, audit_scripts, script_integrity, ART_FILES, validate_art, EDITORIAL_FILES, validate_editorial, PRESENTATION_STILLS, DELIVERY_STILLS, PRESENTATION_FILES, validate_presentation_stills, CAPTIONVERSE_FILES, validate_captionverse_captures)
 import portfolio
 from engine_motion_policy import FILES as ENGINE_MOTION_FILES, validate_motion
 from capture_policy import CAPTURE_FILES, load_capture
@@ -197,7 +197,7 @@ def render_index(r: dict, portfolio_data: dict | None = None, *, preview=False) 
     validate_portfolio(current)
     forge = load_capture(ROOT)
     forge['lobby'] = load_lobby(ROOT, allow_private_preview=preview)
-    forge['presentationStills'] = PRESENTATION_STILLS
+    forge['presentationStills'] = DELIVERY_STILLS
     forge['lobbyProof'] = forge['lobby']['proof']
     forge['branches'] = load_branches(ROOT, allow_private_preview=preview)
     forge['projectFigures'] = load_figures(ROOT)

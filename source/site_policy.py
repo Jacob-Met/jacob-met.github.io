@@ -13,7 +13,27 @@ ART_FILES=tuple(ART_ASSETS)
 EDITORIAL_ART={'assets/editorial/spire-world.webp': {'width':1200,'height':675,'sha256':'0e30e92a60c4a8f702a5fa806b5bd0b28e6a017110341f84474101cbb9e22696','sourceUrl':'https://spireofoctaves.com/assets/hero-1200.webp'}}
 EDITORIAL_FILES=tuple(EDITORIAL_ART)
 PRESENTATION_STILLS={'entrance': {'src': 'assets/scene/forge-entrance-1280.png', 'width': 1280, 'height': 800, 'sha256': '5289a46ef28008084a794c3d85040fb577c927126cdf3b87720dba4ef3d077d2'}, 'arrival': {'src': 'assets/scene/forge-arrival-960.png', 'width': 960, 'height': 600, 'sha256': '7f510954f85e241920f75fd32c007d428930adf40b207b7d5f041d46f642b24a'}}
-PRESENTATION_FILES=tuple(v['src'] for v in PRESENTATION_STILLS.values())
+# Delivery derivative only: original PNGs remain the native provenance/compatibility URLs.
+LOSSLESS_ENTRANCE={'src':'assets/scene/forge-entrance-1280.webp','width':1280,'height':800,'sha256':'0e3c6614e72335640a8aa068902e0f8bf510bdbd1a74b7b7ff5c87347dcb21b8','rgbaSha256':'4e8d2b4c9980bc5b1de739aa52e1db1dc6040ac96460624c147106bbda8aa602'}
+DELIVERY_STILLS={**PRESENTATION_STILLS,'entrance':LOSSLESS_ENTRANCE}
+PRESENTATION_FILES=(*[v['src'] for v in PRESENTATION_STILLS.values()],LOSSLESS_ENTRANCE['src'])
+
+def lossless_webp_dimensions(raw):
+ # This exact opaque derivative has one VP8L chunk, no ICC/EXIF/XMP/animation.
+ if len(raw)<26 or raw[:4]!=b'RIFF' or raw[8:16]!=b'WEBPVP8L' or int.from_bytes(raw[4:8],'little')!=len(raw)-8:raise ValueError('Lossless entrance WebP container differs')
+ n=int.from_bytes(raw[16:20],'little')
+ if n<5 or len(raw)!=20+n+(n%2) or (n%2 and raw[-1]!=0) or raw[20]!=0x2f:raise ValueError('Lossless entrance WebP chunk differs')
+ bits=int.from_bytes(raw[21:25],'little')
+ if bits>>28:raise ValueError('Lossless entrance must be opaque WebP version zero')
+ return ((bits&0x3fff)+1,((bits>>14)&0x3fff)+1)
+
+def validate_lossless_entrance(root):
+ record=LOSSLESS_ENTRANCE;path=root/record['src']
+ if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(root.resolve()):raise ValueError('Missing lossless entrance delivery asset')
+ raw=path.read_bytes()
+ if hashlib.sha256(raw).hexdigest()!=record['sha256']:raise ValueError('Lossless entrance delivery checksum differs')
+ if lossless_webp_dimensions(raw)!=(record['width'],record['height']):raise ValueError('Lossless entrance delivery dimensions differ')
+
 
 # Exact, unchanged browser screenshots admitted only with the figure's film credit.
 CAPTIONVERSE_CAPTURES = {
@@ -52,6 +72,7 @@ def validate_presentation_stills(root):
   raw=path.read_bytes()
   if not 33<=len(raw)<=2000000 or hashlib.sha256(raw).hexdigest()!=record['sha256']:raise ValueError('Native presentation still checksum differs')
   if raw[:8]!=b'\x89PNG\r\n\x1a\n' or raw[12:16]!=b'IHDR' or struct.unpack_from('>II',raw,16)!=(record['width'],record['height']):raise ValueError('Native presentation still dimensions differ')
+ validate_lossless_entrance(root)
 
 
 def validate_art(root):

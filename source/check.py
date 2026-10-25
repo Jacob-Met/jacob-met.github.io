@@ -20,7 +20,7 @@ from experience_policy import load_experience
 from engine_motion_policy import (VIDEO_ID as MOTION_VIDEO_ID, SOURCE_ATTRIBUTES as MOTION_SOURCE_ATTRIBUTES,
     FILES as ENGINE_MOTION_FILES, validate_motion, video_errors as motion_video_errors, source_errors as motion_source_errors)
 from site_policy import (FONT_PROPERTIES, validate_fonts, SCRIPT_FILES, LOADED_SCRIPT_FILES,
-                         audit_scripts, script_element_errors, canvas_element_errors, ART_FILES, validate_art, EDITORIAL_FILES, EDITORIAL_ART, validate_editorial, PRESENTATION_FILES, PRESENTATION_STILLS, validate_presentation_stills, CAPTIONVERSE_CAPTURES, CAPTIONVERSE_FILES, validate_captionverse_captures, captionverse_picture_source_errors)
+                         audit_scripts, script_element_errors, canvas_element_errors, ART_FILES, validate_art, EDITORIAL_FILES, EDITORIAL_ART, validate_editorial, PRESENTATION_FILES, PRESENTATION_STILLS, DELIVERY_STILLS, validate_presentation_stills, CAPTIONVERSE_CAPTURES, CAPTIONVERSE_FILES, validate_captionverse_captures, captionverse_picture_source_errors)
 
 ROOT_RELATIVE_PAGES = frozenset({'404.html'})
 CSP_REQUIRED = {'default-src': "'none'", 'style-src': "'self'", 'script-src': "'self'", 'img-src': "'self'", 'media-src': "'self'", 'font-src': "'self'", 'connect-src': "'none'", 'object-src': "'none'", 'frame-src': "'none'", 'worker-src': "'none'", 'base-uri': "'none'", 'form-action': "'none'"}
@@ -66,7 +66,7 @@ class Page(HTMLParser):
         if tag == 'img':
             src = a.get('src') or ''
             if a.get('id') == 'scene-still':
-                expected = {'src': PRESENTATION_STILLS['entrance']['src'], 'data-entrance-src': PRESENTATION_STILLS['entrance']['src'], 'data-arrival-src': PRESENTATION_STILLS['arrival']['src'], 'width': '1280', 'height': '800'}
+                expected = {'src': DELIVERY_STILLS['entrance']['src'], 'data-entrance-src': DELIVERY_STILLS['entrance']['src'], 'data-arrival-src': PRESENTATION_STILLS['arrival']['src'], 'width': '1280', 'height': '800'}
                 expected.update({f'data-{key}-src':route['still']['src'] for key,route in self.branches.items()})
                 if any(a.get(k) != v for k,v in expected.items()): self.errors.append('img: scene endpoint attributes outside exact native stills')
             for record in PRESENTATION_STILLS.values():
