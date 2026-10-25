@@ -1,0 +1,19 @@
+.transfer-view {display:grid;gap:1rem;max-width:46rem}
+.transfer-view h2,.transfer-view h3,.transfer-view h4 {margin:.6rem 0}
+.transfer-view p,.transfer-view li {line-height:1.55;overflow-wrap:anywhere}
+.transfer-view ul {padding-left:1.5rem}
+.transfer-view label {display:block;margin:1rem 0;line-height:1.5}
+.transfer-view input[type=file],.transfer-view select {display:block;max-width:100%;margin-top:.5rem}
+.transfer-actions {display:flex;flex-wrap:wrap;gap:.6rem}
+.transfer-view button {min-height:44px;margin:.25rem 0}
+.transfer-status {min-height:1.5em}
+.transfer-conflict {border-left:3px solid #996326;padding-left:.8rem;background:#fff5df}
+.transfer-view[data-state=error] .transfer-status {color:#842e22}
+.transfer-view button:disabled {opacity:.55;cursor:not-allowed}
+
+/* Keep searched-out moment labels and their line breaks truly hidden. */
+.transfer-moment-list label[hidden], .transfer-moment-list br[hidden] {display:none}
+
+/* Long private moment names must not widen the transfer dialog on a phone. */
+.transfer-view #transfer-moment-replacement {min-width:0;max-width:100%;box-sizing:border-box}
+.transfer-view #transfer-replace-older {min-width:0;width:100%;box-sizing:border-box}

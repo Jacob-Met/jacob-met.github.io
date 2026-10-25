@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="color-scheme" content="light"><meta name="theme-color" content="#e5e9da">
+  <title>Wildside — a place to return to</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="src/source-revisit.css"><link rel="stylesheet" href="src/style.css"><link rel="stylesheet" href="src/observation-editor.css"><link rel="stylesheet" href="src/ecology-discovery.css">
+</head>
+<body>
+  <main id="world" aria-label="Explorable living world" tabindex="0"></main>
+  <div class="vignette" aria-hidden="true"></div>
+  <header class="topbar">
+    <button id="overview" class="wordmark" aria-label="Wildside overview"><svg viewBox="0 0 28 28" aria-hidden="true"><path d="M5 24C7 11 12 4 24 3c1 12-6 20-15 17M8 21 20 8"/></svg> wildside<span class="brand-dot">.</span></button>
+    <nav aria-label="Place actions"><button id="sources" class="quiet" aria-label="About this place"><span class="action-text">About this place</span><svg class="compact-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><circle class="icon-dot" cx="12" cy="7" r="1"/></svg></button><button id="observe" class="quiet" aria-label="Add a view"><span class="action-text">Add a view <span>↗</span></span><svg class="compact-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button><button id="new-place" class="pill dark">Bring your place</button></nav>
+  </header>
+  <button id="sound-toggle" class="sound-control" aria-pressed="false" title="Hear imagined habitat sounds" aria-label="Turn on imagined habitat sounds">♫ <span>Hear place</span></button>
+  <section class="place-heading" id="place-heading">
+    <div class="eyebrow"><span class="dot"></span><span id="world-kind">AN IMAGINED PLACE</span></div>
+    <h1 id="place-name">A little closer<br>to the living world.</h1>
+    <p id="place-description">A leaning tree. A quiet patch of sun.<br>A whole world, when you stop to look.</p>
+    <button class="pill dark enter" id="enter">Step inside <span>↗</span></button>
+  </section>
+  <aside id="encounter" class="encounter"><span class="eyebrow">A SMALL INHABITANT</span><strong id="encounter-title">A pause between flights</strong><span id="bird-state">Simulated robin · finding a perch</span><button id="watch-bird">Look closer ↗</button><button id="watch-crawler" hidden>Look closer ↗</button><button id="watch-web" hidden>Find a web ↗</button><button id="watch-spider" hidden>Meet the weaver ↗</button><button id="watch-visitor" hidden>Meet the visitor ↗</button><button id="brush-web" hidden title="Send a ripple along the silk">Brush a strand</button><button id="watch-skater" hidden>Life on the water ↗</button><button id="watch-underwater" hidden>Below the surface ↗</button><button id="discover-ecology">Follow its story ↗</button><button id="ripple-water" hidden>A gentle ripple</button></aside>
+  <div id="status" role="status" aria-live="polite"></div>
+  <footer class="visit-bar">
+    <div class="mode-group" role="group" aria-label="Explore at another scale">
+      <button id="mode-human" data-mode="human" aria-pressed="false"><span>01</span> Human</button>
+      <button id="mode-bird" data-mode="bird" aria-pressed="false"><span>02</span> Bird</button>
+      <button id="mode-insect" data-mode="insect" aria-pressed="false"><span>03</span> Insect</button>
+    </div>
+    <label class="look-picker" id="look-picker" hidden><span>Style</span><select id="look-select" aria-label="Rendering style"></select></label>
+    <div class="weather"><button id="rain-toggle" aria-pressed="false" title="Imagine rain">☂ <span>Imagine rain</span></button><button id="motion-toggle" aria-pressed="false" title="Pause simulated life">Ⅱ</button></div>
+    <div class="memory-actions"><button id="save-view-image" title="Save a picture of the current view as PNG" aria-label="Save picture as PNG">▣ <span>Save picture</span></button><button id="save-memory" title="Keep this viewpoint">♡ <span>Keep a moment</span></button><button id="memories" aria-label="Open saved moments">◷ <span id="memory-count">0</span></button></div>
+  </footer>
+  <div class="navigation-hint" id="navigation-hint">Drag to look · W A S D to move · E / Q to fly · Esc for overview</div>
+  <div id="touch-controls" aria-label="Touch movement"><button data-move="forward" aria-label="Move forward">↑</button><button data-move="left" aria-label="Move left">←</button><button data-move="back" aria-label="Move backward">↓</button><button data-move="right" aria-label="Move right">→</button><button data-move="up" aria-label="Fly up">+</button><button data-move="down" aria-label="Fly down">−</button></div>
+  <dialog id="panel"><header class="panel-header"><span id="panel-label">A continuing place</span><button id="close-panel" aria-label="Close panel">×</button></header><div id="panel-content"></div></dialog>
+  <script type="module" src="src/app.mjs"></script>
+</body></html>

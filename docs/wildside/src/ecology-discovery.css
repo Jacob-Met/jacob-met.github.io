@@ -1,0 +1,24 @@
+/* Optional ecological discovery lives in the existing modal, not over the world. */
+.ecology-discovery{max-width:640px;margin:auto;color:var(--ink);padding-bottom:6px}
+.ecology-kicker{font-size:10px;letter-spacing:.17em;text-transform:uppercase;font-weight:700;color:#667e69}
+.ecology-discovery h2{font-size:clamp(30px,5vw,47px);line-height:1.07;margin:13px 0 17px}
+.ecology-lede{font:normal 18px/1.56 Georgia,serif!important;color:#33483b!important;max-width:56ch}
+.ecology-disclaimer{border-left:2px solid #c8b888;padding:8px 12px;font-size:12px!important;background:#f6f0dd;color:#4a5145!important}
+.ecology-choices{display:flex;gap:7px;flex-wrap:wrap;margin:20px 0}
+.panel-body .ecology-choices button{border-radius:20px;background:#e5eadf;text-align:left;min-height:40px}
+.panel-body .ecology-choices button.chosen{background:#2c4639;color:#fbf8ef;border-color:#2c4639}
+.ecology-story{border-top:1px solid #b9c9b8;border-bottom:1px solid #b9c9b8;padding:23px 0 17px;min-height:350px}
+.ecology-story h3{font:normal 30px/1.15 Georgia,serif;margin:8px 0 23px}
+.ecology-story h4{font:normal 25px/1.24 Georgia,serif;margin:5px 0 12px;color:#27463b}
+.ecology-prompt{font-size:11px!important;letter-spacing:.14em;text-transform:uppercase;color:#59735d!important}
+.ecology-copy{font:normal 17px/1.65 Georgia,serif!important;color:#344b3d!important;max-width:53ch}
+.ecology-step{font-size:11px!important;color:#748175!important;margin-top:20px}
+.ecology-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-start}
+.panel-body .ecology-actions .ecology-next{background:#2b4e3a;color:#fff9eb;border-color:#2b4e3a}
+.ecology-evidence{margin-top:22px;font-size:12px;overflow-wrap:anywhere}
+.ecology-evidence summary{cursor:pointer;font-weight:700;padding:11px 0}
+.ecology-evidence ul{padding-left:20px;margin:8px 0 4px}
+.ecology-evidence li{margin:8px 0;line-height:1.5}
+.ecology-evidence a{color:#285b4b}
+.panel-body .ecology-return{margin-top:20px;background:transparent}
+@media(max-width:500px){.ecology-discovery h2{font-size:32px}.ecology-lede{font-size:16px!important}.ecology-story h3{font-size:27px}.ecology-story h4{font-size:22px}.ecology-copy{font-size:15px!important}.ecology-choices{flex-direction:column}.ecology-choices button{width:100%}}
