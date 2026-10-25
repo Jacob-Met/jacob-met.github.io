@@ -29,7 +29,7 @@ from source_policy import validate_source_publication
 ROOT = Path(__file__).resolve().parent
 BASE = 'https://jacobmetoyer.com'
 TITLE = 'Jacob Metoyer · Founder of HAMON'
-DESC = 'Jacob Metoyer founded and builds HAMON: an AI-native engine for everything, worlds and games such as Wildside, and research instruments. He studies computer science and physics at Cal State Long Beach and writes the fiction world Spire of Octaves.'
+DESC = 'Jacob Metoyer founded and builds HAMON: an AI-native creation engine for games, video, animation, physics and science, and the worlds, games and instruments made with it. He studies computer science and physics at Cal State Long Beach and writes the fiction world Spire of Octaves.'
 SHARE_ALT = 'Jacob Metoyer, founder of HAMON: engines, worlds and instruments. Computer science and physics at Cal State Long Beach.'
 ALLOWED_HOSTS = {'github.com', 'jacobmetoyer.com', 'spireofoctaves.com', 'www.linkedin.com', 'mango.blender.org', 'creativecommons.org', 'commons.wikimedia.org', 'www.royalroad.com', 'devpost.com'}
 PLAY_HOST = 'jacobmetoyer.com'

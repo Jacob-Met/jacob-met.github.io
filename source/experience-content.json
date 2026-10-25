@@ -158,8 +158,8 @@
     {
       "projectId": "hamon-engine",
       "question": "Make a world. Give it rules.",
-      "opening": "An AI-native engine for everything: worlds, games, simulation, authoring and tools that agents can drive directly.",
-      "capability": "A Rust and wgpu workspace of 27 crates: a deterministic ECS runtime with replay, physics, animation, audio, scripting, lockstep networking, an asset pipeline, procedural mesh and world authoring, materials, and a style system with 17 selectable looks. A CLI, JSON-RPC and MCP control surface lets AI agents drive it, and a prototype native editor sits beside it. It runs natively and in the browser.",
+      "opening": "An AI-native creation engine for games and worlds, video and film, animation, sculpting, physics and simulation, and science and engineering tools, built so agents can drive it directly.",
+      "capability": "A Rust workspace of 27 crates with native C++, CUDA, TypeScript and Go components: a deterministic ECS runtime with replay, a full physics engine (rigid, elastic and deformable bodies and engineering solvers), animation and procedural sculpting, perception and video tooling, rendering with a style system of 17 looks, audio, scripting, lockstep networking, an asset pipeline, and a CLI, JSON-RPC and MCP control surface for AI agents. It runs natively and in the browser.",
       "tryThis": "See a room rendered by the engine, explore its systems, then play Lanternwake, a small public browser snapshot.",
       "stage": "Active engine development",
       "limit": "The engine source is private. Public browser games are published snapshots, not the whole current engine.",

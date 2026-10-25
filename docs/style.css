@@ -80,6 +80,8 @@ body .work-section.forge-room{--arrival-height:clamp(230px,33svh,340px);backgrou
 .engine-style-study img{display:block;width:100%;height:auto}
 .engine-style-study figcaption{margin-top:12px;font-size:13px;line-height:1.6;color:var(--quiet)}
 
+[tabindex="-1"]:focus{outline:none}
+@media(max-width:700px){.room-nav{gap:2px 14px;font-size:12px}}
 /* Design pass: navigation, typography, hover/focus, motion. */
 .ws-top nav a{position:relative;padding:0 2px;font-size:15px;letter-spacing:.01em;color:#dbe8ec}
 .ws-top nav a::after{content:"";position:absolute;left:2px;right:2px;bottom:8px;height:1px;background:#ffcf8a;transform:scaleX(0);transform-origin:left;transition:transform .25s ease}
@@ -233,3 +235,11 @@ body.ws{background:#08121d;color:#e5eef0}
 @media(max-height:550px) and (orientation:landscape){.ws-hero-copy{padding-top:88px;padding-bottom:28px}.ws-hero h1{font-size:clamp(44px,12vh,72px)}}
 .hamon-headline{font-size:clamp(26px,3.2vw,38px);letter-spacing:-.04em;line-height:1.15;color:#ffd9a0;margin:6px 0 14px}
 
+.hamon-jump{display:flex;flex-wrap:wrap;gap:4px 8px;margin:26px 0 0}.hamon-jump a{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border:1px solid #ffffff3d;border-radius:999px;background:#08121d88;color:#e5eef0;font-size:14px;backdrop-filter:blur(4px);transition:border-color .2s,background-color .2s}.hamon-jump a:hover,.hamon-jump a:focus-visible{border-color:#ffcf8a;background:#ffcf8a22}
+.hamon-subhead{font-size:26px;font-weight:400;letter-spacing:-.035em;margin:56px 0 6px;color:var(--paper)}
+.hamon-games{list-style:none;margin:18px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.hamon-games li{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#0c1b28;transition:border-color .25s,transform .25s}.hamon-games li:hover{border-color:#ffcf8a99;transform:translateY(-2px)}
+.hamon-games img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;image-rendering:pixelated}.hamon-games li>div{padding:16px 18px 20px}
+.hamon-games h3{font-size:24px;font-weight:400;letter-spacing:-.035em;margin:0 0 6px}.hamon-games p{margin:0;font-size:15.5px;line-height:1.55;color:var(--quiet)}.hamon-games .hamon-kind{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#ffd9a0;margin-bottom:8px}
+.hamon-compact li{padding:14px 0 16px}
+@media(max-width:760px){.hamon-games{grid-template-columns:1fr}}

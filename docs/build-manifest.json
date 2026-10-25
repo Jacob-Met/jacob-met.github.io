@@ -4,7 +4,7 @@
   "publication": "public-captured",
   "sha256": {
     ".nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "404.html": "5813cc5eb6349f1b4a3e6a0051a998eb9b058e2219162bbbfff45b9d2f469f55",
+    "404.html": "5d49cc9597ea3be1b0d1895c493875410584bf54ea7f07ab7b3d967c6a15da8f",
     "CNAME": "7e89b4b8e0d23220fae91b16a6c40497117ef427d16ca984e7a8c720f14d8527",
     "apple-touch-icon.png": "7165c837849e675fa88bbb7181bfdd71769b20f72c82b492d0ec7f8bee707a71",
     "assets/demos/recallweave-desktop.webp": "7f09210bd45edb2ac8fa157b5e380988ea5f28a820300cf319fb7fb55f683565",
@@ -20,6 +20,8 @@
     "assets/figures/worldlaw-computed.svg": "1f389a1f4e300708f56854aaaf6fcad9207a1cf3564ce0a2935b3b006ae21439",
     "assets/fonts/OFL.txt": "c6dec685825f73b18c20926fddc65e8315642e12986f15db0699170940a09efc",
     "assets/fonts/space-grotesk.woff": "0cebd5ca855d0aea379a7e70240aa096e89f76efea057fad7b888370574662f6",
+    "assets/games/first-game-toon.webp": "e162bc7275693604e77e578037b0fc9803c5a86abd37efd9ac2c72303b512dc0",
+    "assets/games/inkbound-combat.webp": "e639de9ada4aec1ab726f2fe4cfd7f632ba2b8fa7c184bd78cc1dddb33bd2257",
     "assets/hamon/hamon-share.jpg": "70af78c1614386116a0e19401be12188c4fdf0b959becb3e39c18afbf7a83ad4",
     "assets/mark.svg": "d3db3974f3ef1188c03880311ed5cc3308b7f38cb673bc1660df363b40fa7d8c",
     "assets/og-card.png": "10688d7df2b9ab252af46cf4478bdb1b2999cdbf2aeffb272dd870995a50a73a",
@@ -87,8 +89,8 @@
     "capture-manifest.json": "a68fbb4b771e9aaaad473a4c6534218b5eea9d29f2bc78fbd92eabd55098ab0c",
     "cv.json": "8bf265836cadd04aecb6ab3bcc71debbde250e7cead76289c87f48ebc89b167d",
     "detail.js": "b23eacae390e33b424cdbace4039fbe5418311ab256232d7946ed2993ebadc0a",
-    "experience-content.json": "197c774fd3fb6495b42092e4881bfe8a2d357bdb8f3c48a4c6498fa88efa2df8",
-    "experience.css": "50b3b13cb8885b91b49b06c215bf0b11e3b031c62c4301d74797d9ded60e866d",
+    "experience-content.json": "1042867b45ab9831a043693967c7001f0dc70e25ad00b6f52dda368de97c3f2e",
+    "experience.css": "c1bdfaba12282f413833a12e35380f6ab00e1751b609a30369ac15eb7177dd14",
     "favicon.ico": "fe0deb2a0efa8c76fdcca3619db3e5036779ccf5aae7927108bd34d02bd6d0ba",
     "games/lanternwake/build-info.json": "a0cfabeef8c3d89ea5f28eca998a25ac9c7bfa98c57c778c239ba9c17ec25a28",
     "games/lanternwake/desktop.png": "2405736059c1d6fc5757057d9161346dab8bdf3cd50cc6ab14bcbc04a21d40a0",
@@ -101,8 +103,8 @@
     "games/lanternwake/poster.svg": "1ee8b5c9154f1f52b9bad22b5216de44a172ff47bef6c7752d785c84e87e3175",
     "games/lanternwake/style.css": "6a4c0e20a4316051c77f9b13d0cf581019c47d19918fae8f18d09bef2f36fd72",
     "games/lanternwake/webgpu-compat.js": "95b4487d37462f3e60f159abfedff03bcd6810960339ae2a65e0311863954822",
-    "hamon.html": "0ac35561b7d2064c930757e6d7a29794cd5bd3ec9a25ccb957b8d044bf6958f7",
-    "index.html": "4aaacc3dd7f671c7724b0ddc80ba4637cea4af1389bdd1e7fd3ac221bb88a4a8",
+    "hamon.html": "46a93f38c2eb11879dabfcf08b9cd61ca41897e77ad1c647e36174a356bb36e2",
+    "index.html": "eeabfdfdb9f709093b6ce75cda24c2d4ad63357d22b2d672edc6a447ca414504",
     "lobby-journey.js": "3f7e383b84dc6034b65cf571666f28297df4e20113670c7280b47b7b13bc2d24",
     "lobby-manifest.json": "2766431d493f51bc72154c76671e1a2c4ddbf4fb78e4d2b776c8f6ed3598164a",
     "lobby.js": "36adc74e32f4c62917e559ee6b8a6efa1beb5e221c3dd1a4b99e8e1f29886759",
@@ -111,8 +113,8 @@
     "robots.txt": "60d463caa67aaa008b827bdec75236dcec7a9c82c49f529ad1da2de1c847c47e",
     "scene-handoff.js": "dceb03ad79736cc96a37fed78c04d63663889be596d52b200e71bdf433d8a39e",
     "sitemap.xml": "cc303225594a4a7101d16012aef74b49d365b8192adc3a466e0b419c7c3febeb",
-    "style.css": "50b3b13cb8885b91b49b06c215bf0b11e3b031c62c4301d74797d9ded60e866d",
+    "style.css": "c1bdfaba12282f413833a12e35380f6ab00e1751b609a30369ac15eb7177dd14",
     "wildside-media/wildside-demo-1080.mp4": "73975dbed6d439a93352b207203a20b3d53cf756eb7fa197e9a01b160dee017e",
-    "wildside-project.html": "4a8291e1beeadddeb0190f30c03f813a7e2d719b0fe6ef17ba8f376367ec8bb2"
+    "wildside-project.html": "dca8ba5ad6c0c91c2588fcb6042f8147e03292ddf4cacf81a6de556822ad18dd"
   }
 }

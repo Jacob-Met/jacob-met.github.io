@@ -103,7 +103,7 @@ class Page(HTMLParser):
         if tag == 'canvas':
             self.canvases.append(a)
             self.errors.extend(canvas_element_errors(a))
-        if any(k.startswith('on') or k in ('srcdoc', 'ping', 'style') or (k == 'srcset' and not (tag == 'source' and self.in_picture)) for k in a): self.errors.append(f'{tag}: inline attribute outside declared surface')
+        if any(k.startswith('on') or k in ('srcdoc', 'ping', 'style') or (k == 'srcset' and not ((tag == 'source' and self.in_picture) or (tag == 'img' and a[k] == wildside_page.HERO_SRCSET))) for k in a): self.errors.append(f'{tag}: inline attribute outside declared surface')
         if tag in ('a', 'link') and a.get('href'): self.links.append(a['href'])
         if tag == 'link' and set(a.get('rel', '').lower().split()) & {'stylesheet', 'icon', 'apple-touch-icon', 'preload', 'modulepreload', 'prefetch', 'preconnect', 'dns-prefetch', 'manifest'}:
             self.resources.append(a.get('href', ''))

@@ -46,6 +46,13 @@ class HamonPageTests(unittest.TestCase):
             self.assertIn('name="twitter:image"', text)
         self.assertIn('assets/wildside/wildside-thumbnail.jpg', self.page('wildside-project.html'))
 
+    def test_every_real_game_is_listed_and_breadth_is_present(self):
+        page = self.page('hamon.html')
+        for name in ('Wildside', 'Lanternwake', 'Aetherline', 'Counterpoise', 'Glasswake', 'Inkbound', 'The first game',
+                     'Phantom Window', 'Replay Forge', 'Captionverse', 'Chronos Vision', 'Mechanism', 'physics engine', 'AI-native creation engine'):
+            self.assertIn(name, page)
+        self.assertNotIn('painterly', page.lower())
+
     def test_sitemap_lists_hamon(self):
         self.assertIn('/hamon.html', self.page('sitemap.xml'))
 

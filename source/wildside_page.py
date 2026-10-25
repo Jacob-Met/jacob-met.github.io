@@ -14,6 +14,7 @@ MAX_VIDEO_BYTES = 50_000_000
 THUMB = 'assets/wildside/wildside-thumbnail.jpg'   # share image: the Wildside hero frame
 CARD = 'assets/wildside/wildside-card.webp'      # 800x450 for cards and previews
 CARD_SIZE = (800, 450)
+HERO_SRCSET = f'{CARD} 800w, {HERO} 1600w'   # phones get the 800px file; the checker allows exactly this srcset
 FILES = (HERO, CARD, THUMB)
 SOCIAL = (THUMB, 1280, 720, 'An autumn lake at golden hour in Wildside: painted maple trees reflected in still water, a dirt path and a swing set.')
 TITLE = 'Wildside · A HAMON world you can walk through'
@@ -49,8 +50,8 @@ def card() -> str:
             f'<img loading="lazy" decoding="async" src="{CARD}" width="{CARD_SIZE[0]}" height="{CARD_SIZE[1]}" alt="{e(HERO_ALT)}"></a>'
             '<div><p class="section-context">FEATURED · A HAMON WORLD · MARINAHACKS</p><h3>Wildside</h3><p><em>Step into the WildSide.</em></p>'
             '<p>Real places you care about, turned into living, hand-painted worlds you explore at human, bird and insect scale, rendered live by the HAMON Engine in your browser.</p>'
-            f'<p><a class="public-action" href="{APP_URL}">Play Wildside ↗</a> <a class="public-action" href="{PAGE}">About the project</a></p>'
-            '<p class="scope-copy">Best in desktop Chrome or Edge (WebGPU).</p></div></article>')
+            f'<p><a class="ws-play" href="{APP_URL}">Play Wildside</a> <a class="public-action" href="{PAGE}">About the project</a></p>'
+            '<p class="scope-copy">Needs WebGPU: desktop Chrome or Edge, Android Chrome, or Safari on iOS 26.</p></div></article>')
 
 
 def body(has_video: bool) -> str:
@@ -65,7 +66,7 @@ def body(has_video: bool) -> str:
     return (f'<a class="skip" href="#main">Skip to content</a><header class="ws-top"><a class="identity" href="index.html">Jacob Metoyer</a>'
             + site_nav('wildside') + '</header>'
             '<main id="main" class="ws-main">'
-            f'<section class="ws-hero"><img fetchpriority="high" decoding="async" src="{HERO}" width="{HERO_SIZE[0]}" height="{HERO_SIZE[1]}" alt="{e(HERO_ALT)}">'
+            f'<section class="ws-hero"><img fetchpriority="high" decoding="async" src="{HERO}" srcset="{HERO_SRCSET}" sizes="100vw" width="{HERO_SIZE[0]}" height="{HERO_SIZE[1]}" alt="{e(HERO_ALT)}">'
             '<div class="ws-hero-copy"><p class="section-context">A <a class="kicker-link" href="hamon.html">HAMON</a> WORLD · MADE FOR MARINAHACKS</p><h1>Wildside</h1><p class="ws-tagline">Step into the WildSide</p>'
             '<p class="ws-lede">Real places you care about, turned into living, hand-painted worlds you explore at human, bird and insect scale, rendered live by the HAMON Engine in your browser.</p>'
             f'<p class="hamon-actions"><a class="ws-play" href="{APP_URL}">Play Wildside</a><a class="hamon-secondary" href="#wildside-demo">Watch the demo</a></p>'
