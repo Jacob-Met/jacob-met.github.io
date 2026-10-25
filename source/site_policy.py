@@ -12,7 +12,7 @@ ART_ASSETS={'assets/scene/research-observatory.svg': {'width':860,'height':720,'
 ART_FILES=tuple(ART_ASSETS)
 EDITORIAL_ART={'assets/editorial/spire-world.webp': {'width':1200,'height':675,'sha256':'0e30e92a60c4a8f702a5fa806b5bd0b28e6a017110341f84474101cbb9e22696','sourceUrl':'https://spireofoctaves.com/assets/hero-1200.webp'}}
 EDITORIAL_FILES=tuple(EDITORIAL_ART)
-PRESENTATION_STILLS={'entrance': {'src': 'assets/scene/forge-entrance-1280.png', 'width': 1280, 'height': 800, 'sha256': '5289a46ef28008084a794c3d85040fb577c927126cdf3b87720dba4ef3d077d2'}, 'arrival': {'src': 'assets/scene/forge-arrival-1280.png', 'width': 1280, 'height': 800, 'sha256': '37f712ef3718d7d02faffc6952a363906e34a9e921623d16470e425bcd8ec9dd'}}
+PRESENTATION_STILLS={'entrance': {'src': 'assets/scene/forge-entrance-1280.png', 'width': 1280, 'height': 800, 'sha256': '5289a46ef28008084a794c3d85040fb577c927126cdf3b87720dba4ef3d077d2'}, 'arrival': {'src': 'assets/scene/forge-arrival-960.png', 'width': 960, 'height': 600, 'sha256': '7f510954f85e241920f75fd32c007d428930adf40b207b7d5f041d46f642b24a'}}
 PRESENTATION_FILES=tuple(v['src'] for v in PRESENTATION_STILLS.values())
 
 # Exact, unchanged browser screenshots admitted only with the figure's film credit.

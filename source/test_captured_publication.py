@@ -13,8 +13,8 @@ class CapturedPublication(unittest.TestCase):
     def test_genuine_native_presentation_stills_and_authored_art(self):
         validate_presentation_stills(build.ROOT); validate_art(build.ROOT)
         self.assertEqual(set(PRESENTATION_STILLS), {'entrance','arrival'})
-        for r in PRESENTATION_STILLS.values():
-            self.assertEqual((r['width'],r['height']),(1280,800))
+        self.assertEqual((PRESENTATION_STILLS['entrance']['width'], PRESENTATION_STILLS['entrance']['height']), (1280,800))
+        self.assertEqual((PRESENTATION_STILLS['arrival']['width'], PRESENTATION_STILLS['arrival']['height']), (960,600))
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp)
             for record in PRESENTATION_STILLS.values():
@@ -36,7 +36,8 @@ class CapturedPublication(unittest.TestCase):
         self.assertIn('assets/figures/worldlaw-computed.svg',markup)
         self.assertIn('assets/figures/worldlaw-computed-mobile.svg',markup)
         self.assertIn('Computed model predictions, not measurements.',markup)
-        self.assertIn('loading="lazy" src="assets/scene/forge-arrival-1280.png"',markup)
+        self.assertIn('loading="lazy" src="assets/scene/forge-arrival-960.png"',markup)
+        self.assertIn('src="assets/scene/forge-arrival-960.png" width="960" height="600"',markup)
     def test_all_loaded_scripts_parse(self):
         node=shutil.which('node');self.assertIsNotNone(node)
         for name in LOADED_SCRIPT_FILES:
@@ -57,7 +58,7 @@ class CapturedPublication(unittest.TestCase):
             self.assertFalse(name.startswith('engine/'),name)
         for name in ('scene-mesh.json','experience.js','room.js','forge-walk.js','engine-manifest.json'):
             self.assertNotIn(name,names)
-        self.assertEqual({p.name for p in (build.ROOT/'assets/scene').iterdir()}, {*(Path(p).name for p in branch_files(load_branches(build.ROOT,allow_private_preview=True)) if p.startswith('assets/scene/')),'forge-entrance-1280.png','forge-arrival-1280.png','research-observatory.svg','forge-native.png','forge-native-motion.mp4','hamon-engine-study.webp','forge-workbench.png',*(Path(p).name for p in MEDIA.values())})
+        self.assertEqual({p.name for p in (build.ROOT/'assets/scene').iterdir()}, {*(Path(p).name for p in branch_files(load_branches(build.ROOT,allow_private_preview=True)) if p.startswith('assets/scene/')),'forge-entrance-1280.png','forge-arrival-960.png','research-observatory.svg','forge-native.png','forge-native-motion.mp4','hamon-engine-study.webp','forge-workbench.png',*(Path(p).name for p in MEDIA.values())})
     def test_exact_script_integrity(self):
         hashes=audit_scripts(build.ROOT);name='lobby.js'
         self.assertEqual(set(hashes),set(SCRIPT_FILES))

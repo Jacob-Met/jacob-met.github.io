@@ -67,6 +67,9 @@ class Page(HTMLParser):
                 expected = {'src': PRESENTATION_STILLS['entrance']['src'], 'data-entrance-src': PRESENTATION_STILLS['entrance']['src'], 'data-arrival-src': PRESENTATION_STILLS['arrival']['src'], 'width': '1280', 'height': '800'}
                 expected.update({f'data-{key}-src':route['still']['src'] for key,route in self.branches.items()})
                 if any(a.get(k) != v for k,v in expected.items()): self.errors.append('img: scene endpoint attributes outside exact native stills')
+            for record in PRESENTATION_STILLS.values():
+                if src == record['src'] and (a.get('width'), a.get('height')) != (str(record['width']), str(record['height'])):
+                    self.errors.append('img: native presentation dimensions differ')
             if src in EDITORIAL_ART and (a.get('width'),a.get('height')) != tuple(str(EDITORIAL_ART[src][k]) for k in ('width','height')): self.errors.append('img: editorial artwork dimensions differ')
             for record in CAPTIONVERSE_CAPTURES.values():
                 if src == record['src'] and (a.get('width'), a.get('height')) != (str(record['width']), str(record['height'])):
