@@ -243,3 +243,5 @@ body.ws{background:#08121d;color:#e5eef0}
 .hamon-games h3{font-size:24px;font-weight:400;letter-spacing:-.035em;margin:0 0 6px}.hamon-games p{margin:0;font-size:15.5px;line-height:1.55;color:var(--quiet)}.hamon-games .hamon-kind{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#ffd9a0;margin-bottom:8px}
 .hamon-compact li{padding:14px 0 16px}
 @media(max-width:760px){.hamon-games{grid-template-columns:1fr}}
+@media(max-width:760px){.ws-top nav{gap:0 13px;flex-wrap:nowrap;justify-content:space-between}.ws-top nav a{font-size:14px;padding:0}.ws-top{row-gap:0}.ws-hero-copy,.hamon-hero-copy{padding-top:140px}}
+@media(max-width:350px){.ws-top nav{gap:0 8px}.ws-top nav a{font-size:13px}}
