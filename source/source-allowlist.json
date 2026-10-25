@@ -151,6 +151,7 @@
     "test_worldlaw_probe.py",
     "verify_deployment.py",
     "verify_game_browser.py",
+    "wildside-media/wildside-demo-1080.mp4",
     "wildside_page.py"
   ]
 }
