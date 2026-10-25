@@ -13,33 +13,33 @@
   },
   "media": {
     "entrance": {
-      "src": "assets/scene/forge-lobby-entrance.png",
-      "sha256": "e85274967a5e89dace34f1e008f37e12c1e043b72c05aa2c8515e6bf4c1a0818"
+      "src": "assets/scene/forge-warm-lobby-entrance.png",
+      "sha256": "abf0b8efedf6391185af21d71fad774eba32b277f30af295bd6f53f13780e475"
     },
     "arrival": {
-      "src": "assets/scene/forge-engine-arrival.png",
-      "sha256": "999e219bd6339ce2f042dc2a174f11b58d07aa50a95d5ad9977ac8ee3b54c937"
+      "src": "assets/scene/forge-warm-engine-arrival.png",
+      "sha256": "3c05c5cae6c242cad165de1ed166f27e6608a016e676dd2bbfd2180167c92492"
     },
     "forward": {
-      "src": "assets/scene/forge-engine-forward.mp4",
-      "sha256": "da905c2803187f8a1c90640efa95b6cc50a118e23f59dd454c59a9ac4811be2e"
+      "src": "assets/scene/forge-warm-engine-forward.mp4",
+      "sha256": "21fd1e60e08a269ec06613cb4e7b0b63b2286febff82577fe8fb4c824599172f"
     },
     "reverse": {
-      "src": "assets/scene/forge-engine-reverse.mp4",
-      "sha256": "fe6e4485565801ef6abe40f1b8576c964801d519e4df07665958450f3c5e63dd"
+      "src": "assets/scene/forge-warm-engine-reverse.mp4",
+      "sha256": "28c2b6bdb71c39d8ee7a1ea3296675e7220277ac560a93e63fa261fbb605605b"
     }
   },
   "proof": {
-    "src": "assets/scene/forge-workbench.png",
+    "src": "assets/scene/forge-warm-workbench.png",
     "width": 640,
     "height": 400,
-    "sha256": "eac784ac5a4fbe216abd35ff7e54fe620503f24dc2a6adfee6d4daed4c31acea",
+    "sha256": "ea6026a6500226268c132c12775f5ce65f313aeb51c228b2e5ae2a2b59dec981",
     "alt": "A native HAMON Engine view of the swordsmith workshop, with anvil, tools, finished blades and a warm charcoal hearth.",
     "label": "Native HAMON Engine render"
   },
   "provenance": {
     "cameraSequenceSha256": "393c3f87a8e70bdd7b8ae1998a7de451c77e9319b6640ae8ac5276e612f37ccc",
-    "nativeReceiptSha256": "9ed538cbc23f9bc81da73690850ca2ac86b6c5fad0a8584c669ff30982c4b3b5",
-    "nativeJobSeconds": 141.227553624
+    "nativeReceiptSha256": "2122d921e7fca3671090063bc47f02ef5d5934829515e0999535ca232d17c919",
+    "nativeJobSeconds": 163.76946374
   }
 }

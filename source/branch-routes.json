@@ -13,29 +13,29 @@
       "location": "The anvil",
       "media": {
         "forward": {
-          "src": "assets/scene/forge-hackathons-forward.mp4",
-          "sha256": "a4ba79077deede4e80359f4d79fa539e5b2b24ecdb371a0cde53fecff7390362"
+          "src": "assets/scene/forge-warm-hackathons-forward.mp4",
+          "sha256": "78fcc42eb42df0603db5fe80f36a014ab99462a740005b93134c246161083bf8"
         },
         "reverse": {
-          "src": "assets/scene/forge-hackathons-reverse.mp4",
-          "sha256": "0f3e9f40bcd14f858a66428aeeb3cbdada23146d7ec39240e99717649092be2d"
+          "src": "assets/scene/forge-warm-hackathons-reverse.mp4",
+          "sha256": "abcc2b5db567399518639fad6a42db81c4a9da3c61be34901f79799aa8f83add"
         },
         "endpoint": {
-          "src": "assets/scene/forge-hackathons-endpoint.png",
-          "sha256": "77da82ffb81bbc69ab1f413e90007a9bab1fe267f0ff2fe3150b1a6b65fc96c8"
+          "src": "assets/scene/forge-warm-hackathons-endpoint.png",
+          "sha256": "cd5d41d03130bb3ec48965ce12b59b465394704463c381640a40d98afc97c203"
         }
       },
       "still": {
-        "src": "assets/scene/forge-hackathons-1280.png",
-        "sha256": "0f0cf91edaeb090921be2399cd46c40bc6400d170b026f315126cdc79d596a49",
+        "src": "assets/scene/forge-warm-hackathons-1280.png",
+        "sha256": "8548c91754c7cd14d11714cf50dfa93495c4f4ffa758c138c67b154744c3c6f4",
         "width": 1280,
         "height": 800,
         "alt": "The forge anvil and unfinished blade, with the warm hearth and a rack of finished blades behind."
       },
       "provenance": {
         "cameraSequenceSha256": "34daae6164236169fb0a3d774ad09590133732bcb56abbff5915fdf869d5febc",
-        "nativeReceiptSha256": "4c88e84481080f2b684bf0af6f365f86b3e49ab901c73751d6bd052a4b5010d3",
-        "nativeJobSeconds": 71.856245225
+        "nativeReceiptSha256": "a7cbf46d7f053320153cd942c956d58822a8459bc186fb0c292df24882ce70d4",
+        "nativeJobSeconds": 125.688024775
       }
     },
     "projects": {
@@ -49,29 +49,29 @@
       "location": "The workbench",
       "media": {
         "forward": {
-          "src": "assets/scene/forge-projects-forward.mp4",
-          "sha256": "0a4197150a1d0ecd99e8691f7fccaed2bbad0776c1dd2e91ea898d363f6f25e2"
+          "src": "assets/scene/forge-warm-projects-forward.mp4",
+          "sha256": "e15b573bcbee0b8dd69ca0868d4062df9f3ff301e92d2b92e4efd82bf48e24ad"
         },
         "reverse": {
-          "src": "assets/scene/forge-projects-reverse.mp4",
-          "sha256": "47e446e467cffc4dca0bd1cf878b6ab7ddb5472a2428e6f6cafc66bd775a89f8"
+          "src": "assets/scene/forge-warm-projects-reverse.mp4",
+          "sha256": "31b3f16ade4ca351b91fad8832756aed13654f2b5404bfb37830eebc0ad4b440"
         },
         "endpoint": {
-          "src": "assets/scene/forge-projects-endpoint.png",
-          "sha256": "1db97d296f506c390d73f627c49cc9d8ba291f10c32d8e084a2e6c0709c71e58"
+          "src": "assets/scene/forge-warm-projects-endpoint.png",
+          "sha256": "5c689e7e1fe860ad33e6b2d433ad99b172517f88f7059e68c5955ea0d5050695"
         }
       },
       "still": {
-        "src": "assets/scene/forge-projects-1280.png",
-        "sha256": "0a7d611b63d4e19c17109da0a89eb3d024c521f58bf7a86cb33545ee60e8263b",
+        "src": "assets/scene/forge-warm-projects-1280.png",
+        "sha256": "875423981d00d812274eb4763da413d81328b2b72b7894179d09df8d296de37d",
         "width": 1280,
         "height": 800,
         "alt": "A close view of the forge workbench, with hammer, tongs and files on the wood surface."
       },
       "provenance": {
         "cameraSequenceSha256": "39f4ae473a285e32a22858d3e613dbc4ec5e8f59546bf7c142665e56342947fa",
-        "nativeReceiptSha256": "c388853381c6e11b5324d3121ea8d2f2ecee9e90b46ea878daa3039cc0940635",
-        "nativeJobSeconds": 72.960818462
+        "nativeReceiptSha256": "31092fe6304347d903ad4f8aeebe815f8a45719b3c3b98c49924145bddea9e08",
+        "nativeJobSeconds": 118.080321527
       }
     }
   }

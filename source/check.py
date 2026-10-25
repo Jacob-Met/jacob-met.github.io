@@ -13,9 +13,9 @@ from urllib.parse import unquote, urlsplit
 from xml.etree import ElementTree as ET
 from game_assets import GAME_PATH, audit_game_bundle
 from capture_policy import load_capture, video_element_errors, source_element_errors, CAPTURE_FILE, PROOF_FILE
-from lobby_policy import load_lobby, route_video_errors, route_source_errors
+from lobby_policy import load_lobby, route_video_errors, route_source_errors, validate_retained_engine_media
 from figure_policy import load_figures, picture_source_errors
-from branch_policy import load_branches, branch_video_errors, branch_source_errors, BRANCHES, DIRECTIONS
+from branch_policy import load_branches, branch_video_errors, branch_source_errors, BRANCHES, DIRECTIONS, validate_retained_branch_media
 from experience_policy import load_experience
 from engine_motion_policy import (VIDEO_ID as MOTION_VIDEO_ID, SOURCE_ATTRIBUTES as MOTION_SOURCE_ATTRIBUTES,
     FILES as ENGINE_MOTION_FILES, validate_motion, video_errors as motion_video_errors, source_errors as motion_source_errors)
@@ -69,7 +69,7 @@ class Page(HTMLParser):
                 expected = {'src': DELIVERY_STILLS['entrance']['src'], 'data-entrance-src': DELIVERY_STILLS['entrance']['src'], 'data-arrival-src': PRESENTATION_STILLS['arrival']['src'], 'width': '1280', 'height': '800'}
                 expected.update({f'data-{key}-src':route['still']['src'] for key,route in self.branches.items()})
                 if any(a.get(k) != v for k,v in expected.items()): self.errors.append('img: scene endpoint attributes outside exact native stills')
-            for record in PRESENTATION_STILLS.values():
+            for record in DELIVERY_STILLS.values():
                 if src == record['src'] and (a.get('width'), a.get('height')) != (str(record['width']), str(record['height'])):
                     self.errors.append('img: native presentation dimensions differ')
             if src in EDITORIAL_ART and (a.get('width'),a.get('height')) != tuple(str(EDITORIAL_ART[src][k]) for k in ('width','height')): self.errors.append('img: editorial artwork dimensions differ')
@@ -207,6 +207,8 @@ def check(root: Path, *, preview=False) -> dict:
         validate_art(root)
         validate_editorial(root)
         validate_presentation_stills(root)
+        validate_retained_engine_media(root)
+        validate_retained_branch_media(root)
         validate_captionverse_captures(root)
         validate_motion(root)
     except (ValueError, OSError, UnicodeError) as error:
