@@ -137,7 +137,7 @@ def hackathon_section(experience, route=None):
         entries.append(f'<article class="research-entry"><h3>{e(x["name"])}</h3><p>{e(x["purpose"])}</p>{link}'
                        f'<details><summary>Project status</summary><p>{e(x["status"])}</p><p>{e(x["limit"])}</p></details></article>')
     return (f'<section class="work-section forge-room" id="hackathons" tabindex="-1">{branch_arrival(route)}<p class="section-context">HAMON</p>'
-            f'{room_nav("hackathons")}<h2>One constraint.<br>A working idea.</h2><p>Competition-built projects, each with a question to answer.</p>' + domino_outcomes(experience) + '<details class="related-experiments"><summary>Explore the other projects &amp; competition details</summary>' + ''.join(entries) + '</details>'
+            f'{room_nav("hackathons")}<h2>One constraint.<br> A working idea.</h2><p>Competition-built projects, each with a question to answer.</p>' + domino_outcomes(experience) + '<details class="related-experiments"><summary>Explore the other projects &amp; competition details</summary>' + ''.join(entries) + '</details>'
             '<a href="#forge" class="return-link">← Return to the forge</a></section>')
 
 
@@ -161,7 +161,7 @@ def projects_section(data, legacy, experience, figures=None, route=None):
                       f'<p>{e(r["description"])}</p><details><summary>Current scope</summary>'
                       f'<p>{e(r["stage"])}. {e(r["limit"])}</p></details></article>' for r in experience['relatedWork'])
     return (f'<section class="work-section forge-room" id="projects" tabindex="-1">{branch_arrival(route)}<span id="work" class="section-alias"></span>'
-            f'{room_nav("projects")}<p class="section-context">HAMON / PROJECTS</p><h2>Use it.<br>Change something.</h2><p>A few tools and worlds you can try.</p>'
+            f'{room_nav("projects")}<p class="section-context">HAMON / PROJECTS</p><h2>Use it.<br> Change something.</h2><p>A few tools and worlds you can try.</p>'
             + ''.join(public_demo(d, figures.get(d['id'])) for d in legacy['demos']) + '<details class="related-experiments"><summary>More tools &amp; experiments</summary>' + ''.join(entries) + '</details>'
             + f'<details class="related-experiments"><summary>More experiments</summary>{related}</details><details class="related-experiments"><summary>More public source</summary>{sources}</details>'
             '<a href="#forge" class="return-link">← Return to the forge</a></section>')

@@ -6,7 +6,7 @@ from pathlib import Path
 
 EXPERIENCE_FILE = 'experience-content.json'
 PROJECT_IDS = {'phantom-window', 'captionverse', 'domino', 'replay-forge', 'spire', 'hamon-engine', 'lanternwake'}
-RELATED_IDS = {'threadline', 'familiar-memories', 'threshold', 'ledgerdock', 'teachback', 'wild-neighbors', 'clearway'}
+RELATED_IDS = {'threadline', 'familiar-memories', 'threshold', 'ledgerdock', 'teachback', 'wildside', 'clearway'}
 CONTACT_URLS = {'https://github.com/Jacob-Met', 'https://www.linkedin.com/in/jacob-metoyer-15b701352'}
 PUBLIC_LINKS = CONTACT_URLS | {'https://github.com/Jacob-Met/CaptureSuite', 'https://spireofoctaves.com/',
                              'https://www.royalroad.com/fiction/183255/seamwork',
