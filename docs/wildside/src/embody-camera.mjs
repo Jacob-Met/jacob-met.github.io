@@ -17,6 +17,7 @@ export function rightOf(yaw){return [Math.cos(yaw),0,Math.sin(yaw)];}
 export function clearOf(target,wanted,hit,margin=.06){
   const d=sub(wanted,target),dist=len(d);
   if(dist<1e-9||typeof hit!=='function')return wanted.slice();
+  margin=Math.min(margin,dist*.08);
   const h=hit(target,wanted);
   if(h===null||h===undefined||h>=dist)return wanted.slice();
   const keep=Math.max(.0,h-margin);

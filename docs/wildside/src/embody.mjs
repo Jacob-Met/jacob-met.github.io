@@ -124,7 +124,7 @@ export function createEmbodiment(deps){
       if(mode==='inside'&&driver){
         const g=driver.gaze();
         if(view==='eyes'){pose=eyesPose({body:g.body,yaw:g.yaw,pitch:g.pitch,bob:g.bob,...c.eyes});fov=c.eyes.fov;near=c.eyes.near;}
-        else{pose=shoulderPose({body:g.body,yaw:g.yaw,pitch:g.pitch,...c.shoulder},occlude);fov=c.shoulder.fov;near=.02;}
+        else{pose=shoulderPose({body:g.body,yaw:g.yaw,pitch:g.pitch,...c.shoulder},occlude);fov=c.shoulder.fov;near=c.shoulder.near??.02;}
       }else{
         const found=locate(creature);
         if(found){
@@ -132,7 +132,7 @@ export function createEmbodiment(deps){
           if(!focusReady){focus[0]=t[0];focus[1]=t[1];focus[2]=t[2];focusReady=true;}
           else{const k=1-Math.exp(-dt*12);for(let i=0;i<3;i++)focus[i]=lerp(focus[i],t[i],k);}
         }
-        pose=orbitPose({target:focus,yaw:orbit.yaw,pitch:orbit.pitch,distance:orbit.distance,minDistance:c.outside.min},(a,b)=>occlude(a,b,{foliage:true}));fov=44;near=.03;
+        pose=orbitPose({target:focus,yaw:orbit.yaw,pitch:orbit.pitch,distance:orbit.distance,minDistance:c.outside.min},(a,b)=>occlude(a,b,{foliage:true}));fov=44;near=c.outside.near??.03;
       }
       camera.up.set(0,1,0);camera.position.set(...pose.position);camera.lookAt(...pose.target);
       const aspect=camera.aspect||1;camera.fov=2*Math.atan(Math.tan(fov*Math.PI/360)/Math.min(1,aspect))*180/Math.PI;camera.near=near;camera.updateProjectionMatrix();

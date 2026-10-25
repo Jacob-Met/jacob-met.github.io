@@ -49,7 +49,7 @@ export function waterTravelClear(surface,a,b,radius=SKATER_BODY.supportRadius){
 
 export function createPondSkater(input,{seed=51}={}){
  if(!Number.isSafeInteger(seed))throw new TypeError('Seed must be an integer');
- let surfaces=admitWaterSurfaces(input),water=null,waterId=null,position=[0,SKATER_BODY.clearance,0],yaw=0,time=0,carry=0,age=0,speed=0,state='unplaced',reason='no usable water surface',goal=null,rain=0,wait=.8,everPlaced=false,lastDisturbance=-Infinity,randomState=seed>>>0||1,ripples=[];
+ let steering=null,surfaces=admitWaterSurfaces(input),water=null,waterId=null,position=[0,SKATER_BODY.clearance,0],yaw=0,time=0,carry=0,age=0,speed=0,state='unplaced',reason='no usable water surface',goal=null,rain=0,wait=.8,everPlaced=false,lastDisturbance=-Infinity,randomState=seed>>>0||1,ripples=[];
  const random=()=>{randomState=(Math.imul(randomState,1664525)+1013904223)>>>0;return randomState/4294967296;};
  const xz=()=>[position[0],position[2]];
  const center=s=>s.min.map((v,i)=>(v+s.max[i])/2);
@@ -87,9 +87,35 @@ export function createPondSkater(input,{seed=51}={}){
  function beginRoute(away=null){goal=selectGoal(away);if(!goal){wait=1.2;reason='resting within this water outline';return false;}speed=0;setState('turning');reason=away?'responding to a gentle ripple':rain>.4?'seeking a quiet margin':'exploring the surface';return true;}
  function emitStroke(){for(const f of legTargets().filter(f=>f.pair===1))ripples.push({position:[...f.toe],age:0});ripples=ripples.slice(-12);}
  function arrive(){speed=0;goal=null;setState('resting');wait=rain>.4?Infinity:.65+random()*.8;reason=rain>.4?'resting by the margin':'resting on the surface';}
+ /** Driven (src/embody.mjs): the same rowing cycle, ripples and bank rules, steered by a visitor who has become the strider. */
+ function steerTick(dt){
+  yaw=wrap(yaw+steering.turn*1.9*dt);goal=null;
+  const f=steering.forward;
+  if(f>.01){
+   if(state==='resting'||state==='turning'){setState('rowing');emitStroke();}
+   if(state==='rowing')speed=Math.min(.14*f,speed+.5*dt);else speed*=Math.exp(-.8*dt);
+   reason='skating where it is steered';
+  }else{
+   speed*=Math.exp(-2.4*dt);
+   if(speed<.004){speed=0;if(state!=='resting')setState('resting');reason='resting on the surface';}
+   else if(state==='rowing'||state==='turning')setState('gliding');
+  }
+  const from=xz(),travel=speed*dt;
+  if(travel>0){
+   const next=[from[0]+Math.sin(yaw)*travel,from[1]+Math.cos(yaw)*travel];
+   if(waterTravelClear(water,from,next)){position[0]=next[0];position[2]=next[1];}
+   else{speed=0;setState('resting');reason='the bank is ahead';return;}
+  }
+  if(f>.01){
+   if(state==='rowing'&&age>=.22)setState('recovering');
+   else if(state==='recovering'&&age>=.28)setState('gliding');
+   else if(state==='gliding'&&age>=.35){setState('rowing');emitStroke();}
+  }
+ }
  function tick(dt){
   time+=dt;age+=dt;ripples=ripples.map(r=>({...r,age:r.age+dt})).filter(r=>r.age<1.4);
   if(state==='unplaced')return;
+  if(steering){steerTick(dt);return;}
   if(state==='resting'){if(age>=wait)beginRoute();return;}
   if(!goal){arrive();return;}
   const from=xz(),delta=[goal[0]-from[0],goal[1]-from[1]],d=Math.hypot(...delta);
@@ -115,6 +141,7 @@ export function createPondSkater(input,{seed=51}={}){
  }
  return {
   snapshot,
+  steer(input){steering=input?{forward:clamp(Number(input.forward)||0,-1,1),turn:clamp(Number(input.turn)||0,-1,1)}:null;if(!steering&&state!=='unplaced'){goal=null;setState('resting');wait=.8;}},
   step(seconds){if(!Number.isFinite(seconds)||seconds<0||seconds>2)throw new RangeError('Skater step requires 0–2 seconds');carry+=seconds;let n=0;while(carry+1e-12>=1/120&&n++<241){tick(1/120);carry=Math.max(0,carry-1/120);}return snapshot();},
   setHabitat(input){
    const admitted=admitWaterSurfaces(input),next=admitted.find(s=>s.id===waterId&&s.eligible);surfaces=admitted;

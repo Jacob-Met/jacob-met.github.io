@@ -129,7 +129,7 @@ function shortest(web,from,to){
 export function createOrbWeaver(input,{encounters=false}={}){
   if(typeof encounters!=='boolean')throw new TypeError('Encounter choice must be boolean');
  let web=selectOrbWeb(input),time=0,rain=0,position,heading=-Math.PI/2,state='unplaced',reason='No clear branch frame',route=[],wait=1.4,location=null,feet=[],activeGroup=-1,nextGroup=0,stepDistance=0,patrol=0,destination='hub';
- let silk=null,silkGeometry=null,pendingDisturbance=null,encounter=null,pursuitId=null;
+ let silk=null,silkGeometry=null,pendingDisturbance=null,encounter=null,pursuitId=null,steerDir=null;
  const awareness=createBirdAwareness();let nearbyBird=null,respondingToBird=false,withdrawal=null;
  const body=()=>add(position,mul(web.normal,ORB_WEAVER_BODY.clearance+.00015*Math.sin(time*2.2)));
  const forward=()=>add(mul(web.right,Math.cos(heading)),mul(web.up,Math.sin(heading)));
@@ -219,6 +219,23 @@ export function createOrbWeaver(input,{encounters=false}={}){
   choices.sort((a,b)=>norm(sub(a.point,position))-norm(sub(b.point,position)));
   return {edge:target.edge,t:(choices.find(c=>Math.abs(c.t-target.t)*length>=.012)??choices[0]).t};
  }
+ /** Driven (src/embody.mjs): walk the silk where a visitor who has become the weaver points, one strand at a time.
+  * dir is [right, up] in the web plane. Autonomy waits; the legs, silk and routes are the weaver's own. */
+ function steerStep(){
+  wait=Infinity;
+  const length=Math.hypot(steerDir[0],steerDir[1]);if(length<.2){if(!route.length&&state!=='resting'){state='checking';reason='holding still on the silk';}return;}
+  const want=[steerDir[0]/length,steerDir[1]/length],planar=v=>[dot(v,web.right),dot(v,web.up)];
+  const score=v=>{const l=Math.hypot(...v);return l<1e-9?-2:(v[0]*want[0]+v[1]*want[1])/l;};
+  if(route.length){const next=route[0],d=planar(sub(next.b,position));if(score(d)>-.2)return;}
+  const edge=web.edges[location.edge],options=[];
+  for(const end of [edge.from,edge.to]){
+   const node=web.nodes[end].position,d=sub(node,position);
+   if(norm(d)>1e-6)options.push({score:score(planar(d)),segment:{a:[...position],b:[...node],edge:location.edge}});
+   else for(const n of web.adjacency[end]){const to=web.nodes[n.node].position;options.push({score:score(planar(sub(to,node))),segment:{a:[...node],b:[...to],edge:n.edge}});}
+  }
+  options.sort((a,b)=>b.score-a.score);
+  if(options[0]&&options[0].score>.2){route=[options[0].segment];destination='steered';state='exploring';reason='moving along the silk where it is steered';}
+ }
  function startStep(group){
   const indices=feet.map((_,i)=>i).filter(i=>(i%2+(i>=4?1:0))%2===group);
   const targets=indices.map(i=>desired(i));if(targets.some((p,k)=>!p||norm(sub(hip(indices[k]),p.position))>.046))return false;
@@ -259,6 +276,7 @@ export function createOrbWeaver(input,{encounters=false}={}){
    encounter.beginMeal();state='feeding';reason='Resting with the catch at the hub';wait=Infinity;
   }
   if(encounter?.phase()==='waiting'&&state==='feeding'){state='resting';reason='A quiet pause after the encounter';wait=5;pursuitId=null;}
+  if(steerDir&&!respondingToBird&&!['wrapping','lifting','feeding'].includes(state))steerStep();
   wait-=dt;
   if(!route.length&&wait<=0){
    if(state==='resting'&&rain<=.4){const spoke=(2+patrol++*7)%SPOKES;routeTo(1+spoke*2,'check');}
@@ -318,6 +336,7 @@ export function createOrbWeaver(input,{encounters=false}={}){
   })}};
  }
  return {snapshot,getWeb:()=>web?{...copy(web),silkGeometry:copy(silkGeometry)}:null,step(dt){if(!Number.isFinite(dt)||dt<0||dt>10)throw new RangeError('Step requires 0–10 seconds');for(let left=dt;left>1e-10;){const part=Math.min(left,1/120);tick(part);left-=part;}return snapshot();},
+  steer(dir){steerDir=dir&&Number.isFinite(dir[0])&&Number.isFinite(dir[1])?[dir[0],dir[1]]:null;if(!steerDir&&web&&state!=='unplaced'){route=[];state='checking';reason='Feeling the silk';wait=.8;}},
   setNearbyBird(value){if(value!==null&&(!value||typeof value.id!=='string'||typeof value.state!=='string'||!finite3(value.position)))throw new TypeError('Expected an actual positioned bird snapshot or null');nearbyBird=value===null?null:{id:value.id,state:value.state,position:[...value.position]};},
   pluck(edge,t,strength=1){if(!silk)return false;const changed=silk.pluck(edge,t,strength);if(changed&&rain<=.4&&!['caught','wrapping','lifting','carried','feeding'].includes(encounter?.phase()))pendingDisturbance={edge,t,age:0,heardAt:null};return changed;},
   setWeather(weather){

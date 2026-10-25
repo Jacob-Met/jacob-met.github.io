@@ -9,7 +9,7 @@ export function registerSettingsControls(settings,{onChange=()=>{}}={}){
   const s=settings.get(),c=kit.range({...def.range,value:def.read(s),format:def.format,onInput:v=>{settings.set(def.patch(v));onChange();}});
   container.append(c.element);const off=settings.subscribe(next=>c.set(def.read(next)));return {update(){c.set(def.read(settings.get()));},dispose:off};}});
  registerControl({id:'graphics-engine-note',section:'graphics',order:0,when:()=>!window.__wildsideGraphics,mount({container,kit}){
-  container.append(kit.note('Quality, anti-aliasing and frame rate appear here while the painted engine view is running.').element);}});
+  container.append(kit.note('More graphics options, such as quality, anti-aliasing and frame rate, will appear here as they become available on this device. Render scale works now.').element);}});
  num('render-scale','graphics',20,{range:{label:'Render scale',min:LIMITS.renderScale[0],max:LIMITS.renderScale[1],step:.05},read:s=>s.renderScale,patch:v=>({renderScale:v}),format:v=>`${Math.round(v*100)}%`});
  registerControl({id:'fullscreen',section:'graphics',order:30,when:()=>fullscreenOK()&&!window.__wildsideGraphics?.toggleFullscreen,mount({container,kit}){container.append(kit.action({label:'Toggle fullscreen',onClick:toggleFullscreen}).element);}});
  num('fov','camera',0,{range:{label:'Field of view',min:LIMITS.fovOffset[0],max:LIMITS.fovOffset[1],step:1},read:s=>s.fovOffset,patch:v=>({fovOffset:v}),format:v=>v===0?'Natural':`${v>0?'+':''}${v}°`});

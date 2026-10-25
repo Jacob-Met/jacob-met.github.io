@@ -8,6 +8,7 @@ const store={get:k=>{try{return localStorage.getItem(k);}catch{return null;}},se
 
 export function mountPlacesPicker({pill,nameEl,panel,list,close,titleCard,prompt,getPlaceName,onArrive=()=>{},notify=()=>{},isBlocked=()=>false}){
  let open=false,travelling=false,closeTimer=0;
+ document.body.classList.toggle('places-unseen',store.get(SEEN)!=='1');
  const veil=document.getElementById('veil');
  function refreshName(){const here=currentPlace();nameEl.textContent=here?.name??getPlaceName();pill.setAttribute('aria-label',`You are in ${nameEl.textContent}. Choose another place`);}
  function card(p){
@@ -46,7 +47,7 @@ export function mountPlacesPicker({pill,nameEl,panel,list,close,titleCard,prompt
  function setOpen(next,{restoreFocus=true}={}){
   if(next===open)return;if(next&&isBlocked())return;open=next;clearTimeout(closeTimer);
   pill.setAttribute('aria-expanded',String(open));document.body.classList.toggle('places-open',open);
-  if(open){store.set(SEEN,'1');prompt.classList.remove('show');render();panel.hidden=false;requestAnimationFrame(()=>{if(open)panel.classList.add('open');});(panel.querySelector('.place-card:not(:disabled)')||close).focus({preventScroll:true});}
+  if(open){store.set(SEEN,'1');document.body.classList.remove('places-unseen');prompt.classList.remove('show');render();panel.hidden=false;requestAnimationFrame(()=>{if(open)panel.classList.add('open');});(panel.querySelector('.place-card:not(:disabled)')||close).focus({preventScroll:true});}
   else{panel.classList.remove('open');closeTimer=setTimeout(()=>{if(!open)panel.hidden=true;},reduced()?0:220);if(restoreFocus&&panel.contains(document.activeElement))pill.focus({preventScroll:true});}
  }
  pill.addEventListener('click',()=>setOpen(!open));close.addEventListener('click',()=>setOpen(false));

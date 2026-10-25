@@ -12,11 +12,12 @@ export function mountEmbodyUI(embody,{notify=()=>{}}={}){
   const bar=make('div',undefined,'embody-bar',{id:'embody-bar',role:'status','aria-live':'polite'});
   const card=make('section',undefined,'embody-story',{id:'embody-story','aria-label':'Story'});
   root.append(bar,card);
-  let storyOpen=false,beatIndex=0,fresh=null,last=embody.snapshot();
+  let shownCreature=null,storyOpen=false,beatIndex=0,fresh=null,last=embody.snapshot();
 
   const act=(result)=>{if(result&&!result.ok&&result.reason)notify(result.reason);};
 
   function renderBar(s){
+    if(s.mode==='off'||s.creature!==shownCreature){storyOpen=false;beatIndex=0;shownCreature=s.mode==='off'?null:s.creature;}
     bar.hidden=s.mode==='off';card.hidden=s.mode==='off'||!storyOpen;
     bar.replaceChildren();document.body.classList.toggle('embodied',s.mode!=='off');
     if(s.mode==='off')return;

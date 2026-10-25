@@ -367,3 +367,12 @@ body:has(#status.visible) .navigation-hint{opacity:0}
  .encounter{top:56px}
 }
 @media(max-width:750px){.encounter-actions{flex-wrap:wrap;overflow:visible}.encounter-actions button{min-height:28px}}
+
+/* First visit: keep the Places pill in reach, and name the Look & weather button on phones. */
+body.places-unseen.chrome-idle .topbar{opacity:1;transform:none}
+@media(max-width:750px){.visit-bar .world-toggle.label-hint .label{display:inline;font-size:11.5px}}
+/* Veil while an Engine place builds (hamon-view.mjs) */
+.hamon-veil{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;text-align:center;padding:2rem;color:#3d3a52;background:radial-gradient(ellipse at 30% 25%,#f6e3c8 0,#d9c4e6 45%,#9fb7d8 100%)}
+.hamon-veil[hidden]{display:none}
+.hamon-veil p{margin:0;font:600 1.4rem Georgia,serif}
+.hamon-veil small{opacity:.75;max-width:28rem}

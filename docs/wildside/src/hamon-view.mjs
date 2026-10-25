@@ -40,6 +40,9 @@ export function mountHamonView(parent,{onState=()=>{},skyContainer=null,requestF
   if(size&&next.width===size.width&&next.height===size.height&&next.scale===size.scale)return;
   size=next;canvas.width=size.width;canvas.height=size.height;view?.resize(size.width,size.height,size.scale);
  };
+ let veil=null;
+ const showVeil=name=>{if(!veil){veil=document.createElement('div');veil.className='hamon-veil';veil.setAttribute('role','status');parent.append(veil);}veil.textContent='';const t=document.createElement('p');t.textContent='Composing '+(name||'this place')+'…';const n=document.createElement('small');n.textContent='An imagined place, painted live by the HAMON Engine. The first visit takes a moment.';veil.append(t,n);veil.hidden=false;};
+ const hideVeil=()=>{if(veil)veil.hidden=true;};
  const ready=(async()=>{
   try{
    if(!navigator.gpu)throw new Error('WebGPU is not available in this browser');
@@ -67,10 +70,15 @@ export function mountHamonView(parent,{onState=()=>{},skyContainer=null,requestF
     const placeExt=HAMON_EXTENSIONS.places.filter(x=>x.matches?.({place,art})).flatMap(x=>x.contribute({place,art})??[]);
     inhabitants=HAMON_EXTENSIONS.inhabitants.filter(x=>x.state&&(x.enabled?.(ctx)??true)&&(!x.replaces||x.replaces(ctx)));
     const replaced=new Set(inhabitants.map(x=>x.replaces?.(ctx)).filter(Boolean));
-    const packet=exportPlaceForHamon(art,place,dynamicRoots.filter(r=>!replaced.has(r.group)),{places:placeExt,inhabitants:inhabitants.map(x=>({kind:x.kind,params:(typeof x.params==='function'?x.params(ctx):x.params)??{}}))});view.set_world(JSON.stringify(packet.desc),packet.verts,packet.indices,packet.texels);stream=packet.stream;worldTrees=packet.desc?.trees??[];
-    // an Engine live place (hamon-places.mjs) reports its walkable layout
-    const walk=packet.desc.places?.some(x=>x.kind.startsWith('live:'))?JSON.parse(view.place_walk()):null;live=walk?{walk,heights:view.place_heights()}:null;
-    phase='ready';emit();return true;}
+    const packet=exportPlaceForHamon(art,place,dynamicRoots.filter(r=>!replaced.has(r.group)),{places:placeExt,inhabitants:inhabitants.map(x=>({kind:x.kind,params:(typeof x.params==='function'?x.params(ctx):x.params)??{}}))});
+    const apply=()=>{view.set_world(JSON.stringify(packet.desc),packet.verts,packet.indices,packet.texels);stream=packet.stream;worldTrees=packet.desc?.trees??[];
+     // an Engine live place (hamon-places.mjs) reports its walkable layout
+     const walk=packet.desc.places?.some(x=>x.kind.startsWith('live:'))?JSON.parse(view.place_walk()):null;live=walk?{walk,heights:view.place_heights()}:null;
+     phase='ready';emit();return true;};
+    if(!packet.desc.places?.some(x=>x.kind.startsWith('live:')))return apply();
+    // An Engine place builds on this thread for a while: paint the veil first, then build.
+    live=null;const liveDef=packet.desc.places.find(x=>x.kind.startsWith('live:'));showVeil(place?.name);
+    return new Promise(resolve=>requestAnimationFrame(()=>setTimeout(()=>{try{resolve(apply());}catch(e){fail(e);resolve(false);}finally{hideVeil();}},30)));}
    catch(e){fail(e);return false;}
   },
   setLook(id){

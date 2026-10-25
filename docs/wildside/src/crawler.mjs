@@ -19,7 +19,7 @@ export function createCrawlerSimulation(input,{position,yaw=0,seed=1}={}){
  let world=admitWorld(input);if(!finite3(position)||!Number.isFinite(yaw))throw new TypeError('Crawler requires a finite starting position and yaw');
  let center=[...position],time=0,phase=0,state='walking',reason='exploring supported ground',heading=yaw,restUntil=0,turnSign=1,forcedTurnUntil=0,everPlaced=false;
  let randomState=seed>>>0||1;const random=()=>{randomState=(Math.imul(randomState,1664525)+1013904223)>>>0;return randomState/4294967296;};
- let nextRest=8+random()*5,feet=[];
+ let nextRest=8+random()*5,feet=[],steering=null;
  const height=(x,z)=>{const y=world.surfaceAt(x,z);return typeof y==='number'&&Number.isFinite(y)?y:null;};
  function blocked(p){const r=.007;return world.obstacles.some(o=>p[0]+r>o.min[0]&&p[0]-r<o.max[0]&&p[2]+r>o.min[2]&&p[2]-r<o.max[2]&&p[1]+.004>o.min[1]&&p[1]-.006<o.max[1]&&(!o.polygonXZ||circleIntersectsPolygon([p[0],p[2]],r,o.polygonXZ)));}
  function valid(p,previousHeight=null){
@@ -52,6 +52,17 @@ export function createCrawlerSimulation(input,{position,yaw=0,seed=1}={}){
  function tick(dt){
   time+=dt;if(state==='unplaced')return;
   if(!valid(center)){state='unplaced';reason='habitat no longer supports this body';for(const f of feet)f.planted=false;return;}
+  if(steering){
+   // Driven (src/embody.mjs): the same body, legs and support rules, steered by a visitor who has become the beetle.
+   heading+=steering.turn*2.4*dt;
+   const f=steering.forward;
+   if(Math.abs(f)>.01){
+    const y=height(center[0],center[2]),step=CRAWLER_BODY.speed*2.5*(f>0?f:f*.4)*dt,ahead=[Math.sin(heading),0,Math.cos(heading)],candidate=add(center,mul(ahead,step));
+    if(valid(candidate,y)){const previous=[...center];center=candidate;center[1]=height(center[0],center[2])+CRAWLER_BODY.clearance;state='walking';reason='moving where it is steered';updateFeet(length(sub(center,previous))/CRAWLER_BODY.stride);}
+    else{state='turning';reason='an edge, solid or water boundary ahead';}
+   }else{state='resting';reason='holding still';}
+   return;
+  }
   if(state==='resting'){if(time<restUntil)return;state='walking';reason='exploring supported ground';nextRest=time+8+random()*5;}
   if(time>nextRest&&state==='walking'&&feet.every(f=>f.planted)){state='resting';reason='quiet pause';restUntil=time+1+random();return;}
   const y=height(center[0],center[2]),forward=[Math.sin(heading),0,Math.cos(heading)];
@@ -68,7 +79,7 @@ export function createCrawlerSimulation(input,{position,yaw=0,seed=1}={}){
    const hip=point([Math.sign(footOffsets[i][0])*.003,-.002,footOffsets[i][2]*.6],basis),pole=point([Math.sign(footOffsets[i][0])*.012,.003,footOffsets[i][2]],basis);
    return {...solveLeg(hip,foot.toe,pole,CRAWLER_BODY.legUpper,CRAWLER_BODY.legLower),contact:foot.planted&&state!=='unplaced'};
   })}};}
- return {snapshot,step(dt){if(!Number.isFinite(dt)||dt<0||dt>10)throw new RangeError('step requires 0–10 seconds');let left=dt;while(left>1e-9){const substep=Math.min(left,1/120);tick(substep);left-=substep;}return snapshot();},setWorld(next){world=admitWorld(next);const ground=height(center[0],center[2]);
+ return {snapshot,steer(input){steering=input?{forward:clamp(Number(input.forward)||0,-1,1),turn:clamp(Number(input.turn)||0,-1,1)}:null;if(!steering&&state!=='unplaced'){state='walking';reason='exploring supported ground';}},step(dt){if(!Number.isFinite(dt)||dt<0||dt>10)throw new RangeError('step requires 0–10 seconds');let left=dt;while(left>1e-9){const substep=Math.min(left,1/120);tick(substep);left-=substep;}return snapshot();},setWorld(next){world=admitWorld(next);const ground=height(center[0],center[2]);
       // Only an explicit habitat revision can restore contact at the same body pose.
       // An unsupported or changed-height surface does not justify a teleport.
       if(state==='unplaced'&&everPlaced&&ground!==null&&Math.abs(center[1]-CRAWLER_BODY.clearance-ground)<=1e-6&&valid(center)){

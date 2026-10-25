@@ -86,7 +86,7 @@ export function mountVisitChrome({panel,drawer}){
  world?.addEventListener('pointermove',e=>{if(e.buttons||e.pointerType==='touch')used('look');},{passive:true});
  addEventListener('keydown',e=>{if(/^(Key[WASDEQ]|Arrow(Up|Down|Left|Right))$/.test(e.code))used('move');},true);
  document.getElementById('touch-controls')?.addEventListener('pointerdown',()=>used('move'),true);
- function showHint(){if(hintsDone)return;body.classList.add('hint-visible');clearTimeout(hintTimer);hintTimer=setTimeout(()=>body.classList.remove('hint-visible'),HINT_MS);}
+ function showHint(){if(hintsDone)return;const wt=document.getElementById('world-toggle');if(wt&&!wt.dataset.labelled){wt.dataset.labelled='1';wt.classList.add('label-hint');setTimeout(()=>wt.classList.remove('label-hint'),9000);}body.classList.add('hint-visible');clearTimeout(hintTimer);hintTimer=setTimeout(()=>body.classList.remove('hint-visible'),HINT_MS);}
  new MutationObserver(()=>{
   const now=exploring();if(now===wasExploring)return;wasExploring=now;
   if(now){body.classList.add('has-entered');dip();showHint();wake();}else{body.classList.remove('chrome-idle');}

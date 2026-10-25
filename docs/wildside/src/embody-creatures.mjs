@@ -5,6 +5,7 @@
  *
  * ctx = {sim, nav}; adapters never touch the DOM. */
 import {simYawToView,viewYawToSim} from './embody-camera.mjs';
+import {RESIDENT_CREATURES} from './embody-residents.mjs';
 
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const wrap=a=>Math.atan2(Math.sin(a),Math.cos(a));
@@ -79,6 +80,7 @@ export const CREATURES=Object.freeze([
     canBecome:true,
     become(ctx,found){return robinDriver(ctx,{position:found.position,yaw:found.yaw,flying:found.state==='flight'});},
   },
+  ...RESIDENT_CREATURES,
 ]);
 
 export function creatureById(id){return CREATURES.find(c=>c.id===id)??null;}

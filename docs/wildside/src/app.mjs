@@ -42,6 +42,7 @@ import {registerControl,refreshControls,controlSlot} from './controls.mjs';
 import {mountWorldDrawer,mountVisitChrome} from './visit-chrome.mjs';
 import {createEmbodiment} from './embody.mjs';
 import {mountEmbodyUI} from './embody-ui.mjs';
+import {createGamepad} from './gamepad.mjs';
 import {createSettings} from './settings.mjs';
 import {registerSettingsControls} from './settings-controls.mjs';
 import {WORLD_SECTIONS,SETTINGS_SECTIONS} from './controls.mjs';
@@ -103,7 +104,7 @@ const embodyRay=new THREE.Raycaster();
 const embodyProbe=new THREE.Vector3();
 let embodyClock=0;
 const embody=createEmbodiment({
- context:()=>({sim,nav,groundAt:art?.groundAt}),
+ context:()=>({sim,nav,groundAt:art?.groundAt,crawler,pondSkater,orbWeaver}),
  hamonActive:()=>!!hamon?.active,
  occlude:(from,to,{foliage=false}={})=>{
   const d=to.map((v,i)=>v-from[i]),length=Math.hypot(...d);if(length<1e-9||!art)return null;
@@ -134,7 +135,7 @@ let residentEncounter=null;
 if(hamon){hamonResidents.onChange=()=>syncHamonWorld();
  registerControl({id:'hamon-residents',section:'life',order:5,when:()=>!!hamonState&&hamonState.phase==='ready',mount({container}){hamonResidents.mount(container);return {update(){hamonResidents.refresh();}};}});}
 function hamonDynamicRoots(){return [bird,crawlerArt,orbArt,skaterArt,submergedArt].filter(Boolean).map(a=>({group:a.group,role:'creature'}));}
-function syncHamonWorld(){if(!hamon&&liveIdOf(displayPlace))notify('This imagined place is drawn by the HAMON Engine. Open Wildside with ?hamon=1 (WebGPU) to see it.');if(hamon&&art)void hamon.ready.then(ok=>{if(ok&&art){hamon.setWorld(art,displayPlace,hamonDynamicRoots(),hamonContext());adoptLiveWalk();}if(ok)hamon.setRain(rain);requestWorldFrame();});}
+function syncHamonWorld(){if(!hamon&&liveIdOf(displayPlace))notify('This imagined place is drawn by the HAMON Engine. Open Wildside with ?hamon=1 (WebGPU) to see it.');if(hamon&&art)void hamon.ready.then(ok=>{if(ok&&art){const shown=hamon.setWorld(art,displayPlace,hamonDynamicRoots(),hamonContext());return Promise.resolve(shown).then(()=>{adoptLiveWalk();if(ok)hamon.setRain(rain);requestWorldFrame();});}if(ok)hamon.setRain(rain);requestWorldFrame();});}
 // An Engine live place (hamon-places.mjs): walk its own ground, buildings and trunks, not the token patch Wildside built.
 function adoptLiveWalk(){
  const live=hamon?.livePlace();if(!live||!art||!liveIdOf(displayPlace))return;
@@ -214,7 +215,7 @@ function updateEncounter(){
  $('encounter-title').textContent=underwaterFocus?'A world within the water':skaterFocus?'On a silver surface':webFocus?'A world held by silk':small?'Between the stems':['foraging','hopping'].includes(robin.activity)?'A closer look at the ground':'A pause between flights';
  $('bird-state').textContent=underwaterFocus&&!hasAquatic?'A kept underwater viewpoint':`Simulated ${underwaterFocus?'water flea':skaterFocus?'water strider':webFocus?'orb-weaver':small?'ground beetle':'robin'} · ${inhabitant?.activity==='hopping'?'hopping':inhabitant?.activity==='foraging'?'searching':inhabitant?.state.replaceAll('-',' ')||'no supported ground'}`;
  $('watch-bird').textContent=birdFocus?'Stop following':'Look closer';$('watch-bird').setAttribute('aria-pressed',String(!!birdFocus));$('watch-bird').hidden=small||webFocus||skaterFocus||underwaterFocus;$('watch-crawler').hidden=!small||webFocus||skaterFocus||underwaterFocus;
- embodyUI.bindEncounter($('become-creature'),!underwaterFocus&&!skaterFocus&&!webFocus&&!small&&robin.state!=='unplaced'?'robin':null);
+ embodyUI.bindEncounter($('become-creature'),underwaterFocus?null:skaterFocus?'skater':webFocus?'spider':small?(beetle&&beetle.state!=='unplaced'?'beetle':null):robin.state!=='unplaced'?'robin':null);
  $('watch-underwater').hidden=!hasAquatic;$('watch-underwater').textContent=underwaterFocus?'Find the swimmers':'Underwater';
  $('watch-skater').hidden=!hasSkater;$('ripple-water').hidden=!hasSkater||!skaterFocus;
  $('watch-skater').textContent=skaterFocus?'Find the skater':'On the water';
@@ -955,6 +956,11 @@ addEventListener('pagehide',()=>{void soundscape.dispose().catch(()=>{});});
 addEventListener('pageshow',()=>{if(worldReady)updateLabels();});
 renderer.domElement.addEventListener('webglcontextlost',()=>{cancelPicture();shadowResourceEpoch++;shadowReuse.invalidate();});
 renderer.domElement.addEventListener('webglcontextrestored',()=>{shadowResourceEpoch++;shadowReuse=createShadowReuseGuard(THREE);renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;requestWorldFrame();});
+createGamepad({touch,requestFrame:()=>requestWorldFrame(),
+ canAct:()=>worldReady&&!overview&&!$('panel').open&&!worldDrawer.isOpen&&!settingsDrawer.isOpen&&!sourceView,
+ look:(dx,dy)=>{releaseResidentFocus();const s=settings.get();(underwaterFocus?submergedView:nav).look(dx*s.sensitivity,-dy*s.sensitivity*(s.invertY?-1:1));},
+ wake:()=>{document.body.classList.remove('chrome-idle');},
+ onStart:()=>{if(settingsDrawer.isOpen)settingsDrawer.close();else settingsDrawer.open();}});
 registerCoreControls();
 if(settings.get().renderScale!==1)applyRenderScale();
 registerCorePlaces();
@@ -998,7 +1004,7 @@ function registerCoreControls(){
  }});
  registerControl({id:'keys',section:'keys',order:0,when:()=>matchMedia('(pointer: fine)').matches,mount({container}){
   const list=document.createElement('dl');list.className='key-legend';
-  for(const [k,v] of [['W A S D','move'],['E / Q','rise / sink'],['1 2 3','human · bird · insect'],['R','imagine rain'],['P','pause life'],['K','keep a moment'],['Drag','look around'],['F','fullscreen'],['Esc','back to overview, then Settings']]){const dt=document.createElement('dt'),dd=document.createElement('dd');const kbd=document.createElement('kbd');kbd.textContent=k;dt.append(kbd);dd.textContent=v;list.append(dt,dd);}
+  for(const [k,v] of [['W A S D','move'],['E / Q','rise / sink'],['1 2 3','human · bird · insect'],['R','imagine rain'],['P','pause life'],['K','keep a moment'],['Drag','look around'],['F','fullscreen'],['Esc','back to overview, then Settings'],['Gamepad','left stick move · right stick look · A up · B down · Start settings']]){const dt=document.createElement('dt'),dd=document.createElement('dd');const kbd=document.createElement('kbd');kbd.textContent=k;dt.append(kbd);dd.textContent=v;list.append(dt,dd);}
   container.append(list);
  }});
 }
