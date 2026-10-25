@@ -1,0 +1,27 @@
+/* Touch devices (body.mobile is set by mobile.mjs). Chrome layout, safe areas and phone/landscape rules live in
+ * style.css (world chrome); this file adds only what touch input needs: the move stick, no page gestures,
+ * and fields that do not make iOS Safari zoom. Desktop is untouched. */
+html{overscroll-behavior:none;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body.mobile{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;overscroll-behavior:none}
+body.mobile input,body.mobile textarea,body.mobile select,body.mobile [contenteditable]{-webkit-user-select:text;user-select:text}
+body.mobile input,body.mobile textarea,body.mobile select{font-size:max(16px,1em)} /* iOS Safari zooms the page into smaller fields */
+
+/* the stick: the left thumb moves; the right thumb drags the world to look; two fingers pinch to zoom */
+body.mobile #touch-controls{display:none;left:calc(var(--edge,16px) + 6px);bottom:calc(var(--dock-bottom,16px) + 74px);width:132px;height:132px;grid-template-columns:none;gap:0;pointer-events:none}
+body.mobile.exploring #touch-controls{display:block}
+body.mobile #touch-controls>button[data-move="forward"],body.mobile #touch-controls>button[data-move="back"],body.mobile #touch-controls>button[data-move="left"],body.mobile #touch-controls>button[data-move="right"]{display:none}
+.stick{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,rgba(246,242,232,.28) 0,rgba(246,242,232,.62) 100%);border:1.5px solid rgba(255,255,255,.75);box-shadow:0 6px 24px rgba(35,59,49,.14),inset 0 0 0 1px rgba(35,59,49,.07);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);touch-action:none;pointer-events:auto;transition:background .15s}
+.stick::before{content:"";position:absolute;inset:-14px;border-radius:50%} /* a generous hit area around the visible ring */
+.stick::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;background:
+ linear-gradient(rgba(35,59,49,.22),rgba(35,59,49,.22)) 50% 14px/2px 14px no-repeat,linear-gradient(rgba(35,59,49,.22),rgba(35,59,49,.22)) 50% calc(100% - 14px)/2px 14px no-repeat,
+ linear-gradient(rgba(35,59,49,.22),rgba(35,59,49,.22)) 14px 50%/14px 2px no-repeat,linear-gradient(rgba(35,59,49,.22),rgba(35,59,49,.22)) calc(100% - 14px) 50%/14px 2px no-repeat}
+.stick.held{background:radial-gradient(circle,rgba(225,239,187,.5) 0,rgba(225,239,187,.8) 100%)}
+.stick-nub{position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;background:rgba(35,59,49,.9);border:2px solid #f0f4e5;box-shadow:0 3px 14px rgba(35,59,49,.33);pointer-events:none;z-index:1;will-change:transform}
+.stick.down .stick-nub{background:#1c3027}
+/* flying: only the bird has an up/down axis */
+body.mobile #touch-controls>button[data-move="up"],body.mobile #touch-controls>button[data-move="down"]{display:none;position:absolute;left:calc(100% + 14px);width:48px;height:48px;font-size:22px;pointer-events:auto}
+body.mobile[data-scale="bird"] #touch-controls>button[data-move="up"],body.mobile[data-scale="bird"] #touch-controls>button[data-move="down"]{display:block}
+body.mobile #touch-controls>button[data-move="up"]{bottom:60px}
+body.mobile #touch-controls>button[data-move="down"]{bottom:6px}
+@media(max-height:520px) and (orientation:landscape){body.mobile #touch-controls{bottom:calc(var(--dock-bottom,12px) + 58px)}}
+@media(prefers-reduced-motion:reduce){.stick,.stick-nub{transition:none}}

@@ -5,13 +5,14 @@ export function createFrameLoop({
   requestFrame=globalThis.requestAnimationFrame?.bind(globalThis),
   cancelFrame=globalThis.cancelAnimationFrame?.bind(globalThis),
   maxDelta=.05, advance=null, maxCatchUpSteps=3,
+  minInterval=()=>0,
 }={}) {
-  if (![draw,continuous,hidden,requestFrame,cancelFrame].every(f=>typeof f==='function') ||
+  if (![draw,continuous,hidden,requestFrame,cancelFrame,minInterval].every(f=>typeof f==='function') ||
       !Number.isFinite(maxDelta) || maxDelta<=0 ||
       (advance!==null&&typeof advance!=='function') ||
       !Number.isInteger(maxCatchUpSteps) || maxCatchUpSteps<1 || maxCatchUpSteps>8)
     throw new TypeError('Invalid frame loop');
-  let pending=null, previous=null, drawing=false, dirty=false, disposed=false, epoch=0;
+  let pending=null, previous=null, lastDraw=-Infinity, drawing=false, dirty=false, disposed=false, epoch=0;
   function cancelPending() {
     if(pending!==null) cancelFrame(pending);
     pending=null; epoch++; previous=null;
@@ -25,6 +26,11 @@ export function createFrameLoop({
     if(disposed || version!==epoch) return;
     pending=null;
     if(hidden()) { previous=null; return; }
+    // optional frame-rate cap (phones draw at 30): wait for a later display refresh instead of drawing early;
+    // `previous` is untouched, so simulation time keeps accumulating and motion speed is unchanged
+    const gap=minInterval();
+    if(gap>0 && timestamp-lastDraw < gap-2) { schedule(); return; }
+    lastDraw=timestamp;
     const elapsed=previous===null?0:Math.max(0,(timestamp-previous)/1000);
     // Separate simulation from presentation only for explicitly opted-in consumers.
     // A long visible stall has a finite catch-up budget, never an unbounded loop.

@@ -113,7 +113,7 @@ export function createWaterColumn({waterSurfaces=[],groundSupports=[],obstacles=
  * Fixed 120 Hz updates, bounded local excursion and the shared water/support collision seam. */
 export function createSubmergedLife(initialColumn,{seed=55,count=6}={}){
  if(!Number.isSafeInteger(seed)||!Number.isInteger(count)||count<1||count>12)throw new TypeError('Bounded swimmer seed/count required');
- let column=initialColumn,time=0,carry=0,randomState=seed>>>0||1,swimmers=[];
+ let column=initialColumn,time=0,carry=0,randomState=seed>>>0||1,swimmers=[],steering=null;
  const random=()=>{randomState=(Math.imul(randomState,1664525)+1013904223)>>>0;return randomState/4294967296;};
  function populate(){
   const home=column.seed();if(!home)return;
@@ -126,22 +126,24 @@ export function createSubmergedLife(initialColumn,{seed=55,count=6}={}){
  populate();
  function tick(dt){
   time+=dt;
-  for(const s of swimmers){
-   s.phase=(s.phase+dt*s.rate)%1;s.state=s.phase<.22?'power-stroke':s.phase<.42?'recovering':'settling';
+  for(const [index,s] of swimmers.entries()){
+   // Driven (src/embody.mjs): the first swimmer, steered by a visitor who has become it. Same strokes, drag and water rules.
+   const driven=index===0&&steering,push=driven?Math.max(0,steering.forward)*3:1;
+   s.phase=(s.phase+dt*s.rate*(driven?(push>.01?1.8:.35):1))%1;s.state=s.phase<.22?'power-stroke':s.phase<.42?'recovering':'settling';
    const homeDistance=Math.hypot(s.position[0]-s.home[0],s.position[2]-s.home[2]);
-   let desired=homeDistance>.035?Math.atan2(s.home[0]-s.position[0],s.home[2]-s.position[2]):s.yaw+Math.sin(time*.45+s.turn)*.05;
-   s.yaw+=clamp(Math.atan2(Math.sin(desired-s.yaw),Math.cos(desired-s.yaw)),-dt*1.4,dt*1.4);
+   let desired=driven?s.yaw:homeDistance>.035?Math.atan2(s.home[0]-s.position[0],s.home[2]-s.position[2]):s.yaw+Math.sin(time*.45+s.turn)*.05;
+   if(driven)s.yaw+=steering.turn*1.8*dt;else s.yaw+=clamp(Math.atan2(Math.sin(desired-s.yaw),Math.cos(desired-s.yaw)),-dt*1.4,dt*1.4);
    const stroke=s.phase<.22?Math.sin(Math.PI*s.phase/.22):0,drag=Math.exp(-7*dt);
-   s.velocity[0]=(s.velocity[0]+Math.sin(s.yaw)*.040*stroke*dt)*drag;
-   s.velocity[2]=(s.velocity[2]+Math.cos(s.yaw)*.040*stroke*dt)*drag;
-   s.velocity[1]=(s.velocity[1]+(.070*stroke-.010)*dt)*drag;
+   s.velocity[0]=(s.velocity[0]+Math.sin(s.yaw)*.040*stroke*push*dt)*drag;
+   s.velocity[2]=(s.velocity[2]+Math.cos(s.yaw)*.040*stroke*push*dt)*drag;
+   s.velocity[1]=(s.velocity[1]+((driven?.040*stroke*push+steering.up*.035-(steering.up===0?.006:0):.070*stroke)-(driven?0:.010))*dt)*drag;
    const next=s.position.map((v,k)=>v+s.velocity[k]*dt);
    if(column.travel(s.position,next,FLEA_BODY.radius,s.waterId))s.position=next;
    else{
     // No endpoint clamp/teleport: blocked motion is stopped, then the next stroke turns inward.
     const horizontal=[next[0],s.position[1],next[2]];
     if(column.travel(s.position,horizontal,FLEA_BODY.radius,s.waterId))s.position=horizontal;
-    else s.yaw+=Math.PI*.65;
+    else if(!driven)s.yaw+=Math.PI*.65;
     s.velocity=[0,0,0];const c=column.at(s.position,FLEA_BODY.radius,s.waterId);
     if(c&&s.position[1]>c.top-FLEA_BODY.radius-.0008)s.phase=.45;
     if(c&&s.position[1]<c.bottom+FLEA_BODY.radius+.0008)s.phase=0;
@@ -149,5 +151,5 @@ export function createSubmergedLife(initialColumn,{seed=55,count=6}={}){
   }
  }
  function snapshot(){return {kind:'simulated',time,body:FLEA_BODY,swimmers:swimmers.map(s=>({id:s.id,waterId:s.waterId,anchorId:s.anchorId,position:s.position.slice(),yaw:s.yaw,pitch:Math.atan2(s.velocity[1],.004)*.12,phase:s.phase,state:s.state,velocity:s.velocity.slice(),column:column.at(s.position,FLEA_BODY.radius,s.waterId)}))};}
- return {snapshot,step(seconds){if(!Number.isFinite(seconds)||seconds<0||seconds>2)throw new RangeError('Submerged step requires 0–2 seconds');carry+=seconds;while(carry+1e-12>=1/120){tick(1/120);carry=Math.max(0,carry-1/120);}return snapshot();},setColumn(next){column=next;swimmers=swimmers.filter(s=>column.at(s.position,FLEA_BODY.radius,s.waterId));if(!swimmers.length)populate();return snapshot();}};
+ return {snapshot,steer(input){steering=input?{forward:clamp(Number(input.forward)||0,-1,1),turn:clamp(Number(input.turn)||0,-1,1),up:clamp(Number(input.up)||0,-1,1)}:null;},step(seconds){if(!Number.isFinite(seconds)||seconds<0||seconds>2)throw new RangeError('Submerged step requires 0–2 seconds');carry+=seconds;while(carry+1e-12>=1/120){tick(1/120);carry=Math.max(0,carry-1/120);}return snapshot();},setColumn(next){column=next;swimmers=swimmers.filter(s=>column.at(s.position,FLEA_BODY.radius,s.waterId));if(!swimmers.length)populate();return snapshot();}};
 }

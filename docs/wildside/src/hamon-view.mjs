@@ -22,34 +22,40 @@ export function wantsHamon(location=globalThis.location,gpu=globalThis.navigator
  return !!gpu;
 }
 
-/** Render scale for a viewport: native up to 720p of pixels, then TAAU renders that budget and upscales. */
-export function hamonResolution(width,height,pixelRatio=1){
+/** Render scale for a viewport: native up to `budget` pixels (720p by default), then TAAU renders that budget and upscales. */
+export function hamonResolution(width,height,pixelRatio=1,budget=1280*720){
  const ratio=Math.min(pixelRatio,1.5),w=Math.max(1,Math.round(width*ratio)),h=Math.max(1,Math.round(height*ratio));
- const pixels=w*h,budget=1280*720,scale=pixels>budget?Math.sqrt(budget/pixels):1;
+ const pixels=w*h,scale=pixels>budget?Math.sqrt(budget/pixels):1;
  return {width:w,height:h,scale:Math.round(scale*1000)/1000};
 }
 
-export function mountHamonView(parent,{onState=()=>{},skyContainer=null,requestFrame=()=>{}}={}){
+export function mountHamonView(parent,{onState=()=>{},skyContainer=null,requestFrame=()=>{},budget=undefined,quality=undefined}={}){
  const canvas=document.createElement('canvas');canvas.className='hamon-canvas';canvas.setAttribute('aria-label','Living place rendered by HAMON Engine');canvas.hidden=true;parent.append(canvas);
  let worldTrees=[],engine=null,view=null,phase='loading',error=null,stream=null,looks=[],look=null,size=null,busy=false,inhabitants=[],skyState=null,currentPlace=null,live=null;const skyMounts=[];
  const state=()=>({phase,error:error?String(error.message??error):null,look,looks,adapter:view?.adapter()??null,stats:view?JSON.parse(view.stats()):null});
  const emit=()=>{parent.dataset.renderer=phase==='ready'?'hamon':'three';onState(state());};
  const fail=e=>{error=e;phase='failed';canvas.hidden=true;try{view?.free();}catch{}view=null;emit();console.error('HAMON view unavailable:',e);};
  const fit=()=>{
-  const next=hamonResolution(parent.clientWidth||innerWidth,parent.clientHeight||innerHeight,devicePixelRatio);
+  const next=hamonResolution(parent.clientWidth||innerWidth,parent.clientHeight||innerHeight,devicePixelRatio,budget);
   if(size&&next.width===size.width&&next.height===size.height&&next.scale===size.scale)return;
   size=next;canvas.width=size.width;canvas.height=size.height;view?.resize(size.width,size.height,size.scale);
  };
+ /** Shadow-map size and planting density, when this Engine build exposes them (older builds ignore it). */
+ const applyQuality=()=>{if(!quality||typeof view?.set_quality!=='function')return;try{view.set_quality(JSON.stringify({shadow:quality.shadow,foliage:quality.foliage}));}catch(e){console.warn('HAMON quality',e);}};
  let veil=null;
  const showVeil=name=>{if(!veil){veil=document.createElement('div');veil.className='hamon-veil';veil.setAttribute('role','status');parent.append(veil);}veil.textContent='';const t=document.createElement('p');t.textContent='Composing '+(name||'this place')+'…';const n=document.createElement('small');n.textContent='An imagined place, painted live by the HAMON Engine. The first visit takes a moment.';veil.append(t,n);veil.hidden=false;};
  const hideVeil=()=>{if(veil)veil.hidden=true;};
  const ready=(async()=>{
+  // Report only after the caller has the view in hand: without WebGPU this fails at once, and a synchronous
+  // onState would run before the host's `const hamon = mountHamonView(...)` has been assigned.
+  await null;
   try{
    if(!navigator.gpu)throw new Error('WebGPU is not available in this browser');
    engine=await import('../hamon/hamon_browser.js');await engine.default();
    looks=JSON.parse(engine.looks_json());const saved=read(LOOK_KEY);look=looks.some(l=>l.id===saved)?saved:engine.default_look();
    fit();view=await engine.open_view(canvas);view.resize(size.width,size.height,size.scale);
    if(!view.set_look(look))look=view.look();
+   applyQuality();
    phase='waiting';emit();
    const controls={setSky(v){skyState=v??null;view?.set_sky_json(JSON.stringify(skyState));},state:()=>({sky:skyState,look}),place:()=>currentPlace,requestFrame};
    if(skyContainer)for(const x of HAMON_EXTENSIONS.sky)try{skyMounts.push(x.mount({container:skyContainer,...controls}));}catch(e){console.error('HAMON sky control',x.id,e);}

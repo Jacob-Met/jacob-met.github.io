@@ -91,4 +91,23 @@ export const RESIDENT_CREATURES=[
       return steeredDriver({steer:d=>orbWeaver.steer(d),release:()=>orbWeaver.steer(null),read,map});
     },
   },
+  {
+    id:'flea',name:'Water flea',article:'the water flea',kind:'swimmer',
+    camera:{
+      outside:{distance:.022,min:.008,max:.25,pitch:.2,height:.0015,near:.0005},
+      shoulder:{back:.011,height:.004,side:.002,fov:62,near:.0004},
+      eyes:{ahead:.0022,height:.0008,fov:104,near:.0002},
+    },
+    controls:'W swim \u00b7 A / D turn \u00b7 E / Space rise \u00b7 Q sink \u00b7 drag to look \u00b7 V change view \u00b7 Esc leave',
+    locate({submergedLife}){
+      const w=submergedLife?.snapshot().swimmers[0];if(!w)return null;
+      return {position:w.position.slice(),yaw:w.yaw,activity:w.state.replaceAll('-',' '),state:w.state};
+    },
+    canBecome:true,
+    become({submergedLife}){
+      if(!submergedLife?.snapshot().swimmers.length)return null;
+      const read=()=>{const w=submergedLife.snapshot().swimmers[0];return {position:w.position,forward:[Math.sin(w.yaw),0,Math.cos(w.yaw)]};};
+      return steeredDriver({steer:v=>submergedLife.steer(v),release:()=>submergedLife.steer(null),read,map:input=>({forward:input.forward,turn:-input.right,up:input.up})});
+    },
+  },
 ];
