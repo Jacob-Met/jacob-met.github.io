@@ -24,6 +24,8 @@
     "assets/fonts/space-grotesk.woff": "0cebd5ca855d0aea379a7e70240aa096e89f76efea057fad7b888370574662f6",
     "assets/mark.svg": "d3db3974f3ef1188c03880311ed5cc3308b7f38cb673bc1660df363b40fa7d8c",
     "assets/og-card.png": "e9fb21df2eca24b476bf4dd323a4a3e947b591103bb9f664bfc890426f8b212a",
+    "assets/scene/engine-follow-through.mp4": "0f3a1eac90be4bcd82e2893a25a475a327eeeb791c8f79aacdb023bbb9ab555f",
+    "assets/scene/engine-follow-through.png": "e8a96e9441ead8fb29d8b2b3d73a184dfa3e5d25a92eba6d55952cf95c11d88b",
     "assets/scene/forge-arrival-960.png": "7f510954f85e241920f75fd32c007d428930adf40b207b7d5f041d46f642b24a",
     "assets/scene/forge-engine-arrival.png": "999e219bd6339ce2f042dc2a174f11b58d07aa50a95d5ad9977ac8ee3b54c937",
     "assets/scene/forge-engine-forward.mp4": "da905c2803187f8a1c90640efa95b6cc50a118e23f59dd454c59a9ac4811be2e",
@@ -48,7 +50,7 @@
     "cv.json": "8bf265836cadd04aecb6ab3bcc71debbde250e7cead76289c87f48ebc89b167d",
     "detail.js": "b23eacae390e33b424cdbace4039fbe5418311ab256232d7946ed2993ebadc0a",
     "experience-content.json": "fc9d5f9805149c11f9f4d60306950918de15a262b5d01a55530fbde76810e08d",
-    "experience.css": "2201bc5678c14d957d8905bd7f477cd07353cb6f6d77134b119d41309f9a1cc9",
+    "experience.css": "6de002bbac87449ebff4e5a411aba9c4e91af4a24c845e0b5047c3397fa3a128",
     "favicon.ico": "fe0deb2a0efa8c76fdcca3619db3e5036779ccf5aae7927108bd34d02bd6d0ba",
     "games/lanternwake/build-info.json": "a0cfabeef8c3d89ea5f28eca998a25ac9c7bfa98c57c778c239ba9c17ec25a28",
     "games/lanternwake/desktop.png": "2405736059c1d6fc5757057d9161346dab8bdf3cd50cc6ab14bcbc04a21d40a0",
@@ -61,7 +63,7 @@
     "games/lanternwake/poster.svg": "1ee8b5c9154f1f52b9bad22b5216de44a172ff47bef6c7752d785c84e87e3175",
     "games/lanternwake/style.css": "6a4c0e20a4316051c77f9b13d0cf581019c47d19918fae8f18d09bef2f36fd72",
     "games/lanternwake/webgpu-compat.js": "95b4487d37462f3e60f159abfedff03bcd6810960339ae2a65e0311863954822",
-    "index.html": "01721aa51ae6c3601d9ed9fb1f231117e7bb898c6c587c615632781a52814782",
+    "index.html": "86f0b7e48572a464f72219e02ab40c708b24f1ed2aeebb28387947cd6c613500",
     "lobby-journey.js": "3f7e383b84dc6034b65cf571666f28297df4e20113670c7280b47b7b13bc2d24",
     "lobby-manifest.json": "51dea6c199542675aacf61338397e82f4563e62ea286499c26fc4e7d58d10573",
     "lobby.js": "36adc74e32f4c62917e559ee6b8a6efa1beb5e221c3dd1a4b99e8e1f29886759",
@@ -70,6 +72,6 @@
     "robots.txt": "60d463caa67aaa008b827bdec75236dcec7a9c82c49f529ad1da2de1c847c47e",
     "scene-handoff.js": "dceb03ad79736cc96a37fed78c04d63663889be596d52b200e71bdf433d8a39e",
     "sitemap.xml": "2eed0d0b00ceeb3428b333b551ac7a157d1610fc06c64641c3a855e5cf266c5b",
-    "style.css": "2201bc5678c14d957d8905bd7f477cd07353cb6f6d77134b119d41309f9a1cc9"
+    "style.css": "6de002bbac87449ebff4e5a411aba9c4e91af4a24c845e0b5047c3397fa3a128"
   }
 }

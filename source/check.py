@@ -17,6 +17,8 @@ from lobby_policy import load_lobby, route_video_errors, route_source_errors
 from figure_policy import load_figures, picture_source_errors
 from branch_policy import load_branches, branch_video_errors, branch_source_errors, BRANCHES, DIRECTIONS
 from experience_policy import load_experience
+from engine_motion_policy import (VIDEO_ID as MOTION_VIDEO_ID, SOURCE_ATTRIBUTES as MOTION_SOURCE_ATTRIBUTES,
+    FILES as ENGINE_MOTION_FILES, validate_motion, video_errors as motion_video_errors, source_errors as motion_source_errors)
 from site_policy import (FONT_PROPERTIES, validate_fonts, SCRIPT_FILES, LOADED_SCRIPT_FILES,
                          audit_scripts, script_element_errors, canvas_element_errors, ART_FILES, validate_art, EDITORIAL_FILES, EDITORIAL_ART, validate_editorial, PRESENTATION_FILES, PRESENTATION_STILLS, validate_presentation_stills, CAPTIONVERSE_CAPTURES, CAPTIONVERSE_FILES, validate_captionverse_captures, captionverse_picture_source_errors)
 
@@ -91,7 +93,7 @@ class Page(HTMLParser):
             self.in_picture = True
         if tag == 'video':
             self.videos.append(a); self.current_video = a.get('id')
-            self.errors.extend(branch_video_errors(a,self.branches) if 'data-route' in a else route_video_errors(a, self.lobby) if self.lobby else video_element_errors(a))
+            self.errors.extend(motion_video_errors(a) if a.get('id') == MOTION_VIDEO_ID else branch_video_errors(a,self.branches) if 'data-route' in a else route_video_errors(a, self.lobby) if self.lobby else video_element_errors(a))
             if a.get('poster'): self.resources.append(a['poster'])
         if tag == 'source':
             if self.in_picture:
@@ -102,7 +104,7 @@ class Page(HTMLParser):
                 if a.get('srcset'): self.resources.append(a['srcset'])
             else:
                 self.sources.append((self.current_video, a))
-                self.errors.extend(branch_source_errors(a,self.current_video,self.branches) if self.current_video not in ('route-forward','route-reverse',None) else route_source_errors(a, self.lobby) if self.lobby else source_element_errors(a))
+                self.errors.extend(motion_source_errors(a) if self.current_video == MOTION_VIDEO_ID else branch_source_errors(a,self.current_video,self.branches) if self.current_video not in ('route-forward','route-reverse',None) else route_source_errors(a, self.lobby) if self.lobby else source_element_errors(a))
         if tag == 'canvas':
             self.canvases.append(a)
             self.errors.extend(canvas_element_errors(a))
@@ -206,6 +208,7 @@ def check(root: Path, *, preview=False) -> dict:
         validate_editorial(root)
         validate_presentation_stills(root)
         validate_captionverse_captures(root)
+        validate_motion(root)
     except (ValueError, OSError, UnicodeError) as error:
         failures.append('Font publication boundary: ' + str(error))
     if (root / 'games').exists():
@@ -258,6 +261,7 @@ def check(root: Path, *, preview=False) -> dict:
             expected_sources = [(f'route-{direction}', {'src': lobby['media'][direction]['src'], 'type': 'video/mp4'}) for direction in ('forward', 'reverse')] if name == 'index.html' else []
             if name == 'index.html':
                 expected_sources += [(f'route-{key}-{direction}', {'src':branches[key]['media'][direction]['src'],'type':'video/mp4'}) for key in BRANCHES if key in branches for direction in DIRECTIONS]
+                expected_sources.append((MOTION_VIDEO_ID, MOTION_SOURCE_ATTRIBUTES))
             if p.sources != expected_sources or len(p.videos) != len(expected_sources):
                 failures.append(f'{name}: incorrect route video/source inventory')
         if p.canvases: failures.append(f'{name}: incorrect canvas inventory')

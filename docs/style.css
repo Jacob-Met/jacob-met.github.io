@@ -159,3 +159,14 @@ body .work-section.forge-room{--arrival-height:clamp(230px,33svh,340px);backgrou
   .captionverse-capture figcaption,.captionverse-capture .captionverse-capture-label{color:CanvasText}
   .captionverse-capture a{color:LinkText}
 }
+
+/* A manually played recorded comparison, not a second player implementation. */
+.engine-motion-study{max-width:640px;margin:24px 0 30px}
+.engine-motion-labels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:end;gap:12px;margin-bottom:10px;color:var(--paper);font-size:14px;line-height:1.4;text-align:center}
+.engine-motion-study video{display:block;width:100%;height:auto;aspect-ratio:960/386;background:#26262e}
+.engine-motion-study figcaption{margin-top:12px;color:var(--quiet);font-size:13px;line-height:1.65}
+.engine-motion-study figcaption small{display:block;margin-top:5px;color:var(--quiet);font-size:12px;line-height:1.6}
+.engine-motion-study video a{display:inline-flex;align-items:center;min-height:44px;color:var(--leaf)}
+@media(forced-colors:active){
+  .engine-motion-labels,.engine-motion-study figcaption,.engine-motion-study figcaption small{color:CanvasText}
+}

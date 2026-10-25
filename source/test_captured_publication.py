@@ -8,6 +8,7 @@ from source_policy import validate_source_publication,reject_private_ledgers
 from site_policy import audit_scripts,script_source_errors,script_integrity,script_element_errors,SCRIPT_FILES,LOADED_SCRIPT_FILES,PRESENTATION_STILLS,validate_presentation_stills,validate_art
 from lobby_policy import MEDIA,load_lobby
 from branch_policy import branch_files,load_branches
+from engine_motion_policy import FILES as ENGINE_MOTION_FILES
 
 class CapturedPublication(unittest.TestCase):
     def test_genuine_native_presentation_stills_and_authored_art(self):
@@ -58,7 +59,7 @@ class CapturedPublication(unittest.TestCase):
             self.assertFalse(name.startswith('engine/'),name)
         for name in ('scene-mesh.json','experience.js','room.js','forge-walk.js','engine-manifest.json'):
             self.assertNotIn(name,names)
-        self.assertEqual({p.name for p in (build.ROOT/'assets/scene').iterdir()}, {*(Path(p).name for p in branch_files(load_branches(build.ROOT,allow_private_preview=True)) if p.startswith('assets/scene/')),'forge-entrance-1280.png','forge-arrival-960.png','research-observatory.svg','forge-native.png','forge-native-motion.mp4','hamon-engine-study.webp','forge-workbench.png',*(Path(p).name for p in MEDIA.values())})
+        self.assertEqual({p.name for p in (build.ROOT/'assets/scene').iterdir()}, {*(Path(p).name for p in ENGINE_MOTION_FILES),*(Path(p).name for p in branch_files(load_branches(build.ROOT,allow_private_preview=True)) if p.startswith('assets/scene/')),'forge-entrance-1280.png','forge-arrival-960.png','research-observatory.svg','forge-native.png','forge-native-motion.mp4','hamon-engine-study.webp','forge-workbench.png',*(Path(p).name for p in MEDIA.values())})
     def test_exact_script_integrity(self):
         hashes=audit_scripts(build.ROOT);name='lobby.js'
         self.assertEqual(set(hashes),set(SCRIPT_FILES))
