@@ -343,3 +343,9 @@ body.encounter-dismissed .encounter{display:none}
  .navigation-hint{top:calc(max(12px,env(safe-area-inset-top)) + 196px)}
 }
 body.exploring .place-pill-name{text-shadow:none}
+
+/* Settings drawer (gear, or Esc from the overview) */
+.settings-drawer{bottom:auto;top:calc(max(20px,env(safe-area-inset-top)) + 54px);right:var(--gutter);max-height:calc(100dvh - 90px);transform:translateY(-8px)}
+.settings-drawer.open{transform:none}
+@media(max-width:750px){.settings-drawer{top:auto;bottom:calc(var(--dock-bottom) + 62px);max-height:64dvh}}
+@media(min-width:751px){.places-panel{width:min(760px,calc(100vw - 2*var(--gutter)))}.places-list{grid-template-columns:repeat(3,minmax(0,1fr))}}

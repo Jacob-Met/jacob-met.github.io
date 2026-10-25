@@ -15,11 +15,11 @@ export function mountPlacesPicker({pill,nameEl,panel,list,close,titleCard,prompt
   const here=(()=>{try{return p.status==='ready'&&!!p.current?.();}catch{return false;}})();
   b.disabled=p.status!=='ready';if(here)b.setAttribute('aria-current','true');
   const art=document.createElement('span');art.className='place-art';art.setAttribute('aria-hidden','true');
-  if(p.thumb&&/^(https?:|data:|\.|\/|blob:)/.test(p.thumb)){const i=document.createElement('img');i.src=p.thumb;i.alt='';art.append(i);}else art.innerHTML=p.thumb??thumbSvg(p.kind);
+  if(p.thumb&&/^(https?:|data:|blob:)|\.(jpe?g|png|webp|svg|avif)(\?|$)/i.test(p.thumb)){const i=document.createElement('img');i.src=p.thumb;i.alt='';art.append(i);}else art.innerHTML=p.thumb??thumbSvg(p.kind);
   const text=document.createElement('span');text.className='place-text';
   const name=document.createElement('span');name.className='place-name';name.textContent=p.name;
   const line=document.createElement('span');line.className='place-line';line.textContent=p.line;
-  const tag=document.createElement('span');tag.className='place-tag';tag.textContent=p.status!=='ready'?'Coming soon':here?'You are here':(p.honesty??'');
+  const tag=document.createElement('span');tag.className='place-tag';tag.textContent=p.status!=='ready'?(p.soonLabel??'Coming soon'):here?'You are here':(p.honesty??'');
   text.append(name,line);if(tag.textContent)text.append(tag);b.append(art,text);
   if(p.status==='ready')b.onclick=()=>go(p);
   return b;
@@ -46,7 +46,7 @@ export function mountPlacesPicker({pill,nameEl,panel,list,close,titleCard,prompt
  function setOpen(next,{restoreFocus=true}={}){
   if(next===open)return;if(next&&isBlocked())return;open=next;clearTimeout(closeTimer);
   pill.setAttribute('aria-expanded',String(open));document.body.classList.toggle('places-open',open);
-  if(open){store.set(SEEN,'1');prompt.classList.remove('show');render();panel.hidden=false;requestAnimationFrame(()=>panel.classList.add('open'));(panel.querySelector('.place-card:not(:disabled)')||close).focus({preventScroll:true});}
+  if(open){store.set(SEEN,'1');prompt.classList.remove('show');render();panel.hidden=false;requestAnimationFrame(()=>{if(open)panel.classList.add('open');});(panel.querySelector('.place-card:not(:disabled)')||close).focus({preventScroll:true});}
   else{panel.classList.remove('open');closeTimer=setTimeout(()=>{if(!open)panel.hidden=true;},reduced()?0:220);if(restoreFocus&&panel.contains(document.activeElement))pill.focus({preventScroll:true});}
  }
  pill.addEventListener('click',()=>setOpen(!open));close.addEventListener('click',()=>setOpen(false));

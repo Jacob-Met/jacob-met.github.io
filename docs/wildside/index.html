@@ -24,6 +24,7 @@
     <symbol id="i-sound" viewBox="0 0 24 24"><path d="M4 10v4h3.5L12 18V6L7.5 10Z"/><path class="wave" d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></symbol>
     <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.400-6.500 11-6.500 11Z"/><circle cx="12" cy="10" r="2.300"/></symbol>
     <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3.500v2.200M12 18.300v2.200M3.500 12h2.200M18.300 12h2.200M6 6l1.600 1.600M16.400 16.400 18 18M18 6l-1.600 1.600M7.600 16.400 6 18"/></symbol>
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h13M13 7l5 5-5 5"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
   </svg>
@@ -36,6 +37,7 @@
     <nav aria-label="Place actions" class="place-actions">
       <button id="sources" class="chip ghost" aria-label="About this place"><svg class="i" aria-hidden="true"><use href="#i-about"/></svg><span class="action-text">About this place</span></button>
       <button id="observe" class="chip ghost" aria-label="Add a view"><svg class="i" aria-hidden="true"><use href="#i-add"/></svg><span class="action-text">Add a view</span></button>
+      <button id="settings-toggle" class="chip ghost icon-only" aria-expanded="false" aria-controls="settings-drawer" aria-label="Settings" title="Settings · Esc"><svg class="i" aria-hidden="true"><use href="#i-gear"/></svg></button>
       <button id="new-place" class="chip primary" aria-label="Bring your place"><span class="long">Bring your place</span><span class="short" aria-hidden="true">Your place</span></button>
     </nav>
   </header>
@@ -63,6 +65,10 @@
     </div>
     <button id="world-toggle" class="world-toggle" aria-expanded="false" aria-controls="world-drawer" title="Look, time of day and weather"><svg class="i" aria-hidden="true"><use href="#i-world"/></svg><span class="label">Look &amp; weather</span></button>
   </footer>
+  <section id="settings-drawer" class="world-drawer settings-drawer" role="dialog" aria-modal="false" aria-labelledby="settings-title" hidden>
+    <header class="drawer-header"><h2 id="settings-title">Settings</h2><button class="drawer-close" id="settings-close" aria-label="Close settings"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></header>
+    <div class="drawer-sections" id="settings-sections"></div>
+  </section>
   <div class="proxy" id="drawer-proxies" aria-hidden="true"><button tabindex="-1" id="sound-toggle" aria-pressed="false" title="Hear imagined habitat sounds" aria-label="Turn on imagined habitat sounds"><svg class="i" aria-hidden="true"><use href="#i-sound"/></svg></button><div  >
       <button tabindex="-1" id="rain-toggle" aria-pressed="false" title="Imagine rain · R" aria-label="Imagine rain" aria-keyshortcuts="R"><svg class="i" aria-hidden="true"><use href="#i-rain"/></svg></button>
       <button tabindex="-1" id="motion-toggle" aria-pressed="false" title="Pause simulated life · P" aria-label="Pause simulated life" aria-keyshortcuts="P"><svg class="i when-off" aria-hidden="true"><use href="#i-pause"/></svg><svg class="i when-on" aria-hidden="true"><use href="#i-play"/></svg></button>

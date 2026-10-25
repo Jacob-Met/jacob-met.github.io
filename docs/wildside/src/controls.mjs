@@ -32,9 +32,14 @@ export const SECTIONS=Object.freeze([
  {id:'weather',title:'Weather'},
  {id:'life',title:'Life'},
  {id:'sound',title:'Sound'},
+ {id:'graphics',title:'Graphics',note:'How the view is drawn on this device. Your place is unchanged.'},
+ {id:'camera',title:'Camera and mouse'},
  {id:'about',title:'What you are seeing'},
  {id:'keys',title:'Keys'},
 ]);
+/** Which sections each surface shows: the World drawer (look, place, time, weather) and Settings. */
+export const WORLD_SECTIONS=Object.freeze(['style','place','time','weather','life','about']);
+export const SETTINGS_SECTIONS=Object.freeze(['graphics','camera','sound','keys']);
 export const SECTION_IDS=Object.freeze(SECTIONS.map(s=>s.id));
 
 const controls=new Map(),listeners=new Set(),slots=new Map();
@@ -101,6 +106,7 @@ export const kit={
  /** Quiet text, e.g. an honesty note. */
  note(text){const element=document.createElement('p');element.className='ctl-note';element.textContent=text;return {element,set(v){element.textContent=v;}};},
  /** A secondary action. */
+ button(o){return kit.action(o);},
  action({label,onClick=()=>{}}){const element=document.createElement('button');element.type='button';element.className='ctl ctl-action';element.textContent=label;element.onclick=onClick;return {element,set(v){element.textContent=v;}};},
 };
 let n=0;const uniq=p=>`${p}-${++n}`;

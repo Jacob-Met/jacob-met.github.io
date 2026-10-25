@@ -7,9 +7,9 @@ import {SECTIONS,kit,listControls,onControlsChange,slotFor,controlSlot} from './
 const IDLE_MS=3200,HINT_MS=22000,HINT_KEY='wildside.hints.v1';
 const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-export function mountWorldDrawer({drawer,toggle,close,sectionsRoot,isBlocked=()=>false}){
- const mounted=new Map(),sectionEls=new Map();
- for(const s of SECTIONS){
+export function mountWorldDrawer({drawer,toggle,close,sectionsRoot,sections:only=null,isBlocked=()=>false}){
+ const mounted=new Map(),sectionEls=new Map(),mine=SECTIONS.filter(s=>!only||only.includes(s.id));
+ for(const s of mine){
   const sec=document.createElement('section');sec.className='drawer-section';sec.dataset.section=s.id;sec.hidden=true;
   const h=document.createElement('h3');h.textContent=s.title;h.id=`drawer-${s.id}`;sec.setAttribute('aria-labelledby',h.id);
   const body=document.createElement('div');body.className='drawer-section-body';sec.append(h);
@@ -20,6 +20,7 @@ export function mountWorldDrawer({drawer,toggle,close,sectionsRoot,isBlocked=()=
  function sync(){
   const live=new Set();
   for(const c of listControls()){
+   if(only&&!only.includes(c.section))continue;
    live.add(c.id);let m=mounted.get(c.id);
    if(m&&m.def!==c){dispose(m);mounted.delete(c.id);m=null;}
    if(!m){
@@ -30,7 +31,7 @@ export function mountWorldDrawer({drawer,toggle,close,sectionsRoot,isBlocked=()=
    sectionEls.get(c.section).body.append(m.wrap);
   }
   for(const [id,m] of mounted)if(!live.has(id)){dispose(m);mounted.delete(id);}
-  for(const s of SECTIONS){const slot=slotFor(s.id);if(slot)attachSlot(s.id);const b=sectionEls.get(s.id).body;if(slot&&slot.parentElement===b)b.append(slot);}
+  for(const s of mine){const slot=slotFor(s.id);if(slot)attachSlot(s.id);const b=sectionEls.get(s.id).body;if(slot&&slot.parentElement===b)b.append(slot);}
   layout();
  }
  function dispose(m){try{m.handle?.dispose?.();}catch(e){console.error(e);}m.wrap.remove();}
@@ -43,9 +44,11 @@ export function mountWorldDrawer({drawer,toggle,close,sectionsRoot,isBlocked=()=
  function setOpen(next,{restoreFocus=true}={}){
   if(next===open)return;if(next&&isBlocked())return;open=next;clearTimeout(closeTimer);
   toggle.setAttribute('aria-expanded',String(open));document.body.classList.toggle('drawer-open',open);
-  if(open){layout();drawer.hidden=false;requestAnimationFrame(()=>drawer.classList.add('open'));const first=drawer.querySelector('.drawer-sections [aria-checked=true],.drawer-sections button,.drawer-sections input,.drawer-sections select');(first||close).focus({preventScroll:true});}
+  if(open)dispatchEvent(new CustomEvent('wildside:drawer-open',{detail:drawer}));
+  if(open){layout();drawer.hidden=false;requestAnimationFrame(()=>{if(open)drawer.classList.add('open');});const first=drawer.querySelector('.drawer-sections [aria-checked=true],.drawer-sections button,.drawer-sections input,.drawer-sections select');(first||close).focus({preventScroll:true});}
   else{drawer.classList.remove('open');closeTimer=setTimeout(()=>{if(!open)drawer.hidden=true;},reduced()?0:220);if(restoreFocus&&drawer.contains(document.activeElement))toggle.focus({preventScroll:true});}
  }
+ addEventListener('wildside:drawer-open',e=>{if(e.detail!==drawer&&open)setOpen(false,{restoreFocus:false});});
  toggle.addEventListener('click',()=>setOpen(!open));close.addEventListener('click',()=>setOpen(false));
  addEventListener('pointerdown',e=>{if(open&&!drawer.contains(e.target)&&!toggle.contains(e.target))setOpen(false,{restoreFocus:false});},true);
  addEventListener('keydown',e=>{if(open&&e.key==='Escape'){e.preventDefault();e.stopImmediatePropagation();setOpen(false);}},true);

@@ -31,7 +31,7 @@ export function hamonResolution(width,height,pixelRatio=1){
 
 export function mountHamonView(parent,{onState=()=>{},skyContainer=null,requestFrame=()=>{}}={}){
  const canvas=document.createElement('canvas');canvas.className='hamon-canvas';canvas.setAttribute('aria-label','Living place rendered by HAMON Engine');canvas.hidden=true;parent.append(canvas);
- let worldTrees=[],engine=null,view=null,phase='loading',error=null,stream=null,looks=[],look=null,size=null,busy=false,inhabitants=[],skyState=null,currentPlace=null;const skyMounts=[];
+ let worldTrees=[],engine=null,view=null,phase='loading',error=null,stream=null,looks=[],look=null,size=null,busy=false,inhabitants=[],skyState=null,currentPlace=null,live=null;const skyMounts=[];
  const state=()=>({phase,error:error?String(error.message??error):null,look,looks,adapter:view?.adapter()??null,stats:view?JSON.parse(view.stats()):null});
  const emit=()=>{parent.dataset.renderer=phase==='ready'?'hamon':'three';onState(state());};
  const fail=e=>{error=e;phase='failed';canvas.hidden=true;try{view?.free();}catch{}view=null;emit();console.error('HAMON view unavailable:',e);};
@@ -67,13 +67,18 @@ export function mountHamonView(parent,{onState=()=>{},skyContainer=null,requestF
     const placeExt=HAMON_EXTENSIONS.places.filter(x=>x.matches?.({place,art})).flatMap(x=>x.contribute({place,art})??[]);
     inhabitants=HAMON_EXTENSIONS.inhabitants.filter(x=>x.state&&(!x.replaces||x.replaces(ctx)));
     const replaced=new Set(inhabitants.map(x=>x.replaces?.(ctx)).filter(Boolean));
-    const packet=exportPlaceForHamon(art,place,dynamicRoots.filter(r=>!replaced.has(r.group)),{places:placeExt,inhabitants:inhabitants.map(x=>({kind:x.kind,params:x.params??{}}))});view.set_world(JSON.stringify(packet.desc),packet.verts,packet.indices,packet.texels);stream=packet.stream;worldTrees=packet.desc?.trees??[];phase='ready';emit();return true;}
+    const packet=exportPlaceForHamon(art,place,dynamicRoots.filter(r=>!replaced.has(r.group)),{places:placeExt,inhabitants:inhabitants.map(x=>({kind:x.kind,params:x.params??{}}))});view.set_world(JSON.stringify(packet.desc),packet.verts,packet.indices,packet.texels);stream=packet.stream;worldTrees=packet.desc?.trees??[];
+    // an Engine live place (hamon-places.mjs) reports its walkable layout
+    const walk=packet.desc.places?.some(x=>x.kind.startsWith('live:'))?JSON.parse(view.place_walk()):null;live=walk?{walk,heights:view.place_heights()}:null;
+    phase='ready';emit();return true;}
    catch(e){fail(e);return false;}
   },
   setLook(id){
    if(!view||!looks.some(l=>l.id===id))return false;
    try{if(view.set_look(id)){look=id;write(LOOK_KEY,id);emit();return true;}}catch(e){fail(e);}return false;
   },
+  /** `{walk, heights}` of the live Engine place now shown, else null (see hamon-places.mjs). */
+  livePlace(){return live;},
   setRain(on){view?.set_rain(!!on);},
   resize(){if(view)try{fit();}catch(e){fail(e);}},
   /** Draw one frame from the three.js `camera` at simulation `time` (seconds). */
@@ -86,6 +91,7 @@ export function mountHamonView(parent,{onState=()=>{},skyContainer=null,requestF
     inhabitants.forEach((x,i)=>view.set_inhabitant_state(i,x.state({...ctx,camera,time})));
     camera.updateMatrixWorld();const e=camera.matrixWorld.elements,eye=[e[12],e[13],e[14]];
     const cam=new Float32Array([...eye,eye[0]-e[8],eye[1]-e[9],eye[2]-e[10],e[4],e[5],e[6],camera.fov,Math.max(camera.near,.01),camera.far]);
+    if(live){const v=ctx.nav?.pose();if(v)view.set_traveller(v.position[0],v.position[1]-v.eye,v.position[2],v.yaw,v.mode!=='human');}
     const shown=view.frame(cam,time);canvas.hidden=false;
     // a sky change eases in over a few seconds: keep frames coming even in a paused world
     if(view.sky_animating())requestFrame();
