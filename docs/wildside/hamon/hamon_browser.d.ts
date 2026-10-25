@@ -26,6 +26,11 @@ export class HamonView {
      */
     set_inhabitant_state(index: number, state: Float32Array): void;
     /**
+     * The place's lanterns and lit windows: JSON `[{p: [x, y, z], window}]` (re-prepares, as
+     * point lights are built with the scene). Lit with the night; never invented here.
+     */
+    set_lamps(json: string): void;
+    /**
      * Switch the look (re-prepares the scene). Returns false for an unknown id.
      */
     set_look(id: string): boolean;
@@ -34,7 +39,8 @@ export class HamonView {
      */
     set_rain(on: boolean): void;
     /**
-     * Sky/weather controls hook (`sky.rs`): JSON `{tod, weather}` over the look's sky; `null` clears.
+     * Sky/weather controls hook (`sky.rs`): JSON `{tod, weather}` over the look's sky; `null`
+     * clears. The change eases in over the next frames (`sky_animating`).
      */
     set_sky_json(json: string): void;
     /**
@@ -42,6 +48,10 @@ export class HamonView {
      * `indices` part-local triangle indices, `texels` RGBA8 for `desc.textures`.
      */
     set_world(desc: string, verts: Float32Array, indices: Uint32Array, texels: Uint8Array): void;
+    /**
+     * True while a sky change is easing in: keep presenting frames until it lands.
+     */
+    sky_animating(): boolean;
     /**
      * JSON counters for inspection.
      */
@@ -72,18 +82,20 @@ export interface InitOutput {
     readonly hamonview_resize: (a: number, b: number, c: number, d: number) => [number, number];
     readonly hamonview_set_dynamic: (a: number, b: number, c: number, d: number, e: number) => void;
     readonly hamonview_set_inhabitant_state: (a: number, b: number, c: number, d: number) => void;
+    readonly hamonview_set_lamps: (a: number, b: number, c: number) => [number, number];
     readonly hamonview_set_look: (a: number, b: number, c: number) => [number, number, number];
     readonly hamonview_set_rain: (a: number, b: number) => void;
     readonly hamonview_set_sky_json: (a: number, b: number, c: number) => [number, number];
     readonly hamonview_set_world: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number) => [number, number];
+    readonly hamonview_sky_animating: (a: number) => number;
     readonly hamonview_stats: (a: number) => [number, number];
     readonly looks_json: () => [number, number];
     readonly open_view: (a: any) => any;
     readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___js_sys_522f2cbc6d838fb6___Function_fn_wasm_bindgen_569c88abdbd95b4d___JsValue_____wasm_bindgen_569c88abdbd95b4d___sys__Undefined___js_sys_522f2cbc6d838fb6___Function_fn_wasm_bindgen_569c88abdbd95b4d___JsValue_____wasm_bindgen_569c88abdbd95b4d___sys__Undefined_______true_: (a: number, b: number, c: any, d: any) => void;
     readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___wasm_bindgen_569c88abdbd95b4d___JsValue__core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_569c88abdbd95b4d___JsError___true_: (a: number, b: number, c: any) => [number, number];
-    readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___wasm_bindgen_569c88abdbd95b4d___sys__JsNullable_wgpu_336954bab3e7ba5b___backend__webgpu__webgpu_sys__gen_GpuError__GpuError___core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_569c88abdbd95b4d___JsError___true_: (a: number, b: number, c: any) => [number, number];
-    readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___wasm_bindgen_569c88abdbd95b4d___sys__JsNullable_wgpu_336954bab3e7ba5b___backend__webgpu__webgpu_sys__gen_GpuError__GpuError___core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_569c88abdbd95b4d___JsError___true__17: (a: number, b: number, c: any) => [number, number];
-    readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___wasm_bindgen_569c88abdbd95b4d___sys__JsNullable_wgpu_336954bab3e7ba5b___backend__webgpu__webgpu_sys__gen_GpuError__GpuError___core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_569c88abdbd95b4d___JsError___true__18: (a: number, b: number, c: any) => [number, number];
+    readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___wasm_bindgen_569c88abdbd95b4d___sys__JsNullable_wgpu_f96de166a00bd368___backend__webgpu__webgpu_sys__gen_GpuError__GpuError___core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_569c88abdbd95b4d___JsError___true_: (a: number, b: number, c: any) => [number, number];
+    readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___wasm_bindgen_569c88abdbd95b4d___sys__JsNullable_wgpu_f96de166a00bd368___backend__webgpu__webgpu_sys__gen_GpuError__GpuError___core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_569c88abdbd95b4d___JsError___true__19: (a: number, b: number, c: any) => [number, number];
+    readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___wasm_bindgen_569c88abdbd95b4d___sys__JsNullable_wgpu_f96de166a00bd368___backend__webgpu__webgpu_sys__gen_GpuError__GpuError___core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_569c88abdbd95b4d___JsError___true__20: (a: number, b: number, c: any) => [number, number];
     readonly __wbindgen_malloc: (a: number, b: number) => number;
     readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
     readonly __wbindgen_exn_store: (a: number) => void;

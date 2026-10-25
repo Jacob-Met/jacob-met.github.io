@@ -6,6 +6,8 @@ import {birdForagingSites} from './bird-foraging.mjs';
 import {mountLocationContext} from './location-context-view.mjs';
 import {mountEcologyDiscovery} from './ecology-discovery-view.mjs';
 import {createFrameLoop} from './frame-loop.mjs';
+import {createOverviewZoom} from './overview-zoom.mjs';
+import {createOverviewPan} from './overview-pan.mjs';
 import {downloadRenderedPNG} from './visit-picture.mjs';
 import {createShadowReuseGuard} from './shadow-reuse-guard.mjs';
 import {prepareWorldContact} from './surface-contact-art.mjs';
@@ -48,8 +50,10 @@ let art,sim,nav,bird,frameCount=0,worldTime=0,rain=false,paused=matchMedia('(pre
 let pictureSerial=0,picturePending=null,pictureSaving=false;
 function cancelPicture(){pictureSerial++;picturePending=null;pictureSaving=false;const button=$('save-view-image');if(button)button.disabled=false;}
 let editor=null,toastTimer,worldReady=false,orbit=0,pointer=null,pendingMode=null,focusFov=null,sourceView=null;
+const overviewZoom=createOverviewZoom(),overviewPan=createOverviewPan(),overviewTouches=new Map();let lastPinchDistance=null,lastPinchCenter=null;
 let birdFocus=null,crawlerFocus=null;
 function releaseResidentFocus(){if(birdFocus||crawlerFocus){birdFocus=null;crawlerFocus=null;if(sim)updateEncounter();}}
+
 const pressed=new Set(),touch={};
 const soundscape=createSoundscape(),soundForward=new THREE.Vector3(),soundUp=new THREE.Vector3();
 const syncSoundState=()=>soundscape.setPaused(paused||underwaterFocus).catch(()=>{});
@@ -59,7 +63,7 @@ try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference
 renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.18;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 $('world').append(renderer.domElement);renderer.domElement.setAttribute('aria-label','Living garden scene');
 // Opt-in HAMON Engine renderer (WebGPU). three.js keeps the scene graph and remains the fallback.
-const hamon=wantsHamon()?mountHamonView($('world'),{onState:s=>updateLookPicker(s),skyContainer:$('look-picker')?.parentElement??null}):null;
+const hamon=wantsHamon()?mountHamonView($('world'),{onState:s=>updateLookPicker(s),skyContainer:$('look-picker')?.parentElement??null,requestFrame:()=>requestWorldFrame()}):null;
 function updateLookPicker(s){
  const wrap=$('look-picker'),select=$('look-select');if(!wrap||!select)return;
  wrap.hidden=!hamon||s.phase==='failed'||!s.looks.length;
@@ -132,7 +136,8 @@ function updateEncounter(){
  $('brush-web').hidden=!hasWeb||!webFocus;$('brush-web').disabled=paused;
  $('brush-web').title=paused?'Resume simulated life to brush a strand':'Send a ripple along the silk';
  $('watch-crawler').textContent=crawlerFocus?'Stop following':'Look closer ↗';$('watch-crawler').setAttribute('aria-pressed',String(!!crawlerFocus));
- $('navigation-hint').textContent=crawlerFocus?'Following the beetle · Drag or move to explore · Esc for overview':birdFocus?'Following the robin · Drag or move to explore · Esc for overview':underwaterFocus?'Drag to look · W A S D to swim · E / Q to rise / sink · Esc to surface':webFocus?'Tap a strand · Drag to look · W A S D to move · Esc for overview':'Drag to look · W A S D to move · E / Q to fly · Esc for overview';
+ $('navigation-hint').textContent=overview&&!sourceView?'Drag to orbit · Shift-drag or two fingers to pan · Scroll or pinch to zoom':crawlerFocus?'Following the beetle · Drag or move to explore · Esc for overview':birdFocus?'Following the robin · Drag or move to explore · Esc for overview':underwaterFocus?'Drag to look · W A S D to swim · E / Q to rise / sink · Esc to surface':webFocus?'Tap a strand · Drag to look · W A S D to move · Esc for overview':'Drag to look · W A S D to move · E / Q to fly · Esc for overview';
+
  $('watch-web').textContent=webFocus?'See the whole web ↗':'Find a web ↗';
 }
 function safeStart(mode='human'){
@@ -173,7 +178,9 @@ function safeStart(mode='human'){
  return null;
 }
 function rebuild(p,{keepPose=false}={}){
+ overviewZoom.reset();overviewPan.reset();overviewTouches.clear();lastPinchDistance=null;lastPinchCenter=null;pointer=null;
  releaseResidentFocus();
+
  cancelPicture();
  soundscape.reset();
  leaveUnderwater();
@@ -653,12 +660,80 @@ $('save-view-image').onclick=()=>{
 };
 $('sound-toggle').onclick=async()=>{const control=$('sound-toggle');control.disabled=true;try{if(soundscape.isEnabled()){await soundscape.disable();notify('The imagined soundscape is off.');}else{await soundscape.setHidden(document.hidden);await soundscape.enable();notify('Listening to imagined habitat sounds, not field recordings.');}}catch(error){notify(error?.message||'Sound is unavailable in this browser.',true);}finally{control.disabled=false;updateLabels();}};
 $('rain-toggle').onclick=()=>{rain=!rain;sim.setWeather({rain:rain?1:0});orbWeaver?.setWeather({rain:rain?1:0});pondSkater?.setWeather({rain:rain?1:0});rainLines.visible=rain;hamon?.setRain(rain);updateLabels();notify(rain?'An imagined rain. Inhabitants seek available shelter.':'Returning to a dry imagined visit.');};$('motion-toggle').onclick=()=>{paused=!paused;updateLabels();};
-$('world').addEventListener('pointerdown',e=>{if(e.button!==0)return;pointer={id:e.pointerId,x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY,drag:false};$('world').setPointerCapture(e.pointerId);});
-$('world').addEventListener('pointermove',e=>{if(!pointer||pointer.id!==e.pointerId)return;const dx=e.clientX-pointer.x,dy=e.clientY-pointer.y;pointer.x=e.clientX;pointer.y=e.clientY;pointer.drag ||= Math.hypot(e.clientX-pointer.startX,e.clientY-pointer.startY)>4;if(!pointer.drag)return;releaseResidentFocus();if(overview)orbit-=dx*.005;else (underwaterFocus?submergedView:nav).look(dx*.003,-dy*.003);requestWorldFrame();});
-$('world').addEventListener('pointerup',e=>{if(pointer?.id===e.pointerId&&!pointer.drag)brushFromScreen(e.clientX,e.clientY);pointer=null;});for(const type of ['pointercancel','lostpointercapture'])$('world').addEventListener(type,()=>pointer=null);
-addEventListener('keydown',e=>{if($('panel').open||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;if(e.key==='Escape'){leaveUnderwater();sourceView=null;webFocus=false;skaterFocus=false;overview=true;updateLabels();return;}if(['KeyW','KeyA','KeyS','KeyD','KeyE','KeyQ','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code)){e.preventDefault();releaseResidentFocus();focusFov=null;pressed.add(e.code);requestWorldFrame();if(overview){overview=false;updateLabels();}}});addEventListener('keyup',e=>{if(pressed.delete(e.code))requestWorldFrame();});addEventListener('blur',()=>{pressed.clear();Object.keys(touch).forEach(k=>delete touch[k]);pointer=null;requestWorldFrame();});
+function overviewPinchDistance(){
+ const points=[...overviewTouches.values()];
+ return points.length===2?Math.hypot(points[0].x-points[1].x,points[0].y-points[1].y):null;
+}
+function overviewPinchCenter(){
+ const points=[...overviewTouches.values()];
+ return points.length===2?{x:(points[0].x+points[1].x)/2,y:(points[0].y+points[1].y)/2}:null;
+}
+function moveOverviewFocus(dx,dy){
+ if(!overview||sourceView||!art?.bounds)return;
+ const direction=[Math.sin(.5+orbit)*.9,.48,Math.cos(.5+orbit)];
+ const pose=fitOverview(art.bounds,innerWidth<=750?Math.max(camera.aspect,.78):camera.aspect,direction,48,1.05);
+ const distance=Math.hypot(...pose.position.map((v,i)=>v-pose.target[i]));
+ overviewPan.drag(dx,dy,{bounds:art.bounds,zoom:overviewZoom.value(),viewportHeight:innerHeight,fovDegrees:48,direction,distance});
+}
+function resetOverviewTouch(){overviewTouches.clear();lastPinchDistance=null;lastPinchCenter=null;pointer=null;}
+$('world').addEventListener('wheel',e=>{
+ if(!overview||sourceView||$('panel').open)return;
+ e.preventDefault();overviewZoom.wheel(e.deltaY,e.deltaMode);requestWorldFrame();
+},{passive:false});
+$('world').addEventListener('pointerdown',e=>{
+ if(e.button!==0)return;
+ if(e.pointerType==='touch'&&overview&&!sourceView&&!$('panel').open){
+  if(overviewTouches.size>=2)return;
+  overviewTouches.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(overviewTouches.size===2){lastPinchDistance=overviewPinchDistance();lastPinchCenter=overviewPinchCenter();pointer=null;}
+ }
+ if(overviewTouches.size<2)pointer={id:e.pointerId,x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY,drag:false};
+ $('world').setPointerCapture(e.pointerId);
+});
+$('world').addEventListener('pointermove',e=>{
+ if(overviewTouches.has(e.pointerId)){
+  overviewTouches.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const next=overviewPinchDistance();
+  if(next!==null){
+   const center=overviewPinchCenter();
+   if(lastPinchDistance!==null)overviewZoom.pinch(lastPinchDistance,next);
+   if(lastPinchCenter&&center)moveOverviewFocus(center.x-lastPinchCenter.x,center.y-lastPinchCenter.y);
+   lastPinchCenter=center;lastPinchDistance=next;pointer=null;requestWorldFrame();return;
+  }
+ }
+ if(!pointer||pointer.id!==e.pointerId)return;
+ const dx=e.clientX-pointer.x,dy=e.clientY-pointer.y;pointer.x=e.clientX;pointer.y=e.clientY;
+ pointer.drag ||= Math.hypot(e.clientX-pointer.startX,e.clientY-pointer.startY)>4;
+ if(!pointer.drag)return;
+ releaseResidentFocus();
+ if(overview){if(e.shiftKey&&!sourceView)moveOverviewFocus(dx,dy);else orbit-=dx*.005;}else (underwaterFocus?submergedView:nav).look(dx*.003,-dy*.003);
+ requestWorldFrame();
+});
+function finishWorldPointer(e){
+ overviewTouches.delete(e.pointerId);if(overviewTouches.size<2){lastPinchDistance=null;lastPinchCenter=null;}
+ if(pointer?.id===e.pointerId&&e.type==='pointerup'&&!pointer.drag)brushFromScreen(e.clientX,e.clientY);
+ if(pointer?.id===e.pointerId)pointer=null;
+}
+for(const type of ['pointerup','pointercancel','lostpointercapture'])$('world').addEventListener(type,finishWorldPointer);
+addEventListener('keydown',e=>{
+ if($('panel').open||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
+ if(e.key==='Escape'){leaveUnderwater();sourceView=null;webFocus=false;skaterFocus=false;overview=true;updateLabels();return;}
+ if(overview&&!sourceView&&['Equal','Minus','NumpadAdd','NumpadSubtract','Digit0','Numpad0'].includes(e.code)){
+  e.preventDefault();
+  if(e.code==='Digit0'||e.code==='Numpad0')overviewZoom.reset();
+  else overviewZoom.step(e.code==='Equal'||e.code==='NumpadAdd'?1:-1);
+  requestWorldFrame();return;
+ }
+ if(['KeyW','KeyA','KeyS','KeyD','KeyE','KeyQ','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code)){
+  e.preventDefault();releaseResidentFocus();focusFov=null;pressed.add(e.code);requestWorldFrame();
+  if(overview){overview=false;updateLabels();}
+ }
+});
+addEventListener('keyup',e=>{if(pressed.delete(e.code))requestWorldFrame();});
+addEventListener('blur',()=>{pressed.clear();Object.keys(touch).forEach(k=>delete touch[k]);resetOverviewTouch();requestWorldFrame();});
 document.querySelectorAll('[data-move]').forEach(b=>{b.addEventListener('pointerdown',e=>{e.preventDefault();releaseResidentFocus();focusFov=null;touch[b.dataset.move]=true;b.setPointerCapture(e.pointerId);requestWorldFrame();});for(const t of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(t,()=>{delete touch[b.dataset.move];requestWorldFrame();});});
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);hamon?.resize();requestWorldFrame();});
+
 addEventListener('storage',e=>{if(e.key!==SESSION_KEY)return;try{session=store.load();place=session.places.find(p=>p.id===session.activePlaceId);const hadPanel=$('panel').open;if(hadPanel)closePanel();displayPlace=place;historical=false;rebuild(place,{keepPose:true});notify(hadPanel?'Another window changed the saved world. The open review closed to keep its actions bound to the right place.':'Received the latest saved place from another window.');}catch(err){notify(err.message,true);}});
 function renderWorld(viewportHeight){
  const shadow=sun.shadow,pixelsPerWorldUnit=Math.max(shadow.mapSize.x/(shadow.camera.right-shadow.camera.left),shadow.mapSize.y/(shadow.camera.top-shadow.camera.bottom));
@@ -692,7 +767,7 @@ function updateViewCamera(){
    camera.position.fromArray(sourceView.position);camera.up.fromArray(sourceView.up);
    cameraTarget.fromArray(sourceView.position.map((v,i)=>v+sourceView.forward[i]));camera.lookAt(cameraTarget);
    camera.fov=sourceView.verticalFovDegrees;camera.aspect=sourceView.imageAspect;camera.near=.02;camera.far=200;
-  }else if(overview){camera.up.set(0,1,0);camera.aspect=innerWidth/innerHeight;const direction=[Math.sin(.5+orbit)*.9,.48,Math.cos(.5+orbit)];const pose=fitOverview(art.bounds,innerWidth<=750?Math.max(camera.aspect,.78):camera.aspect,direction,48,1.05);camera.position.fromArray(pose.position);cameraTarget.fromArray(pose.target);cameraTarget.y+=innerWidth<=750?1.4:-.4;if(innerWidth>750)cameraTarget.x-=2;camera.up.fromArray(pose.up);camera.lookAt(cameraTarget);camera.fov=48;camera.near=.05;camera.far=Math.max(200,pose.far);}else{camera.up.set(0,1,0);camera.aspect=innerWidth/innerHeight;const pose=nav.pose();camera.position.fromArray(pose.position);cameraTarget.fromArray(pose.position.map((v,i)=>v+pose.forward[i]));camera.up.fromArray(pose.up);camera.lookAt(cameraTarget);camera.fov=(skaterFocus||!webFocus&&pose.mode==='bird')&&focusFov?2*Math.atan(Math.tan(focusFov*Math.PI/360)/Math.min(1,camera.aspect))*180/Math.PI:focusFov||pose.fov;camera.near=pose.near;camera.far=Math.max(150,Math.hypot(...art.bounds.max.map((v,i)=>v-art.bounds.min[i]))*1.2);}camera.updateProjectionMatrix();
+  }else if(overview){camera.up.set(0,1,0);camera.aspect=innerWidth/innerHeight;const direction=[Math.sin(.5+orbit)*.9,.48,Math.cos(.5+orbit)];const pose=fitOverview(art.bounds,innerWidth<=750?Math.max(camera.aspect,.78):camera.aspect,direction,48,1.05);camera.position.fromArray(pose.target).lerp(new THREE.Vector3(...pose.position),1/overviewZoom.value());cameraTarget.fromArray(pose.target);const pan=overviewPan.position(art.bounds,overviewZoom.value());camera.position.x+=pan.x;camera.position.z+=pan.z;cameraTarget.x+=pan.x;cameraTarget.z+=pan.z;cameraTarget.y+=innerWidth<=750?1.4:-.4;if(innerWidth>750)cameraTarget.x-=2;camera.up.fromArray(pose.up);camera.lookAt(cameraTarget);camera.fov=48;camera.near=.05;camera.far=Math.max(200,pose.far);}else{camera.up.set(0,1,0);camera.aspect=innerWidth/innerHeight;const pose=nav.pose();camera.position.fromArray(pose.position);cameraTarget.fromArray(pose.position.map((v,i)=>v+pose.forward[i]));camera.up.fromArray(pose.up);camera.lookAt(cameraTarget);camera.fov=(skaterFocus||!webFocus&&pose.mode==='bird')&&focusFov?2*Math.atan(Math.tan(focusFov*Math.PI/360)/Math.min(1,camera.aspect))*180/Math.PI:focusFov||pose.fov;camera.near=pose.near;camera.far=Math.max(150,Math.hypot(...art.bounds.max.map((v,i)=>v-art.bounds.min[i]))*1.2);}camera.updateProjectionMatrix();
 }
 function animate(dt){if(!worldReady)return;if(!paused&&!document.hidden)worldTime+=dt;
  if(!overview&&!$('panel').open)(underwaterFocus?submergedView:nav).step({forward:Number(Boolean(pressed.has('KeyW')||pressed.has('ArrowUp')||touch.forward))-Number(Boolean(pressed.has('KeyS')||pressed.has('ArrowDown')||touch.back)),right:Number(Boolean(pressed.has('KeyD')||pressed.has('ArrowRight')||touch.right))-Number(Boolean(pressed.has('KeyA')||pressed.has('ArrowLeft')||touch.left)),up:Number(Boolean(pressed.has('KeyE')||touch.up))-Number(Boolean(pressed.has('KeyQ')||touch.down))},dt);
@@ -748,13 +823,13 @@ function animate(dt){if(!worldReady)return;if(!paused&&!document.hidden)worldTim
   frameCount++;
 }
 frameLoop=createFrameLoop({draw:animate,hidden:()=>document.hidden,continuous:()=>!paused||(!overview&&!$('panel').open&&(pressed.size>0||Object.values(touch).some(Boolean)||(!underwaterFocus&&nav.pose().transitioning)))});
-document.addEventListener('visibilitychange',()=>{void soundscape.setHidden(document.hidden).catch(()=>{});if(document.hidden){cancelPicture();pressed.clear();Object.keys(touch).forEach(k=>delete touch[k]);pointer=null;}frameLoop.visibilityChanged();});
+document.addEventListener('visibilitychange',()=>{void soundscape.setHidden(document.hidden).catch(()=>{});if(document.hidden){cancelPicture();pressed.clear();Object.keys(touch).forEach(k=>delete touch[k]);resetOverviewTouch();}frameLoop.visibilityChanged();});
 addEventListener('pagehide',()=>{void soundscape.dispose().catch(()=>{});});
 addEventListener('pageshow',()=>{if(worldReady)updateLabels();});
 renderer.domElement.addEventListener('webglcontextlost',()=>{cancelPicture();shadowResourceEpoch++;shadowReuse.invalidate();});
 renderer.domElement.addEventListener('webglcontextrestored',()=>{shadowResourceEpoch++;shadowReuse=createShadowReuseGuard(THREE);renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;requestWorldFrame();});
 rebuild(displayPlace);requestWorldFrame();if(saveFault)notify(saveFault,true);
-window.__wildsideInspect=()=>({hamon:hamon?.state()??null,crawlerFocus:crawlerFocus?.controller.snapshot()??null,birdFocus:birdFocus?.controller.snapshot()??null,sourceView:sourceView?{observationId:sourceView.observationId,sourceId:sourceView.sourceId,rms:sourceView.rmsImageHeightFraction,imageAspect:sourceView.imageAspect}:null,mode:underwaterFocus?'underwater':sourceView?'source-view':overview?'overview':nav.pose().mode,pose:underwaterFocus?submergedView.pose():nav.pose(),placeId:place.id,revision:place.revision,memoryCount:session.memories.filter(m=>m.placeId===place.id).length,rain,rainField:{visible:rainLines.visible,segments:rainFieldStats.segments,supportQueries:rainFieldStats.supportQueries,cachedColumns:rainFieldStats.cachedColumns},paused,soundEnabled:soundscape.isEnabled(),simulationTime:worldTime,frameCount,anchorCount:place.anchors.length,anchorIds:place.anchors.map(a=>a.id),historical,birdDetail:{activity:sim.snapshot().bird.activity,forageAmount:sim.snapshot().bird.forageAmount,attention:sim.snapshot().bird.attention,reason:sim.snapshot().bird.reason,perchId:sim.snapshot().bird.perchId,targetId:sim.snapshot().bird.targetId,position:sim.snapshot().bird.position,wingLeft:sim.snapshot().bird.wingLeft,feet:sim.snapshot().bird.feet.map(f=>({toe:f.toe,contact:f.contact}))},foliageDetail:art.detailSnapshot(),publicContext:place.observations.find(o=>o.geographicContext)?.geographicContext??null,contextForms:place.anchors.filter(a=>a.contextForm).map(a=>({id:a.id,form:a.contextForm})),renderer:{calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures},bird:sim.snapshot().bird.state,crawler:crawler?.snapshot().crawler??null,orbWeb:orbWeaver?.snapshot()??null,orbSilk:orbWeaver?.getWeb()?.silkGeometry??null,webVisitor:orbArt?.visitorInspection()??null,webResident:orbArt?.residentInspection()??null,webFocus,pondSkater:pondSkater?.snapshot()??null,skaterFocus,underwaterFocus,submergedLife:submergedLife?.snapshot()??null,camera:{position:camera.position.toArray(),forward:camera.getWorldDirection(new THREE.Vector3()).toArray(),up:new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld,1).toArray(),fov:camera.fov,aspect:camera.aspect,near:camera.near,far:camera.far}});
+window.__wildsideInspect=()=>({overviewZoom:overviewZoom.value(),overviewPan:overviewPan.position(art?.bounds,overviewZoom.value()),hamon:hamon?.state()??null,crawlerFocus:crawlerFocus?.controller.snapshot()??null,birdFocus:birdFocus?.controller.snapshot()??null,sourceView:sourceView?{observationId:sourceView.observationId,sourceId:sourceView.sourceId,rms:sourceView.rmsImageHeightFraction,imageAspect:sourceView.imageAspect}:null,mode:underwaterFocus?'underwater':sourceView?'source-view':overview?'overview':nav.pose().mode,pose:underwaterFocus?submergedView.pose():nav.pose(),placeId:place.id,revision:place.revision,memoryCount:session.memories.filter(m=>m.placeId===place.id).length,rain,rainField:{visible:rainLines.visible,segments:rainFieldStats.segments,supportQueries:rainFieldStats.supportQueries,cachedColumns:rainFieldStats.cachedColumns},paused,soundEnabled:soundscape.isEnabled(),simulationTime:worldTime,frameCount,anchorCount:place.anchors.length,anchorIds:place.anchors.map(a=>a.id),historical,birdDetail:{activity:sim.snapshot().bird.activity,forageAmount:sim.snapshot().bird.forageAmount,attention:sim.snapshot().bird.attention,reason:sim.snapshot().bird.reason,perchId:sim.snapshot().bird.perchId,targetId:sim.snapshot().bird.targetId,position:sim.snapshot().bird.position,wingLeft:sim.snapshot().bird.wingLeft,feet:sim.snapshot().bird.feet.map(f=>({toe:f.toe,contact:f.contact}))},foliageDetail:art.detailSnapshot(),publicContext:place.observations.find(o=>o.geographicContext)?.geographicContext??null,contextForms:place.anchors.filter(a=>a.contextForm).map(a=>({id:a.id,form:a.contextForm})),renderer:{calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures},bird:sim.snapshot().bird.state,crawler:crawler?.snapshot().crawler??null,orbWeb:orbWeaver?.snapshot()??null,orbSilk:orbWeaver?.getWeb()?.silkGeometry??null,webVisitor:orbArt?.visitorInspection()??null,webResident:orbArt?.residentInspection()??null,webFocus,pondSkater:pondSkater?.snapshot()??null,skaterFocus,underwaterFocus,submergedLife:submergedLife?.snapshot()??null,camera:{position:camera.position.toArray(),forward:camera.getWorldDirection(new THREE.Vector3()).toArray(),up:new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld,1).toArray(),fov:camera.fov,aspect:camera.aspect,near:camera.near,far:camera.far}});
 
 
 

@@ -38,7 +38,11 @@ body.underwater .navigation-hint{color:#f0f4dd;text-shadow:0 1px 4px #173d31}
 
 .memory-forget-confirm{margin:12px 0 0;padding:12px 14px;border:1px solid #d4c4aa;border-radius:6px;background:#fff5e7}.memory-forget-confirm p{margin:0 0 10px}.memory-forget-confirm button.remove{border-color:#b77864;background:#f9e3da;margin:0}
 
-/* HAMON Engine view (opt-in ?hamon=1): its canvas covers the maintained three.js canvas. */
+/* HAMON Engine view (default where WebGPU exists; ?hamon=0 opts out): its canvas covers the maintained three.js canvas. */
 #world .hamon-canvas{position:absolute;inset:0;pointer-events:none}#world[data-renderer=hamon]>canvas:not(.hamon-canvas){visibility:hidden}
 .look-picker{display:flex;align-items:center;gap:6px;border-left:1px solid var(--line);padding-left:14px;font-size:11px;font-weight:600}.look-picker[hidden]{display:none}.look-picker span{font-size:8px;color:#70826e;font-weight:normal;text-transform:uppercase;letter-spacing:.06em}.look-picker select{border:0;background:#e5ebdd;border-radius:20px;padding:9px 10px;font:inherit;max-width:150px}
 @media(max-width:750px){.look-picker{padding-left:5px}.look-picker span{display:none}.look-picker select{max-width:92px;padding:8px 6px}}
+
+/* HAMON view: imagined time of day and weather beside the rain toggle */
+.sky-picker{display:flex;align-items:center;gap:4px;border-left:1px solid var(--line);padding-left:14px;font-size:11px;font-weight:600}.sky-picker>span{font-size:8px;color:#70826e;font-weight:normal;text-transform:uppercase;letter-spacing:.06em;margin-right:2px}.sky-picker select{border:0;background:#e5ebdd;border-radius:20px;padding:9px 8px;font:inherit;max-width:132px}
+@media(max-width:750px){.sky-picker{padding-left:5px;gap:2px}.sky-picker>span{display:none}.sky-picker select{max-width:74px;padding:8px 5px}}
