@@ -7,6 +7,8 @@
     "404.html": "71277f8be45ec6327a8ead98ff8cfd41f1e837c523b15e2f867e5f895c1f5c0a",
     "CNAME": "7e89b4b8e0d23220fae91b16a6c40497117ef427d16ca984e7a8c720f14d8527",
     "apple-touch-icon.png": "7165c837849e675fa88bbb7181bfdd71769b20f72c82b492d0ec7f8bee707a71",
+    "assets/demos/captionverse-reading-desktop.png": "08e033d909bdafe2284850204cd5ed659d33d52c7634a682069a2ebd79fbaf64",
+    "assets/demos/captionverse-reading-phone.png": "f52dd796d365d8782ed33015a12feba60397ec0ede1d00faf036b8c70693c0c4",
     "assets/demos/recallweave-desktop.webp": "7f09210bd45edb2ac8fa157b5e380988ea5f28a820300cf319fb7fb55f683565",
     "assets/demos/recallweave-mobile.webp": "64904386178ed8bb0db502b70621bbc14dea959668ef64dfd144094856140798",
     "assets/demos/towerops-desktop.webp": "1f385b35fc21b57232c1ca74f77855890d370a9691ce6a84b5e6d23012629ce0",
@@ -22,6 +24,8 @@
     "assets/fonts/space-grotesk.woff": "0cebd5ca855d0aea379a7e70240aa096e89f76efea057fad7b888370574662f6",
     "assets/mark.svg": "d3db3974f3ef1188c03880311ed5cc3308b7f38cb673bc1660df363b40fa7d8c",
     "assets/og-card.png": "e9fb21df2eca24b476bf4dd323a4a3e947b591103bb9f664bfc890426f8b212a",
+    "assets/scene/engine-follow-through.mp4": "0f3a1eac90be4bcd82e2893a25a475a327eeeb791c8f79aacdb023bbb9ab555f",
+    "assets/scene/engine-follow-through.png": "e8a96e9441ead8fb29d8b2b3d73a184dfa3e5d25a92eba6d55952cf95c11d88b",
     "assets/scene/forge-arrival-1280.png": "37f712ef3718d7d02faffc6952a363906e34a9e921623d16470e425bcd8ec9dd",
     "assets/scene/forge-arrival-960.png": "7f510954f85e241920f75fd32c007d428930adf40b207b7d5f041d46f642b24a",
     "assets/scene/forge-engine-arrival.png": "18c5c569ef7207859d59c72320faac8445c1fe3afda45d7b87204a02de15b7ec",
@@ -68,7 +72,7 @@
     "cv.json": "8bf265836cadd04aecb6ab3bcc71debbde250e7cead76289c87f48ebc89b167d",
     "detail.js": "b23eacae390e33b424cdbace4039fbe5418311ab256232d7946ed2993ebadc0a",
     "experience-content.json": "191738626f346ef769805e3f3dfbd32ce6607ce172e7d256301ca68e55c8dfae",
-    "experience.css": "84f132324de0d62acfb3b71e024dd548ff9a62c965a3269ebc572b4b69b01835",
+    "experience.css": "6de002bbac87449ebff4e5a411aba9c4e91af4a24c845e0b5047c3397fa3a128",
     "favicon.ico": "fe0deb2a0efa8c76fdcca3619db3e5036779ccf5aae7927108bd34d02bd6d0ba",
     "games/lanternwake/build-info.json": "a0cfabeef8c3d89ea5f28eca998a25ac9c7bfa98c57c778c239ba9c17ec25a28",
     "games/lanternwake/desktop.png": "2405736059c1d6fc5757057d9161346dab8bdf3cd50cc6ab14bcbc04a21d40a0",
@@ -81,7 +85,7 @@
     "games/lanternwake/poster.svg": "1ee8b5c9154f1f52b9bad22b5216de44a172ff47bef6c7752d785c84e87e3175",
     "games/lanternwake/style.css": "6a4c0e20a4316051c77f9b13d0cf581019c47d19918fae8f18d09bef2f36fd72",
     "games/lanternwake/webgpu-compat.js": "95b4487d37462f3e60f159abfedff03bcd6810960339ae2a65e0311863954822",
-    "index.html": "142687f4b965fa2f4b4fa70fa1744cb5a67006c1ca2e0d2fe0acbaf460f4fddb",
+    "index.html": "6da5b3a6cec1b7cc220abd4969944bd4c2787f55c869905fc47a4d94733e4044",
     "lobby-journey.js": "3f7e383b84dc6034b65cf571666f28297df4e20113670c7280b47b7b13bc2d24",
     "lobby-manifest.json": "005bf1cfee90e9ed26a09951843994885d126247ca535823f6249c46bf28706d",
     "lobby.js": "36adc74e32f4c62917e559ee6b8a6efa1beb5e221c3dd1a4b99e8e1f29886759",
@@ -90,6 +94,6 @@
     "robots.txt": "60d463caa67aaa008b827bdec75236dcec7a9c82c49f529ad1da2de1c847c47e",
     "scene-handoff.js": "dceb03ad79736cc96a37fed78c04d63663889be596d52b200e71bdf433d8a39e",
     "sitemap.xml": "2eed0d0b00ceeb3428b333b551ac7a157d1610fc06c64641c3a855e5cf266c5b",
-    "style.css": "84f132324de0d62acfb3b71e024dd548ff9a62c965a3269ebc572b4b69b01835"
+    "style.css": "6de002bbac87449ebff4e5a411aba9c4e91af4a24c845e0b5047c3397fa3a128"
   }
 }

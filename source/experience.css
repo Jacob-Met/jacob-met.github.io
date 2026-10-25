@@ -136,3 +136,37 @@ body .work-section.forge-room{--arrival-height:clamp(230px,33svh,340px);backgrou
 .worldlaw-probe{display:none!important}
 .worldlaw-reading span,.worldlaw-reading strong{color:CanvasText}
 }
+
+/* Exact browser-capture bytes, shown as a labeled reading-pause detail.
+   Desktop source viewport: x190..1250, y530..1000 of 1440x1000.
+   Match the picture's phone source breakpoint to 800px. */
+.captionverse-capture{max-width:760px;margin:24px 0 28px}
+.captionverse-capture-frame{display:block;overflow:hidden;aspect-ratio:1060/470}
+.captionverse-capture-frame picture{display:block}
+.captionverse-capture-frame img{display:block;width:135.849056604%;max-width:none;height:auto;margin:-50% 0 0 -17.924528302%}
+.captionverse-capture figcaption{padding-top:14px;color:var(--quiet);font-size:13px;line-height:1.65}
+.captionverse-capture figcaption p{font-size:inherit;line-height:inherit;margin:7px 0}
+.captionverse-capture .captionverse-capture-label{display:block;color:var(--paper);font-size:13px;line-height:1.6}
+.captionverse-capture .captionverse-capture-links{display:flex;flex-wrap:wrap;gap:0 22px;margin:5px 0}
+.captionverse-capture .captionverse-capture-links a{display:inline-flex;align-items:center;min-height:44px;color:var(--leaf);font-size:13px}
+.captionverse-capture .captionverse-capture-credit{font-size:12px;line-height:1.65}
+.captionverse-capture .captionverse-capture-credit a{text-decoration:underline;text-underline-offset:3px}
+@media(max-width:800px){
+  .captionverse-capture-frame{max-width:260px;aspect-ratio:390/900}
+  .captionverse-capture-frame img{width:100%;height:auto;margin:0}
+}
+@media(forced-colors:active){
+  .captionverse-capture figcaption,.captionverse-capture .captionverse-capture-label{color:CanvasText}
+  .captionverse-capture a{color:LinkText}
+}
+
+/* A manually played recorded comparison, not a second player implementation. */
+.engine-motion-study{max-width:640px;margin:24px 0 30px}
+.engine-motion-labels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:end;gap:12px;margin-bottom:10px;color:var(--paper);font-size:14px;line-height:1.4;text-align:center}
+.engine-motion-study video{display:block;width:100%;height:auto;aspect-ratio:960/386;background:#26262e}
+.engine-motion-study figcaption{margin-top:12px;color:var(--quiet);font-size:13px;line-height:1.65}
+.engine-motion-study figcaption small{display:block;margin-top:5px;color:var(--quiet);font-size:12px;line-height:1.6}
+.engine-motion-study video a{display:inline-flex;align-items:center;min-height:44px;color:var(--leaf)}
+@media(forced-colors:active){
+  .engine-motion-labels,.engine-motion-study figcaption,.engine-motion-study figcaption small{color:CanvasText}
+}
