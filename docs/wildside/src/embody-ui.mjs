@@ -72,11 +72,13 @@ export function mountEmbodyUI(embody,{notify=()=>{}}={}){
   const onKey=e=>{
     if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)||document.querySelector('#panel')?.open)return;
     if(embody.driving&&e.code==='Space'){e.preventDefault();embody.setJump(true);return;}
+    if(embody.driving&&e.code==='KeyF'){embody.setAct(true);return;}
+    if(embody.driving&&(e.code==='ShiftLeft'||e.code==='ShiftRight')){embody.setRun(true);return;}
     if(!embody.active)return;
     if(e.code==='KeyV'&&embody.mode==='inside'){embody.cycleView();return;}
     if(e.code==='KeyG'){storyOpen=!storyOpen;render();return;}
   };
-  const onKeyUp=e=>{if(e.code==='Space')embody.setJump(false);};
+  const onKeyUp=e=>{if(e.code==='Space')embody.setJump(false);if(e.code==='KeyF')embody.setAct(false);if(e.code==='ShiftLeft'||e.code==='ShiftRight')embody.setRun(false);};
   addEventListener('keydown',onKey);addEventListener('keyup',onKeyUp);
   const sync=()=>{
     const s=embody.snapshot();

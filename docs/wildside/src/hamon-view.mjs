@@ -66,6 +66,13 @@ export function mountHamonView(parent,{onState=()=>{},skyContainer=null,requestF
  })();
  const api={canvas,ready,state,
   get active(){return phase==='ready'&&!!view;},
+  /** Simulated residents of the Engine (squirrels, rabbits, songbirds, butterflies, gulls), live: [{kind,pos,yaw,airborne,activity}].
+   * Yaw is the Engine's heading about +Y (0 faces +X, positive turns left). Empty on an Engine without them. */
+  residentPoses(){try{return phase==='ready'&&engine?.resident_poses_json?JSON.parse(engine.resident_poses_json()):[];}catch{return [];}},
+  /** Steer resident `i` (a negative index hands every resident back). False on an Engine that cannot. */
+  possessResident(i){try{return !!engine?.resident_possess?.(i);}catch{return false;}},
+  driveResident(i,{forward=0,turn=0,up=0,run=false,act=false}={}){try{engine?.resident_drive?.(i,forward,turn,up,!!run,!!act);}catch{}},
+  get canSteerResidents(){return typeof engine?.resident_drive==='function';},
   /** The Engine's crowns, for camera rules (the three.js stand-ins are not what is drawn). */
   get trees(){return worldTrees;},
   /** Send a rebuilt place: `art` from buildWorldArt, `dynamicRoots` = [{group, role}] of

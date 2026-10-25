@@ -18,7 +18,7 @@ const lerp=(a,b,t)=>a+(b-a)*t;
 
 export function createEmbodiment(deps){
   const {context,occlude=()=>null,project=()=>null,hamonActive=()=>false,onActive=()=>{},storage=null,onChange=()=>{},onUnlock=()=>{}}=deps;
-  let mode='off',creature=null,view='eyes',driver=null,jump=false;
+  let mode='off',creature=null,view='eyes',driver=null,jump=false,act=false,run=false;
   const orbit={yaw:0,pitch:-.16,distance:1.25},focus=[0,0,0];let focusReady=false;
   let progress={};
   try{const raw=storage?.getItem(PROGRESS_KEY);if(raw)progress=JSON.parse(raw)??{};}catch{progress={};}
@@ -39,7 +39,7 @@ export function createEmbodiment(deps){
   function list(){
     return CREATURES.map(c=>{
       const found=c.locate(context());
-      return {id:c.id,name:c.name,kind:c.kind,present:!!found,canBecome:!!c.canBecome&&hamonActive(),becomeBlocked:c.canBecome&&!hamonActive()?'Becoming an animal needs the HAMON view (?hamon=1).':null,activity:found?.activity??null,hasStory:CREATURE_IDS.includes(c.id)};
+      return {id:c.id,name:c.name,kind:c.kind,present:!!found,canBecome:!!c.canBecome&&hamonActive()&&!c.blocked?.(context()),becomeBlocked:c.canBecome?(!hamonActive()?'Becoming an animal needs the HAMON view (?hamon=1).':c.blocked?.(context())??null):null,activity:found?.activity??null,hasStory:CREATURE_IDS.includes(c.id)};
     });
   }
 
@@ -50,6 +50,7 @@ export function createEmbodiment(deps){
     if(nextMode==='inside'){
       if(!c.canBecome)return {ok:false,reason:'Not yet.'};
       if(!hamonActive())return {ok:false,reason:'Becoming an animal needs the HAMON view (?hamon=1).'};
+      const blocked=c.blocked?.(context());if(blocked)return {ok:false,reason:blocked};
       const d=c.become(context(),found);
       if(!d)return {ok:false,reason:'There is no safe space to stand where the '+c.name.toLowerCase()+' is. Try again when it moves.'};
       driver?.dispose?.();driver=d;view='eyes';
@@ -73,7 +74,7 @@ export function createEmbodiment(deps){
 
   function exit(){
     if(mode==='off')return false;
-    driver?.dispose?.();driver=null;mode='off';creature=null;jump=false;
+    driver?.dispose?.();driver=null;mode='off';creature=null;jump=false;act=false;run=false;
     persist();onActive(false);emit();return true;
   }
 
@@ -95,6 +96,8 @@ export function createEmbodiment(deps){
     setView(next){if(mode==='inside'&&VIEWS.includes(next)){view=next;emit();}},
     cycleView(){if(mode==='inside'){view=VIEWS[(VIEWS.indexOf(view)+1)%VIEWS.length];emit();}},
     setJump(v){jump=!!v;},
+    setAct(v){act=!!v;},
+    setRun(v){run=!!v;},
     progress:id=>({...prog(id)}),
     /** Drag to look: yaw/pitch as inside, orbit as outside. */
     look(dx,dy){
@@ -110,7 +113,7 @@ export function createEmbodiment(deps){
     update(input,dt){
       if(mode==='off'||!creature)return;
       if(mode==='inside'&&driver){
-        const moved=driver.step({...input,up:input.up+(jump?1:0)},dt);
+        const moved=driver.step({...input,up:input.up+(jump?1:0),act,run},dt);
         bump(creature,'embody',dt);bump(creature,'ground',moved.ground);bump(creature,'air',moved.air);
       }else if(mode==='outside'&&locate(creature))bump(creature,'observe',dt);
       dirty+=dt;if(dirty>5){dirty=0;persist();}

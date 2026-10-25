@@ -105,7 +105,7 @@ const embodyRay=new THREE.Raycaster();
 const embodyProbe=new THREE.Vector3();
 let embodyClock=0;
 const embody=createEmbodiment({
- context:()=>({sim,nav,groundAt:art?.groundAt,crawler,pondSkater,orbWeaver,submergedLife}),
+  context:()=>({sim,nav,groundAt:art?.groundAt,crawler,pondSkater,orbWeaver,submergedLife,hamon}),
  hamonActive:()=>!!hamon?.active,
  occlude:(from,to,{foliage=false}={})=>{
   const d=to.map((v,i)=>v-from[i]),length=Math.hypot(...d);if(length<1e-9||!art)return null;
