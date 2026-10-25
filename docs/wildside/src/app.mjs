@@ -229,6 +229,17 @@ function safeStart(mode='human'){
  }
  return null;
 }
+/** A public-map place opens from a few metres up, looking along the street, so the buildings, street and sky read at once. */
+function enterMapVantage(){
+ try{
+  const ground=safeStart('human');if(!ground)return false;
+  const p=ground.pose(),pos=[p.position[0],p.position[1]-MODES.human.eye+8,p.position[2]];
+  const probe=createNavigator(world(),{mode:'bird',position:pos,yaw:-2.05,pitch:-.5});
+  if(!probe.restore(probe.pose()).ok)return false;
+  releaseResidentFocus();leaveUnderwater();webFocus=false;skaterFocus=false;sourceView=null;focusFov=null;
+  nav=probe;overview=false;pendingMode=null;updateLabels();$('world').focus({preventScroll:true});return true;
+ }catch{return false;}
+}
 function rebuild(p,{keepPose=false}={}){
  overviewZoom.reset();overviewPan.reset();overviewTouches.clear();lastPinchDistance=null;lastPinchCenter=null;pointer=null;
  releaseResidentFocus();
@@ -901,7 +912,7 @@ registerCoreControls();
 if(settings.get().renderScale!==1)applyRenderScale();
 registerCorePlaces();
 placesPicker=mountPlacesPicker({pill:$('place-pill'),nameEl:$('place-pill-name'),panel:$('places'),list:$('places-list'),close:$('places-close'),titleCard:$('title-card'),prompt:$('places-prompt'),getPlaceName:()=>displayPlace.name,notify,isBlocked:()=>$('panel').open,
- onArrive:()=>{try{requestAnimationFrame(()=>{if(overview)enter('human');});}catch{}}});
+ onArrive:()=>{try{requestAnimationFrame(()=>{if(!overview)return;if(displayPlace.anchors.some(x=>x.mapGeometry)&&enterMapVantage())return;enter('human');});}catch{}}});
 registerControl({id:'places-open',section:'place',order:0,mount({container,kit}){container.append(kit.action({label:'Choose another place',onClick:()=>{worldDrawer.close();placesPicker.open();}}).element);}});
 rebuild(displayPlace);requestWorldFrame();if(saveFault)notify(saveFault,true);
 window.__wildsideInspect=()=>({overviewZoom:overviewZoom.value(),overviewPan:overviewPan.position(art?.bounds,overviewZoom.value()),hamon:hamon?.state()??null,hamonTrees:hamon?.trees??[],crawlerFocus:crawlerFocus?.controller.snapshot()??null,birdFocus:birdFocus?.controller.snapshot()??null,sourceView:sourceView?{observationId:sourceView.observationId,sourceId:sourceView.sourceId,rms:sourceView.rmsImageHeightFraction,imageAspect:sourceView.imageAspect}:null,mode:underwaterFocus?'underwater':sourceView?'source-view':overview?'overview':nav.pose().mode,pose:underwaterFocus?submergedView.pose():nav.pose(),placeId:place.id,revision:place.revision,memoryCount:session.memories.filter(m=>m.placeId===place.id).length,rain,rainField:{visible:rainLines.visible,segments:rainFieldStats.segments,supportQueries:rainFieldStats.supportQueries,cachedColumns:rainFieldStats.cachedColumns},paused,soundEnabled:soundscape.isEnabled(),simulationTime:worldTime,frameCount,anchorCount:place.anchors.length,anchorIds:place.anchors.map(a=>a.id),historical,birdDetail:{activity:sim.snapshot().bird.activity,forageAmount:sim.snapshot().bird.forageAmount,attention:sim.snapshot().bird.attention,reason:sim.snapshot().bird.reason,perchId:sim.snapshot().bird.perchId,targetId:sim.snapshot().bird.targetId,position:sim.snapshot().bird.position,wingLeft:sim.snapshot().bird.wingLeft,feet:sim.snapshot().bird.feet.map(f=>({toe:f.toe,contact:f.contact}))},foliageDetail:art.detailSnapshot(),publicContext:place.observations.find(o=>o.geographicContext)?.geographicContext??null,contextForms:place.anchors.filter(a=>a.contextForm).map(a=>({id:a.id,form:a.contextForm})),renderer:{calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures},bird:sim.snapshot().bird.state,crawler:crawler?.snapshot().crawler??null,orbWeb:orbWeaver?.snapshot()??null,orbSilk:orbWeaver?.getWeb()?.silkGeometry??null,webVisitor:orbArt?.visitorInspection()??null,webResident:orbArt?.residentInspection()??null,webFocus,pondSkater:pondSkater?.snapshot()??null,skaterFocus,underwaterFocus,submergedLife:submergedLife?.snapshot()??null,camera:{position:camera.position.toArray(),forward:camera.getWorldDirection(new THREE.Vector3()).toArray(),up:new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld,1).toArray(),fov:camera.fov,aspect:camera.aspect,near:camera.near,far:camera.far}});

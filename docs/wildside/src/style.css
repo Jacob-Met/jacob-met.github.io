@@ -349,3 +349,4 @@ body.exploring .place-pill-name{text-shadow:none}
 .settings-drawer.open{transform:none}
 @media(max-width:750px){.settings-drawer{top:auto;bottom:calc(var(--dock-bottom) + 62px);max-height:64dvh}}
 @media(min-width:751px){.places-panel{width:min(760px,calc(100vw - 2*var(--gutter)))}.places-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
+body:has(#status.visible) .navigation-hint{opacity:0}
