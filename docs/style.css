@@ -5,9 +5,9 @@
 /* The forge stays a real Engine capture. Light is for reading, not simulated detail. */
 .environment{position:fixed;inset:0;z-index:-2;background:var(--ink)}.environment img,.environment video{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;object-position:center}.reading-light{position:absolute;inset:0;background:linear-gradient(90deg,#08121df5,#08121de6 24%,#08121d80 43%,#08121d00 67%),linear-gradient(0deg,#08121dc7,transparent 35%,transparent 82%,#08121d66)}
 header{position:absolute;z-index:12;left:6%;right:6%;top:24px;display:flex;justify-content:space-between;align-items:center;gap:24px}.identity{display:inline-flex;align-items:center;min-height:44px;min-width:44px;font-size:25px;font-weight:500;letter-spacing:-.06em}.identity span{color:var(--ice)}header nav{display:flex;gap:26px;font-size:13px;color:#c0d0d7}header nav a{display:inline-flex;align-items:center;min-height:44px;min-width:44px}header nav a:hover{color:var(--leaf)}
-/* Three destinations on a single rail; never a dashboard of interchangeable cards. */
+/* Entrance identity. The forge supplies the navigation below. */
 .entrance{position:relative;min-height:850px;min-height:max(850px,100svh);padding:125px 6% 86px}.intro{position:relative;max-width:480px}.eyebrow{font-size:11px;line-height:1.6;letter-spacing:.12em;color:var(--quiet);margin:0 0 18px}.intro h1{font-size:clamp(60px,5.8vw,84px);line-height:.97;letter-spacing:-.067em;font-weight:400;margin:0 0 21px}.intro h1 span{color:var(--ice)}.intro>p:last-child{font-size:17px;line-height:1.5;color:#b6cbd3;margin:0}
-.destinations{position:relative;max-width:354px;margin-top:42px;padding-left:1px}.destinations::before{content:'';position:absolute;left:10px;top:23px;bottom:38px;width:1px;background:linear-gradient(#416874,#71908a 50%,#4d4e68)}.destination{--destination-color:var(--ice);display:flex;position:relative;align-items:flex-start;gap:24px;min-height:82px;padding:13px 0}.destination-spire{--destination-color:var(--violet)}.destination .number{position:relative;flex:0 0 20px;min-width:20px;font:10px/1.6 ui-monospace,monospace;letter-spacing:.03em;color:var(--destination-color);padding-top:5px;background:var(--ink);text-align:center}.destination strong{display:block;font-size:27px;line-height:1.15;letter-spacing:-.04em;font-weight:400}.destination small{display:block;font-size:15px;line-height:1.45;color:var(--quiet);margin-top:5px}.destination .out{margin-left:auto;flex:0 0 20px;color:var(--destination-color);font-size:20px;line-height:1.4}.destination:hover strong,.destination:focus-visible strong{color:var(--destination-color)}.current{--destination-color:var(--leaf);padding-top:18px;padding-bottom:22px}.current strong{font-size:38px;letter-spacing:-.055em}.current>div{flex:1;min-width:0}.current .number{padding-top:11px}.enter{display:flex;align-items:center;justify-content:space-between;gap:22px;min-height:48px;margin-top:9px;border-bottom:1px solid #789e83;color:var(--leaf);font-size:16px}.enter:hover{border-color:var(--leaf);color:var(--paper)}.enter span{font-size:25px}.other-work{display:flex;flex-wrap:wrap;gap:5px 24px;margin-top:2px}.other-work a{display:inline-flex;align-items:center;min-height:44px;font-size:14px;color:#bfd0d7}.other-work a:hover{color:var(--leaf)}.place-label{position:absolute;left:58%;bottom:105px;display:flex;gap:18px}.place-label>span{display:block;width:38px;height:1px;background:#c0cabc;margin-top:13px}.place-label p{font-size:23px;line-height:1.3;letter-spacing:-.035em;margin:0}.place-label em{font-style:normal;font-size:16px;color:#b0c5cc}
+.place-label{position:absolute;left:58%;bottom:105px;display:flex;gap:18px}.place-label>span{display:block;width:38px;height:1px;background:#c0cabc;margin-top:13px}.place-label p{font-size:23px;line-height:1.3;letter-spacing:-.035em;margin:0}.place-label em{font-style:normal;font-size:16px;color:#b0c5cc}
 /* Route navigation stays in the page, even when a destination has no live scene. */
 .room-nav{display:flex;flex-wrap:wrap;align-items:center;gap:3px 24px;max-width:100%;padding:0 0 27px;margin:0 0 35px;border-bottom:1px solid #35515d;font-size:13px;line-height:1.4;color:#9cb5c1}.room-nav a{display:inline-flex;align-items:center;position:relative;min-height:44px;min-width:44px}.room-nav a:hover,.room-nav a[aria-current]{color:var(--leaf)}.room-nav a[aria-current]::after{content:'';position:absolute;left:0;right:0;bottom:4px;height:1px;background:var(--leaf)}
 .section-alias{display:block;scroll-margin-top:28px}.work-section{position:relative;max-width:1180px;margin:0 auto;padding:110px clamp(24px,6vw,72px) 90px;background:var(--ink);font-size:17px;line-height:1.7}.work-section h2{font-size:clamp(42px,4.4vw,64px);font-weight:400;letter-spacing:-.055em;line-height:1.08;margin:0 0 27px;text-wrap:balance}.work-section h3{font-size:26px;line-height:1.25;letter-spacing:-.03em;font-weight:400}.work-section>p{max-width:690px;color:var(--quiet)}.section-context{font-size:11px;line-height:1.6;letter-spacing:.15em;text-transform:uppercase;color:var(--ice);margin:0 0 19px}.work-section>.section-context{color:var(--ice)}.return-link,.public-action,.public-actions a{display:inline-flex;align-items:center;min-height:44px;min-width:44px;color:var(--leaf);font-size:16px}.return-link{margin-top:42px}.public-actions{display:flex;flex-wrap:wrap;gap:4px 25px}
@@ -47,32 +47,6 @@ body .work-section.forge-room{--arrival-height:clamp(230px,33svh,340px);backgrou
 @media(max-width:700px){body .work-section.forge-room{--arrival-height:clamp(220px,33svh,300px)}.branch-arrival,.enhanced.section-view .branch-arrival{margin:-102px -8.15% 23px}.branch-arrival img{object-position:center 57%}#projects .branch-arrival img{object-position:center 61%}.branch-arrival figcaption{padding:11px 7% 13px;font-size:12px}.branch-arrival figcaption small{font-size:10px}.branch-arrival::after{height:90px}}
 @media(max-height:550px) and (orientation:landscape){body .work-section.forge-room{--arrival-height:clamp(110px,30svh,175px)}.branch-arrival::after{height:80px}}
 @media(forced-colors:active){body .work-section.forge-room{background:Canvas}.branch-arrival::after{display:none}.branch-arrival figcaption,.branch-arrival figcaption small{color:CanvasText;background:Canvas}}
-
-/* Optional object-anchored entry points. The ordinary menu is always available.
-   Coordinates are from the 1280×800 native entrance: fire opening (634,412),
-   anvil working face (686,458), and hammer on the bench (970,428). */
-.scene-portals{display:none}
-.scene-beacon{position:absolute;display:flex;align-items:center;gap:10px;min-height:44px;min-width:44px;padding:0;transform:translate(-22px,-22px);pointer-events:auto;color:#e0ece7;font-size:14px;line-height:1.35;white-space:nowrap}
-.scene-beacon::before{content:'';display:block;flex:0 0 44px;width:44px;height:44px;border:1px solid #c6dfc1a8;border-radius:50%;background:#08121d33}
-.scene-beacon::after{content:'';position:absolute;left:20px;top:20px;width:4px;height:4px;border-radius:50%;background:#c5e6a9}
-.scene-beacon span{border-bottom:1px solid transparent;padding:3px 0;text-shadow:0 1px 5px #000,0 1px 12px #08121d}
-.scene-beacon:hover,.scene-beacon:focus-visible{color:#eaf6df}
-.scene-beacon:hover::before,.scene-beacon:focus-visible::before{border-color:#d3f1b9;background:#17312777}
-.scene-beacon:hover span,.scene-beacon:focus-visible span{border-bottom-color:#c5e6a9}
-.beacon-engine{left:49.5%;top:51.5%}.beacon-hackathons{left:53.6%;top:57.25%}.beacon-projects{left:75.8%;top:53.5%}
-@media(min-width:1200px) and (min-height:650px) and (min-aspect-ratio:3/2){.environment img,.environment video{object-position:left center}.enhanced[data-room="forge"][data-scene="forge"] .scene-portals{display:block;position:fixed;left:0;top:50svh;width:max(100vw,160svh);height:max(62.5vw,100svh);transform:translateY(-50%);z-index:3;pointer-events:none}}
-@media(forced-colors:active){.scene-portals{display:none!important}}
-
-/* Spire is another authored world, reached directly on its own site.
-   The existing public artwork is an unframed glimpse within that one link;
-   text stays above the picture, and the forge's object coordinates stay untouched. */
-.destination-spire{--spire-tail:44px}
-.spire-invitation{display:block;flex:1;min-width:0}
-.spire-glimpse{display:block;width:calc(100% + var(--spire-tail));max-width:none;height:126px;margin-top:15px;object-fit:cover;object-position:center 44%}
-@media(max-width:1100px) and (min-width:701px){.destination-spire{--spire-tail:40px}}
-@media(max-width:700px){.destination-spire{--spire-tail:39px}.spire-glimpse{height:132px;margin-top:14px}}
-@media(max-width:359px){.destination-spire{--spire-tail:35px}.spire-glimpse{height:118px}}
-@media(forced-colors:active){.spire-glimpse{display:none}}
 
 /* One genuine native example makes the Engine's stylized range visible.
    Keep its brighter world inside the reading column, not in the forge stage. */
@@ -201,19 +175,9 @@ body.ws{background:#08121d;color:#e5eef0}
 .hamon-frame-small{max-width:640px}
 .hamon-foot{max-width:960px;margin:0 auto;padding:40px clamp(20px,5vw,56px) max(56px,env(safe-area-inset-bottom));color:var(--quiet);font-size:14px;border-top:1px solid var(--line)}
 .ws-section a:not(.ws-play):not(.hamon-secondary):not(.public-action):not(.kicker-link):not(.public-action-inline):not(.hamon-frame){color:var(--leaf)}
-/* Home: Wildside featured beside the forge */
-.home-flagship{position:absolute;right:6%;top:548px;width:min(500px,37vw);display:grid;grid-template-columns:42% 1fr;background:#08121dd9;border:1px solid #314c59;border-radius:12px;overflow:hidden;z-index:3;backdrop-filter:blur(6px)}
-.home-flagship-image{display:block;min-height:100%}.home-flagship-image img{display:block;width:100%;height:100%;object-fit:cover}
-.home-flagship>div{padding:14px 16px 14px}.home-flagship .eyebrow{color:#ffd9a0;margin-bottom:6px}.home-flagship h2{font-size:26px;font-weight:400;letter-spacing:-.045em;margin:0 0 6px}.home-flagship p{margin:0 0 12px;font-size:15px;line-height:1.5;color:var(--quiet)}
-.home-flagship-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px 20px;margin:0!important}.home-flagship .ws-play{min-height:46px;padding:0 24px;font-size:16px}.home-flagship-actions a:not(.ws-play){color:var(--leaf);border-bottom:1px solid #789e83;min-height:44px;display:inline-flex;align-items:center;font-size:15px}
-.home-flagship .ws-play:hover{color:#2a1608}
-.enhanced.travelling .home-flagship,.enhanced.arrived .home-flagship,.enhanced.section-view .home-flagship{display:none}
 .not-found-links{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
 .ws-hero-copy .hamon-actions{margin-bottom:0}
-@media(max-width:1100px){.home-flagship{position:relative;top:auto;right:auto;bottom:auto;width:auto;max-width:354px;margin:26px 0 0;grid-template-columns:1fr}.home-flagship-image img{height:auto}.place-label{display:none}}
 @media(max-width:760px){.hamon-caps{grid-template-columns:1fr}.hamon-instruments li{grid-template-columns:1fr}.hamon-hero::after{background:linear-gradient(180deg,#08121d99 0,#08121d55 25%,#08121df2 80%)}.hamon-hero-copy{padding-top:120px}.hamon-actions .ws-play{width:100%;justify-content:center}.hamon-frame-play{font-size:17px;padding:0 20px;min-height:48px}}
-@media(max-width:1100px){.entrance{display:flex;flex-direction:column;align-items:flex-start}.intro{order:1}.home-flagship{order:2;margin:22px 0 0;width:100%;max-width:354px}.destinations{order:3}.scene-portals{order:4}}
-@media(max-width:700px){.home-flagship{grid-template-columns:36% 1fr;max-width:none}.home-flagship-image img{height:100%}.home-flagship h2{font-size:23px}.home-flagship p{font-size:14px}.home-flagship>div{padding:12px 14px}.home-flagship .eyebrow{font-size:10px}}
 /* Legibility over painted art: stronger scrim under hero copy, readable kickers */
 .ws-hero::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,#08121dcc 0,#08121d88 45%,transparent 80%)}
 .ws-hero-copy .section-context,.hamon-hero-copy .section-context{color:#d8ecf2;text-shadow:0 1px 10px #08121d}
@@ -245,3 +209,69 @@ body.ws{background:#08121d;color:#e5eef0}
 @media(max-width:760px){.hamon-games{grid-template-columns:1fr}}
 @media(max-width:760px){.ws-top nav{gap:0 13px;flex-wrap:nowrap;justify-content:space-between}.ws-top nav a{font-size:14px;padding:0}.ws-top{row-gap:0}.ws-hero-copy,.hamon-hero-copy{padding-top:140px}}
 @media(max-width:350px){.ws-top nav{gap:0 8px}.ws-top nav a{font-size:13px}}
+
+/* Forge entrance: three real objects, three camera journeys.
+   Wildside, Spire, and Research remain editorial links, never invented props.
+   The ordinary links are the default: no script, narrow screens, pending/failed
+   image decoding, and forced colors must not depend on a visible scene. */
+.entrance{display:block;min-height:100svh;padding:118px 6% 96px}
+.intro{max-width:360px}
+.intro h1{font-size:clamp(56px,5.3vw,80px);line-height:.98;margin-bottom:22px;text-shadow:0 2px 26px #08121dd0}
+.intro>p:last-child{font-size:clamp(17px,1.45vw,20px);line-height:1.55;color:#dbe8ec;max-width:340px;text-shadow:0 1px 14px #08121d}
+.reading-light{background:linear-gradient(90deg,#08121de6,#08121d9e 25%,#08121d00 47%),linear-gradient(0deg,#08121d88,transparent 24%,transparent 84%,#08121d55)}
+.environment img,.environment video{object-position:center}
+.forge-navigation{position:relative;z-index:4;max-width:390px;margin-top:28px}
+.forge-routes,.forge-editorial{display:flex;flex-wrap:wrap;gap:0 22px}
+.forge-routes a,.forge-editorial a{display:inline-flex;align-items:center;gap:7px;min-height:44px;font-size:15px;line-height:1.5;color:#e2edf0;text-decoration:underline;text-decoration-color:#799ca4;text-underline-offset:5px;text-decoration-thickness:1px}
+.forge-routes a{color:var(--leaf);text-decoration-color:#789e83}
+.forge-editorial{margin-top:14px}
+.forge-editorial a span{color:#a6c3ca;font-size:13px}
+.forge-routes a:hover,.forge-routes a:focus-visible,.forge-editorial a:hover,.forge-editorial a:focus-visible{color:#fff;text-decoration-color:currentColor}
+.place-label{left:6%;bottom:48px;gap:14px;pointer-events:none}
+.place-label p{font-size:18px;color:#d9e5e8}
+.place-label em{font-size:13px;line-height:1.7;color:#b5cbd2;letter-spacing:0}
+.place-label>span{width:24px;margin-top:10px}
+.scene-portals{display:none}
+.scene-beacon{position:absolute;display:flex;align-items:center;gap:10px;min-height:44px;min-width:44px;padding:0;transform:translate(-22px,-22px);pointer-events:auto;color:#e0ece7;font-size:15px;line-height:1.35;white-space:nowrap}
+.scene-beacon::before{content:'';display:block;flex:0 0 44px;width:44px;height:44px;border:1px solid #ffe9b8cc;border-radius:50%;background:#08121d55;box-shadow:0 0 18px #ffcf8a33;transition:background-color .2s ease,border-color .2s ease}
+.scene-beacon::after{content:'';position:absolute;left:20px;top:20px;width:4px;height:4px;border-radius:50%;background:#ffd9a0;box-shadow:0 0 8px #ffcf8a}
+.scene-beacon span{border-bottom:1px solid transparent;padding:4px 7px;background:#08121dc9;border-radius:2px;text-shadow:0 1px 6px #000}
+.scene-beacon:hover,.scene-beacon:focus-visible{color:#fff3d4}
+.scene-beacon:hover::before,.scene-beacon:focus-visible::before{background:#473927b3;border-color:#fff3d4}
+.scene-beacon:hover span,.scene-beacon:focus-visible span{border-bottom-color:#ffe9b8}
+/* Object coordinates in the 1280×800 entrance: hearth (634,412),
+   anvil (686,458), hammer on the workbench (970,428). The centered
+   plane below matches object-fit:cover, including wide-screen crops. */
+.beacon-engine{left:49.53125%;top:51.5%}
+.beacon-hackathons{left:53.59375%;top:57.25%}
+.beacon-projects{left:75.78125%;top:53.5%}
+@media(min-width:1280px) and (min-height:650px) and (min-aspect-ratio:3/2){
+ .enhanced[data-room="forge"][data-scene="forge"] .scene-portals{display:block;position:fixed;left:50%;top:50svh;width:max(100vw,160svh);height:max(62.5vw,100svh);transform:translate(-50%,-50%);z-index:3;pointer-events:none}
+ /* Do not remove a focused fallback link when the entrance finishes decoding. */
+ .enhanced[data-room="forge"][data-scene="forge"] .forge-routes:not(:focus-within){display:none}
+ .enhanced[data-room="forge"][data-scene="forge"] .forge-editorial{margin-top:0}
+}
+@media(max-width:700px){
+ .entrance{padding:108px 7% 64px;min-height:max(700px,100svh)}
+ .intro{max-width:350px}.intro h1{font-size:clamp(49px,14vw,62px)}
+ .intro>p:last-child{font-size:17px;max-width:310px}
+ .forge-navigation{max-width:360px;margin-top:24px}
+ .forge-routes,.forge-editorial{gap:0 20px}.forge-routes a,.forge-editorial a{font-size:15px;min-height:48px}
+ .forge-editorial{margin-top:10px}
+ .reading-light{background:linear-gradient(180deg,#08121ded,#08121dc9 42%,#08121d1a 76%),linear-gradient(0deg,#08121d80,transparent 35%)}
+ .environment img,.environment video{object-position:48% center}
+}
+@media(max-height:550px) and (orientation:landscape){
+ .entrance{min-height:600px;padding-top:104px}.intro h1{font-size:54px}.place-label{display:none}
+}
+@media(prefers-reduced-motion:reduce){.scene-beacon::before{transition:none}}
+@media(forced-colors:active){
+ .scene-portals{display:none!important}
+ .forge-routes{display:flex!important}
+ .forge-editorial{margin-top:14px!important}
+ .forge-routes a,.forge-editorial a,.forge-editorial a span{color:LinkText;text-decoration-color:LinkText}
+ .intro h1,.intro>p:last-child{color:CanvasText;text-shadow:none}
+ .forge-routes a:focus-visible,.forge-editorial a:focus-visible{outline-color:Highlight}
+}
+
+@media(max-width:359px){header{gap:12px}header nav{gap:10px}}

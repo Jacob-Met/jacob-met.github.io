@@ -26,9 +26,13 @@ class HamonPageTests(unittest.TestCase):
         try: self.assertIn('Example Studio Ltd', hamon_page.footer_line())
         finally: hamon_page.HAMON_LEGAL_NAME = None
 
-    def test_hamon_leads_the_home_page_and_wildside_is_a_hamon_product(self):
+    def test_hamon_identity_and_wildside_product_remain_accessible(self):
         home = self.page('index.html')
-        self.assertIn('FOUNDER OF HAMON', home); self.assertIn('href="hamon.html"', home)
+        schema=json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>',home,re.S).group(1))
+        self.assertEqual(schema['jobTitle'],'Founder, HAMON')
+        self.assertEqual(schema['name'],'Jacob Metoyer')
+        self.assertIn('href="hamon.html"', home)
+        self.assertIn('Founder of HAMON',home)
         self.assertIn('https://jacobmetoyer.com/wildside/', home)
         self.assertIn('A HAMON world', self.page('wildside-project.html'))
 
