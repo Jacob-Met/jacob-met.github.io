@@ -60,6 +60,41 @@ if [ "$BUILD_MODE" = "local-preview" ]; then
     set -- --preview
 fi
 
+# Wildside is separately published into docs/wildside/; build.py preserves an
+# existing app subtree but intentionally does not generate one. Seed ONLY that
+# exact subtree from the staged index before rebuilding. This preserves the
+# independent app boundary; it does not validate Wildside's application semantics.
+# Every other docs path must still be generated, and the final full-tree diff
+# remains unchanged. Never substitute downloaded or working-tree app content.
+if ! python3 - "$SCRATCH/staged/docs" "$SCRATCH/checked-site" <<'PRESERVE'
+from pathlib import Path
+import shutil, stat, sys
+
+docs, output = map(Path, sys.argv[1:])
+if docs.is_symlink():
+    raise SystemExit('unsafe staged docs directory: symlink')
+app = docs / 'wildside'
+if app.is_symlink():
+    raise SystemExit('unsafe staged Wildside app: symlink root')
+if not app.exists():
+    raise SystemExit(0)
+if not app.is_dir():
+    raise SystemExit('unsafe staged Wildside app: expected directory')
+boundary = app.resolve()
+for path in (app, *app.rglob('*')):
+    mode = path.lstat().st_mode
+    if stat.S_ISLNK(mode) or not (stat.S_ISREG(mode) or stat.S_ISDIR(mode)):
+        raise SystemExit('unsafe staged Wildside app: non-regular node')
+    if not path.resolve().is_relative_to(boundary):
+        raise SystemExit('unsafe staged Wildside app: escaped path')
+output.mkdir(parents=True, exist_ok=True)
+shutil.copytree(app, output / 'wildside', symlinks=True)
+PRESERVE
+then
+    echo "pre-commit: cannot preserve staged Wildside app; refusing to commit" >&2
+    exit 1
+fi
+
 if ! python3 "$SCRATCH/staged/source/build.py" "$@" --out "$SCRATCH/checked-site" \
         >"$SCRATCH/build.log" 2>&1; then
     echo "pre-commit: site build failed on the staged source/; fix the build errors before committing" >&2
