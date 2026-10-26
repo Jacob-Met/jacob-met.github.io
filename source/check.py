@@ -19,6 +19,7 @@ from branch_policy import load_branches, branch_video_errors, branch_source_erro
 from experience_policy import load_experience
 import wildside_page
 import hamon_page
+from tastetable import DIRECTORY as TASTETABLE_DIRECTORY, read_files as read_tastetable_files
 from engine_motion_policy import (VIDEO_ID as MOTION_VIDEO_ID, SOURCE_ATTRIBUTES as MOTION_SOURCE_ATTRIBUTES,
     FILES as ENGINE_MOTION_FILES, validate_motion, video_errors as motion_video_errors, source_errors as motion_source_errors)
 from site_policy import (FONT_PROPERTIES, validate_fonts, SCRIPT_FILES, LOADED_SCRIPT_FILES,
@@ -195,6 +196,11 @@ def svg_surface(text: str) -> tuple[list[str], list[str]]:
 def check(root: Path, *, preview=False) -> dict:
     root = root.resolve(); failures = []; parsed = {}; game_manifest = {}; hashes = {}; lobby = None; figures = {}; branches = {}
     if not root.is_dir(): return {'passed': False, 'html_pages': 0, 'files': 0, 'failures': ['output root missing']}
+    application_paths = set()
+    try:
+        application_paths = {f'{TASTETABLE_DIRECTORY}/{name}' for name in read_tastetable_files(root / TASTETABLE_DIRECTORY)}
+    except (OSError, ValueError) as error:
+        failures.append(f'TasteTable admission failed: {error}')
     try:
         lobby = load_lobby(root, allow_private_preview=preview)
     except (ValueError, OSError, TypeError, KeyError) as error:
@@ -234,6 +240,7 @@ def check(root: Path, *, preview=False) -> dict:
         if rel.startswith(APP_PREFIX) and not f.is_symlink(): continue
         if f.is_symlink(): failures.append(f'{rel}: symlink outside declared output surface'); continue
         if not f.is_file(): continue
+        if rel in application_paths: continue  # Exact pinned app has its own admission; homepage policy is unchanged.
         if rel.startswith(GAME_PATH + '/'):
             if f.name not in game_manifest: failures.append(f'{rel}: undeclared game file')
             continue  # The game subpage uses audit_game_bundle, not root-page policy.

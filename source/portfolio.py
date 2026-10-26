@@ -162,6 +162,18 @@ def captionverse_capture():
             '44-second excerpt (3:12–3:56), trimmed and re-encoded. Desktop shown as a detail; original captures unchanged.</p></figcaption></figure>')
 
 
+def tastetable_card():
+    return ('<article class="feature-story" id="tastetable" tabindex="-1">'
+            '<p class="section-context">TasteTable / recorded demo</p>'
+            '<h3>A familiar taste. A week of possibilities.</h3>'
+            '<p class="feature-purpose">Choose a fictional taste profile, inspect its recorded suggestions, and arrange a week of meals and outings.</p>'
+            '<a class="feature-action" href="tastetable/">Open the offline studio <span aria-hidden="true">↗</span></a>'
+            '<details class="feature-details"><summary>Source &amp; scope</summary>'
+            '<p>24 recorded synthetic choices, not live recommendations. Move or omit picks, undo and redo edits, save and reopen a week, print, or export a calendar. No account, live Qloo or model calls, or real health information. Not medical or dietary advice.</p>'
+            '<div class="public-actions"><a href="https://github.com/Jacob-Met/tastetable">Public source ↗</a>'
+            '<a href="tastetable/LICENSE">MIT license</a></div></details></article>')
+
+
 def projects_section(data, legacy, experience, figures=None, route=None):
     figures = figures or {}
     stories = {s['projectId']: s for s in experience['projectStories']}
@@ -184,7 +196,7 @@ def projects_section(data, legacy, experience, figures=None, route=None):
                       f'<p>{e(r["stage"])}. {e(r["limit"])}</p></details></article>' for r in experience['relatedWork'])
     return (f'<section class="work-section forge-room" id="projects" tabindex="-1">{branch_arrival(route)}<span id="work" class="section-alias"></span>'
             f'{room_nav("projects")}<p class="section-context">HAMON / PROJECTS</p><h2>Use it.<br> Change something.</h2><p>A few tools and worlds you can try.</p>'
-            + wildside_page.card() + ''.join(public_demo(d, figures.get(d['id'])) for d in legacy['demos']) + '<details class="related-experiments"><summary>More tools &amp; experiments</summary>' + ''.join(entries) + '</details>'
+            + wildside_page.card() + tastetable_card() + ''.join(public_demo(d, figures.get(d['id'])) for d in legacy['demos']) + '<details class="related-experiments"><summary>More tools &amp; experiments</summary>' + ''.join(entries) + '</details>'
             + f'<details class="related-experiments"><summary>More experiments</summary>{related}</details><details class="related-experiments"><summary>More public source</summary>{sources}</details>'
             '<a href="#forge" class="return-link">← Return to the forge</a></section>')
 
