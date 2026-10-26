@@ -27,10 +27,15 @@ class CapturedPublication(unittest.TestCase):
         record=json.loads((build.ROOT/'content.json').read_text())
         markup=build.render_index(record,preview=True)
         self.assertEqual(markup.count('class="room-nav"'),5)
-        self.assertEqual(markup.count('class="scene-beacon '),3)
+        self.assertNotIn('class="scene-beacon ',markup)
+        self.assertNotIn('class="scene-portals"',markup)
         self.assertEqual(markup.count('class="branch-arrival"'),2)
         self.assertIn('Explore the Engine',markup)
-        self.assertIn('Destinations in the forge',markup)
+        self.assertNotIn('Destinations in the forge',markup)
+        pane=markup.split('<nav class="destinations" aria-label="Explore my work">',1)[1].split('</nav>',1)[0]
+        for room in ('research','hackathons','projects','engine'):
+            self.assertIn(f'href="#{room}"',pane)
+        self.assertIn('class="enter" href="#engine" data-engine',pane)
         for room in ('research','hackathons','projects','engine'):
             self.assertIn(f'href="#{room}"',markup)
         self.assertIn('Conceptual illustration · not experimental data',markup)
