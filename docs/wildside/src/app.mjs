@@ -7,7 +7,7 @@ import {mountLocationContext} from './location-context-view.mjs';
 import {mountEcologyDiscovery} from './ecology-discovery-view.mjs';
 import {createFrameLoop} from './frame-loop.mjs';
 import {createOverviewZoom} from './overview-zoom.mjs';
-import {createOverviewPan} from './overview-pan.mjs';
+import {createOverviewPan,overviewKeyboardDrag} from './overview-pan.mjs';
 import {downloadRenderedPNG} from './visit-picture.mjs';
 import {createShadowReuseGuard} from './shadow-reuse-guard.mjs';
 import {prepareWorldContact} from './surface-contact-art.mjs';
@@ -244,7 +244,7 @@ function updateEncounter(){
  $('brush-web').hidden=!hasWeb||!webFocus;$('brush-web').disabled=paused;
  $('brush-web').title=paused?'Resume simulated life to brush a strand':'Send a ripple along the silk';
  $('watch-crawler').textContent=crawlerFocus?'Stop following':'Look closer';$('watch-crawler').setAttribute('aria-pressed',String(!!crawlerFocus));
- $('navigation-hint').textContent=touchHint(overview&&!sourceView?'Drag to orbit · Shift-drag or two fingers to pan · Scroll or pinch to zoom':crawlerFocus?'Following the beetle · Drag or move to explore · Esc for overview':birdFocus?'Following the robin · Drag or move to explore · Esc for overview':underwaterFocus?'Drag to look · W A S D to swim · E / Q to rise / sink · Esc to surface':webFocus?'Tap a strand · Drag to look · W A S D to move · Esc for overview':(nav.pose().mode==='bird'?'Drag to look around · W A S D to fly · E / Q for up and down · Esc to step back':'Drag to look around · W A S D to walk · Esc to step back'));
+ $('navigation-hint').textContent=touchHint(overview&&!sourceView?'Drag to orbit · Shift-drag, Shift+Arrow or two fingers to pan · Scroll or pinch to zoom':crawlerFocus?'Following the beetle · Drag or move to explore · Esc for overview':birdFocus?'Following the robin · Drag or move to explore · Esc for overview':underwaterFocus?'Drag to look · W A S D to swim · E / Q to rise / sink · Esc to surface':webFocus?'Tap a strand · Drag to look · W A S D to move · Esc for overview':(nav.pose().mode==='bird'?'Drag to look around · W A S D to fly · E / Q for up and down · Esc to step back':'Drag to look around · W A S D to walk · Esc to step back'));
  $('watch-web').textContent=webFocus?'See the whole web':'Find a web';
 }
 function safeStart(mode='human'){
@@ -852,8 +852,14 @@ function finishWorldPointer(e){
  if(pointer?.id===e.pointerId)pointer=null;
 }
 for(const type of ['pointerup','pointercancel','lostpointercapture'])$('world').addEventListener(type,finishWorldPointer);
+const movementKeys=new Set(['KeyW','KeyA','KeyS','KeyD','KeyE','KeyQ','ArrowUp','ArrowDown','ArrowLeft','ArrowRight']);
+// Drawers own keyboard focus. A held key or touch must not resume motion after dismissal.
+addEventListener('wildside:drawer-open',()=>{
+ mobile.releaseStick?.();pressed.clear();Object.keys(touch).forEach(key=>delete touch[key]);requestWorldFrame();
+});
 addEventListener('keydown',e=>{
- if($('panel').open||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
+ if($('panel').open||e.target?.isContentEditable||/INPUT|TEXTAREA|SELECT/.test(e.target?.tagName||''))return;
+ if((worldDrawer.isOpen||settingsDrawer.isOpen)&&movementKeys.has(e.code))return;
  if(e.key==='Escape'&&embody.exit())return;
  if(e.code==='KeyV'&&hamon?.active&&!embody.active){hamonResidents.toggleTraveller();return;}
  if(e.key==='Escape'&&overview&&!sourceView&&!worldDrawer.isOpen&&!settingsDrawer.isOpen&&document.body.classList.contains('has-entered')){settingsDrawer.open();return;}
@@ -864,7 +870,16 @@ addEventListener('keydown',e=>{
   else overviewZoom.step(e.code==='Equal'||e.code==='NumpadAdd'?1:-1);
   requestWorldFrame();return;
  }
- if(['KeyW','KeyA','KeyS','KeyD','KeyE','KeyQ','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code)){
+ // Shift+arrows translate only the unobstructed overview. Never start travel
+ // from a source review or open drawer, or steal a browser modifier shortcut.
+ if(overview&&e.shiftKey){
+  const delta=overviewKeyboardDrag(e.code);
+  if(delta){
+   if(sourceView||worldDrawer.isOpen||settingsDrawer.isOpen||e.altKey||e.ctrlKey||e.metaKey)return;
+   e.preventDefault();moveOverviewFocus(...delta);requestWorldFrame();return;
+  }
+ }
+ if(movementKeys.has(e.code)){
   e.preventDefault();releaseResidentFocus();focusFov=null;pressed.add(e.code);requestWorldFrame();
   if(overview){overview=false;updateLabels();}
  }
@@ -910,7 +925,7 @@ function updateViewCamera(){
   }else if(overview){camera.up.set(0,1,0);camera.aspect=innerWidth/innerHeight;const direction=[Math.sin(.5+orbit)*.9,.48,Math.cos(.5+orbit)];const pose=fitOverview(art.bounds,innerWidth<=750?Math.max(camera.aspect,.78):camera.aspect,direction,48,1.05);camera.position.fromArray(pose.target).lerp(new THREE.Vector3(...pose.position),1/overviewZoom.value());cameraTarget.fromArray(pose.target);const pan=overviewPan.position(art.bounds,overviewZoom.value());camera.position.x+=pan.x;camera.position.z+=pan.z;cameraTarget.x+=pan.x;cameraTarget.z+=pan.z;cameraTarget.y+=innerWidth<=750?1.4:-.4;if(innerWidth>750)cameraTarget.x-=2;camera.up.fromArray(pose.up);camera.lookAt(cameraTarget);camera.fov=48;camera.near=.05;camera.far=Math.max(200,pose.far);}else{camera.up.set(0,1,0);camera.aspect=innerWidth/innerHeight;const pose=nav.pose();camera.position.fromArray(pose.position);cameraTarget.fromArray(pose.position.map((v,i)=>v+pose.forward[i]));camera.up.fromArray(pose.up);camera.lookAt(cameraTarget);camera.fov=(skaterFocus||!webFocus&&pose.mode==='bird')&&focusFov?2*Math.atan(Math.tan(focusFov*Math.PI/360)/Math.min(1,camera.aspect))*180/Math.PI:focusFov||mobile.horizontalFov(pose.fov+settings.get().fovOffset,camera.aspect);if(!sourceView)camera.fov=mobile.zoomFov(camera.fov);camera.near=pose.near;camera.far=Math.max(150,Math.hypot(...art.bounds.max.map((v,i)=>v-art.bounds.min[i]))*1.2);}camera.updateProjectionMatrix();
 }
 function advanceWorld(dt){if(!worldReady)return;if(!paused&&!document.hidden)worldTime+=dt;
- if(!overview&&!$('panel').open){const moveInput={forward:Math.max(-1,Math.min(1,Number(Boolean(pressed.has('KeyW')||pressed.has('ArrowUp')||touch.forward))-Number(Boolean(pressed.has('KeyS')||pressed.has('ArrowDown')||touch.back))+mobile.axes.forward)),right:Math.max(-1,Math.min(1,Number(Boolean(pressed.has('KeyD')||pressed.has('ArrowRight')||touch.right))-Number(Boolean(pressed.has('KeyA')||pressed.has('ArrowLeft')||touch.left))+mobile.axes.right)),up:Number(Boolean(pressed.has('KeyE')||touch.up))-Number(Boolean(pressed.has('KeyQ')||touch.down))};
+ if(!overview&&!$('panel').open&&!worldDrawer.isOpen&&!settingsDrawer.isOpen){const moveInput={forward:Math.max(-1,Math.min(1,Number(Boolean(pressed.has('KeyW')||pressed.has('ArrowUp')||touch.forward))-Number(Boolean(pressed.has('KeyS')||pressed.has('ArrowDown')||touch.back))+mobile.axes.forward)),right:Math.max(-1,Math.min(1,Number(Boolean(pressed.has('KeyD')||pressed.has('ArrowRight')||touch.right))-Number(Boolean(pressed.has('KeyA')||pressed.has('ArrowLeft')||touch.left))+mobile.axes.right)),up:Number(Boolean(pressed.has('KeyE')||touch.up))-Number(Boolean(pressed.has('KeyQ')||touch.down))};
   if(embody.active){if(!paused)embody.update(moveInput,dt);}else (underwaterFocus?submergedView:nav).step(moveInput,dt);}
  if(!paused&&!document.hidden){
   const visitor=!overview&&!sourceView&&!underwaterFocus&&!embody.active&&!$('panel').open?nav.pose():null;
@@ -970,7 +985,7 @@ const snap=sim.snapshot();bird.update(snap.bird);if(crawler)crawlerArt.update(cr
   }
   frameCount++;
 }
-frameLoop=createFrameLoop({draw:animate,minInterval:()=>mobile.minInterval(),advance:advanceWorld,maxCatchUpSteps:3,hidden:()=>document.hidden,continuous:()=>!paused||(!overview&&!$('panel').open&&(pressed.size>0||mobile.moving()||Object.values(touch).some(Boolean)||(!underwaterFocus&&nav.pose().transitioning)))});
+frameLoop=createFrameLoop({draw:animate,minInterval:()=>mobile.minInterval(),advance:advanceWorld,maxCatchUpSteps:3,hidden:()=>document.hidden,continuous:()=>!paused||(!overview&&!$('panel').open&&!worldDrawer.isOpen&&!settingsDrawer.isOpen&&(pressed.size>0||mobile.moving()||Object.values(touch).some(Boolean)||(!underwaterFocus&&nav.pose().transitioning)))});
 document.addEventListener('visibilitychange',()=>{void soundscape.setHidden(document.hidden).catch(()=>{});if(document.hidden){mobile.releaseStick?.();cancelPicture();pressed.clear();Object.keys(touch).forEach(k=>delete touch[k]);resetOverviewTouch();}frameLoop.visibilityChanged();});
 addEventListener('pagehide',()=>{void soundscape.dispose().catch(()=>{});});
 addEventListener('pageshow',()=>{if(worldReady)updateLabels();});
@@ -1024,7 +1039,7 @@ function registerCoreControls(){
  }});
  registerControl({id:'keys',section:'keys',order:0,when:()=>matchMedia('(pointer: fine)').matches,mount({container}){
   const list=document.createElement('dl');list.className='key-legend';
-  for(const [k,v] of [['W A S D','move'],['E / Q','rise / sink'],['1 2 3','human · bird · insect'],['R','imagine rain'],['P','pause life'],['K','keep a moment'],['Drag','look around'],['F','fullscreen'],['Esc','back to overview, then Settings'],['Gamepad','left stick move · right stick look · A up · B down · Start settings']]){const dt=document.createElement('dt'),dd=document.createElement('dd');const kbd=document.createElement('kbd');kbd.textContent=k;dt.append(kbd);dd.textContent=v;list.append(dt,dd);}
+  for(const [k,v] of [['W A S D','move'],['E / Q','rise / sink'],['1 2 3','human · bird · insect'],['R','imagine rain'],['P','pause life'],['K','keep a moment'],['Drag','look around'],['Shift + arrows','pan overview focus'],['F','fullscreen'],['Esc','back to overview, then Settings'],['Gamepad','left stick move · right stick look · A up · B down · Start settings']]){const dt=document.createElement('dt'),dd=document.createElement('dd');const kbd=document.createElement('kbd');kbd.textContent=k;dt.append(kbd);dd.textContent=v;list.append(dt,dd);}
   container.append(list);
  }});
 }

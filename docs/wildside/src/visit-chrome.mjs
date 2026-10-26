@@ -84,7 +84,7 @@ export function mountVisitChrome({panel,drawer}){
  function used(kind){if(kind==='look')looked=true;else moved=true;if(looked&&moved&&!hintsDone){hintsDone=true;store(HINT_KEY,'done');body.classList.remove('hint-visible');}}
  const world=document.getElementById('world');
  world?.addEventListener('pointermove',e=>{if(e.buttons||e.pointerType==='touch')used('look');},{passive:true});
- addEventListener('keydown',e=>{if(/^(Key[WASDEQ]|Arrow(Up|Down|Left|Right))$/.test(e.code))used('move');},true);
+ addEventListener('keydown',e=>{if(!drawer.isOpen&&/^(Key[WASDEQ]|Arrow(Up|Down|Left|Right))$/.test(e.code))used('move');},true);
  document.getElementById('touch-controls')?.addEventListener('pointerdown',()=>used('move'),true);
  function showHint(){if(hintsDone)return;const wt=document.getElementById('world-toggle');if(wt&&!wt.dataset.labelled){wt.dataset.labelled='1';wt.classList.add('label-hint');setTimeout(()=>wt.classList.remove('label-hint'),9000);}body.classList.add('hint-visible');clearTimeout(hintTimer);hintTimer=setTimeout(()=>body.classList.remove('hint-visible'),HINT_MS);}
  new MutationObserver(()=>{
@@ -99,7 +99,7 @@ export function mountVisitChrome({panel,drawer}){
  // Shortcuts that never collide with movement (W A S D E Q, arrows) or text entry.
  const keys={Digit1:'mode-human',Digit2:'mode-bird',Digit3:'mode-insect',KeyR:'rain-toggle',KeyP:'motion-toggle',KeyK:'save-memory'};
  addEventListener('keydown',e=>{
-  if(e.metaKey||e.ctrlKey||e.altKey||e.repeat||panel.open)return;
+  if(e.metaKey||e.ctrlKey||e.altKey||e.repeat||panel.open||drawer.isOpen)return;
   const t=e.target;if(t&&(/INPUT|TEXTAREA|SELECT/.test(t.tagName)||t.isContentEditable))return;
   const id=keys[e.code];if(!id)return;const b=document.getElementById(id);if(!b||b.disabled||b.hidden)return;
   e.preventDefault();b.click();

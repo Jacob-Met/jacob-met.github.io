@@ -1,3 +1,17 @@
+/** Translate keyboard focus arrows into the existing pointer-drag frame.
+ * Focus moves with the arrow, opposite the gesture moving the scene.
+ * Each step is 72 CSS pixels, independent of display pixel density.
+ */
+export function overviewKeyboardDrag(code){
+ switch(code){
+  case 'ArrowLeft': return [72,0];
+  case 'ArrowRight': return [-72,0];
+  case 'ArrowUp': return [0,72];
+  case 'ArrowDown': return [0,-72];
+  default: return null;
+ }
+}
+
 /** View-only focus offset in the overview's original XZ world coordinates.
  * No persistence, source interpretation or physical-navigation side effects.
  */
