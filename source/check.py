@@ -19,6 +19,7 @@ from branch_policy import load_branches, branch_video_errors, branch_source_erro
 from experience_policy import load_experience
 import wildside_page
 import hamon_page
+import responsive_images
 from tastetable import DIRECTORY as TASTETABLE_DIRECTORY, read_files as read_tastetable_files
 from engine_motion_policy import (VIDEO_ID as MOTION_VIDEO_ID, SOURCE_ATTRIBUTES as MOTION_SOURCE_ATTRIBUTES,
     FILES as ENGINE_MOTION_FILES, validate_motion, video_errors as motion_video_errors, source_errors as motion_source_errors)
@@ -47,8 +48,9 @@ def local_path(value: str) -> bool:
 
 
 class Page(HTMLParser):
-    def __init__(self, hashes=None, lobby=None, figures=None, branches=None):
+    def __init__(self, hashes=None, lobby=None, figures=None, branches=None, responsive=None):
         super().__init__(convert_charrefs=True)
+        self.responsive = responsive or {'images': {}}
         self.hashes = {} if hashes is None else hashes
         self.figures = figures or {}; self.in_picture = False
         self.branches = branches or {}
@@ -80,7 +82,7 @@ class Page(HTMLParser):
             for record in CAPTIONVERSE_CAPTURES.values():
                 if src == record['src'] and (a.get('width'), a.get('height')) != (str(record['width']), str(record['height'])):
                     self.errors.append('img: Captionverse capture dimensions differ')
-            approved = {*wildside_page.FILES, *hamon_page.FILES, CAPTURE_FILE, PROOF_FILE, 'games/lanternwake/desktop.png', *ART_FILES, *EDITORIAL_FILES, *PRESENTATION_FILES, *CAPTIONVERSE_FILES} | {r['src'] for r in self.figures.values()}
+            approved = {*wildside_page.FILES, *hamon_page.FILES, CAPTURE_FILE, PROOF_FILE, 'games/lanternwake/desktop.png', *ART_FILES, *EDITORIAL_FILES, *PRESENTATION_FILES, *CAPTIONVERSE_FILES} | {r['src'] for r in self.figures.values()} | responsive_images.files(self.responsive)
             approved |= {r['still']['src'] for r in self.branches.values()}
             if self.lobby:
                 approved |= {self.lobby['media'][k]['src'] for k in ('entrance', 'arrival')} | {self.lobby['proof']['src']}
@@ -100,7 +102,10 @@ class Page(HTMLParser):
             self.errors.extend(motion_video_errors(a) if a.get('id') == MOTION_VIDEO_ID else wildside_video_errors(a) if 'data-wildside-demo' in a else branch_video_errors(a,self.branches) if 'data-route' in a else route_video_errors(a, self.lobby) if self.lobby else video_element_errors(a))
             if a.get('poster'): self.resources.append(a['poster'])
         if tag == 'source':
-            if self.in_picture:
+            if self.in_picture and responsive_images.is_declared(a, self.responsive):
+                self.errors.extend(responsive_images.source_errors(a, self.responsive))
+                self.resources.extend(responsive_images.srcset_urls(a['srcset']))
+            elif self.in_picture:
                 if a.get('srcset') == CAPTIONVERSE_CAPTURES['phone']['src']:
                     self.errors.extend(captionverse_picture_source_errors(a))
                 else:
@@ -213,6 +218,11 @@ def check(root: Path, *, preview=False) -> dict:
         figures = load_figures(root)
     except (ValueError, OSError, UnicodeError, TypeError, KeyError, ET.ParseError) as error:
         failures.append('Computed-figure boundary: ' + str(error))
+    responsive = {'images': {}}
+    try:
+        responsive = responsive_images.load(root)
+    except (ValueError, OSError, UnicodeError, TypeError, KeyError) as error:
+        failures.append('Responsive-image boundary: ' + str(error))
     try:
         hashes = audit_scripts(root)
     except (ValueError, OSError, UnicodeError) as error:
@@ -247,7 +257,7 @@ def check(root: Path, *, preview=False) -> dict:
         if f.suffix == '.html':
             try: text = f.read_text(encoding='utf-8')
             except (OSError, UnicodeError): failures.append(f'{rel}: unreadable HTML'); continue
-            p = Page(hashes, lobby, figures, branches); p.feed(text); p.close(); parsed[rel] = p
+            p = Page(hashes, lobby, figures, branches, responsive); p.feed(text); p.close(); parsed[rel] = p
             failures.extend(f'{rel}: {e}' for e in p.errors)
             for value in p.resources:
                 rooted = rooted_ref(rel, value)

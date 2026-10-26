@@ -4,15 +4,15 @@
     "towerops-airspace": {
       "src": "assets/figures/towerops-airspace-computed.svg",
       "width": 1200,
-      "height": 460,
-      "sha256": "c5e68611d86c36fffc561ff4eaff45c1c63cdd569afc0a75b8b9275c19966fac",
+      "height": 480,
+      "sha256": "fe5b2b9aeaa6ead5c2475c3a1e0ca338c7c9811fcdd5ea1a60fe794bf24d1188",
       "alt": "Two modeled flights: initial paths share a predicted conflict window; changing one path removes that conflict in this five-minute example.",
       "label": "Computed model \u00b7 1 \u2192 0 conflicts in this case.",
       "mobile": {
         "src": "assets/figures/towerops-airspace-computed-mobile.svg",
         "width": 600,
-        "height": 916,
-        "sha256": "5968d85378fc594e65882f565eaf83cdb777a16d5dffa9400bae0668f05f713c"
+        "height": 956,
+        "sha256": "0c32507e6451d8935b84d9b845a6caa11f1f376685f585d5c28752a3b46e0430"
       }
     },
     "recallweave": {

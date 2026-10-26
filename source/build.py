@@ -27,6 +27,7 @@ from figure_policy import load_figures, figure_files
 from branch_policy import load_branches, branch_files, validate_retained_branch_media
 from experience_policy import EXPERIENCE_FILE, load_experience
 from source_policy import validate_source_publication
+import responsive_images
 
 ROOT = Path(__file__).resolve().parent
 BASE = 'https://jacobmetoyer.com'
@@ -249,7 +250,7 @@ def output_files(record: dict, lobby=None, figures=None, branches=None) -> set[s
             'robots.txt', 'sitemap.xml', 'cv.json', 'build-manifest.json', 'portfolio.json',
             *(f'{TASTETABLE_DIRECTORY}/{name}' for name in tastetable_entries()),
             'assets/mark.svg', SHARE_CARD, *ROOT_ICONS, *FONT_FILES, *SCENE_FILES, *ART_FILES, *EDITORIAL_FILES, *PRESENTATION_FILES, *CAPTIONVERSE_FILES, *ENGINE_MOTION_FILES,
-            wildside_page.PAGE, hamon_page.PAGE, *wildside_page.FILES, *hamon_page.FILES, *wildside_page.video_files(ROOT), *SCRIPT_FILES, *CAPTURE_FILES, *route_files, *illustrations, *branch_files(branches), EXPERIENCE_FILE, *shot_files(record), *game_files(ROOT, record)}
+            responsive_images.MANIFEST, *responsive_images.files(responsive_images.load(ROOT)), wildside_page.PAGE, hamon_page.PAGE, *wildside_page.FILES, *hamon_page.FILES, *wildside_page.video_files(ROOT), *SCRIPT_FILES, *CAPTURE_FILES, *route_files, *illustrations, *branch_files(branches), EXPERIENCE_FILE, *shot_files(record), *game_files(ROOT, record)}
 
 
 def build(out: Path, data: dict | None = None, *, preview=False) -> dict:
@@ -312,6 +313,9 @@ def build(out: Path, data: dict | None = None, *, preview=False) -> dict:
         (out / rel).parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / rel, out / rel)
     for rel in (*wildside_page.FILES, *hamon_page.FILES, *wildside_page.video_files(ROOT)):
+        (out / rel).parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(ROOT / rel, out / rel)
+    for rel in (responsive_images.MANIFEST, *sorted(responsive_images.files(responsive_images.load(ROOT)))):
         (out / rel).parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / rel, out / rel)
     for rel in games:

@@ -9,7 +9,7 @@ PROJECT_IDS = {'phantom-window', 'captionverse', 'domino', 'replay-forge', 'spir
 RELATED_IDS = {'threadline', 'familiar-memories', 'threshold', 'ledgerdock', 'teachback', 'wildside', 'clearway'}
 CONTACT_URLS = {'https://github.com/Jacob-Met', 'https://www.linkedin.com/in/jacob-metoyer-15b701352'}
 PUBLIC_LINKS = CONTACT_URLS | {'https://github.com/Jacob-Met/CaptureSuite', 'https://spireofoctaves.com/',
-                             'https://www.royalroad.com/fiction/183255/seamwork',
+                             'https://www.royalroad.com/fiction/183255/seamwork', 'https://spireofoctaves.com/stories/salts-end',
                              'https://jacobmetoyer.com/games/lanternwake/'}
 INTERACTIONS = {'phantom-window': {'recorded-comparison', 'recorded-provenance'},
                 'captionverse': {'captured-examples'}, 'domino': {'recorded-repair'},
@@ -136,7 +136,7 @@ def validate_experience(data):
         ids.add(story['projectId']); exact(story['next'], {'projectId', 'label'}, 'related story'); plain(story['next']['label'])
         if story['next']['projectId'] not in PROJECT_IDS: raise ValueError('Unknown next project')
         if 'actions' in story:
-            allowed = {'spire': {'https://spireofoctaves.com/', 'https://www.royalroad.com/fiction/183255/seamwork'},
+            allowed = {'spire': {'https://spireofoctaves.com/', 'https://spireofoctaves.com/stories/salts-end', 'https://www.royalroad.com/fiction/183255/seamwork'},
                        'lanternwake': {'https://jacobmetoyer.com/games/lanternwake/'}}.get(story['projectId'], set())
             links(story['actions'], allowed)
     repair = data['recordedRepairChoices']; fields = {'projectId', 'heading', 'intro', 'choices', 'limit'}

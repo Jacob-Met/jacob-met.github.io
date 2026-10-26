@@ -2,6 +2,7 @@
 Static HTML only. Copy here must stay within what the repositories and the existing site actually show."""
 from __future__ import annotations
 import html
+import responsive_images
 
 PAGE = 'hamon.html'
 BRAND = 'HAMON'
@@ -16,6 +17,7 @@ SOCIAL = ('assets/hamon/hamon-share.jpg', 1200, 630,
           'HAMON: engines, worlds and instruments. A painted autumn lake from Wildside, a world built on the HAMON Engine.')
 FILES = ('assets/hamon/hamon-share.jpg', 'assets/games/first-game-toon.webp', 'assets/games/inkbound-combat.webp')
 FIRST_IMG = ('assets/games/first-game-toon.webp', 320, 180, 'A small cel-shaded 3D scene from the first game: toon-lit stone drums, rocks and trees on bright green ground, drawn with dithered shading and outlines.')
+LANTERN_IMG = ('assets/derived/lanternwake-island-760.webp', 760, 460, 'Lanternwake\'s small island with its three lanterns lit, cone trees and the stone arch.', 'lanternwake-island')
 INK_IMG = ('assets/games/inkbound-combat.webp', 320, 180, 'A frame from Inkbound\'s combat slice: ink-drawn fighters and a red ink trail across a cream manga page, with speed lines.')
 e = html.escape
 
@@ -41,6 +43,8 @@ def _games(items):
         img = g[3] if len(g) > 3 else None
         link = g[4] if len(g) > 4 else None
         pic = (f'<img class="px" loading="lazy" decoding="async" src="{img[0]}" width="{img[1]}" height="{img[2]}" alt="{e(img[3])}">' if img else '')
+        if img and len(img) > 4:  # a declared AVIF/WebP derivative set, rendered smoothly
+            pic = responsive_images.picture(img[4], f'<img loading="lazy" decoding="async" src="{img[0]}" width="{img[1]}" height="{img[2]}" alt="{e(img[3])}">', '(max-width: 760px) 92vw, 430px')
         title = f'<a href="{link}">{e(name)} &#8599;</a>' if link else e(name)
         out.append(f'<li>{pic}<div><p class="hamon-kind">{e(kind)}</p><h3>{title}</h3><p>{e(line)}</p></div></li>')
     return '<ul class="hamon-games">' + ''.join(out) + '</ul>'
@@ -57,15 +61,15 @@ ENGINE_AREAS = [
     ('Science and engineering tools', 'Content-addressed experiment history in Rust, TypeScript and Go, a Studio UI, an Innovation Lab integration, and runnable studies in surface diffusion, radiative cooling and electrical networks.'),
 ]
 GAMES = [
-    ('Lanternwake', 'Playable in your browser', 'A small 3D island: restore three lanterns, then return to the stone arch at dawn. A published snapshot of an earlier engine build.', None, 'https://jacobmetoyer.com/games/lanternwake/'),
-    ('Aetherline', 'WebGPU browser game', 'Collect three relics, open the gate and reach it. Lives in the engine repository; not published on this site.'),
+    ('Lanternwake', 'Playable in your browser', 'A small 3D island: restore three lanterns, then return to the stone arch at dawn. A published snapshot of an earlier engine build.', LANTERN_IMG, 'https://jacobmetoyer.com/games/lanternwake/'),
     ('The first game', 'Proving target', 'A small cel-shaded 3D scene driven by a deterministic input script, checked frame by frame against golden images on a software renderer.', FIRST_IMG),
     ('Inkbound', 'Action-adventure in development', 'A third-person game where the world is a living manga: panels decide causality and ink is the physics. Panels, combat and a final boss encounter exist as deterministic headless slices; art is still to come.', INK_IMG),
+    ('Aetherline', 'WebGPU browser game', 'Collect three relics, open the gate and reach it. Lives in the engine repository; not published on this site.'),
     ('Counterpoise', 'Physics puzzle', 'Plan three work orders on a hinged beam, release the load, and read the result from the real physics world. Playable in the terminal.'),
     ('Glasswake', 'Adventure core in development', 'A character crosses a cleft on a real physical rope with bounded reeling and release momentum. The simulation and input replays exist; the visuals are planned.'),
 ]
 OTHER_WORLDS = [
-    ('Spire of Octaves', 'A fiction world with its own site: stories, music, games and animation.'),
+    ('Spire of Octaves', 'Fiction with its own site, grouped by series. Begin with Salt’s End, What Strays and Seamwork.'),
     ('Echo', 'A game set in the Spire world, now being built in the HAMON Engine. Private and early.'),
 ]
 VIDEO = [
@@ -96,7 +100,7 @@ def body(wildside_page) -> str:
         '<header class="ws-top hamon-top"><a class="identity" href="index.html" aria-label="Jacob Metoyer, home">Jacob Metoyer</a>'
         + wildside_page.site_nav('hamon') + '</header>'
         '<main id="main" class="ws-main hamon-main">'
-        f'<section class="hamon-hero"><img fetchpriority="high" decoding="async" src="{hero}" srcset="{wildside_page.HERO_SRCSET}" sizes="100vw" width="{hero_size[0]}" height="{hero_size[1]}" alt="{e(hero_alt)}">'
+        '<section class="hamon-hero">' + responsive_images.picture('wildside-hero', f'<img fetchpriority="high" decoding="async" src="{hero}" srcset="{wildside_page.HERO_SRCSET}" sizes="100vw" width="{hero_size[0]}" height="{hero_size[1]}" alt="{e(hero_alt)}">', '100vw') +
         '<div class="hamon-hero-copy">'
         f'<p class="section-context">FOUNDED AND BUILT BY {FOUNDER.upper()}</p><h1>{wordmark("span")}<span class="visually-hidden"> {e(TAGLINE)}</span></h1>'
         f'<p class="hamon-tagline">{e(TAGLINE)}</p>'
@@ -110,7 +114,7 @@ def body(wildside_page) -> str:
         '<p><strong>In progress.</strong> The AI-native authoring roadmap is open work: live authoring connected to rendering, material graphs executed in the scene renderer, procedural modeling that updates only the affected geometry, a high-quality final-image workflow, and discovery of tools and reusable assets.</p>'
         '<p class="ws-honest">The engine source is private; its work is published through the games and tools on this page.</p></section>'
         '<section class="ws-section hamon-section hamon-flagship" id="worlds"><p class="section-context">02 · GAMES AND WORLDS · FLAGSHIP</p><h2>Wildside</h2>'
-        f'<a class="hamon-frame" href="{app}" aria-label="Play Wildside"><img loading="lazy" decoding="async" src="{wildside_page.CARD}" srcset="{wildside_page.HERO_SRCSET}" sizes="(max-width:960px) 92vw, 904px" width="{hero_size[0]}" height="{hero_size[1]}" alt="{e(hero_alt)}">'
+        f'<a class="hamon-frame" href="{app}" aria-label="Play Wildside">' + responsive_images.picture('wildside-hero', f'<img loading="lazy" decoding="async" src="{wildside_page.CARD}" srcset="{wildside_page.HERO_SRCSET}" sizes="(max-width:960px) 92vw, 904px" width="{hero_size[0]}" height="{hero_size[1]}" alt="{e(hero_alt)}">', '(max-width: 960px) 92vw, 904px') +
         '<span class="hamon-frame-play"><span aria-hidden="true">&#9654;</span> Play Wildside</span></a>'
         '<p>Real places you care about, turned into living, hand-painted worlds you explore at human, bird and insect scale, rendered live by the HAMON Engine in your browser. Its default look is hand-painted, luminous cel shading with ink line art; the engine&#8217;s style system offers sixteen others.</p>'
         f'<p class="hamon-actions"><a class="ws-play" href="{app}">Play Wildside</a><a class="hamon-secondary" href="{ws}">Watch the demo and read more</a></p>'
@@ -131,6 +135,6 @@ def body(wildside_page) -> str:
         f'{_cards(ESTATE, "hamon-instruments")}</section>'
         '<section class="ws-section hamon-section hamon-founder" id="founder"><p class="section-context">FOUNDER</p><h2>Jacob Metoyer</h2>'
         '<p>I study computer science and physics at Cal State Long Beach, and I build HAMON. My research, writing and other work are on the main site.</p>'
-        '<p class="hamon-actions"><a class="hamon-secondary" href="index.html">About me and my research</a><a class="hamon-secondary" href="https://github.com/Jacob-Met">GitHub &#8599;</a></p></section>'
+        '<p class="hamon-actions"><a class="hamon-secondary" href="index.html#about">About me and my research</a><a class="hamon-secondary" href="https://github.com/Jacob-Met">GitHub &#8599;</a></p></section>'
         '</main>'
         f'<footer class="hamon-foot"><p>{footer_line()}</p></footer>')

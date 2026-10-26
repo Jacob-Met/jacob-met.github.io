@@ -36,9 +36,11 @@ class EditorialArtwork(unittest.TestCase):
   self.assertEqual(len(links),1);link=links[0]
   self.assertEqual(link['attrs']['href'],'https://spireofoctaves.com/')
   self.assertIn('Cities stacked on cities.',link['text'])
-  self.assertEqual(len(link['images']),1);img=link['images'][0]
-  self.assertEqual(img['src'],EDITORIAL_FILES[0]);self.assertEqual(img['loading'],'lazy')
-  self.assertIn('Artwork from the Spire of Octaves site',img['alt'])
+  # Keep the new reading entry points alongside the requested original artwork.
+  self.assertEqual(len(link['images']),1)
+  self.assertEqual(link['images'][0]['src'],EDITORIAL_FILES[0])
+  self.assertEqual((link['images'][0]['width'],link['images'][0]['height']),('1200','675'))
+  for title in ('Salt’s End','What Strays','Seamwork'): self.assertIn(title,link['text'])
   self.assertNotIn('data-engine',link['attrs']);self.assertNotIn('id="spire"',html)
   self.assertIn('Forge rendered with HAMON Engine',html)
  def test_only_three_route_helpers_remain(self):

@@ -22,6 +22,12 @@ The homepage continues to deliver still images and prerecorded journeys. Its con
 
 Local Chrome receiving covers actual 1280×800 video playback and destination handoffs on all three routes at 1440-, 390- and 320-pixel viewport widths, with no horizontal overflow or page errors. Keyboard entry, Skip, reverse return, history, the Captionverse disclosure and reduced motion also passed. Physical phones and Safari are not qualified by those checks. Native rendering speed is not authored playback FPS.
 
+## Responsive delivery images
+
+`source/responsive-images.json` pins AVIF/WebP derivatives (in `assets/derived/`) of images that were already published: the Wildside hero and card, the engine rendering study, the Captionverse captures, and a crop of the Lanternwake game view. Pages wrap the original `<img>` in a `<picture>` whose `<source>` sets must match the manifest exactly; the originals stay at their URLs as fallbacks. `responsive_images.py` validates hashes and admits the sources; `python source/make_responsive.py` (Pillow with AVIF) regenerates them. No forge media is derived here.
+
+Phone layouts were checked in headless Chrome at 390×844 and 320 px (no horizontal overflow; room map on one row; footer on two rows). Physical-phone/Safari receiving is still separate.
+
 ## HAMON, Wildside and share images
 
 `source/hamon_page.py` renders `hamon.html` (what HAMON is, the engine, Wildside as flagship, and early private instruments named without links). Its `HAMON_LEGAL_NAME` constant is `None` until the company's legal name exists; setting it adds the name to the footer. The HAMON wordmark is plain type plus a CSS line, not artwork. `wildside_page.py` owns the Wildside page and its card; its share image is `assets/wildside/wildside-thumbnail.jpg`. Each page declares its own Open Graph/Twitter image in `build.py`; `python source/make_images.py --frame <wildside frame>` regenerates the identity and HAMON share cards.

@@ -30,7 +30,7 @@ Research contributions are collaborative; synthetic demos are not evidence of cl
 - [CaptureSuite](https://github.com/Jacob-Met/CaptureSuite) — Windows-first multimodal research capture: a daemon, versioned worker plugins and sealed session packages, with an offline QC demo on synthetic EMG/IMU data.
 - [CanvasPilot](https://github.com/Jacob-Met/canvaspilot) — An MCP server and CLI for Canvas LMS that rides the browser session you already have, for schools that disable personal access tokens.
 - [workflow-checks](https://github.com/Jacob-Met/workflow-checks) — Three small Python checks for back-office paperwork (utility bills, freight detention, PT authorizations), run on synthetic data with file:row evidence.
-- [Multi-agent Fan-out Engine](https://github.com/Jacob-Met/multi-agent-fanout-engine) — A public-safe reference core for dependency plans, SQLite dispatch custody and reconcile-not-replay. Local adapter tests, not claims about production capacity.
+- [Multi-agent Fan-out Engine](https://github.com/Jacob-Met/multi-agent-fanout-engine) — A small reference engine for fanning work out to many agents: dependency plans, a SQLite dispatch queue, and recovery that reconciles state instead of replaying it.
 
 ### Working together
 
