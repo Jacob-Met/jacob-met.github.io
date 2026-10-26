@@ -17,7 +17,7 @@ class LobbyRuntime(unittest.TestCase):
         self.assertEqual(d['failures'],[]);self.assertEqual(d['passed'],63)
     def test_three_route_adapter_media_and_focus(self):
         d=json.loads(self.run_contract('lobby_branch_adapter_contract.cjs',ROOT))
-        self.assertEqual(d['failed'],0);self.assertEqual(d['passed'],16)
+        self.assertEqual(d['failed'],0);self.assertEqual(d['passed'],19)
     def test_three_route_mixed_history_stress(self):
         d=json.loads(self.run_contract('lobby_branch_stress_contract.cjs',ROOT))
         self.assertEqual(d['failures'],[]);self.assertEqual(d['transitions'],4000)

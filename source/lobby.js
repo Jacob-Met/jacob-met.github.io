@@ -7,6 +7,23 @@ const routeMedia={engine:{forward,reverse}};
 for(const video of document.querySelectorAll('video[data-route]')){const id=video.getAttribute('data-route'),direction=video.getAttribute('data-direction');if(['hackathons','projects'].includes(id)&&['forward','reverse'].includes(direction)){routeMedia[id]??={};routeMedia[id][direction]=video;}}
 for(const id of ['hackathons','projects'])if(!routeMedia[id]?.forward||!routeMedia[id]?.reverse)delete routeMedia[id];
 const allVideos=Object.values(routeMedia).flatMap(pair=>[pair.forward,pair.reverse]);
+// Prime only the route the visitor approaches. No automatic media download on page load.
+// Preloading metadata (not the whole film) also respects reduced-data connections.
+const primedRoutes=new Set(),primedStills=new Map();
+function primeRoute(id){
+ if(primedRoutes.has(id)||window.navigator?.connection?.saveData)return;
+ const pair=routeMedia[id];if(!pair)return;primedRoutes.add(id);
+ const video=pair.forward;
+ if(video&&video.preload==='none'&&!(video.readyState>0)){
+  video.preload='metadata';try{video.load();}catch{}
+ }
+ const src=still.getAttribute?.(id==='engine'?'data-arrival-src':`data-${id}-src`);
+ if(src&&typeof Image==='function'){const image=new Image();image.decoding='async';primedStills.set(id,image);image.src=src;}
+}
+for(const link of document.querySelectorAll('a[href^="#"]')){
+ const id=link.getAttribute('href')?.slice(1);if(!routeMedia[id]||typeof link.addEventListener!=='function')continue;
+ for(const event of ['pointerenter','focus','touchstart'])link.addEventListener(event,()=>primeRoute(id),{passive:true});
+}
 const places={engine:'the hearth',hackathons:'the anvil',projects:'the workbench'},routeNames={engine:'Engine',hackathons:'Hackathons',projects:'Projects'};
 const motion=matchMedia('(prefers-reduced-motion: reduce)');
 let active=null,shownVideo=null,mediaEpoch=0,mediaTimer=null,opener=links.find(x=>!x.hasAttribute('data-skip')),target=null,leaving=false,reenterPending=null,viewEpoch=0,boot=true,journey,desiredSection=null;
