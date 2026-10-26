@@ -39,6 +39,36 @@ def validate_lossless_entrance(root):
   if lossless_webp_dimensions(raw)!=(record['width'],record['height']):raise ValueError('Lossless entrance delivery dimensions differ')
 
 
+# Exact, unchanged browser screenshots admitted only with the figure's film credit.
+CAPTIONVERSE_CAPTURES = {
+    'desktop': {'src': 'assets/demos/captionverse-reading-desktop.png', 'width': 1440, 'height': 1000,
+                'sha256': '08e033d909bdafe2284850204cd5ed659d33d52c7634a682069a2ebd79fbaf64'},
+    'phone': {'src': 'assets/demos/captionverse-reading-phone.png', 'width': 390, 'height': 900,
+              'sha256': 'f52dd796d365d8782ed33015a12feba60397ec0ede1d00faf036b8c70693c0c4'},
+}
+CAPTIONVERSE_FILES = tuple(record['src'] for record in CAPTIONVERSE_CAPTURES.values())
+
+
+def validate_captionverse_captures(root):
+    for record in CAPTIONVERSE_CAPTURES.values():
+        path = root / record['src']
+        if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(root.resolve()):
+            raise ValueError('Missing or symlinked Captionverse capture')
+        raw = path.read_bytes()
+        if hashlib.sha256(raw).hexdigest() != record['sha256']:
+            raise ValueError('Captionverse capture checksum differs')
+        if (raw[:8] != b'\x89PNG\r\n\x1a\n' or raw[12:16] != b'IHDR' or
+                struct.unpack_from('>II', raw, 16) != (record['width'], record['height'])):
+            raise ValueError('Captionverse capture dimensions differ')
+
+
+def captionverse_picture_source_errors(attrs):
+    phone = CAPTIONVERSE_CAPTURES['phone']
+    expected = {'media': '(max-width: 800px)', 'type': 'image/png', 'srcset': phone['src'],
+                'width': str(phone['width']), 'height': str(phone['height'])}
+    return [] if attrs == expected else ['source: outside exact Captionverse capture']
+
+
 def validate_presentation_stills(root):
  for record in (*PRESENTATION_STILLS.values(),*RETAINED_PRESENTATION_STILLS.values()):
   path=root/record['src']

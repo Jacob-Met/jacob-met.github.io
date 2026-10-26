@@ -15,10 +15,11 @@ from pathlib import Path
 from urllib.parse import urlsplit
 from game_assets import game_files
 from site_policy import (FONT_FILES, validate_fonts, SCENE_ASSETS, SCENE_FILES, SCRIPT_FILES, LOADED_SCRIPT_FILES,
-                         EXPERIENCE_CSS, audit_scripts, script_integrity, ART_FILES, validate_art, EDITORIAL_FILES, validate_editorial, PRESENTATION_STILLS, DELIVERY_STILLS, PRESENTATION_FILES, validate_presentation_stills)
+                         EXPERIENCE_CSS, audit_scripts, script_integrity, ART_FILES, validate_art, EDITORIAL_FILES, validate_editorial, PRESENTATION_STILLS, DELIVERY_STILLS, PRESENTATION_FILES, validate_presentation_stills, CAPTIONVERSE_FILES, validate_captionverse_captures)
 import portfolio
 import wildside_page
 import hamon_page
+from engine_motion_policy import FILES as ENGINE_MOTION_FILES, validate_motion
 from capture_policy import CAPTURE_FILES, load_capture
 from lobby_policy import load_lobby, lobby_files, validate_retained_engine_media
 from figure_policy import load_figures, figure_files
@@ -185,6 +186,8 @@ def validate_portfolio(data: dict) -> None:
     validate_presentation_stills(ROOT)
     validate_retained_engine_media(ROOT)
     validate_retained_branch_media(ROOT)
+    validate_captionverse_captures(ROOT)
+    validate_motion(ROOT)
 
 
 def portfolio_record() -> dict:
@@ -243,7 +246,7 @@ def output_files(record: dict, lobby=None, figures=None, branches=None) -> set[s
     illustrations = figure_files(load_figures(ROOT) if figures is None else figures)
     return {'index.html', '404.html', 'style.css', EXPERIENCE_CSS, '.nojekyll', 'CNAME',
             'robots.txt', 'sitemap.xml', 'cv.json', 'build-manifest.json', 'portfolio.json',
-            'assets/mark.svg', SHARE_CARD, *ROOT_ICONS, *FONT_FILES, *SCENE_FILES, *ART_FILES, *EDITORIAL_FILES, *PRESENTATION_FILES,
+            'assets/mark.svg', SHARE_CARD, *ROOT_ICONS, *FONT_FILES, *SCENE_FILES, *ART_FILES, *EDITORIAL_FILES, *PRESENTATION_FILES, *CAPTIONVERSE_FILES, *ENGINE_MOTION_FILES,
             wildside_page.PAGE, hamon_page.PAGE, *wildside_page.FILES, *hamon_page.FILES, *wildside_page.video_files(ROOT), *SCRIPT_FILES, *CAPTURE_FILES, *route_files, *illustrations, *branch_files(branches), EXPERIENCE_FILE, *shot_files(record), *game_files(ROOT, record)}
 
 
@@ -300,7 +303,7 @@ def build(out: Path, data: dict | None = None, *, preview=False) -> dict:
     for rel in shots:
         assert rel.startswith(allowed_prefix)
         shutil.copyfile(ROOT / rel, out / rel)
-    for rel in {*FONT_FILES, *SCENE_FILES, *ART_FILES, *EDITORIAL_FILES, *PRESENTATION_FILES}:
+    for rel in {*FONT_FILES, *SCENE_FILES, *ART_FILES, *EDITORIAL_FILES, *PRESENTATION_FILES, *CAPTIONVERSE_FILES, *ENGINE_MOTION_FILES}:
         (out / rel).parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / rel, out / rel)
     for rel in (*wildside_page.FILES, *hamon_page.FILES, *wildside_page.video_files(ROOT)):
