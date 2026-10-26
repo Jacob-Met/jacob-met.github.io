@@ -19,8 +19,8 @@ def video(*, width=800, height=500, frames=80, fps=20, audio=False):
     struct.pack_into('>HH', sample, 24, width, height)
     stsd = box(b'stsd', b'\0' * 4 + struct.pack('>I', 1) + box(b'avc1', sample))
     stsz = box(b'stsz', b'\0' * 4 + struct.pack('>II', 1, frames))
-    stts = box(b'stts', b'\0' * 4 + struct.pack('>III', 1, frames, 1000 // fps))
-    mdhd = box(b'mdhd', b'\0' * 12 + struct.pack('>II', 1000, frames * (1000 // fps)))
+    stts = box(b'stts', b'\0' * 4 + struct.pack('>III', 1, frames, 100))
+    mdhd = box(b'mdhd', b'\0' * 12 + struct.pack('>II', fps * 100, frames * 100))
     hdlr = box(b'hdlr', b'\0' * 8 + (b'soun' if audio else b'vide'))
     return box(b'ftyp', b'isom') + box(b'mdat', bytes(frames)) + box(b'moov', box(b'trak', box(b'mdia', mdhd + hdlr + box(b'minf', box(b'stbl', stsd + stsz + stts)))))
 
@@ -39,7 +39,7 @@ class LobbyPolicy(unittest.TestCase):
             p.parent.mkdir(parents=True, exist_ok=True)
             p.write_bytes(raw)
             data['media'][key] = {'src': name, 'sha256': hashlib.sha256(raw).hexdigest()}
-        name = 'assets/scene/forge-crafted-workbench.png'
+        name = 'assets/scene/forge-hifi-workbench.png'
         (root / name).write_bytes(png)
         data['proof'] = {'src': name, 'sha256': hashlib.sha256(png).hexdigest(),
                          'width': 800, 'height': 500, 'alt': 'Native rendered workbench.',

@@ -72,7 +72,7 @@ class Page(HTMLParser):
         if tag == 'img':
             src = a.get('src') or ''
             if a.get('id') == 'scene-still':
-                expected = {'src': DELIVERY_STILLS['entrance']['src'], 'data-entrance-src': DELIVERY_STILLS['entrance']['src'], 'data-arrival-src': DELIVERY_STILLS['arrival']['src'], 'width': '1280', 'height': '800'}
+                expected = {'src': DELIVERY_STILLS['entrance']['src'], 'data-entrance-src': DELIVERY_STILLS['entrance']['src'], 'data-arrival-src': DELIVERY_STILLS['arrival']['src'], 'width': str(DELIVERY_STILLS['entrance']['width']), 'height': str(DELIVERY_STILLS['entrance']['height'])}
                 expected.update({f'data-{key}-src':route['still']['src'] for key,route in self.branches.items()})
                 if any(a.get(k) != v for k,v in expected.items()): self.errors.append('img: scene endpoint attributes outside exact native stills')
             for record in DELIVERY_STILLS.values():
@@ -89,7 +89,7 @@ class Page(HTMLParser):
             if not re.fullmatch(r'/?assets/demos/[a-z0-9-]+\.webp', src) and src not in approved:
                 self.errors.append('img: outside the declared local project-image inventory')
             decorative = self.lobby and ((a.get('id') == 'scene-still' and src == self.lobby['media']['entrance']['src']) or src == self.lobby['media']['arrival']['src'])
-            decorative = decorative or (src in PRESENTATION_FILES and (a.get('id') in ('scene-still','scene-buffer') or src in (PRESENTATION_STILLS['arrival']['src'],DELIVERY_STILLS['arrival']['src'])))
+            decorative = decorative or (src in PRESENTATION_FILES and (a.get('id') in ('scene-still','scene-buffer') or src in (PRESENTATION_STILLS['arrival']['src'], DELIVERY_STILLS['arrival']['src'])))
             if not (a.get('alt') or '').strip() and not decorative: self.errors.append('img: missing alt text')
             if not (str(a.get('width', '')).isdigit() and str(a.get('height', '')).isdigit()): self.errors.append('img: missing explicit width/height')
         if tag in ('form', 'iframe', 'object', 'embed', 'base', 'style', 'audio', 'svg'):

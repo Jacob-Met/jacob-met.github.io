@@ -4,74 +4,74 @@
   "routes": {
     "hackathons": {
       "mode": "recorded-native",
-      "width": 1280,
-      "height": 800,
-      "frames": 60,
-      "playbackFps": 20,
+      "width": 1920,
+      "height": 1200,
+      "frames": 72,
+      "playbackFps": 24,
       "containerSeconds": 3,
       "label": "Hackathons",
       "location": "The anvil",
       "media": {
         "forward": {
-          "src": "assets/scene/forge-crafted-hackathons-forward.mp4",
-          "sha256": "911c0f11baf03137fc5b840c0c09b3682ad3eb968864b172de2bf07b3976ffb0"
+          "src": "assets/scene/forge-hifi-hackathons-forward.mp4",
+          "sha256": "b87790aabd840e1605151eb37f136e5e8f16cade67bf69e568bfb96219cb2e9d"
         },
         "reverse": {
-          "src": "assets/scene/forge-crafted-hackathons-reverse.mp4",
-          "sha256": "3b8034bef88643edaa587461bde28d348ad49033060bd14d37d03b2c0985d495"
+          "src": "assets/scene/forge-hifi-hackathons-reverse.mp4",
+          "sha256": "2d4aac1069be609853d81791bd74f06557a1c4f1a33e021edcd5dd19fb1d9407"
         },
         "endpoint": {
-          "src": "assets/scene/forge-crafted-hackathons-endpoint.png",
-          "sha256": "48183d20ca9d795fd1d84398cdc6cf442b4757db4e016ba37323a4accec1a7e3"
+          "src": "assets/scene/forge-hifi-hackathons-endpoint.png",
+          "sha256": "8a9011da1ca8d3533d0bad96eedf38e18f88470b444a782dab6ebc28cd295c66"
         }
       },
       "still": {
-        "src": "assets/scene/forge-crafted-hackathons-1280.png",
-        "sha256": "48183d20ca9d795fd1d84398cdc6cf442b4757db4e016ba37323a4accec1a7e3",
-        "width": 1280,
-        "height": 800,
+        "src": "assets/scene/forge-hifi-hackathons-1920.webp",
+        "sha256": "82a431ae400b257925a591c45ad5fa2a320c0dc5c278bb0bf71d7d7b069937b9",
+        "width": 1920,
+        "height": 1200,
         "alt": "The forge anvil and unfinished blade, with the warm hearth and a rack of finished blades behind."
       },
       "provenance": {
         "cameraSequenceSha256": "34daae6164236169fb0a3d774ad09590133732bcb56abbff5915fdf869d5febc",
-        "nativeReceiptSha256": "f01165c01667a70bca79b03dae82d5be075c4e8e8ee70d89c55ac9a57d3ce427",
-        "nativeJobSeconds": 200.31092775
+        "nativeReceiptSha256": "6e8ffa4a80039a8a957b2e4dee2bd3ab1bdca1b461d5e15b6540fea6d00f48b2",
+        "nativeJobSeconds": 611.33
       }
     },
     "projects": {
       "mode": "recorded-native",
-      "width": 1280,
-      "height": 800,
-      "frames": 60,
-      "playbackFps": 20,
+      "width": 1920,
+      "height": 1200,
+      "frames": 72,
+      "playbackFps": 24,
       "containerSeconds": 3,
       "label": "Projects",
       "location": "The workbench",
       "media": {
         "forward": {
-          "src": "assets/scene/forge-crafted-projects-forward.mp4",
-          "sha256": "11e7d95c339c1fb13e56fd454dc004ff91febd16ce8cb49396f27d1683ceb727"
+          "src": "assets/scene/forge-hifi-projects-forward.mp4",
+          "sha256": "a87beeee61373696aed1501d576174c65447c9c10ffaa05f078807884b12df51"
         },
         "reverse": {
-          "src": "assets/scene/forge-crafted-projects-reverse.mp4",
-          "sha256": "0c2507f4ed682c39787eb5199d743894e61198ed7bb8ed622ea78bc3bcc20e46"
+          "src": "assets/scene/forge-hifi-projects-reverse.mp4",
+          "sha256": "e63684c19b700e45b692b7c1ae9b382105159180ca83f090dd45fc8337e8cffa"
         },
         "endpoint": {
-          "src": "assets/scene/forge-crafted-projects-endpoint.png",
-          "sha256": "b612bf259038e4e0754f26194f66a4bd1c916b6e85cce363e01e9e003b922e9c"
+          "src": "assets/scene/forge-hifi-projects-endpoint.png",
+          "sha256": "341f29934eabe5a03c14b789e632594418e5318a8f4eda16f912f29697a71247"
         }
       },
       "still": {
-        "src": "assets/scene/forge-crafted-projects-1280.png",
-        "sha256": "b612bf259038e4e0754f26194f66a4bd1c916b6e85cce363e01e9e003b922e9c",
-        "width": 1280,
-        "height": 800,
+        "src": "assets/scene/forge-hifi-projects-1920.webp",
+        "sha256": "558af549020e86d847c42d6c3a5a0ada574720b69b2ee896a2edcc609e561794",
+        "width": 1920,
+        "height": 1200,
         "alt": "A close view of the forge workbench, with hammer, tongs and files on the wood surface."
       },
       "provenance": {
         "cameraSequenceSha256": "39f4ae473a285e32a22858d3e613dbc4ec5e8f59546bf7c142665e56342947fa",
-        "nativeReceiptSha256": "4e610af5481879ba3c1720fcd8198923004ee1caa95a7c0b8212bfa0953128de",
-        "nativeJobSeconds": 200.004654584
+        "nativeReceiptSha256": "5db54970942bf72c6e2e7fd1ed8486164c33f14ce8318c9beb1c8d59d6f1c50a",
+        "nativeJobSeconds": 664.25
       }
     }
   }

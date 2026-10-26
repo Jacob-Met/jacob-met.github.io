@@ -4,11 +4,33 @@ Jacob Metoyer’s portfolio: **Research, HAMON, and Spire of Octaves**. The home
 
 ## Captured portfolio runtime
 
-The portfolio has three click-driven, prerecorded native routes: Engine at the hearth (80 frames, 4 seconds), Hackathons at the anvil (60 frames, 3 seconds), and Projects at the workbench (60 frames, 3 seconds). Every route uses 20 fps authored playback and a genuine reverse sequence. Sibling transfers return through the shared entrance; Skip movement and reduced motion settle directly to the requested content.
+The portfolio has three click-driven, prerecorded native routes: Engine at the hearth (96 frames, 4 seconds), Hackathons at the anvil (72 frames, 3 seconds), and Projects at the workbench (72 frames, 3 seconds). Every route is a 1920×1200, 24 fps native capture with a genuine reverse sequence. Sibling transfers return through the shared entrance; Skip movement and reduced motion settle directly to the requested content.
 
 The informative contextual pane remains available at every size; redundant direct scene hotspots remain absent. Section entry keeps the arrival image and room navigation in view; nested project anchors still open their disclosures and scroll directly to the requested work. The three checksum-pinned scripts `lobby-journey.js`, `scene-handoff.js`, and `lobby.js` own route state, decoded-image handoff and accessible history/focus behavior. A hidden second image prepares only the chosen still; the last valid still or completed video remains until that image is ready, with obsolete callbacks fenced. `detail.js` remains an unloaded compatibility URL. Public game and historical capture URLs are preserved. The Spire invitation uses the exact small public city artwork from its own site and still links directly there; it is editorial artwork, not a HAMON render or a game demonstration.
 
 Both `lobby-manifest.json` and `branch-routes.json` declare `public-captured`: this is the user-authorized public presentation of the reviewed files, not a claim that every browser or device was tested. Normal build, checker and deployment verification use that existing publication class. `--preview` remains available for separately declared local-preview work; default validation still rejects that class. Neither the classification nor the staged source/output guard substitutes for browser receiving.
+
+### High-fidelity forge, 26 October 2026
+
+This is the same room, the same three recorded camera routes and the same handoff rules, rendered through HAMON Engine's lifelike path at much higher fidelity. The base is the refined 500-object scene described below. It adds the following:
+
+- **Fire light:** three independently flickering hearth lights plus a mouth light that spills fire onto the anvil and floor. All have soft PCSS shadows.
+- **Moonlight:** it falls through a new latticed window into volumetric forge haze, so light shafts and pane shadows land on the floor.
+- **Shading:** screen-space AO, contact shadows and one-bounce indirect light, with warm bounce fills standing in for multi-bounce GI.
+- **Embers, sparks and smoke:** rising embers and sparks come from a new GPU particle pass in the engine; soft hood smoke is added too.
+- **Materials:** original procedural PBR sets for ashlar stone, worn flagstones, oiled timber, hammered wrought iron, firebrick, leather and soot-black hood iron.
+- **Props:** a glowing coal bed of about 900 lumps, bellows, a tool rail with tongs and a poker, a hanging chain, quench and coal buckets, shelf crocks, a workbench lantern, a leather apron, and iron scale on the floor.
+- **Grade:** an art-directed AgX grade with split toning and a vignette.
+
+No photographic, generated or external imagery is used.
+
+Every frame is TAA-converged at frozen camera and scene time, and history resets per frame. The renders ran on the estate's hamon-build VMs (llvmpipe), not a local GPU, from `hamon-realtime/examples/forge_hifi.rs` at engine commit `6aa48f9`:
+
+- **Stills:** the four presentation stills are native 2560×1600 renders at 64 samples (`forge-hifi-*-2560.png`), with 2560, 1920 and 1280 WebP derivatives. The page shows the 1920 derivative.
+- **Clips:** interior route frames are native 1920×1200 at 24 samples. The first and last frames of every clip are the LANCZOS 1920×1200 derivatives of the 2560 stills (`forge-hifi-lobby-entrance.png`, `forge-hifi-engine-arrival.png`, `forge-hifi-*-endpoint.png`), so each route starts and ends on its stills' pixels. Decoded endpoint frames measure 42–46 dB PSNR against those PNGs; the difference is H.264 loss only.
+- **Reverse clips** are the same frames in reverse order.
+
+All earlier `forge-crafted-*`, `forge-tools-*` and older media URLs and bytes remain published.
 
 ### Native forge refinement, 26 October 2026
 

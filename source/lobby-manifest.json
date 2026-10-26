@@ -4,42 +4,42 @@
   "route": {
     "id": "engine",
     "mode": "recorded-native",
-    "width": 1280,
-    "height": 800,
-    "frames": 80,
-    "playbackFps": 20,
+    "width": 1920,
+    "height": 1200,
+    "frames": 96,
+    "playbackFps": 24,
     "containerSeconds": 4,
-    "frameSpanSeconds": 3.95
+    "frameSpanSeconds": 3.958
   },
   "media": {
     "entrance": {
-      "src": "assets/scene/forge-crafted-lobby-entrance.png",
-      "sha256": "e1975996c68039ce9d8e395ff6d42e478502f51298ef48cc9bf0c97a1d7822b8"
+      "src": "assets/scene/forge-hifi-lobby-entrance.png",
+      "sha256": "5a553b20986c679532451038cd9956caea1f7595163413b5e1eb792193572f45"
     },
     "arrival": {
-      "src": "assets/scene/forge-crafted-engine-arrival.png",
-      "sha256": "e2f6fc019b20ea03a7dfe01c4712249569dbf9a17e419d40d260d5af073b35a5"
+      "src": "assets/scene/forge-hifi-engine-arrival.png",
+      "sha256": "1d4be25c1a67b322ba8ea2405f343672a0a6c719ae41bc9ff9b62ce68aebe02b"
     },
     "forward": {
-      "src": "assets/scene/forge-crafted-engine-forward.mp4",
-      "sha256": "8b353e383780cb54e6cf727f64f175cafdb446246efd895f8e0754261bbfae56"
+      "src": "assets/scene/forge-hifi-engine-forward.mp4",
+      "sha256": "ca1fe7f7cceee7fab2807d84361691d4ddc490fb7386cce1b0faf1fb279f5326"
     },
     "reverse": {
-      "src": "assets/scene/forge-crafted-engine-reverse.mp4",
-      "sha256": "546646badd7a2c2b551b3e373c9bd778874386b9339d874dfbe0e0b3014eceab"
+      "src": "assets/scene/forge-hifi-engine-reverse.mp4",
+      "sha256": "15fd5a7414df8efc33806182abcdd50d280bab1054ff098b6f3cdb5001743b88"
     }
   },
   "proof": {
-    "src": "assets/scene/forge-crafted-workbench.png",
-    "width": 1280,
-    "height": 800,
-    "sha256": "e2f6fc019b20ea03a7dfe01c4712249569dbf9a17e419d40d260d5af073b35a5",
+    "src": "assets/scene/forge-hifi-workbench.png",
+    "width": 1920,
+    "height": 1200,
+    "sha256": "341f29934eabe5a03c14b789e632594418e5318a8f4eda16f912f29697a71247",
     "alt": "A native HAMON Engine view of the swordsmith workshop, with anvil, tools, finished blades and a warm charcoal hearth.",
     "label": "Native HAMON Engine render"
   },
   "provenance": {
     "cameraSequenceSha256": "393c3f87a8e70bdd7b8ae1998a7de451c77e9319b6640ae8ac5276e612f37ccc",
-    "nativeReceiptSha256": "e33e09795d644a0d53ee80ec34ab1b765fe4b900ee2cd9cfe58b948ce02b27cc",
-    "nativeJobSeconds": 241.843837292
+    "nativeReceiptSha256": "97083f931dbbb3ea49c7150c87aaa282c84c6a9b975a8df72d98f1e1e569d85b",
+    "nativeJobSeconds": 663.142
   }
 }
