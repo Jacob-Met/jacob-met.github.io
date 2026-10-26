@@ -11,9 +11,9 @@ import struct
 from pathlib import Path
 
 MANIFEST = 'lobby-manifest.json'
-MEDIA={'entrance': 'assets/scene/forge-crafted-lobby-entrance.png', 'arrival': 'assets/scene/forge-crafted-engine-arrival.png', 'forward': 'assets/scene/forge-crafted-engine-forward.mp4', 'reverse': 'assets/scene/forge-crafted-engine-reverse.mp4'}
+MEDIA={'entrance': 'assets/scene/forge-hifi-lobby-entrance.png', 'arrival': 'assets/scene/forge-hifi-engine-arrival.png', 'forward': 'assets/scene/forge-hifi-engine-forward.mp4', 'reverse': 'assets/scene/forge-hifi-engine-reverse.mp4'}
 # Preserve the previous live URLs; new selected filenames avoid stale-clip caches.
-RETAINED_ENGINE_MEDIA={'assets/scene/forge-engine-arrival.png': '18c5c569ef7207859d59c72320faac8445c1fe3afda45d7b87204a02de15b7ec', 'assets/scene/forge-engine-forward.mp4': '0c766fa5813f64ee9406ba26495aa056b8860e09dfcec64cfc8231a2a8817ca4', 'assets/scene/forge-engine-reverse.mp4': '092d64364e9ed8cba81025b5996055e9cfb8961cde912af212e6cf72cd62aa15', 'assets/scene/forge-workbench.png': '262459031987b79002205b2c9cadb2e5d2b7447b1cf5964384700e61a96c00d1', 'assets/scene/forge-lobby-entrance.png': 'e85274967a5e89dace34f1e008f37e12c1e043b72c05aa2c8515e6bf4c1a0818', 'assets/scene/forge-engine-wide-arrival.png': '999e219bd6339ce2f042dc2a174f11b58d07aa50a95d5ad9977ac8ee3b54c937', 'assets/scene/forge-engine-wide-forward.mp4': 'da905c2803187f8a1c90640efa95b6cc50a118e23f59dd454c59a9ac4811be2e', 'assets/scene/forge-engine-wide-reverse.mp4': 'fe6e4485565801ef6abe40f1b8576c964801d519e4df07665958450f3c5e63dd', 'assets/scene/forge-engine-wide-proof.png': 'eac784ac5a4fbe216abd35ff7e54fe620503f24dc2a6adfee6d4daed4c31acea', 'assets/scene/forge-warm-lobby-entrance.png': 'abf0b8efedf6391185af21d71fad774eba32b277f30af295bd6f53f13780e475', 'assets/scene/forge-warm-engine-arrival.png': '3c05c5cae6c242cad165de1ed166f27e6608a016e676dd2bbfd2180167c92492', 'assets/scene/forge-warm-engine-forward.mp4': '21fd1e60e08a269ec06613cb4e7b0b63b2286febff82577fe8fb4c824599172f', 'assets/scene/forge-warm-engine-reverse.mp4': '28c2b6bdb71c39d8ee7a1ea3296675e7220277ac560a93e63fa261fbb605605b', 'assets/scene/forge-warm-workbench.png': 'ea6026a6500226268c132c12775f5ce65f313aeb51c228b2e5ae2a2b59dec981', 'assets/scene/forge-tools-lobby-entrance.png': 'ada8aec066d8fa816e58001ebb9b31c186c52cf2e02a80d220a15e72f70d5f33', 'assets/scene/forge-tools-engine-arrival.png': 'aa45d0aaa579b9f0c821f4d821e084f593d410dfaf8552a2c85b3c290ad41638', 'assets/scene/forge-tools-engine-forward.mp4': 'e503c0c4da3dbb08dd74b58916f84bbd75f2894e8c1d161c6a6eee2de9299607', 'assets/scene/forge-tools-engine-reverse.mp4': 'ba2ce391ac36aa3446a6c0c4c6d637812b4c44a23187824e44631a78ad14a888', 'assets/scene/forge-tools-workbench.png': '148b8ff6254a4260f1fb8dd53d263811fa30b31e00625f5e0925f77ddc73d3df'}
+RETAINED_ENGINE_MEDIA={'assets/scene/forge-engine-arrival.png': '18c5c569ef7207859d59c72320faac8445c1fe3afda45d7b87204a02de15b7ec', 'assets/scene/forge-engine-forward.mp4': '0c766fa5813f64ee9406ba26495aa056b8860e09dfcec64cfc8231a2a8817ca4', 'assets/scene/forge-engine-reverse.mp4': '092d64364e9ed8cba81025b5996055e9cfb8961cde912af212e6cf72cd62aa15', 'assets/scene/forge-workbench.png': '262459031987b79002205b2c9cadb2e5d2b7447b1cf5964384700e61a96c00d1', 'assets/scene/forge-lobby-entrance.png': 'e85274967a5e89dace34f1e008f37e12c1e043b72c05aa2c8515e6bf4c1a0818', 'assets/scene/forge-engine-wide-arrival.png': '999e219bd6339ce2f042dc2a174f11b58d07aa50a95d5ad9977ac8ee3b54c937', 'assets/scene/forge-engine-wide-forward.mp4': 'da905c2803187f8a1c90640efa95b6cc50a118e23f59dd454c59a9ac4811be2e', 'assets/scene/forge-engine-wide-reverse.mp4': 'fe6e4485565801ef6abe40f1b8576c964801d519e4df07665958450f3c5e63dd', 'assets/scene/forge-engine-wide-proof.png': 'eac784ac5a4fbe216abd35ff7e54fe620503f24dc2a6adfee6d4daed4c31acea', 'assets/scene/forge-warm-lobby-entrance.png': 'abf0b8efedf6391185af21d71fad774eba32b277f30af295bd6f53f13780e475', 'assets/scene/forge-warm-engine-arrival.png': '3c05c5cae6c242cad165de1ed166f27e6608a016e676dd2bbfd2180167c92492', 'assets/scene/forge-warm-engine-forward.mp4': '21fd1e60e08a269ec06613cb4e7b0b63b2286febff82577fe8fb4c824599172f', 'assets/scene/forge-warm-engine-reverse.mp4': '28c2b6bdb71c39d8ee7a1ea3296675e7220277ac560a93e63fa261fbb605605b', 'assets/scene/forge-warm-workbench.png': 'ea6026a6500226268c132c12775f5ce65f313aeb51c228b2e5ae2a2b59dec981', 'assets/scene/forge-tools-lobby-entrance.png': 'ada8aec066d8fa816e58001ebb9b31c186c52cf2e02a80d220a15e72f70d5f33', 'assets/scene/forge-tools-engine-arrival.png': 'aa45d0aaa579b9f0c821f4d821e084f593d410dfaf8552a2c85b3c290ad41638', 'assets/scene/forge-tools-engine-forward.mp4': 'e503c0c4da3dbb08dd74b58916f84bbd75f2894e8c1d161c6a6eee2de9299607', 'assets/scene/forge-tools-engine-reverse.mp4': 'ba2ce391ac36aa3446a6c0c4c6d637812b4c44a23187824e44631a78ad14a888', 'assets/scene/forge-tools-workbench.png': '148b8ff6254a4260f1fb8dd53d263811fa30b31e00625f5e0925f77ddc73d3df', 'assets/scene/forge-crafted-lobby-entrance.png': 'e1975996c68039ce9d8e395ff6d42e478502f51298ef48cc9bf0c97a1d7822b8', 'assets/scene/forge-crafted-engine-arrival.png': 'e2f6fc019b20ea03a7dfe01c4712249569dbf9a17e419d40d260d5af073b35a5', 'assets/scene/forge-crafted-engine-forward.mp4': '8b353e383780cb54e6cf727f64f175cafdb446246efd895f8e0754261bbfae56', 'assets/scene/forge-crafted-engine-reverse.mp4': '546646badd7a2c2b551b3e373c9bd778874386b9339d874dfbe0e0b3014eceab', 'assets/scene/forge-crafted-workbench.png': 'e2f6fc019b20ea03a7dfe01c4712249569dbf9a17e419d40d260d5af073b35a5'}
 SHA = re.compile(r'[a-f0-9]{64}\Z')
 
 
@@ -48,7 +48,7 @@ def one(raw, parent, kind):
     return found[0]
 
 
-def recorded_video(raw):
+def recorded_video(raw, fps=20):
     """Inspect the actual single-video-track duration, sample count and size.
 
     Decoded frame-to-native comparison remains separate receiving evidence;
@@ -97,9 +97,27 @@ def recorded_video(raw):
     entries = [struct.unpack_from('>II', raw, a + 8 + i * 8) for i in range(count)]
     if sum(n for n, _ in entries) != frames or sum(n * dt for n, dt in entries) != duration:
         raise ValueError('Inconsistent sample timing')
-    if any(n == 0 or dt == 0 or dt * 20 != timescale for n, dt in entries):
-        raise ValueError('Route is not constant20fps')
+    if any(n == 0 or dt == 0 or dt * fps != timescale for n, dt in entries):
+        raise ValueError(f'Route is not constant {fps} fps')
     return width, height, frames, duration / timescale
+
+
+def webp_dimensions(raw):
+    """Pixel size of a single-image WebP (VP8, VP8L or VP8X); rejects anything else."""
+    if len(raw) < 30 or raw[:4] != b'RIFF' or raw[8:12] != b'WEBP' or struct.unpack_from('<I', raw, 4)[0] != len(raw) - 8:
+        raise ValueError('Not a WebP still')
+    kind = raw[12:16]
+    if kind == b'VP8 ':
+        w, h = struct.unpack_from('<HH', raw, 26)
+        return w & 0x3fff, h & 0x3fff
+    if kind == b'VP8L':
+        bits = int.from_bytes(raw[21:25], 'little')
+        return (bits & 0x3fff) + 1, ((bits >> 14) & 0x3fff) + 1
+    if kind == b'VP8X':
+        if raw[20] & 0x02:
+            raise ValueError('Animated WebP is not a still')
+        return int.from_bytes(raw[24:27], 'little') + 1, int.from_bytes(raw[27:30], 'little') + 1
+    raise ValueError('Unknown WebP chunk')
 
 
 def read_media(root, record, name):
@@ -109,7 +127,7 @@ def read_media(root, record, name):
     path = root / name
     if any(p.is_symlink() for p in (path, *path.parents) if p != root.parent):
         raise ValueError('Symlinked recorded-route resource')
-    if not path.is_file() or not path.resolve().is_relative_to(root.resolve()) or not 1 <= path.stat().st_size <= 2_000_000:
+    if not path.is_file() or not path.resolve().is_relative_to(root.resolve()) or not 1 <= path.stat().st_size <= 12_000_000:
         raise ValueError('Missing or oversized recorded-route resource')
     raw = path.read_bytes()
     if hashlib.sha256(raw).hexdigest() != record['sha256']:
@@ -134,10 +152,12 @@ def load_lobby(root, *, allow_private_preview=False):
         raise ValueError('Recorded route lacks explicit publication projection')
     route = data['route']
     dimensions = (route.get('width'), route.get('height')) if isinstance(route, dict) else ()
-    if dimensions not in ((800, 500), (640, 400), (1280, 800)):
+    if dimensions not in ((800, 500), (640, 400), (1280, 800), (1920, 1200)):
         raise ValueError('Unreviewed recorded-route dimensions')
+    # 1920x1200 high-fidelity captures play at 24 fps (96 frames); earlier ones at 20 fps (80).
+    frames, fps, span = (96, 24, 3.958) if dimensions == (1920, 1200) else (80, 20, 3.95)
     expected = {'id': 'engine', 'mode': 'recorded-native', 'width': dimensions[0], 'height': dimensions[1],
-                'frames': 80, 'playbackFps': 20, 'containerSeconds': 4, 'frameSpanSeconds': 3.95}
+                'frames': frames, 'playbackFps': fps, 'containerSeconds': 4, 'frameSpanSeconds': span}
     if route != expected or any(type(route.get(k)) is bool for k in expected):
         raise ValueError('Unexpected recorded-route contract')
     exact(data['media'], MEDIA)
@@ -146,7 +166,7 @@ def load_lobby(root, *, allow_private_preview=False):
         if key in ('entrance', 'arrival'):
             if len(raw) < 33 or raw[:8] != b'\x89PNG\r\n\x1a\n' or raw[12:16] != b'IHDR' or struct.unpack_from('>II', raw, 16) != dimensions:
                 raise ValueError('Route endpoint dimensions differ')
-        elif recorded_video(raw) != (*dimensions, 80, 4.0):
+        elif recorded_video(raw, fps) != (*dimensions, frames, 4.0):
             raise ValueError('Actual route video differs from reviewed contract')
     proof = data['proof']
     exact(proof, {'src', 'sha256', 'width', 'height', 'alt', 'label'})
@@ -155,7 +175,7 @@ def load_lobby(root, *, allow_private_preview=False):
     for key in ('alt', 'label'):
         if not isinstance(proof[key], str) or not 1 <= len(proof[key]) <= 400 or any(c in proof[key] for c in '<>\x00'):
             raise ValueError('Invalid workbench proof text')
-    raw = read_media(root, {k: proof[k] for k in ('src', 'sha256')}, 'assets/scene/forge-crafted-workbench.png')
+    raw = read_media(root, {k: proof[k] for k in ('src', 'sha256')}, 'assets/scene/forge-hifi-workbench.png')
     if len(raw) < 33 or raw[:8] != b'\x89PNG\r\n\x1a\n' or raw[12:16] != b'IHDR' or struct.unpack_from('>II', raw, 16) != dimensions:
         raise ValueError('Workbench proof must match route dimensions')
     p = data['provenance']
