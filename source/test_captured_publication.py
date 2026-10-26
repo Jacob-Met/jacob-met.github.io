@@ -43,8 +43,8 @@ class CapturedPublication(unittest.TestCase):
         self.assertIn('assets/figures/worldlaw-computed.svg',markup)
         self.assertIn('assets/figures/worldlaw-computed-mobile.svg',markup)
         self.assertIn('Computed model predictions, not measurements.',markup)
-        self.assertIn('loading="lazy" src="assets/scene/forge-crafted-arrival-1280.png"',markup)
-        self.assertIn('src="assets/scene/forge-crafted-arrival-1280.png" width="1280" height="800"',markup)
+        self.assertIn('loading="lazy" src="assets/scene/forge-crafted-arrival-1280.webp"',markup)
+        self.assertIn('src="assets/scene/forge-crafted-arrival-1280.webp" width="1280" height="800"',markup)
     def test_all_loaded_scripts_parse(self):
         node=shutil.which('node');self.assertIsNotNone(node)
         for name in LOADED_SCRIPT_FILES:

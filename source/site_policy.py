@@ -17,9 +17,10 @@ PRESENTATION_STILLS={'entrance': {'src': 'assets/scene/forge-crafted-entrance-12
 RETAINED_PRESENTATION_STILLS={'previous-arrival': {'src': 'assets/scene/forge-arrival-1280.png', 'width': 1280, 'height': 800, 'sha256': '37f712ef3718d7d02faffc6952a363906e34a9e921623d16470e425bcd8ec9dd'}, 'prior-selected-entrance': {'src': 'assets/scene/forge-entrance-1280.png', 'width': 1280, 'height': 800, 'sha256': '5289a46ef28008084a794c3d85040fb577c927126cdf3b87720dba4ef3d077d2'}, 'prior-selected-arrival': {'src': 'assets/scene/forge-arrival-960.png', 'width': 960, 'height': 600, 'sha256': '7f510954f85e241920f75fd32c007d428930adf40b207b7d5f041d46f642b24a'}, 'warm53-entrance': {'src': 'assets/scene/forge-warm-entrance-1280.png', 'sha256': 'aa98b75fd837beb69d5c83dcaf20879ec7b228bab7d8c83bf569d1e5b928f5df', 'width': 1280, 'height': 800}, 'warm53-arrival': {'src': 'assets/scene/forge-warm-arrival-960.png', 'sha256': 'cfdb06e0f6244e0a3ee4c443057704568faa2853bdc0ce58cae246a56e9a0343', 'width': 960, 'height': 600}, 'tools-entrance': {'src': 'assets/scene/forge-tools-entrance-1280.png', 'sha256': 'fab0b9626366b1bbb2f259d9b90eb9fcf8a5d0b72039ceb38d6f4f6fbe6e42b9', 'width': 1280, 'height': 800}, 'tools-arrival': {'src': 'assets/scene/forge-tools-arrival-960.png', 'sha256': '41243ff04b170be7c9c86abe7a5e0658650a1c137e0ceaab7da45fa50f3dd06a', 'width': 960, 'height': 600}}
 # Delivery derivative only: original PNGs remain the native provenance/compatibility URLs.
 LOSSLESS_ENTRANCE={'src': 'assets/scene/forge-crafted-entrance-1280.webp', 'sha256': 'cbc14016d6d5569eeb879b416b928129c17a8d320dd62dc43ca8704ff6f92132', 'width': 1280, 'height': 800, 'rgbaSha256': 'b5f342474721a38466323abf8c4710ada8311b9079994a0d26a7554e3b8e3457'}
+LOSSLESS_ARRIVAL={'src': 'assets/scene/forge-crafted-arrival-1280.webp', 'sha256': 'e7b9b7f684b8e8043599ec8ab8ea7f4f08c2f2b230ec785e3473d6c349a3b6c0', 'width': 1280, 'height': 800, 'rgbaSha256': '9a8a30db738a1e30d8df1fe9ac4dc6b6811c56b67587aca8d77cf096f9d4f21a'}
 RETAINED_LOSSLESS_ENTRANCES={'prior-selected-entrance': {'src': 'assets/scene/forge-entrance-1280.webp', 'width': 1280, 'height': 800, 'sha256': '0e3c6614e72335640a8aa068902e0f8bf510bdbd1a74b7b7ff5c87347dcb21b8', 'rgbaSha256': '4e8d2b4c9980bc5b1de739aa52e1db1dc6040ac96460624c147106bbda8aa602'}, 'warm53-entrance': {'src': 'assets/scene/forge-warm-entrance-1280.webp', 'sha256': '6902ff1655f997b5a80f009f00677158a7658fad03553e2b98e93918601f5f41', 'width': 1280, 'height': 800, 'rgbaSha256': 'f1a01579785b92235fe2ce69ff6f7ab7f60a60e589b46810b25712c5628d03de'}, 'tools-entrance': {'src': 'assets/scene/forge-tools-entrance-1280.webp', 'sha256': '709f23f6666e7ae34d1971c20539297d226913a4b26e6b33e90c554b42ada971', 'width': 1280, 'height': 800, 'rgbaSha256': 'd403504d08e73fcde247361eb792c13984f701526311174ff28c16e663da70e3'}}
-DELIVERY_STILLS={**PRESENTATION_STILLS,'entrance':LOSSLESS_ENTRANCE}
-PRESENTATION_FILES=(*[v['src'] for v in PRESENTATION_STILLS.values()],*[v['src'] for v in RETAINED_PRESENTATION_STILLS.values()],LOSSLESS_ENTRANCE['src'],*[v['src'] for v in RETAINED_LOSSLESS_ENTRANCES.values()])
+DELIVERY_STILLS={**PRESENTATION_STILLS,'entrance':LOSSLESS_ENTRANCE,'arrival':LOSSLESS_ARRIVAL}
+PRESENTATION_FILES=(*[v['src'] for v in PRESENTATION_STILLS.values()],*[v['src'] for v in RETAINED_PRESENTATION_STILLS.values()],LOSSLESS_ENTRANCE['src'],LOSSLESS_ARRIVAL['src'],*[v['src'] for v in RETAINED_LOSSLESS_ENTRANCES.values()])
 
 def lossless_webp_dimensions(raw):
  # This exact opaque derivative has one VP8L chunk, no ICC/EXIF/XMP/animation.
@@ -31,12 +32,12 @@ def lossless_webp_dimensions(raw):
  return ((bits&0x3fff)+1,((bits>>14)&0x3fff)+1)
 
 def validate_lossless_entrance(root):
- for record in (LOSSLESS_ENTRANCE,*RETAINED_LOSSLESS_ENTRANCES.values()):
+ for record in (LOSSLESS_ENTRANCE,LOSSLESS_ARRIVAL,*RETAINED_LOSSLESS_ENTRANCES.values()):
   path=root/record['src']
-  if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(root.resolve()):raise ValueError('Missing lossless entrance delivery asset')
+  if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(root.resolve()):raise ValueError('Missing lossless selected-scene delivery asset')
   raw=path.read_bytes()
-  if hashlib.sha256(raw).hexdigest()!=record['sha256']:raise ValueError('Lossless entrance delivery checksum differs')
-  if lossless_webp_dimensions(raw)!=(record['width'],record['height']):raise ValueError('Lossless entrance delivery dimensions differ')
+  if hashlib.sha256(raw).hexdigest()!=record['sha256']:raise ValueError('Lossless selected-scene delivery checksum differs')
+  if lossless_webp_dimensions(raw)!=(record['width'],record['height']):raise ValueError('Lossless selected-scene delivery dimensions differ')
 
 
 # Exact, unchanged browser screenshots admitted only with the figure's film credit.

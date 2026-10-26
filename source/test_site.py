@@ -68,10 +68,10 @@ class RecordTests(unittest.TestCase):
 
 class BuildTests(Built):
     def test_dynamic_still_endpoints_are_exact(self):
-        failures=self.rewrite('index.html','data-arrival-src="assets/scene/forge-crafted-arrival-1280.png"','data-arrival-src="https://example.org/unreviewed.png"')
+        failures=self.rewrite('index.html','data-arrival-src="assets/scene/forge-crafted-arrival-1280.webp"','data-arrival-src="https://example.org/unreviewed.png"')
         self.assertTrue(any('scene endpoint' in failure for failure in failures))
     def test_native_arrival_dimensions_are_truthful(self):
-        failures=self.rewrite('index.html','src="assets/scene/forge-crafted-arrival-1280.png" width="1280" height="800"','src="assets/scene/forge-crafted-arrival-1280.png" width="960" height="600"')
+        failures=self.rewrite('index.html','src="assets/scene/forge-crafted-arrival-1280.webp" width="1280" height="800"','src="assets/scene/forge-crafted-arrival-1280.webp" width="960" height="600"')
         self.assertTrue(any('native presentation dimensions' in failure for failure in failures))
     def test_output_passes_checks(self): self.assertTrue(check(self.root, preview=True)['passed'], check(self.root, preview=True))
     def test_deterministic(self):
@@ -155,7 +155,7 @@ class ContentTests(Built):
         for img in re.findall(r'<img [^>]+>', self.main()):
             with self.subTest(img=img[:60]):
                 if 'alt=""' in img:
-                    self.assertTrue('forge-crafted-arrival-1280.png' in img or 'id="scene-buffer"' in img)
+                    self.assertTrue('forge-crafted-arrival-1280.webp' in img or 'id="scene-buffer"' in img)
                 else: self.assertRegex(img, r'alt="[^"]{20,}"'); self.assertRegex(img, r'width="\d+" height="\d+"')
     def test_identity_and_research_replace_agent_director_copy(self):
         self.assertNotIn('id="how"', self.main())
