@@ -19,8 +19,10 @@ from branch_policy import load_branches, branch_video_errors, branch_source_erro
 from experience_policy import load_experience
 import wildside_page
 import hamon_page
+from engine_motion_policy import (VIDEO_ID as MOTION_VIDEO_ID, SOURCE_ATTRIBUTES as MOTION_SOURCE_ATTRIBUTES,
+    FILES as ENGINE_MOTION_FILES, validate_motion, video_errors as motion_video_errors, source_errors as motion_source_errors)
 from site_policy import (FONT_PROPERTIES, validate_fonts, SCRIPT_FILES, LOADED_SCRIPT_FILES,
-                         audit_scripts, script_element_errors, canvas_element_errors, ART_FILES, validate_art, EDITORIAL_FILES, EDITORIAL_ART, validate_editorial, PRESENTATION_FILES, PRESENTATION_STILLS, DELIVERY_STILLS, validate_presentation_stills)
+                         audit_scripts, script_element_errors, canvas_element_errors, ART_FILES, validate_art, EDITORIAL_FILES, EDITORIAL_ART, validate_editorial, PRESENTATION_FILES, PRESENTATION_STILLS, DELIVERY_STILLS, validate_presentation_stills, CAPTIONVERSE_CAPTURES, CAPTIONVERSE_FILES, validate_captionverse_captures, captionverse_picture_source_errors)
 
 ROOT_RELATIVE_PAGES = frozenset({'404.html'})
 CSP_REQUIRED = {'default-src': "'none'", 'style-src': "'self'", 'script-src': "'self'", 'img-src': "'self'", 'media-src': "'self'", 'font-src': "'self'", 'connect-src': "'none'", 'object-src': "'none'", 'frame-src': "'none'", 'worker-src': "'none'", 'base-uri': "'none'", 'form-action': "'none'"}
@@ -74,7 +76,10 @@ class Page(HTMLParser):
                 if src == record['src'] and (a.get('width'), a.get('height')) != (str(record['width']), str(record['height'])):
                     self.errors.append('img: native presentation dimensions differ')
             if src in EDITORIAL_ART and (a.get('width'),a.get('height')) != tuple(str(EDITORIAL_ART[src][k]) for k in ('width','height')): self.errors.append('img: editorial artwork dimensions differ')
-            approved = {*wildside_page.FILES, *hamon_page.FILES, CAPTURE_FILE, PROOF_FILE, 'games/lanternwake/desktop.png', *ART_FILES, *EDITORIAL_FILES, *PRESENTATION_FILES} | {r['src'] for r in self.figures.values()}
+            for record in CAPTIONVERSE_CAPTURES.values():
+                if src == record['src'] and (a.get('width'), a.get('height')) != (str(record['width']), str(record['height'])):
+                    self.errors.append('img: Captionverse capture dimensions differ')
+            approved = {*wildside_page.FILES, *hamon_page.FILES, CAPTURE_FILE, PROOF_FILE, 'games/lanternwake/desktop.png', *ART_FILES, *EDITORIAL_FILES, *PRESENTATION_FILES, *CAPTIONVERSE_FILES} | {r['src'] for r in self.figures.values()}
             approved |= {r['still']['src'] for r in self.branches.values()}
             if self.lobby:
                 approved |= {self.lobby['media'][k]['src'] for k in ('entrance', 'arrival')} | {self.lobby['proof']['src']}
@@ -87,19 +92,22 @@ class Page(HTMLParser):
         if tag in ('form', 'iframe', 'object', 'embed', 'base', 'style', 'audio', 'svg'):
             self.errors.append(f'{tag}: outside declared surface')
         if tag == 'picture':
-            if self.in_picture or a or not self.figures: self.errors.append('picture: outside declared computed figures')
+            if self.in_picture or a or not self.figures: self.errors.append('picture: outside declared project figures')
             self.in_picture = True
         if tag == 'video':
             self.videos.append(a); self.current_video = a.get('id')
-            self.errors.extend(wildside_video_errors(a) if 'data-wildside-demo' in a else branch_video_errors(a,self.branches) if 'data-route' in a else route_video_errors(a, self.lobby) if self.lobby else video_element_errors(a))
+            self.errors.extend(motion_video_errors(a) if a.get('id') == MOTION_VIDEO_ID else wildside_video_errors(a) if 'data-wildside-demo' in a else branch_video_errors(a,self.branches) if 'data-route' in a else route_video_errors(a, self.lobby) if self.lobby else video_element_errors(a))
             if a.get('poster'): self.resources.append(a['poster'])
         if tag == 'source':
             if self.in_picture:
-                self.errors.extend(picture_source_errors(a, self.figures))
+                if a.get('srcset') == CAPTIONVERSE_CAPTURES['phone']['src']:
+                    self.errors.extend(captionverse_picture_source_errors(a))
+                else:
+                    self.errors.extend(picture_source_errors(a, self.figures))
                 if a.get('srcset'): self.resources.append(a['srcset'])
             else:
                 self.sources.append((self.current_video, a))
-                self.errors.extend(([] if a=={'src':wildside_page.VIDEO,'type':'video/mp4'} else ['source: outside declared Wildside demo']) if self.current_video=='wildside' else branch_source_errors(a,self.current_video,self.branches) if self.current_video not in ('route-forward','route-reverse',None) else route_source_errors(a, self.lobby) if self.lobby else source_element_errors(a))
+                self.errors.extend(motion_source_errors(a) if self.current_video == MOTION_VIDEO_ID else ([] if a=={'src':wildside_page.VIDEO,'type':'video/mp4'} else ['source: outside declared Wildside demo']) if self.current_video=='wildside' else branch_source_errors(a,self.current_video,self.branches) if self.current_video not in ('route-forward','route-reverse',None) else route_source_errors(a, self.lobby) if self.lobby else source_element_errors(a))
         if tag == 'canvas':
             self.canvases.append(a)
             self.errors.extend(canvas_element_errors(a))
@@ -210,6 +218,8 @@ def check(root: Path, *, preview=False) -> dict:
         validate_presentation_stills(root)
         validate_retained_engine_media(root)
         validate_retained_branch_media(root)
+        validate_captionverse_captures(root)
+        validate_motion(root)
     except (ValueError, OSError, UnicodeError) as error:
         failures.append('Font publication boundary: ' + str(error))
     if (root / 'games').exists():
@@ -263,6 +273,7 @@ def check(root: Path, *, preview=False) -> dict:
             expected_sources = [(f'route-{direction}', {'src': lobby['media'][direction]['src'], 'type': 'video/mp4'}) for direction in ('forward', 'reverse')] if name == 'index.html' else []
             if name == 'index.html':
                 expected_sources += [(f'route-{key}-{direction}', {'src':branches[key]['media'][direction]['src'],'type':'video/mp4'}) for key in BRANCHES if key in branches for direction in DIRECTIONS]
+                expected_sources.append((MOTION_VIDEO_ID, MOTION_SOURCE_ATTRIBUTES))
             if name == wildside_page.PAGE:
                 expected_sources = [('wildside', {'src': wildside_page.VIDEO, 'type': 'video/mp4'})] if (root / wildside_page.VIDEO).is_file() else []
             if p.sources != expected_sources or len(p.videos) != len(expected_sources):

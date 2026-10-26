@@ -10,14 +10,14 @@ function setup(initial='',mode={}){
  const researchLink=node('researchLink',{href:'#research'}),captionLink=node('captionLink',{href:'#captionverse'}),projectLink=node('projectLink',{href:'#projects'});
  const sections=[research,projects,hackathons];const hackLink=node('hackLink',{href:'#hackathons'});
 
- function video(name){return{...node(name),duration:4,currentTime:0,readyState:mode.unloaded?0:1,plays:0,pauses:0,loads:0,play(){this.plays++;return mode.rejectPlay?Promise.reject(Error('blocked')):Promise.resolve()},pause(){this.pauses++},load(){this.loads++}}}
+ function video(name){return{...node(name),duration:4,currentTime:0,preload:'none',readyState:mode.unloaded?0:1,plays:0,pauses:0,loads:0,play(){this.plays++;return mode.rejectPlay?Promise.reject(Error('blocked')):Promise.resolve()},pause(){this.pauses++},load(){this.loads++}}}
  const forward=video('forward'),reverse=video('reverse');const branchVideos=[];const videoPairs={engine:{forward,reverse}};for(const id of ['projects','hackathons']){videoPairs[id]={};for(const dir of ['forward','reverse']){const v=video(id+'-'+dir);v.attrs={'data-route':id,'data-direction':dir};videoPairs[id][dir]=v;branchVideos.push(v);}}for(const id of ['engine','projects','hackathons'])still.setAttribute(id==='engine'?'data-arrival-src':'data-'+id+'-src',id+'-arrival.png');still.setAttribute('data-entrance-src','forge-entrance.png');
  const location={href:'https://example.test/private/lobby.html'+initial,hash:initial};let stack=[{url:location.href,state:null}],index=0,backCalls=0,writes=0;
  const setUrl=u=>{location.href=String(u);location.hash=new URL(location.href).hash};
  const history={state:null,pushState(s,_,u){if(mode.denyHistory)throw Error('denied');writes++;this.state=s;stack.splice(++index);stack[index]={url:String(u),state:s};setUrl(u)},replaceState(s,_,u){if(mode.denyHistory)throw Error('denied');writes++;this.state=s;stack[index]={url:String(u),state:s};setUrl(u)},back(){backCalls++;if(mode.denyBack)throw Error('denied');pending.push(()=>{index=Math.max(0,index-1);setUrl(stack[index].url);this.state=stack[index].state;emit('popstate',{})})}};
  const motion={matches:!!mode.reduced,addEventListener:(k,f)=>motionEvents[k]=f};
  const document={body,title:'',getElementById(id){return{research,projects,hackathons,captionverse:caption}[id]},querySelector(s){return{'#scene-still':still,'#route-forward':forward,'#route-reverse':reverse,'#engine-heading':heading,'.journey-ui':travelUI,'#journey-label':travelLabel,'#skip-journey':skipMovement,'#presentation-label':presentation,'.identity':identity}[s]},querySelectorAll:s=>s==='video[data-route]'?branchVideos:s==='.work-section'?sections:s==='a[href^="#"]'?[researchLink,captionLink,projectLink,hackLink]:s==='[data-engine]'?[skipLink,opener]:s==='[data-home]'?[home,identity]:[]};
- const window={scrollTo(){},addEventListener(k,f,o){(events[k]??=[]).push({f,once:o?.once})}};
+ const window={navigator:{connection:{saveData:!!mode.saveData}},scrollTo(){},addEventListener(k,f,o){(events[k]??=[]).push({f,once:o?.once})}};
  function emit(k,e={}){for(const entry of [...events[k]||[]]){entry.f(e);if(entry.once)events[k]=events[k].filter(x=>x!==entry)}}
  const ctx=vm.createContext({document,window,history,location,URL,Promise,matchMedia:()=>motion,requestAnimationFrame:f=>raf.push(f),setTimeout(f){const id=++nextTimer;timers.set(id,f);return id},clearTimeout:id=>timers.delete(id)});
  vm.runInContext(helper,ctx);const make=ctx.createLobbyJourney;ctx.createLobbyJourney=o=>(journey=make(o));vm.runInContext(adapter,ctx);
@@ -29,8 +29,28 @@ function setup(initial='',mode={}){
 
 const results=[];
 const choices={engine:x=>x.opener,hackathons:x=>x.hackLink,projects:x=>x.projectLink};
+function signal(n,type){for(const f of n.listeners[type]??[])f({currentTarget:n});}
 function test(name,fn){try{fn();results.push({name,passed:true})}catch(e){results.push({name,passed:false,error:e.message})}}
 function finish(x){let loops=0;while(x.journey.getState().phase==='travelling'){assert.ok(++loops<4);const j=x.journey.getState();x.ended(x.videoPairs[j.route][j.direction]);x.flush();}}
+test('visitor hover preloads only the selected route metadata, not a whole route family',()=>{
+ const x=setup('',{unloaded:true});
+ for(const pair of Object.values(x.videoPairs))assert.equal(pair.forward.loads+pair.reverse.loads,0);
+ signal(x.projectLink,'pointerenter');
+ assert.equal(x.videoPairs.projects.forward.preload,'metadata');
+ assert.equal(x.videoPairs.projects.forward.loads,1);
+ assert.equal(x.videoPairs.projects.reverse.loads,0);
+ assert.equal(x.videoPairs.hackathons.forward.loads+x.videoPairs.engine.forward.loads,0);
+ signal(x.projectLink,'focus');signal(x.projectLink,'touchstart');
+ assert.equal(x.videoPairs.projects.forward.loads,1);
+});
+test('reduced-data connections never prefetch on hover',()=>{
+ const x=setup('',{unloaded:true,saveData:true});signal(x.projectLink,'pointerenter');
+ for(const pair of Object.values(x.videoPairs))assert.equal(pair.forward.loads+pair.reverse.loads,0);
+});
+test('preloading cannot restart already loaded active media',()=>{
+ const x=setup();signal(x.projectLink,'pointerenter');
+ assert.equal(x.videoPairs.projects.forward.loads,0);assert.equal(x.videoPairs.projects.forward.preload,'none');
+});
 for(const route of Object.keys(choices)){
  test(route+' activation chooses its own media, heading and still',()=>{const x=setup();x.click(choices[route](x));assert.equal(x.journey.getState().route,route);assert.equal(x.videoPairs[route].forward.plays,1);assert.ok(x.travelLabel.textContent.includes(route==='engine'?'Engine':route==='projects'?'Projects':'Hackathons'));finish(x);assert.equal(x.still.src,route+'-arrival.png');assert.equal(x.active,route==='engine'?x.heading:x[route].h2)});
  test(route+' direct fragment does not autoplay',()=>{const x=setup('#'+route);x.flush();assert.equal(x.still.src,route+'-arrival.png');for(const pair of Object.values(x.videoPairs))assert.equal(pair.forward.plays+pair.reverse.plays,0)});

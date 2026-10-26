@@ -107,7 +107,7 @@ class BuildTests(Built):
         self.assertEqual(sm.count('<loc>'), 4); self.assertIn(f'<loc>{build.BASE}/</loc>', sm)
     def test_only_declared_captures_ship(self):
         shots = {f.relative_to(self.root).as_posix() for f in (self.root / 'assets' / 'demos').iterdir()}
-        self.assertEqual(shots, set(build.shot_files(self.data)))
+        self.assertEqual(shots, set(build.shot_files(self.data)) | set(build.CAPTIONVERSE_FILES))
 
 
 class ContentTests(Built):
