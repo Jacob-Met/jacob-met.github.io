@@ -2,7 +2,6 @@
 import copy,hashlib,json,shutil,subprocess,tempfile,unittest
 from pathlib import Path
 import build
-from test_project_order import ForgeNavigation
 from capture_policy import load_capture,video_element_errors,source_element_errors
 from experience_policy import load_experience,validate_experience
 from source_policy import validate_source_publication,reject_private_ledgers
@@ -30,14 +29,8 @@ class CapturedPublication(unittest.TestCase):
         self.assertEqual(markup.count('class="room-nav"'),5)
         self.assertEqual(markup.count('class="scene-beacon '),3)
         self.assertEqual(markup.count('class="branch-arrival"'),2)
-        navigation=ForgeNavigation(markup).groups
-        self.assertEqual([a['attrs']['href'] for a in navigation['forge-routes']],['#engine','#hackathons','#projects'])
-        self.assertEqual([a['attrs']['href'] for a in navigation['forge-editorial']],
-                         ['wildside-project.html','https://spireofoctaves.com/','#research'])
-        beacons=ForgeNavigation(markup,('scene-portals',)).groups['scene-portals']
-        self.assertEqual([a['attrs']['href'] for a in beacons],['#engine','#hackathons','#projects'])
-        self.assertEqual([a['attrs']['aria-label'] for a in beacons],
-                         ['Engine, at the hearth','Hackathons, at the anvil','Projects, at the workbench'])
+        self.assertIn('Explore the Engine',markup)
+        self.assertIn('Destinations in the forge',markup)
         for room in ('research','hackathons','projects','engine'):
             self.assertIn(f'href="#{room}"',markup)
         self.assertIn('Conceptual illustration · not experimental data',markup)

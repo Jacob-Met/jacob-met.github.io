@@ -2,7 +2,6 @@ import copy, hashlib, json, re, shutil, subprocess, sys, tempfile, unittest
 from pathlib import Path
 from urllib.parse import urljoin, urlsplit
 import build
-from test_project_order import ForgeNavigation
 import check as check_module
 from check import check
 
@@ -206,13 +205,8 @@ class ContentTests(Built):
         self.assertIn('href="https://spireofoctaves.com/"', self.main())
     def test_primary_destinations_and_game_snapshot_scope(self):
         m = self.main()
-        navigation=ForgeNavigation(m).groups
-        self.assertEqual([a['attrs']['href'] for a in navigation['forge-routes']],['#engine','#hackathons','#projects'])
-        self.assertEqual([a['attrs']['href'] for a in navigation['forge-editorial']],
-                         ['wildside-project.html','https://spireofoctaves.com/','#research'])
-        self.assertEqual(len(navigation['forge-routes'])+len(navigation['forge-editorial']),6)
-        self.assertNotIn('class="destinations"',m)
-        self.assertNotIn('class="home-flagship"',m)
+        self.assertLess(m.index('href="#research" class="destination destination-research"'), m.index('id="hamon"'))
+        self.assertLess(m.index('id="hamon"'), m.index('href="https://spireofoctaves.com/" class="destination destination-spire"'))
         self.assertIn('href="https://jacobmetoyer.com/games/lanternwake/"', m)
         self.assertIn('published browser-game snapshot', m)
         self.assertIn('every movement can be skipped', m)

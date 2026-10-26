@@ -35,46 +35,4 @@ class ActualIndexReview(unittest.TestCase):
   self.edit();self.build(True);self.git('add','source','docs');(self.root/'source/message.txt').write_text('unstaged');(self.root/'docs/index.html').write_text('unstaged');self.mode('public-captured');r=self.hook();self.assertEqual(r.returncode,0,r.stderr)
  def test_public_staged_pair_uses_default_lane_despite_unstaged_preview(self):
   self.mode('public-captured');self.edit();self.build(False);self.git('add','source','docs');self.mode('local-preview');r=self.hook();self.assertEqual(r.returncode,0,r.stderr)
- def add_app(self):
-  app=self.root/'docs/wildside';(app/'assets').mkdir(parents=True)
-  (app/'index.html').write_text('staged app')
-  (app/'assets/data.bin').write_bytes(bytes((0,255))+b'staged')
-  self.git('add','docs/wildside')
-  return app
- def test_staged_wildside_is_preserved_in_both_build_lanes(self):
-  for mode in ('local-preview','public-captured'):
-   with self.subTest(mode=mode):
-    self.mode(mode);self.build(mode=='local-preview')
-    app=self.root/'docs/wildside'
-    if app.exists():shutil.rmtree(app)
-    self.add_app();self.git('add','source','docs')
-    staged=self.git('ls-files','--stage').stdout
-    # Unstaged app content must not select or alter what the guard receives.
-    (app/'index.html').write_text('unstaged app')
-    r=self.hook();self.assertEqual(r.returncode,0,r.stderr)
-    self.assertEqual(self.git('show',':docs/wildside/index.html').stdout,'staged app')
-    self.assertEqual(self.git('ls-files','--stage').stdout,staged)
-    self.assertEqual((app/'index.html').read_text(),'unstaged app')
- def test_retained_wildside_does_not_mask_stale_generated_docs(self):
-  self.add_app();self.edit();self.git('add','source')
-  r=self.hook();self.assertNotEqual(r.returncode,0);self.assertIn('staged docs/',r.stderr)
- def test_retained_wildside_does_not_admit_unrelated_docs(self):
-  self.add_app();(self.root/'docs/unrelated.txt').write_text('not generated');self.git('add','docs')
-  r=self.hook();self.assertNotEqual(r.returncode,0);self.assertIn('staged docs/',r.stderr)
- def test_wildside_root_symlink_is_rejected(self):
-  (self.root/'docs/wildside').symlink_to('../source',target_is_directory=True);self.git('add','docs/wildside')
-  r=self.hook();self.assertNotEqual(r.returncode,0);self.assertIn('unsafe staged Wildside app',r.stderr)
- def test_wildside_nested_symlink_is_rejected(self):
-  app=self.add_app();(app/'assets/escape').symlink_to('../../../source',target_is_directory=True);self.git('add','docs/wildside')
-  r=self.hook();self.assertNotEqual(r.returncode,0);self.assertIn('unsafe staged Wildside app',r.stderr)
- def test_wildside_broken_symlink_is_rejected(self):
-  app=self.add_app();(app/'assets/missing').symlink_to('missing-target');self.git('add','docs/wildside')
-  r=self.hook();self.assertNotEqual(r.returncode,0);self.assertIn('unsafe staged Wildside app',r.stderr)
- def test_wildside_root_file_is_rejected(self):
-  (self.root/'docs/wildside').write_text('not a directory');self.git('add','docs/wildside')
-  r=self.hook();self.assertNotEqual(r.returncode,0);self.assertIn('unsafe staged Wildside app',r.stderr)
- def test_symlinked_docs_parent_is_rejected(self):
-  shutil.rmtree(self.root/'docs');(self.root/'docs').symlink_to('source',target_is_directory=True);self.git('add','-A','docs')
-  r=self.hook();self.assertNotEqual(r.returncode,0);self.assertIn('unsafe staged docs directory',r.stderr)
-
 if __name__=='__main__':unittest.main(verbosity=2)

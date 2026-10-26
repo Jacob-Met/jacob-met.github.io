@@ -23,24 +23,22 @@ class EditorialArtwork(unittest.TestCase):
    with self.assertRaises(ValueError):validate_editorial(root)
  def test_direct_spire_invitation_is_not_a_local_room(self):
   class Links(HTMLParser):
-   def __init__(self,html):super().__init__();self.links=[];self.current=None;self.navs=[];self.feed(html)
+   def __init__(self,html):super().__init__();self.links=[];self.current=None;self.feed(html)
    def handle_starttag(self,tag,attrs):
-    if tag=='nav':self.navs.append(dict(attrs).get('class','').split())
-    if tag=='a':self.current={'attrs':dict(attrs),'images':[],'text':'','navigation':self.navs[-1] if self.navs else []};self.links.append(self.current)
+    if tag=='a':self.current={'attrs':dict(attrs),'images':[],'text':''};self.links.append(self.current)
     elif tag=='img' and self.current is not None:self.current['images'].append(dict(attrs))
    def handle_data(self,text):
     if self.current is not None:self.current['text']+=text
    def handle_endtag(self,tag):
     if tag=='a':self.current=None
-    if tag=='nav':self.navs.pop()
   html=build.render_index(json.loads((ROOT/'content.json').read_text()),preview=True)
-  links=[a for a in Links(html).links if 'forge-editorial' in a['navigation'] and a['attrs'].get('href')=='https://spireofoctaves.com/']
+  links=[a for a in Links(html).links if 'destination-spire' in a['attrs'].get('class','').split()]
   self.assertEqual(len(links),1);link=links[0]
   self.assertEqual(link['attrs']['href'],'https://spireofoctaves.com/')
-  self.assertIn('Spire of Octaves',link['text'])
-  self.assertEqual(link['images'],[])
-  entrance=html[html.index('<section class="entrance"'):html.index('<section class="journey-ui"')]
-  self.assertNotIn(EDITORIAL_FILES[0],entrance)
+  self.assertIn('Cities stacked on cities.',link['text'])
+  self.assertEqual(len(link['images']),1);img=link['images'][0]
+  self.assertEqual(img['src'],EDITORIAL_FILES[0]);self.assertEqual(img['loading'],'lazy')
+  self.assertIn('Artwork from the Spire of Octaves site',img['alt'])
   self.assertNotIn('data-engine',link['attrs']);self.assertNotIn('id="spire"',html)
   self.assertIn('Forge rendered with HAMON Engine',html)
  def test_only_three_route_helpers_remain(self):
