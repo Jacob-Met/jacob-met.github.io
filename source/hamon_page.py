@@ -66,9 +66,7 @@ GAMES = [
 ]
 OTHER_WORLDS = [
     ('Spire of Octaves', 'A fiction world with its own site: stories, music, games and animation.'),
-    ('Echo', 'A vertical slice of a game set in the Spire world, built in Godot. Private.'),
-    ('Ashen Circuit', 'A realtime roguelike survivor prototype in Python. Private.'),
-    ('Roblox Systems Foundry', 'Server-authoritative, deterministic Luau building blocks for a Roblox experience.'),
+    ('Echo', 'A game set in the Spire world, now being built in the HAMON Engine. Private and early.'),
 ]
 VIDEO = [
     ('Phantom Window', 'Walk a virtual camera through ordinary video. It estimates depth per frame, recovers the camera path, and renders new viewpoints on the GPU, marking which pixels were observed and which inferred.'),

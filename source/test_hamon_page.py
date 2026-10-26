@@ -53,6 +53,13 @@ class HamonPageTests(unittest.TestCase):
             self.assertIn(name, page)
         self.assertNotIn('painterly', page.lower())
 
+    def test_games_are_actually_in_hamon_engine_lineage(self):
+        page = self.page('hamon.html')
+        self.assertIn('Echo', page)
+        self.assertIn('being built in the HAMON Engine', page)
+        for unrelated in ('Ashen Circuit', 'Roblox Systems Foundry', 'built in Godot'):
+            self.assertNotIn(unrelated, page)
+
     def test_sitemap_lists_hamon(self):
         self.assertIn('/hamon.html', self.page('sitemap.xml'))
 
