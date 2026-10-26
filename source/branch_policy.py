@@ -8,7 +8,7 @@ from lobby_policy import exact, read_media, recorded_video, SHA
 MANIFEST = 'branch-routes.json'
 BRANCHES = ('hackathons', 'projects')
 DIRECTIONS = ('forward', 'reverse')
-RETAINED_BRANCH_MEDIA={'assets/scene/forge-hackathons-forward.mp4': 'a4ba79077deede4e80359f4d79fa539e5b2b24ecdb371a0cde53fecff7390362', 'assets/scene/forge-hackathons-reverse.mp4': '0f3e9f40bcd14f858a66428aeeb3cbdada23146d7ec39240e99717649092be2d', 'assets/scene/forge-hackathons-endpoint.png': '77da82ffb81bbc69ab1f413e90007a9bab1fe267f0ff2fe3150b1a6b65fc96c8', 'assets/scene/forge-hackathons-1280.png': '0f0cf91edaeb090921be2399cd46c40bc6400d170b026f315126cdc79d596a49', 'assets/scene/forge-projects-forward.mp4': '0a4197150a1d0ecd99e8691f7fccaed2bbad0776c1dd2e91ea898d363f6f25e2', 'assets/scene/forge-projects-reverse.mp4': '47e446e467cffc4dca0bd1cf878b6ab7ddb5472a2428e6f6cafc66bd775a89f8', 'assets/scene/forge-projects-endpoint.png': '1db97d296f506c390d73f627c49cc9d8ba291f10c32d8e084a2e6c0709c71e58', 'assets/scene/forge-projects-1280.png': '0a7d611b63d4e19c17109da0a89eb3d024c521f58bf7a86cb33545ee60e8263b', 'assets/scene/forge-warm-hackathons-forward.mp4': '78fcc42eb42df0603db5fe80f36a014ab99462a740005b93134c246161083bf8', 'assets/scene/forge-warm-hackathons-reverse.mp4': 'abcc2b5db567399518639fad6a42db81c4a9da3c61be34901f79799aa8f83add', 'assets/scene/forge-warm-hackathons-endpoint.png': 'cd5d41d03130bb3ec48965ce12b59b465394704463c381640a40d98afc97c203', 'assets/scene/forge-warm-hackathons-1280.png': '8548c91754c7cd14d11714cf50dfa93495c4f4ffa758c138c67b154744c3c6f4', 'assets/scene/forge-warm-projects-forward.mp4': 'e15b573bcbee0b8dd69ca0868d4062df9f3ff301e92d2b92e4efd82bf48e24ad', 'assets/scene/forge-warm-projects-reverse.mp4': '31b3f16ade4ca351b91fad8832756aed13654f2b5404bfb37830eebc0ad4b440', 'assets/scene/forge-warm-projects-endpoint.png': '5c689e7e1fe860ad33e6b2d433ad99b172517f88f7059e68c5955ea0d5050695', 'assets/scene/forge-warm-projects-1280.png': '875423981d00d812274eb4763da413d81328b2b72b7894179d09df8d296de37d'}
+RETAINED_BRANCH_MEDIA={'assets/scene/forge-hackathons-forward.mp4': 'a4ba79077deede4e80359f4d79fa539e5b2b24ecdb371a0cde53fecff7390362', 'assets/scene/forge-hackathons-reverse.mp4': '0f3e9f40bcd14f858a66428aeeb3cbdada23146d7ec39240e99717649092be2d', 'assets/scene/forge-hackathons-endpoint.png': '77da82ffb81bbc69ab1f413e90007a9bab1fe267f0ff2fe3150b1a6b65fc96c8', 'assets/scene/forge-hackathons-1280.png': '0f0cf91edaeb090921be2399cd46c40bc6400d170b026f315126cdc79d596a49', 'assets/scene/forge-projects-forward.mp4': '0a4197150a1d0ecd99e8691f7fccaed2bbad0776c1dd2e91ea898d363f6f25e2', 'assets/scene/forge-projects-reverse.mp4': '47e446e467cffc4dca0bd1cf878b6ab7ddb5472a2428e6f6cafc66bd775a89f8', 'assets/scene/forge-projects-endpoint.png': '1db97d296f506c390d73f627c49cc9d8ba291f10c32d8e084a2e6c0709c71e58', 'assets/scene/forge-projects-1280.png': '0a7d611b63d4e19c17109da0a89eb3d024c521f58bf7a86cb33545ee60e8263b', 'assets/scene/forge-warm-hackathons-forward.mp4': '78fcc42eb42df0603db5fe80f36a014ab99462a740005b93134c246161083bf8', 'assets/scene/forge-warm-hackathons-reverse.mp4': 'abcc2b5db567399518639fad6a42db81c4a9da3c61be34901f79799aa8f83add', 'assets/scene/forge-warm-hackathons-endpoint.png': 'cd5d41d03130bb3ec48965ce12b59b465394704463c381640a40d98afc97c203', 'assets/scene/forge-warm-hackathons-1280.png': '8548c91754c7cd14d11714cf50dfa93495c4f4ffa758c138c67b154744c3c6f4', 'assets/scene/forge-warm-projects-forward.mp4': 'e15b573bcbee0b8dd69ca0868d4062df9f3ff301e92d2b92e4efd82bf48e24ad', 'assets/scene/forge-warm-projects-reverse.mp4': '31b3f16ade4ca351b91fad8832756aed13654f2b5404bfb37830eebc0ad4b440', 'assets/scene/forge-warm-projects-endpoint.png': '5c689e7e1fe860ad33e6b2d433ad99b172517f88f7059e68c5955ea0d5050695', 'assets/scene/forge-warm-projects-1280.png': '875423981d00d812274eb4763da413d81328b2b72b7894179d09df8d296de37d', 'assets/scene/forge-tools-hackathons-forward.mp4': 'd8cf0a2c229a4fafadece230fe0d4dc856e3073d5b8db3e7dd05db67f4020efa', 'assets/scene/forge-tools-hackathons-reverse.mp4': 'b16b8a7540505c5f996a488927138504073675bb4d0d49cb3e5b87e38902f61a', 'assets/scene/forge-tools-hackathons-endpoint.png': 'c3874eb89d9868017281e3bc1705fc88fb9219ce6ac5972f7ce77ab02bd2a97b', 'assets/scene/forge-tools-hackathons-1280.png': 'c32845acf937aa76093aff0aa95403bdbb39238b0c26056916a1e6c29dd9b517', 'assets/scene/forge-tools-projects-forward.mp4': 'c3b8890026b09fc72ce4487068d789ce18f3bbf0125e5d80975341443515c314', 'assets/scene/forge-tools-projects-reverse.mp4': '82d741a4a3fb6749acbca1505b856b8317b696d3fcebe3cb68b02fa49dbfc03f', 'assets/scene/forge-tools-projects-endpoint.png': '474983bc61e46f41d3bde618be4014f133178b667f197757e25d70b091aca734', 'assets/scene/forge-tools-projects-1280.png': 'b857847082a8b9c0b210068921ff5bce6a17358fd9447b997ca102d504dc8bdc'}
 
 def validate_retained_branch_media(root):
     for name,digest in RETAINED_BRANCH_MEDIA.items():
@@ -32,7 +32,7 @@ def load_branches(root, *, allow_private_preview=False):
     for key, route in data['routes'].items():
         exact(route, {'mode', 'width', 'height', 'frames', 'playbackFps', 'containerSeconds',
                       'label', 'location', 'media', 'still', 'provenance'})
-        contract = {'mode':'recorded-native', 'width':640, 'height':400,
+        contract = {'mode':'recorded-native', 'width':1280, 'height':800,
                     'frames':60, 'playbackFps':20, 'containerSeconds':3}
         if any(route[k] != v or type(route[k]) is bool for k,v in contract.items()):
             raise ValueError('Unreviewed branch route contract')
@@ -42,18 +42,18 @@ def load_branches(root, *, allow_private_preview=False):
         exact(route['media'], {'forward','reverse','endpoint'})
         for kind, record in route['media'].items():
             ext = 'png' if kind == 'endpoint' else 'mp4'
-            raw = read_media(root, record, f'assets/scene/forge-tools-{key}-{kind}.{ext}')
+            raw = read_media(root, record, f'assets/scene/forge-crafted-{key}-{kind}.{ext}')
             if kind == 'endpoint':
-                if len(raw)<33 or raw[:8]!=b'\x89PNG\r\n\x1a\n' or raw[12:16]!=b'IHDR' or struct.unpack_from('>II',raw,16)!=(640,400):
+                if len(raw)<33 or raw[:8]!=b'\x89PNG\r\n\x1a\n' or raw[12:16]!=b'IHDR' or struct.unpack_from('>II',raw,16)!=(1280,800):
                     raise ValueError('Branch endpoint dimensions differ')
-            elif recorded_video(raw)!=(640,400,60,3.0):
+            elif recorded_video(raw)!=(1280,800,60,3.0):
                 raise ValueError('Actual branch clip differs from contract')
         still=route['still'];exact(still, {'src','sha256','width','height','alt'})
         if any(type(still[k]) is not int for k in ('width','height')) or (still['width'],still['height'])!=(1280,800):
             raise ValueError('Unreviewed branch still dimensions')
         if not isinstance(still['alt'],str) or not 20<=len(still['alt'])<=400 or any(c in still['alt'] for c in '<>\x00'):
             raise ValueError('Invalid branch still description')
-        raw=read_media(root,{k:still[k] for k in ('src','sha256')},f'assets/scene/forge-tools-{key}-1280.png')
+        raw=read_media(root,{k:still[k] for k in ('src','sha256')},f'assets/scene/forge-crafted-{key}-1280.png')
         if len(raw)<33 or raw[:8]!=b'\x89PNG\r\n\x1a\n' or raw[12:16]!=b'IHDR' or struct.unpack_from('>II',raw,16)!=(1280,800):
             raise ValueError('Branch still bytes differ from declared dimensions')
         provenance=route['provenance'];exact(provenance,{'cameraSequenceSha256','nativeReceiptSha256','nativeJobSeconds'})

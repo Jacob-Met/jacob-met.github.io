@@ -151,7 +151,7 @@ class TasteTableDeliveryTests(unittest.TestCase):
                 self.assertTrue(any('TasteTable admission failed' in e for e in receipt['failures']))
 
     def test_portfolio_script_and_form_policy_survives_manifest_rehash(self):
-        for addition, reason in [('<script>void 0;</script>', 'script: executable'),
+        for addition, reason in [('<script>void 0;</script>', 'script: inline executable or unapproved data forbidden'),
                                  ('<form></form>', 'form: outside')]:
             with self.subTest(reason=reason):
                 target = self.out / 'index.html'

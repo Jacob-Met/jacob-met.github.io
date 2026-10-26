@@ -4,8 +4,8 @@
   "routes": {
     "hackathons": {
       "mode": "recorded-native",
-      "width": 640,
-      "height": 400,
+      "width": 1280,
+      "height": 800,
       "frames": 60,
       "playbackFps": 20,
       "containerSeconds": 3,
@@ -13,35 +13,35 @@
       "location": "The anvil",
       "media": {
         "forward": {
-          "src": "assets/scene/forge-tools-hackathons-forward.mp4",
-          "sha256": "d8cf0a2c229a4fafadece230fe0d4dc856e3073d5b8db3e7dd05db67f4020efa"
+          "src": "assets/scene/forge-crafted-hackathons-forward.mp4",
+          "sha256": "911c0f11baf03137fc5b840c0c09b3682ad3eb968864b172de2bf07b3976ffb0"
         },
         "reverse": {
-          "src": "assets/scene/forge-tools-hackathons-reverse.mp4",
-          "sha256": "b16b8a7540505c5f996a488927138504073675bb4d0d49cb3e5b87e38902f61a"
+          "src": "assets/scene/forge-crafted-hackathons-reverse.mp4",
+          "sha256": "3b8034bef88643edaa587461bde28d348ad49033060bd14d37d03b2c0985d495"
         },
         "endpoint": {
-          "src": "assets/scene/forge-tools-hackathons-endpoint.png",
-          "sha256": "c3874eb89d9868017281e3bc1705fc88fb9219ce6ac5972f7ce77ab02bd2a97b"
+          "src": "assets/scene/forge-crafted-hackathons-endpoint.png",
+          "sha256": "48183d20ca9d795fd1d84398cdc6cf442b4757db4e016ba37323a4accec1a7e3"
         }
       },
       "still": {
-        "src": "assets/scene/forge-tools-hackathons-1280.png",
-        "sha256": "c32845acf937aa76093aff0aa95403bdbb39238b0c26056916a1e6c29dd9b517",
+        "src": "assets/scene/forge-crafted-hackathons-1280.png",
+        "sha256": "48183d20ca9d795fd1d84398cdc6cf442b4757db4e016ba37323a4accec1a7e3",
         "width": 1280,
         "height": 800,
         "alt": "The forge anvil and unfinished blade, with the warm hearth and a rack of finished blades behind."
       },
       "provenance": {
         "cameraSequenceSha256": "34daae6164236169fb0a3d774ad09590133732bcb56abbff5915fdf869d5febc",
-        "nativeReceiptSha256": "4b2da5f50b69d6dae5d9fe60049e8a9f30843fab841bed5077195de3c3512816",
-        "nativeJobSeconds": 113.194450398
+        "nativeReceiptSha256": "f01165c01667a70bca79b03dae82d5be075c4e8e8ee70d89c55ac9a57d3ce427",
+        "nativeJobSeconds": 200.31092775
       }
     },
     "projects": {
       "mode": "recorded-native",
-      "width": 640,
-      "height": 400,
+      "width": 1280,
+      "height": 800,
       "frames": 60,
       "playbackFps": 20,
       "containerSeconds": 3,
@@ -49,29 +49,29 @@
       "location": "The workbench",
       "media": {
         "forward": {
-          "src": "assets/scene/forge-tools-projects-forward.mp4",
-          "sha256": "c3b8890026b09fc72ce4487068d789ce18f3bbf0125e5d80975341443515c314"
+          "src": "assets/scene/forge-crafted-projects-forward.mp4",
+          "sha256": "11e7d95c339c1fb13e56fd454dc004ff91febd16ce8cb49396f27d1683ceb727"
         },
         "reverse": {
-          "src": "assets/scene/forge-tools-projects-reverse.mp4",
-          "sha256": "82d741a4a3fb6749acbca1505b856b8317b696d3fcebe3cb68b02fa49dbfc03f"
+          "src": "assets/scene/forge-crafted-projects-reverse.mp4",
+          "sha256": "0c2507f4ed682c39787eb5199d743894e61198ed7bb8ed622ea78bc3bcc20e46"
         },
         "endpoint": {
-          "src": "assets/scene/forge-tools-projects-endpoint.png",
-          "sha256": "474983bc61e46f41d3bde618be4014f133178b667f197757e25d70b091aca734"
+          "src": "assets/scene/forge-crafted-projects-endpoint.png",
+          "sha256": "b612bf259038e4e0754f26194f66a4bd1c916b6e85cce363e01e9e003b922e9c"
         }
       },
       "still": {
-        "src": "assets/scene/forge-tools-projects-1280.png",
-        "sha256": "b857847082a8b9c0b210068921ff5bce6a17358fd9447b997ca102d504dc8bdc",
+        "src": "assets/scene/forge-crafted-projects-1280.png",
+        "sha256": "b612bf259038e4e0754f26194f66a4bd1c916b6e85cce363e01e9e003b922e9c",
         "width": 1280,
         "height": 800,
         "alt": "A close view of the forge workbench, with hammer, tongs and files on the wood surface."
       },
       "provenance": {
         "cameraSequenceSha256": "39f4ae473a285e32a22858d3e613dbc4ec5e8f59546bf7c142665e56342947fa",
-        "nativeReceiptSha256": "105ee02c0feb5beccd80d53af971cb753915502ad542aaaf2c254a5a7596c185",
-        "nativeJobSeconds": 119.17976039
+        "nativeReceiptSha256": "4e610af5481879ba3c1720fcd8198923004ee1caa95a7c0b8212bfa0953128de",
+        "nativeJobSeconds": 200.004654584
       }
     }
   }
