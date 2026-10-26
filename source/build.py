@@ -19,6 +19,7 @@ from site_policy import (FONT_FILES, validate_fonts, SCENE_ASSETS, SCENE_FILES, 
 import portfolio
 import wildside_page
 import hamon_page
+from tastetable import DIRECTORY as TASTETABLE_DIRECTORY, directories as tastetable_directories, manifest_entries as tastetable_entries, read_files as read_tastetable_files
 from engine_motion_policy import FILES as ENGINE_MOTION_FILES, validate_motion
 from capture_policy import CAPTURE_FILES, load_capture
 from lobby_policy import load_lobby, lobby_files, validate_retained_engine_media
@@ -246,6 +247,7 @@ def output_files(record: dict, lobby=None, figures=None, branches=None) -> set[s
     illustrations = figure_files(load_figures(ROOT) if figures is None else figures)
     return {'index.html', '404.html', 'style.css', EXPERIENCE_CSS, '.nojekyll', 'CNAME',
             'robots.txt', 'sitemap.xml', 'cv.json', 'build-manifest.json', 'portfolio.json',
+            *(f'{TASTETABLE_DIRECTORY}/{name}' for name in tastetable_entries()),
             'assets/mark.svg', SHARE_CARD, *ROOT_ICONS, *FONT_FILES, *SCENE_FILES, *ART_FILES, *EDITORIAL_FILES, *PRESENTATION_FILES, *CAPTIONVERSE_FILES, *ENGINE_MOTION_FILES,
             wildside_page.PAGE, hamon_page.PAGE, *wildside_page.FILES, *hamon_page.FILES, *wildside_page.video_files(ROOT), *SCRIPT_FILES, *CAPTURE_FILES, *route_files, *illustrations, *branch_files(branches), EXPERIENCE_FILE, *shot_files(record), *game_files(ROOT, record)}
 
@@ -254,6 +256,8 @@ def build(out: Path, data: dict | None = None, *, preview=False) -> dict:
     validate_source_publication(ROOT)
     record = json.loads((ROOT / 'content.json').read_text(encoding='utf-8')) if data is None else json.loads(json.dumps(data))
     validate(record)
+    application = read_tastetable_files(ROOT / TASTETABLE_DIRECTORY)
+    application_dirs = {TASTETABLE_DIRECTORY, *(f'{TASTETABLE_DIRECTORY}/{name}' for name in tastetable_directories(application))}
     current = portfolio_record()
     audit_scripts(ROOT)
     load_capture(ROOT)
@@ -273,7 +277,8 @@ def build(out: Path, data: dict | None = None, *, preview=False) -> dict:
             rel = f.relative_to(out).as_posix()
             if rel.startswith(wildside_page.APP_DIR + '/') and not f.is_symlink():
                 continue  # the deployed static Wildside app is preserved untouched
-            if f.is_symlink() or (f.is_file() and rel not in allowed and not SHOT_RE.fullmatch(rel)):
+            if (f.is_symlink() or (f.is_file() and rel not in allowed and not SHOT_RE.fullmatch(rel))
+                    or (f.is_dir() and rel.startswith(TASTETABLE_DIRECTORY + '/') and rel not in application_dirs)):
                 raise ValueError('Output contains unexpected material; refuse to overwrite it')
         stale = out / 'assets' / 'demos'
         if stale.is_dir():
@@ -312,12 +317,16 @@ def build(out: Path, data: dict | None = None, *, preview=False) -> dict:
     for rel in games:
         (out / rel).parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / rel, out / rel)
+    for name, raw in application.items():
+        target = out / TASTETABLE_DIRECTORY / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(raw)
     for name in ROOT_ICONS:
         shutil.copyfile(ROOT / 'assets' / name, out / name)
     (out / '.nojekyll').write_text('', encoding='utf-8', newline='\n')
     (out / 'CNAME').write_text('jacobmetoyer.com\n', encoding='utf-8', newline='\n')
     (out / 'robots.txt').write_text(f'User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n', encoding='utf-8', newline='\n')
-    sm = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>{BASE}/</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{hamon_page.PAGE}</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{wildside_page.PAGE}</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{wildside_page.APP_DIR}/</loc><lastmod>{record["updated"]}</lastmod></url></urlset>'
+    sm = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>{BASE}/</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{hamon_page.PAGE}</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{wildside_page.PAGE}</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{wildside_page.APP_DIR}/</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{TASTETABLE_DIRECTORY}/</loc><lastmod>{record["updated"]}</lastmod></url></urlset>'
     (out / 'sitemap.xml').write_text(sm, encoding='utf-8', newline='\n')
     (out / 'cv.json').write_text(json.dumps(record, indent=2, ensure_ascii=False) + '\n', encoding='utf-8', newline='\n')
     (out / 'portfolio.json').write_text(json.dumps(current, indent=2, ensure_ascii=False) + '\n', encoding='utf-8', newline='\n')
