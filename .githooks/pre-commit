@@ -67,6 +67,12 @@ if ! python3 "$SCRATCH/staged/source/build.py" "$@" --out "$SCRATCH/checked-site
     exit 1
 fi
 
+# The builder preserves the separately published static Wildside app (docs/wildside/)
+# and never generates it, so mirror that preservation before comparing.
+if [ -d "$SCRATCH/staged/docs/wildside" ]; then
+    cp -R "$SCRATCH/staged/docs/wildside" "$SCRATCH/checked-site/wildside"
+fi
+
 if ! diff -qr "$SCRATCH/staged/docs" "$SCRATCH/checked-site" >/dev/null 2>&1; then
     echo "pre-commit: staged docs/ differs from a fresh build of the staged source/" >&2
     if [ "$BUILD_MODE" = "local-preview" ]; then

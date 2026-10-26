@@ -24,6 +24,12 @@ The new entrance is delivered as a checksum-pinned lossless WebP: 554,878 bytes 
 
 Computed project figures are separate, labeled numerical illustrations—not UI screenshots or a claim that refreshed external demos are deployed. `figure_policy.py` admits only the three exact local numerical illustrations and their mobile arrangements; `lobby_policy.py` checks both clips, matching endpoint/proof dimensions and hashes. No engine source, raw mesh, GPU module or private audit ledger enters this projection. Room maps are ordinary semantic links; keyboard focus returns to the originating entrance link when it is visible, otherwise to the site identity, and “Back through the forge” always returns to the entrance rather than reopening the last room.
 
+## Responsive delivery images
+
+`source/responsive-images.json` pins AVIF/WebP derivatives (in `assets/derived/`) of images that were already published: the Wildside hero and card, the engine rendering study, the Captionverse captures, and a crop of the Lanternwake game view. Pages wrap the original `<img>` in a `<picture>` whose `<source>` sets must match the manifest exactly; the originals stay at their URLs as fallbacks. `responsive_images.py` validates hashes and admits the sources; `python source/make_responsive.py` (Pillow with AVIF) regenerates them. No forge media is derived here.
+
+Phone layouts were checked in headless Chrome at 390×844 and 320 px (no horizontal overflow; room map on one row; footer on two rows). Physical-phone/Safari receiving is still separate.
+
 ## HAMON, Wildside and share images
 
 `source/hamon_page.py` renders `hamon.html` (what HAMON is, the engine, Wildside as flagship, and early private instruments named without links). Its `HAMON_LEGAL_NAME` constant is `None` until the company's legal name exists; setting it adds the name to the footer. The HAMON wordmark is plain type plus a CSS line, not artwork. `wildside_page.py` owns the Wildside page and its card; its share image is `assets/wildside/wildside-thumbnail.jpg`. Each page declares its own Open Graph/Twitter image in `build.py`; `python source/make_images.py --frame <wildside frame>` regenerates the identity and HAMON share cards.

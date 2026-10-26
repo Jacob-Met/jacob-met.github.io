@@ -90,7 +90,7 @@
       "id": "spire-of-octaves",
       "name": "Spire of Octaves",
       "kind": "Fiction world · own site",
-      "line": "My own world, told through stories, music, games and animation. A vertical world born from an unfinished sacred song, where matter remembers intent and new floors are still being composed beneath the people who live there. Its first story, *Seamwork*, is a short story published on Royal Road.",
+      "line": "My own world, told through stories, music, games and animation. A vertical world born from an unfinished sacred song, where matter remembers intent and new floors are still being composed beneath the people who live there. Its stories are free to read on its own site, grouped by series; begin with *Salt’s End*, *What Strays* and *Seamwork*.",
       "url": "https://spireofoctaves.com/",
       "build": null
     }
@@ -113,7 +113,7 @@
     },
     {
       "name": "Multi-agent Fan-out Engine",
-      "line": "A public-safe reference core for dependency plans, SQLite dispatch custody and reconcile-not-replay. Local adapter tests, not claims about production capacity.",
+      "line": "A small reference engine for fanning work out to many agents: dependency plans, a SQLite dispatch queue, and recovery that reconciles state instead of replaying it.",
       "url": "https://github.com/Jacob-Met/multi-agent-fanout-engine"
     }
   ],

@@ -36,9 +36,9 @@ class EditorialArtwork(unittest.TestCase):
   self.assertEqual(len(links),1);link=links[0]
   self.assertEqual(link['attrs']['href'],'https://spireofoctaves.com/')
   self.assertIn('Cities stacked on cities.',link['text'])
-  self.assertEqual(len(link['images']),1);img=link['images'][0]
-  self.assertEqual(img['src'],EDITORIAL_FILES[0]);self.assertEqual(img['loading'],'lazy')
-  self.assertIn('Artwork from the Spire of Octaves site',img['alt'])
+  # The invitation now reflects the new site's way in as type; the artwork URL stays published but unused here.
+  self.assertEqual(link['images'],[])
+  for title in ('Salt’s End','What Strays','Seamwork'): self.assertIn(title,link['text'])
   self.assertNotIn('data-engine',link['attrs']);self.assertNotIn('id="spire"',html)
   self.assertIn('Forge rendered with HAMON Engine',html)
  def test_only_three_route_helpers_remain(self):

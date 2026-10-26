@@ -279,3 +279,42 @@ body.ws{background:#08121d;color:#e5eef0}
 @media(forced-colors:active){
   .engine-motion-labels,.engine-motion-study figcaption,.engine-motion-study figcaption small{color:CanvasText}
 }
+
+/* Delivery derivatives: <picture> wrappers keep the original image boxes. */
+.playable>picture,.home-flagship-image picture,.hamon-frame picture,.wildside-card-image picture,.engine-style-study picture,.hamon-games picture{display:block}
+.home-flagship-image picture{height:100%}
+.playable>picture>img{display:block;width:100%;height:auto;aspect-ratio:760/460;object-fit:cover;border-radius:6px}
+.ws-hero>picture>img,.hamon-hero>picture>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hamon-games picture img{image-rendering:auto}
+@media(max-width:1100px) and (min-width:701px){.playable>picture{margin-bottom:23px}}
+@media(max-width:700px){.playable>picture{margin-bottom:22px}}
+
+/* Spire: the new site's way in, as type rather than borrowed artwork. */
+.spire-begin{display:flex;flex-wrap:wrap;align-items:baseline;gap:3px 0;margin-top:13px;padding-top:11px;border-top:1px solid #c9b8ff2e;font-size:14px;line-height:1.5;color:#d6d0ea}
+.spire-begin-label{flex-basis:100%;margin-bottom:2px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--violet)}
+.spire-begin span:not(.spire-begin-label){white-space:nowrap}
+.spire-begin span:not(.spire-begin-label):not(:last-child)::after{content:'·';margin:0 9px;color:#c9b8ff80}
+
+/* Phone: room map on one row, footer on two calm rows. */
+@media(max-width:700px){
+  .room-nav,.enhanced.arrived .room-nav{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;gap:0 16px;white-space:nowrap}
+  .room-nav::-webkit-scrollbar{display:none}
+  footer{flex-wrap:wrap;row-gap:0;align-items:center}
+  footer>span{flex-basis:100%;max-width:none;padding-top:8px}
+  footer .foot-links a,footer>a{white-space:nowrap}
+}
+.room-nav a{flex:0 0 auto}
+@media(max-width:359px){.room-nav,.enhanced.arrived .room-nav{gap:0 8px;font-size:10.5px;justify-content:space-between}.room-nav a{min-width:0}
+  .home-flagship{grid-template-columns:31% 1fr}.home-flagship .eyebrow{letter-spacing:.06em}
+  .home-flagship .ws-play{padding:0 16px;font-size:15px;white-space:nowrap}}
+
+/* Wide screens: the place label sits under the Wildside card, never beneath it. */
+@media(min-width:1101px){.entrance{min-height:max(1000px,100svh)}.place-label{top:868px;bottom:auto}}
+.research-contact{margin:46px 0 8px;padding:26px 0 0;border-top:1px solid #35515d}
+.research-contact p:first-child{margin:0 0 6px;font-size:22px;line-height:1.3;letter-spacing:-.03em;color:var(--paper)}
+.research-contact p:last-child{display:flex;flex-wrap:wrap;gap:4px 26px;margin:0}
+/* The capture's 26px white caption strip duplicates the labels above it; keep it out of frame. */
+.engine-motion-frame{overflow:hidden;aspect-ratio:960/360;background:#27272f}
+.engine-motion-frame video{margin-top:-2.7083%}
+.hamon-caps h3,.hamon-instruments h3,.hamon-games h3{line-height:1.22}
+.ws-hero-copy .section-context,.hamon-hero-copy .section-context{line-height:1.7}

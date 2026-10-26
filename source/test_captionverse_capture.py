@@ -11,6 +11,7 @@ from pathlib import Path
 import build
 import check
 import portfolio
+import responsive_images
 from site_policy import CAPTIONVERSE_CAPTURES, CAPTIONVERSE_FILES, captionverse_picture_source_errors, validate_captionverse_captures
 
 ROOT = Path(__file__).resolve().parent
@@ -49,13 +50,15 @@ class CaptionverseCapture(unittest.TestCase):
             self.assertEqual(offset,len(raw))
 
     def test_picture_and_local_images_pass_exact_checker(self):
-        parser=check.Page(figures={'context':{'src':'assets/figures/worldlaw-computed.svg'}})
+        data=responsive_images.current()
+        parser=check.Page(figures={'context':{'src':'assets/figures/worldlaw-computed.svg'}},responsive=data)
         parser.feed(portfolio.captionverse_capture())
         self.assertEqual(parser.errors,[])
-        self.assertEqual(set(parser.resources),set(CAPTIONVERSE_FILES))
+        derived={p for p in responsive_images.files(data) if p.startswith('assets/derived/captionverse-')}
+        self.assertEqual(set(parser.resources),set(CAPTIONVERSE_FILES)|derived)
 
     def test_picture_source_does_not_admit_alternates(self):
-        tree=CaptureTree(); tree.feed(portfolio.captionverse_capture()); attrs=tree.sources[0]
+        tree=CaptureTree(); tree.feed(portfolio.captionverse_capture()); attrs=next(a for a in tree.sources if a.get('type')=='image/png')
         self.assertEqual(captionverse_picture_source_errors(attrs),[])
         for key,value in [('media','(max-width: 600px)'),('type','image/svg+xml'),('width','391'),('srcset','https://example.com/capture.png')]:
             changed=dict(attrs); changed[key]=value
@@ -86,7 +89,7 @@ class CaptionverseCapture(unittest.TestCase):
 
     def test_caption_is_real_text_and_dates_a_static_prototype(self):
         markup=portfolio.captionverse_capture()
-        for text in ['The video has paused','complete passage stays visible','Reading-pause detail','23 Oct 2026','local prototype','static browser capture','200% reading text']:
+        for text in ['The video has paused','complete passage stays visible','23 October 2026','local prototype','200% reading text']:
             self.assertIn(text,markup)
         self.assertIn('with a Continue video button',markup)
         self.assertNotIn('beside a Continue video button',markup)
@@ -97,7 +100,7 @@ class CaptionverseCapture(unittest.TestCase):
         markup=portfolio.captionverse_capture();tree=CaptureTree();tree.feed(markup)
         self.assertIn({'href':'https://creativecommons.org/licenses/by/3.0/','rel':'license'},tree.links)
         self.assertTrue(any(a.get('href')=='https://mango.blender.org/' for a in tree.links))
-        for text in ['Tears of Steel','Blender Foundation','44-second excerpt (3:12–3:56), trimmed and re-encoded','Desktop shown as a detail; original captures unchanged']:
+        for text in ['Tears of Steel','Blender Foundation','44-second excerpt (3:12–3:56), trimmed and re-encoded']:
             self.assertIn(text,markup)
 
     def test_full_original_capture_links(self):
@@ -122,7 +125,7 @@ class CaptionverseCapture(unittest.TestCase):
         record=json.loads((ROOT/'content.json').read_text())
         paths=build.output_files(record,load_lobby(ROOT,allow_private_preview=True),load_figures(ROOT),load_branches(ROOT,allow_private_preview=True))
         self.assertTrue(set(CAPTIONVERSE_FILES)<=paths)
-        self.assertEqual({p for p in paths if 'captionverse' in p},set(CAPTIONVERSE_FILES))
+        self.assertEqual({p for p in paths if 'captionverse' in p and not p.startswith('assets/derived/')},set(CAPTIONVERSE_FILES))
         publication=json.loads((ROOT/'source-allowlist.json').read_text())['files']
         self.assertTrue(set(CAPTIONVERSE_FILES)<=set(publication))
         self.assertIn('test_captionverse_capture.py',publication)

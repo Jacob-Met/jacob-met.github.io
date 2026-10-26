@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updated": "2026-10-25",
+  "updated": "2026-10-26",
   "visibility": "public-captured",
   "entry": {
     "heading": "Jacob Metoyer",
@@ -65,14 +65,14 @@
         {
           "projectId": "spire",
           "prompt": "One universe, many ways in.",
-          "body": "Spire of Octaves is a setting for stories, games, music, and animation. Seamwork is one entrance: a dangerous guiding job in a world whose seams can be heard and mended.",
+          "body": "Spire of Octaves is a setting for stories, games, music, and animation. The stories are grouped by series; Salt’s End, What Strays and Seamwork are the way in.",
           "actionLabel": "Enter Spire of Octaves",
           "interactionId": "world-reading"
         }
       ],
       "ending": {
         "heading": "Enter the wider world",
-        "body": "Spire has its own home for the universe, its writing, and ways to explore.",
+        "body": "Spire has its own home for the stories, grouped by series, with Salt’s End as the place to begin.",
         "actionLabel": "Visit Spire of Octaves",
         "url": "https://spireofoctaves.com/"
       },
@@ -135,10 +135,10 @@
       "projectId": "spire",
       "question": "A world still being composed.",
       "opening": "Spire of Octaves is my original multimedia universe: cities stacked on cities, shaped by an unfinished sacred song. It is a setting for stories, games, music, and animation.",
-      "capability": "Languages, characters, places, and multiple writing projects give the universe its depth. Seamwork is one public entrance into that larger body of work.",
-      "tryThis": "Explore the universe on Spire’s own site, or enter through the writing in Seamwork.",
+      "capability": "The stories are free to read on Spire’s own site, grouped by series and by place. Salt’s End, What Strays and Seamwork are the way in.",
+      "tryThis": "Begin with Salt’s End, then its companion What Strays, then Seamwork.",
       "stage": "Original multimedia universe",
-      "limit": "Seamwork’s serialization is currently on hiatus.",
+      "limit": "Seamwork is also out as a short novel on Royal Road.",
       "previewMode": "World introduction",
       "actions": [
         {
@@ -146,8 +146,8 @@
           "url": "https://spireofoctaves.com/"
         },
         {
-          "label": "Start with Seamwork",
-          "url": "https://www.royalroad.com/fiction/183255/seamwork"
+          "label": "Start with Salt’s End",
+          "url": "https://spireofoctaves.com/stories/salts-end"
         }
       ],
       "next": {
@@ -339,7 +339,7 @@
       "question": "What did we actually agree to?",
       "description": "Review commitments and dependencies beside the exact conversation words. Corrections preserve the history of the interpretation.",
       "stage": "Local prototype",
-      "limit": "Human-reviewed suggestions; no verified live Bee connection.",
+      "limit": "Suggestions are reviewed by a person; there is no live Bee connection yet.",
       "publicSourceUrl": null,
       "relatedTo": "captionverse",
       "connectionLabel": "From a quoted line to a reviewed memory.",
@@ -352,7 +352,7 @@
       "question": "Which memories should this visitor see?",
       "description": "Build a local photo story from approved sources, with visitor-specific sharing and deliberate revocation.",
       "stage": "Local prototype",
-      "limit": "Fictional demo family; identity and consent remain keeper-attested.",
+      "limit": "A fictional demo family. Who may see what is set by the keeper; identities are not verified.",
       "publicSourceUrl": null,
       "relatedTo": "captionverse",
       "connectionLabel": "Another way to return to a moment.",
@@ -403,7 +403,7 @@
       "theme": "Places and perspective",
       "question": "What if you could revisit a place at a different scale?",
       "description": "Explore a painted, living world at human, bird, and insect scales, rendered live in the browser by the HAMON Engine. A real Kyoto city model is one of its starting places.",
-      "stage": "Playable in desktop Chrome or Edge (WebGPU)",
+      "stage": "Playable in WebGPU browsers: desktop Chrome or Edge, Android Chrome, or Safari on iOS 26",
       "limit": "Interpreted, imagined places and simulated wildlife; not automatic reconstruction or a live wildlife feed.",
       "publicSourceUrl": null,
       "relatedTo": "phantom-window",
@@ -450,7 +450,7 @@
         "id": "spire",
         "title": "Spire of Octaves",
         "summary": "Cities stacked on cities.",
-        "description": "Fantasy about the people who keep worlds alive.",
+        "description": "Fiction in a city stacked on cities, grouped by series. Begin with Salt’s End.",
         "action": {
           "label": "Enter Spire of Octaves",
           "url": "https://spireofoctaves.com/"
@@ -507,7 +507,7 @@
         "output": "Compare competing models of motion, choose a revealing measurement, and see how their predictions change.",
         "detail": "WORLDLAW starts with spring and gravity models that fit the same small-angle data. A synthetic wide-angle measurement separates them. Coupling Lab explores interacting coordinates and conditional motion; Motion Lab turns tracked video markers into angular observations with explicit calibration. Further experiments test whether a preparation-history effect could instead come from acquisition order or sensor drift.",
         "stage": "Experimental scientific workbench",
-        "limit": "The model families and assumptions are declared and bounded. Default instruments are synthetic; imported observations are user-declared. Fitting a model does not establish a physical law or its cause.",
+        "limit": "The model families and their assumptions are stated up front. The default instruments are synthetic, and a good fit does not establish a physical law or its cause.",
         "publicUrl": null
       },
       {
@@ -527,7 +527,7 @@
         "output": "Explore how new evidence should change retrieval, and when repeated episodes justify a reusable lesson.",
         "detail": "One prototype reweights records within fixed trust tiers. Another keeps the raw episodes while testing proposed lessons against later, withheld examples. Conflicting interpretations remain available instead of being overwritten.",
         "stage": "Exploratory research prototypes",
-        "limit": "Offline, synthetic studies; some mechanisms were still staged at the recorded checkpoint. These are computational experiments, not a biological memory model or measured learning gains.",
+        "limit": "Offline studies on synthetic data. They are computational experiments, not a model of biological memory or a measured learning gain.",
         "publicUrl": null
       }
     ]
@@ -557,7 +557,7 @@
           "name": "DOMINO",
           "category": "Amazon Developer Hackathon · Alexa+",
           "purpose": "Find and repair interactions between home-automation rules in an executable local model.",
-          "status": "Submission draft prepared for the Alexa+ track.",
+          "status": "Built for the Amazon Developer Hackathon, Alexa+ track.",
           "limit": "Modeled devices and synthetic event traces; no authenticated home-device integration.",
           "projectId": "domino",
           "publicUrl": null
@@ -567,7 +567,7 @@
           "name": "Phantom Window",
           "category": "Amazon Developer Hackathon · Fire TV concept",
           "purpose": "Explore a video moment from a shifted virtual camera, while showing which pixels support the new view.",
-          "status": "Submission package prepared for the Fire TV category.",
+          "status": "Built for the Amazon Developer Hackathon, Fire TV category.",
           "limit": "Research reconstruction, not recovered physical depth or a second-camera recording.",
           "projectId": "phantom-window",
           "publicUrl": null
@@ -577,7 +577,7 @@
           "name": "Replay Forge · court reconstruction",
           "category": "Amazon Developer Hackathon",
           "purpose": "Turn source-bound basketball footage into a navigable court study with authored alternatives.",
-          "status": "Amazon submission package prepared.",
+          "status": "Built for the Amazon Developer Hackathon.",
           "limit": "Incomplete tracking and geometric reconstruction; alternatives are authored, not predicted outcomes.",
           "projectId": "replay-forge",
           "publicUrl": null
@@ -587,7 +587,7 @@
           "name": "ReplayForge · replay debugging",
           "category": "Life After Code · GitLab",
           "purpose": "Compare a recorded run with a baseline, find the first differing state, and preserve it as a regression test.",
-          "status": "Submitted to Life After Code.",
+          "status": "Submitted to Life After Code (GitLab).",
           "limit": "One synthetic reference simulator. The demonstrated fault and restoration are intentional, not an independently discovered repair.",
           "projectId": null,
           "publicUrl": "https://devpost.com/software/replayforge-ypvoia"
@@ -597,7 +597,7 @@
           "name": "ShadeWindow",
           "category": "Historical competition entry",
           "purpose": "Compare outdoor activity windows in a historical heat-index replay.",
-          "status": "Submitted historical project.",
+          "status": "An earlier competition entry.",
           "limit": "A historical planning demonstration, not a live forecast or safety recommendation.",
           "projectId": null,
           "publicUrl": "https://devpost.com/software/shadewindow"

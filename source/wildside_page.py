@@ -1,6 +1,7 @@
 """Wildside project page. The playable app itself is a separate static tree (docs/wildside/) that the build never touches."""
 from __future__ import annotations
 import html
+import responsive_images
 from pathlib import Path
 
 PAGE = 'wildside-project.html'
@@ -47,7 +48,7 @@ def site_nav(current: str) -> str:
 def card() -> str:
     """Featured card for the homepage Projects section."""
     return (f'<article class="wildside-card"><a class="wildside-card-image" href="{PAGE}" aria-label="Wildside project page">'
-            f'<img loading="lazy" decoding="async" src="{CARD}" width="{CARD_SIZE[0]}" height="{CARD_SIZE[1]}" alt="{e(HERO_ALT)}"></a>'
+            + responsive_images.picture('wildside-hero', f'<img loading="lazy" decoding="async" src="{CARD}" width="{CARD_SIZE[0]}" height="{CARD_SIZE[1]}" alt="{e(HERO_ALT)}">', '(max-width: 760px) 92vw, 560px') + '</a>'
             '<div><p class="section-context">FEATURED · A HAMON WORLD · MARINAHACKS</p><h3>Wildside</h3><p><em>Step into the WildSide.</em></p>'
             '<p>Real places you care about, turned into living, hand-painted worlds you explore at human, bird and insect scale, rendered live by the HAMON Engine in your browser.</p>'
             f'<p><a class="ws-play" href="{APP_URL}">Play Wildside</a> <a class="public-action" href="{PAGE}">About the project</a></p>'
@@ -66,7 +67,7 @@ def body(has_video: bool) -> str:
     return (f'<a class="skip" href="#main">Skip to content</a><header class="ws-top"><a class="identity" href="index.html">Jacob Metoyer</a>'
             + site_nav('wildside') + '</header>'
             '<main id="main" class="ws-main">'
-            f'<section class="ws-hero"><img fetchpriority="high" decoding="async" src="{HERO}" srcset="{HERO_SRCSET}" sizes="100vw" width="{HERO_SIZE[0]}" height="{HERO_SIZE[1]}" alt="{e(HERO_ALT)}">'
+            '<section class="ws-hero">' + responsive_images.picture('wildside-hero', f'<img fetchpriority="high" decoding="async" src="{HERO}" srcset="{HERO_SRCSET}" sizes="100vw" width="{HERO_SIZE[0]}" height="{HERO_SIZE[1]}" alt="{e(HERO_ALT)}">', '100vw') +
             '<div class="ws-hero-copy"><p class="section-context">A <a class="kicker-link" href="hamon.html">HAMON</a> WORLD · MADE FOR MARINAHACKS</p><h1>Wildside</h1><p class="ws-tagline">Step into the WildSide</p>'
             '<p class="ws-lede">Real places you care about, turned into living, hand-painted worlds you explore at human, bird and insect scale, rendered live by the HAMON Engine in your browser.</p>'
             f'<p class="hamon-actions"><a class="ws-play" href="{APP_URL}">Play Wildside</a><a class="hamon-secondary" href="#wildside-demo">Watch the demo</a></p>'

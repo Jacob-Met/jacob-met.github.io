@@ -1,0 +1,144 @@
+{
+  "schema": 1,
+  "images": {
+    "lanternwake-island": {
+      "original": "games/lanternwake/desktop.png",
+      "crop": [
+        270,
+        255,
+        1030,
+        715
+      ],
+      "variants": [
+        {
+          "src": "assets/derived/lanternwake-island-760.avif",
+          "type": "image/avif",
+          "width": 760,
+          "height": 460,
+          "bytes": 5482,
+          "sha256": "6e3bf37accc5f2b25cfdbed35377be0ce48609c901e405427d263e597aad4c31"
+        },
+        {
+          "src": "assets/derived/lanternwake-island-760.webp",
+          "type": "image/webp",
+          "width": 760,
+          "height": 460,
+          "bytes": 7822,
+          "sha256": "38ef1fcba674506d43c21e06acf9fd1c7379f2422b24e7048ba1f3e45541a8c2"
+        },
+        {
+          "src": "assets/derived/lanternwake-island-380.avif",
+          "type": "image/avif",
+          "width": 380,
+          "height": 230,
+          "bytes": 2642,
+          "sha256": "717de51b7a975560d4055a0dc2b836e479f531f154ae5c036d17c59317661514"
+        },
+        {
+          "src": "assets/derived/lanternwake-island-380.webp",
+          "type": "image/webp",
+          "width": 380,
+          "height": 230,
+          "bytes": 3080,
+          "sha256": "f68f147a97868bdd44fd27cc8cbda96641dbaaf45cc4e5338af536f35a3e0bff"
+        }
+      ]
+    },
+    "hamon-engine-study": {
+      "original": "assets/scene/hamon-engine-study.webp",
+      "crop": null,
+      "variants": [
+        {
+          "src": "assets/derived/hamon-engine-study-1280.avif",
+          "type": "image/avif",
+          "width": 1280,
+          "height": 720,
+          "bytes": 61142,
+          "sha256": "a9d081fca72fcd50b7d9c761108b77ff1c4fbe2dc33410ff40743bbac5a7ae94"
+        },
+        {
+          "src": "assets/derived/hamon-engine-study-640.avif",
+          "type": "image/avif",
+          "width": 640,
+          "height": 360,
+          "bytes": 22123,
+          "sha256": "60123840647778407ccc46d13d5284a4974f00e9ba22d477f4a367e0e88d55de"
+        },
+        {
+          "src": "assets/derived/hamon-engine-study-640.webp",
+          "type": "image/webp",
+          "width": 640,
+          "height": 360,
+          "bytes": 35914,
+          "sha256": "718f2e1655f4e2e3a623355965585982eefd31b99107444c96a659ee3fa7ba96"
+        }
+      ]
+    },
+    "wildside-hero": {
+      "original": "assets/wildside/wildside-hero.webp",
+      "crop": null,
+      "variants": [
+        {
+          "src": "assets/derived/wildside-hero-1600.avif",
+          "type": "image/avif",
+          "width": 1600,
+          "height": 900,
+          "bytes": 142883,
+          "sha256": "f04fac5faadd34038fd12c933b0c1f5fe77d35c21376c94a4510808a43a12078"
+        },
+        {
+          "src": "assets/derived/wildside-hero-800.avif",
+          "type": "image/avif",
+          "width": 800,
+          "height": 450,
+          "bytes": 48297,
+          "sha256": "9e1512a77b016a3589a7450ba9458fe528b006bdbae1e5948ec2b293705afef9"
+        }
+      ]
+    },
+    "captionverse-desktop": {
+      "original": "assets/demos/captionverse-reading-desktop.png",
+      "crop": null,
+      "variants": [
+        {
+          "src": "assets/derived/captionverse-desktop-1440.avif",
+          "type": "image/avif",
+          "width": 1440,
+          "height": 1000,
+          "bytes": 43897,
+          "sha256": "5d889b1b5cac38e01c7d1caa0d60c30406bc0800753637204dae02683276ba0c"
+        },
+        {
+          "src": "assets/derived/captionverse-desktop-1440.webp",
+          "type": "image/webp",
+          "width": 1440,
+          "height": 1000,
+          "bytes": 66498,
+          "sha256": "a3e5e1ad744eba1d994669e275d6f9dc0551e34a17fab453e70c072f8ada84c5"
+        }
+      ]
+    },
+    "captionverse-phone": {
+      "original": "assets/demos/captionverse-reading-phone.png",
+      "crop": null,
+      "variants": [
+        {
+          "src": "assets/derived/captionverse-phone-390.avif",
+          "type": "image/avif",
+          "width": 390,
+          "height": 900,
+          "bytes": 19804,
+          "sha256": "ef47ce5be054512d54383b64b979357c927ebc1ccdf6ba82c3637702a4000ace"
+        },
+        {
+          "src": "assets/derived/captionverse-phone-390.webp",
+          "type": "image/webp",
+          "width": 390,
+          "height": 900,
+          "bytes": 34052,
+          "sha256": "053992de25e3238e0257a19892cf7ac4ac10d850b1603592a1d74770579ce6fe"
+        }
+      ]
+    }
+  }
+}
