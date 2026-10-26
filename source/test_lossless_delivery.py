@@ -13,14 +13,14 @@ class LosslessDelivery(unittest.TestCase):
  def test_exact_opaque_lossless_bytes_and_dimensions(self):
   validate_lossless_entrance(ROOT)
   raw=(ROOT/LOSSLESS_ENTRANCE['src']).read_bytes()
-  self.assertEqual(len(raw),554878);self.assertEqual(lossless_webp_dimensions(raw),(1280,800))
-  self.assertEqual(LOSSLESS_ENTRANCE['rgbaSha256'],'d403504d08e73fcde247361eb792c13984f701526311174ff28c16e663da70e3')
+  self.assertEqual(len(raw),355478);self.assertEqual(lossless_webp_dimensions(raw),(1280,800))
+  self.assertEqual(LOSSLESS_ENTRANCE['rgbaSha256'],'b5f342474721a38466323abf8c4710ada8311b9079994a0d26a7554e3b8e3457')
  def test_selected_native_png_and_previous_public_urls_remain_exact(self):
   source=PRESENTATION_STILLS['entrance'];raw=(ROOT/source['src']).read_bytes()
-  self.assertEqual(source['src'],'assets/scene/forge-tools-entrance-1280.png')
-  self.assertEqual(hashlib.sha256(raw).hexdigest(),'fab0b9626366b1bbb2f259d9b90eb9fcf8a5d0b72039ceb38d6f4f6fbe6e42b9')
+  self.assertEqual(source['src'],'assets/scene/forge-crafted-entrance-1280.png')
+  self.assertEqual(hashlib.sha256(raw).hexdigest(),'e1975996c68039ce9d8e395ff6d42e478502f51298ef48cc9bf0c97a1d7822b8')
   self.assertIn(source['src'],PRESENTATION_FILES);self.assertIn(LOSSLESS_ENTRANCE['src'],PRESENTATION_FILES)
-  self.assertEqual(len(raw)-len((ROOT/LOSSLESS_ENTRANCE['src']).read_bytes()),366139)
+  self.assertEqual(len(raw)-len((ROOT/LOSSLESS_ENTRANCE['src']).read_bytes()),221561)
   for name,digest in [('forge-entrance-1280.png','5289a46ef28008084a794c3d85040fb577c927126cdf3b87720dba4ef3d077d2'),('forge-entrance-1280.webp','0e3c6614e72335640a8aa068902e0f8bf510bdbd1a74b7b7ff5c87347dcb21b8'),('forge-warm-entrance-1280.png','aa98b75fd837beb69d5c83dcaf20879ec7b228bab7d8c83bf569d1e5b928f5df'),('forge-warm-entrance-1280.webp','6902ff1655f997b5a80f009f00677158a7658fad03553e2b98e93918601f5f41')]:
    self.assertEqual(hashlib.sha256((ROOT/'assets/scene'/name).read_bytes()).hexdigest(),digest)
    self.assertIn('assets/scene/'+name,PRESENTATION_FILES)

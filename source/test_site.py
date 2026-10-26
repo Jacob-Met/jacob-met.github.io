@@ -68,10 +68,10 @@ class RecordTests(unittest.TestCase):
 
 class BuildTests(Built):
     def test_dynamic_still_endpoints_are_exact(self):
-        failures=self.rewrite('index.html','data-arrival-src="assets/scene/forge-tools-arrival-960.png"','data-arrival-src="https://example.org/unreviewed.png"')
+        failures=self.rewrite('index.html','data-arrival-src="assets/scene/forge-crafted-arrival-1280.png"','data-arrival-src="https://example.org/unreviewed.png"')
         self.assertTrue(any('scene endpoint' in failure for failure in failures))
     def test_native_arrival_dimensions_are_truthful(self):
-        failures=self.rewrite('index.html','src="assets/scene/forge-tools-arrival-960.png" width="960" height="600"','src="assets/scene/forge-tools-arrival-960.png" width="1280" height="800"')
+        failures=self.rewrite('index.html','src="assets/scene/forge-crafted-arrival-1280.png" width="1280" height="800"','src="assets/scene/forge-crafted-arrival-1280.png" width="960" height="600"')
         self.assertTrue(any('native presentation dimensions' in failure for failure in failures))
     def test_output_passes_checks(self): self.assertTrue(check(self.root, preview=True)['passed'], check(self.root, preview=True))
     def test_deterministic(self):
@@ -155,7 +155,7 @@ class ContentTests(Built):
         for img in re.findall(r'<img [^>]+>', self.main()):
             with self.subTest(img=img[:60]):
                 if 'alt=""' in img:
-                    self.assertTrue('forge-tools-arrival-960.png' in img or 'id="scene-buffer"' in img)
+                    self.assertTrue('forge-crafted-arrival-1280.png' in img or 'id="scene-buffer"' in img)
                 else: self.assertRegex(img, r'alt="[^"]{20,}"'); self.assertRegex(img, r'width="\d+" height="\d+"')
     def test_identity_and_research_replace_agent_director_copy(self):
         self.assertNotIn('id="how"', self.main())
@@ -424,6 +424,25 @@ class PrecommitHookTests(unittest.TestCase):
         self.git('add', 'source/content.json', 'docs')
         code, err = self.hook()
         self.assertEqual(code, 0, err)
+
+    def test_separate_staged_wildside_is_preserved_without_masking_drift(self):
+        app = self.work / 'docs/wildside'
+        app.mkdir()
+        (app / 'index.html').write_text('<p>Separately maintained Wildside fixture</p>')
+        self.edit_content(); self.rebuild()
+        self.git('add', 'source/content.json', 'docs')
+        code, error = self.hook()
+        self.assertEqual(code, 0, error)
+        self.assertEqual((app / 'index.html').read_text(), '<p>Separately maintained Wildside fixture</p>')
+        self.git('commit', '-qm', 'separate app and matching projection')
+        self.edit_content()
+        data = json.loads((self.work / 'source/content.json').read_text())
+        data['updated'] = '2099-01-02'
+        (self.work / 'source/content.json').write_text(json.dumps(data))
+        self.git('add', 'source/content.json')
+        code, error = self.hook()
+        self.assertEqual(code, 1)
+        self.assertIn('staged docs/', error)
 
     def test_clean_tree_passes(self):
         code, _ = self.hook()

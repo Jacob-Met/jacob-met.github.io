@@ -60,17 +60,19 @@ if [ "$BUILD_MODE" = "local-preview" ]; then
     set -- --preview
 fi
 
+# Wildside is a separately maintained staged application, not generated source/.
+# Seed only that preserved subtree so the full docs comparison stays exact.
+# The builder still rejects symlinks and unexpected files in its managed output.
+if [ -d "$SCRATCH/staged/docs/wildside" ]; then
+    mkdir -p "$SCRATCH/checked-site"
+    cp -R "$SCRATCH/staged/docs/wildside" "$SCRATCH/checked-site/wildside"
+fi
+
 if ! python3 "$SCRATCH/staged/source/build.py" "$@" --out "$SCRATCH/checked-site" \
         >"$SCRATCH/build.log" 2>&1; then
     echo "pre-commit: site build failed on the staged source/; fix the build errors before committing" >&2
     tail -5 "$SCRATCH/build.log" >&2 || true
     exit 1
-fi
-
-# The builder preserves the separately published static Wildside app (docs/wildside/)
-# and never generates it, so mirror that preservation before comparing.
-if [ -d "$SCRATCH/staged/docs/wildside" ]; then
-    cp -R "$SCRATCH/staged/docs/wildside" "$SCRATCH/checked-site/wildside"
 fi
 
 if ! diff -qr "$SCRATCH/staged/docs" "$SCRATCH/checked-site" >/dev/null 2>&1; then

@@ -289,7 +289,7 @@ body.ws{background:#08121d;color:#e5eef0}
 @media(max-width:1100px) and (min-width:701px){.playable>picture{margin-bottom:23px}}
 @media(max-width:700px){.playable>picture{margin-bottom:22px}}
 
-/* Spire: the new site's way in, as type rather than borrowed artwork. */
+/* Spire: the new site's reading entry points accompany its original artwork. */
 .spire-begin{display:flex;flex-wrap:wrap;align-items:baseline;gap:3px 0;margin-top:13px;padding-top:11px;border-top:1px solid #c9b8ff2e;font-size:14px;line-height:1.5;color:#d6d0ea}
 .spire-begin-label{flex-basis:100%;margin-bottom:2px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--violet)}
 .spire-begin span:not(.spire-begin-label){white-space:nowrap}
