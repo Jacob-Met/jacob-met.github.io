@@ -36,9 +36,9 @@ class ScreenshotAccess(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             out = Path(temp) / "site"
             build.build(out, record, preview=True)
-            markup = (out / "index.html").read_text(encoding="utf-8")
+            markup = (out / "lobby" / "index.html").read_text(encoding="utf-8")
             links = Links(markup).links
-            shots = [a for a in links if a["attrs"].get("href") in {shot["src"] for demo in record["demos"] for shot in demo["shots"].values()}]
+            shots = [a for a in links if a["attrs"].get("href", "").lstrip("/") in {shot["src"] for demo in record["demos"] for shot in demo["shots"].values()}]
             expected = [
                 (demo, device, demo["shots"][key])
                 for demo in record["demos"]
@@ -49,7 +49,7 @@ class ScreenshotAccess(unittest.TestCase):
                 with self.subTest(demo=demo["id"], device=device):
                     self.assertEqual(link["text"], device.title() + " capture")
                     self.assertEqual(link["attrs"]["aria-label"], f"{demo['name']}: full {device} capture")
-                    self.assertEqual(link["attrs"]["href"], shot["src"])
+                    self.assertEqual(link["attrs"]["href"], "/" + shot["src"])
                     self.assertNotIn("download", link["attrs"])
                     self.assertNotIn("target", link["attrs"])
                     self.assertEqual((out / shot["src"]).read_bytes(), (build.ROOT / shot["src"]).read_bytes())

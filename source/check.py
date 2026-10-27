@@ -26,9 +26,12 @@ from engine_motion_policy import (VIDEO_ID as MOTION_VIDEO_ID, SOURCE_ATTRIBUTES
 from site_policy import (FONT_PROPERTIES, validate_fonts, SCRIPT_FILES, LOADED_SCRIPT_FILES,
                          audit_scripts, script_element_errors, canvas_element_errors, ART_FILES, validate_art, EDITORIAL_FILES, EDITORIAL_ART, validate_editorial, PRESENTATION_FILES, PRESENTATION_STILLS, DELIVERY_STILLS, validate_presentation_stills, CAPTIONVERSE_CAPTURES, CAPTIONVERSE_FILES, validate_captionverse_captures, captionverse_picture_source_errors)
 
-ROOT_RELATIVE_PAGES = frozenset({'404.html'})
+LOBBY_PAGE = 'lobby/index.html'  # the captured forge lobby/portfolio; the brain is the home page
+ROOT_RELATIVE_PAGES = frozenset({'404.html', LOBBY_PAGE})
+BRAIN_HOME_SCRIPTS = ['/brain/main.js']
+BRAIN_CSP_REQUIRED = {'default-src': "'none'", 'object-src': "'none'", 'frame-src': "'none'", 'base-uri': "'none'", 'form-action': "'none'", 'connect-src': "'none'"}
 CSP_REQUIRED = {'default-src': "'none'", 'style-src': "'self'", 'script-src': "'self'", 'img-src': "'self'", 'media-src': "'self'", 'font-src': "'self'", 'connect-src': "'none'", 'object-src': "'none'", 'frame-src': "'none'", 'worker-src': "'none'", 'base-uri': "'none'", 'form-action': "'none'"}
-EXPECTED_HTML = {'index.html', '404.html', wildside_page.PAGE, hamon_page.PAGE}
+EXPECTED_HTML = {LOBBY_PAGE, '404.html', wildside_page.PAGE, hamon_page.PAGE}
 APP_PREFIX = (wildside_page.APP_DIR + '/', 'brain/', 'forge/')  # preserved static apps (Wildside, brain, forge): not generated, audited separately
 
 
@@ -47,9 +50,108 @@ def local_path(value: str) -> bool:
             and not any(ord(c) < 32 for c in decoded) and '..' not in PurePosixPath(decoded).parts)
 
 
-class Page(HTMLParser):
-    def __init__(self, hashes=None, lobby=None, figures=None, branches=None, responsive=None):
+def unroot(value: str) -> str:
+    return value[1:] if value.startswith('/') and not value.startswith(('//', '/\\')) else value
+
+
+def unroot_attrs(attrs):
+    out = []
+    for k, v in attrs:
+        if isinstance(v, str) and (k in ('href', 'src', 'poster') or (k.startswith('data-') and k.endswith('-src'))):
+            v = unroot(v)
+        elif k == 'srcset' and isinstance(v, str):
+            v = ', '.join(unroot(c.strip()) for c in v.split(','))
+        out.append((k, v))
+    return out
+
+
+class BrainHome(HTMLParser):
+    """The brain home page (index.html): a preserved static app page, not the captured lobby surface."""
+    def __init__(self):
         super().__init__(convert_charrefs=True)
+        self.errors = []; self.csp = []; self.head_order = []; self.scripts = []; self.script = None
+        self.links = []; self.resources = []; self.ids = []; self.h1 = 0; self.lang = None; self.canonical = []
+
+    def handle_starttag(self, tag, attrs):
+        a = dict(attrs)
+        if tag in ('meta', 'link', 'script', 'title') and len(self.head_order) < 2: self.head_order.append((tag, a.get('http-equiv', '').lower()))
+        if tag == 'meta' and a.get('http-equiv', '').lower() == 'content-security-policy': self.csp.append(a.get('content', ''))
+        if tag == 'meta' and a.get('http-equiv', '').lower() in ('refresh', 'set-cookie'): self.errors.append('meta: redirect or cookie')
+        if tag == 'html': self.lang = a.get('lang')
+        if tag == 'h1': self.h1 += 1
+        if 'id' in a: self.ids.append(a['id'])
+        if tag in ('form', 'iframe', 'object', 'embed', 'base'): self.errors.append(f'{tag}: outside declared surface')
+        if any(k.startswith('on') or k in ('srcdoc', 'ping') for k in a): self.errors.append(f'{tag}: inline handler')
+        if tag == 'link' and a.get('rel') == 'canonical': self.canonical.append(a.get('href'))
+        if tag in ('a', 'link') and a.get('href'):
+            (self.resources if tag == 'link' and a.get('rel') != 'canonical' else self.links).append(a['href'])
+        if tag != 'script' and a.get('src'): self.resources.append(a['src'])
+        if tag == 'script': self.script = (a, [])
+
+    def handle_data(self, data):
+        if self.script: self.script[1].append(data)
+
+    def handle_endtag(self, tag):
+        if tag == 'script' and self.script:
+            self.scripts.append((self.script[0], ''.join(self.script[1]))); self.script = None
+
+
+def brain_home_errors(root: Path, text: str) -> list[str]:
+    import base64
+    p = BrainHome(); p.feed(text); p.close(); errors = list(p.errors)
+    if len(p.csp) != 1 or p.head_order[:2] != [('meta', ''), ('meta', 'content-security-policy')]:
+        return errors + ['Content-Security-Policy must directly follow meta charset, exactly once']
+    policy = {}
+    for part in p.csp[0].split(';'):
+        bits = part.split()
+        if bits: policy[bits[0].lower()] = bits[1:]
+    errors += [f'CSP {k} must be {v}' for k, v in BRAIN_CSP_REQUIRED.items() if policy.get(k) != [v]]
+    script_src = policy.get('script-src', [])
+    if "'unsafe-inline'" in script_src or "'unsafe-eval'" in script_src or [t for t in script_src if t != "'self'" and not t.startswith("'sha256-")]:
+        errors.append('CSP script-src must be self plus exact inline hashes')
+    inline_hashes = set()
+    external = []
+    for attrs, body in p.scripts:
+        if 'src' in attrs:
+            external.append(attrs['src'])
+            if attrs.get('type') != 'module' or body.strip(): errors.append('script: brain entry must be an empty module script')
+        else:
+            digest = "'sha256-" + base64.b64encode(hashlib.sha256(body.encode('utf-8')).digest()).decode() + "'"
+            inline_hashes.add(digest)
+            if digest not in script_src: errors.append('script: inline script hash missing from CSP')
+    if external != BRAIN_HOME_SCRIPTS: errors.append('script: brain home must load exactly /brain/main.js')
+    if {t for t in script_src if t.startswith("'sha256-")} != inline_hashes: errors.append('CSP lists stale script hashes')
+    if p.canonical != ['https://jacobmetoyer.com/']: errors.append('canonical must be https://jacobmetoyer.com/')
+    if p.h1 != 1: errors.append('expected one h1')
+    if p.lang != 'en': errors.append('missing language')
+    if len(p.ids) != len(set(p.ids)): errors.append('duplicate ids')
+    brain = root / 'brain'
+    if brain.is_dir():
+        mirror = brain / 'index.html'
+        if not mirror.is_file() or mirror.read_text(encoding='utf-8') != text: errors.append('brain/index.html must carry the same bytes as the home page')
+        for value in p.resources + external:
+            if not value.startswith('/') or value.startswith('//'): errors.append(f'resource must be root-absolute: {value}'); continue
+            target = root / unquote(urlsplit(value).path).lstrip('/')
+            if not target.resolve().is_relative_to(root) or not target.is_file(): errors.append(f'missing local resource {value}')
+    for u in p.links:
+        ref = urlsplit(u)
+        if ref.scheme:
+            if ref.scheme != 'https': errors.append('non-HTTPS link')
+            continue
+        if not ref.path:
+            if ref.fragment and ref.fragment not in p.ids: errors.append(f'missing anchor {u}')
+            continue
+        if not ref.path.startswith('/') or ref.path.startswith('//'): errors.append(f'link must be root-absolute: {u}'); continue
+        target = (root / unquote(ref.path).lstrip('/')).resolve()
+        if target.is_dir(): target = target / 'index.html'
+        if not target.is_relative_to(root) or (not target.is_file() and not ref.path.startswith(tuple('/' + a for a in APP_PREFIX))): errors.append(f'missing {u}')
+    return errors
+
+
+class Page(HTMLParser):
+    def __init__(self, hashes=None, lobby=None, figures=None, branches=None, responsive=None, rooted=False):
+        super().__init__(convert_charrefs=True)
+        self.rooted = rooted
         self.responsive = responsive or {'images': {}}
         self.hashes = {} if hashes is None else hashes
         self.figures = figures or {}; self.in_picture = False
@@ -61,6 +163,7 @@ class Page(HTMLParser):
         self.script_type = None; self.script_text = []; self.text = []
 
     def handle_starttag(self, tag, attrs):
+        if self.rooted: attrs = unroot_attrs(attrs)
         a = dict(attrs)
         if len(a) != len(attrs): self.errors.append(f'{tag}: duplicate attributes')
         if tag in ('meta', 'link', 'script', 'title') and len(self.head_order) < 3: self.head_order.append((tag, a.get('http-equiv', '').lower()))
@@ -257,7 +360,9 @@ def check(root: Path, *, preview=False) -> dict:
         if f.suffix == '.html':
             try: text = f.read_text(encoding='utf-8')
             except (OSError, UnicodeError): failures.append(f'{rel}: unreadable HTML'); continue
-            p = Page(hashes, lobby, figures, branches, responsive); p.feed(text); p.close(); parsed[rel] = p
+            if rel == 'index.html':
+                failures.extend(f'{rel}: {e}' for e in brain_home_errors(root, text)); continue
+            p = Page(hashes, lobby, figures, branches, responsive, rooted=rel == LOBBY_PAGE); p.feed(text); p.close(); parsed[rel] = p
             failures.extend(f'{rel}: {e}' for e in p.errors)
             for value in p.resources:
                 rooted = rooted_ref(rel, value)
@@ -278,17 +383,18 @@ def check(root: Path, *, preview=False) -> dict:
                 if not local_path(value): failures.append(f'{rel}: nonlocal or ambiguous resource'); continue
                 target = f.parent / unquote(urlsplit(value).path)
                 if not target.resolve().is_relative_to(root) or target.is_symlink() or not target.is_file(): failures.append(f'{rel}: missing or escaped resource')
+    if not (root / 'index.html').is_file(): failures.append('index.html: brain home page missing')
     if set(parsed) != EXPECTED_HTML: failures.append(f'Expected HTML routes {sorted(EXPECTED_HTML)}, found {sorted(parsed)}')
     for name, p in parsed.items():
         kinds = [a.get('type', '') for a, _ in p.script_entries]
-        expected_kinds = ['application/ld+json'] + ([''] * len(LOADED_SCRIPT_FILES) if name == 'index.html' else [])
+        expected_kinds = ['application/ld+json'] + ([''] * len(LOADED_SCRIPT_FILES) if name == LOBBY_PAGE else [])
         if sorted(kinds) != sorted(expected_kinds): failures.append(f'{name}: incorrect script/data inventory')
-        expected_scripts = list(LOADED_SCRIPT_FILES) if name == 'index.html' else []
+        expected_scripts = list(LOADED_SCRIPT_FILES) if name == LOBBY_PAGE else []
         if [a['src'] for a, _ in p.script_entries if 'src' in a] != expected_scripts:
             failures.append(f'{name}: incorrect script order or duplicate compatibility handler')
         if lobby:
-            expected_sources = [(f'route-{direction}', {'src': lobby['media'][direction]['src'], 'type': 'video/mp4'}) for direction in ('forward', 'reverse')] if name == 'index.html' else []
-            if name == 'index.html':
+            expected_sources = [(f'route-{direction}', {'src': lobby['media'][direction]['src'], 'type': 'video/mp4'}) for direction in ('forward', 'reverse')] if name == LOBBY_PAGE else []
+            if name == LOBBY_PAGE:
                 expected_sources += [(f'route-{key}-{direction}', {'src':branches[key]['media'][direction]['src'],'type':'video/mp4'}) for key in BRANCHES if key in branches for direction in DIRECTIONS]
                 expected_sources.append((MOTION_VIDEO_ID, MOTION_SOURCE_ATTRIBUTES))
             if name == wildside_page.PAGE:
@@ -313,6 +419,7 @@ def check(root: Path, *, preview=False) -> dict:
             if rooted is not None: path = rooted or 'index.html'
             elif path.startswith('/'): failures.append(f'{name}: root-relative link outside 404'); continue
             target = (root / (path or name)).resolve()
+            if target.is_dir(): target = target / 'index.html'
             if not target.is_relative_to(root): failures.append(f'{name}: escaped path'); continue
             if not target.exists(): failures.append(f'{name}: missing {path}')
             tname = target.relative_to(root).as_posix()

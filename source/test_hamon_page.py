@@ -17,7 +17,7 @@ class HamonPageTests(unittest.TestCase):
 
     def test_legal_name_is_a_single_constant_and_unset(self):
         self.assertIsNone(hamon_page.HAMON_LEGAL_NAME)
-        text = self.page('hamon.html') + self.page('index.html')
+        text = self.page('hamon.html') + self.page('lobby/index.html') + self.page('index.html')
         for claim in (r'\bInc\b', r'\bLLC\b', r'registered', r'investor', r'customers?\b', r'revenue'):
             self.assertIsNone(re.search(claim, text, re.I), claim)
 
@@ -27,8 +27,8 @@ class HamonPageTests(unittest.TestCase):
         finally: hamon_page.HAMON_LEGAL_NAME = None
 
     def test_hamon_leads_the_home_page_and_wildside_is_a_hamon_product(self):
-        home = self.page('index.html')
-        self.assertIn('FOUNDER OF HAMON', home); self.assertIn('href="hamon.html"', home)
+        home = self.page('lobby/index.html')
+        self.assertIn('FOUNDER OF HAMON', home); self.assertIn('href="/hamon.html"', home)
         self.assertIn('https://jacobmetoyer.com/wildside/', home)
         self.assertIn('A HAMON world', self.page('wildside-project.html'))
 
@@ -39,7 +39,7 @@ class HamonPageTests(unittest.TestCase):
         self.assertNotRegex(page, r'github\.com/Jacob-Met/(afterimage|mechanism|synapse|hamon-engine|wildside)')
 
     def test_share_images_exist_and_wildside_uses_its_thumbnail(self):
-        for name in ('index.html', 'hamon.html', 'wildside-project.html', '404.html'):
+        for name in ('index.html', 'lobby/index.html', 'hamon.html', 'wildside-project.html', '404.html'):
             text = self.page(name)
             image = re.search(r'property="og:image" content="https://jacobmetoyer.com/([^"]+)"', text).group(1)
             self.assertTrue((self.root / image).is_file(), image)

@@ -2,12 +2,31 @@
 <html lang="en" class="nojs">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-cvlem2Rlcb+inScVb7910PMAU98gRDEfAIUVUKXOWd4='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self'; font-src 'self'; connect-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Jacob Metoyer: research, HAMON and Spire of Octaves</title>
 <meta name="description" content="Jacob Metoyer studies computer science and physics at CSULB. Research in movement, neuroscience and scientific computing; HAMON, his company; and Spire of Octaves, his fiction world.">
-<link rel="stylesheet" href="style.css">
+<meta name="theme-color" content="#050507">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="canonical" href="https://jacobmetoyer.com/">
+<link rel="icon" href="/assets/mark.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Jacob Metoyer: research, HAMON and Spire of Octaves">
+<meta property="og:description" content="Jacob Metoyer studies computer science and physics at CSULB. Research in movement, neuroscience and scientific computing; HAMON, his company; and Spire of Octaves, his fiction world.">
+<meta property="og:url" content="https://jacobmetoyer.com/">
+<meta property="og:site_name" content="Jacob Metoyer">
+<meta property="og:image" content="https://jacobmetoyer.com/assets/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Jacob Metoyer: research, HAMON and Spire of Octaves">
+<meta name="twitter:description" content="Jacob Metoyer studies computer science and physics at CSULB. Research in movement, neuroscience and scientific computing; HAMON, his company; and Spire of Octaves, his fiction world.">
+<meta name="twitter:image" content="https://jacobmetoyer.com/assets/og-card.png">
+<link rel="stylesheet" href="/brain/style.css">
 <script>document.documentElement.className="js"</script>
-<!-- three.js r170 (MIT): main.js imports vendor/three.module.js and falls back to the jsDelivr CDN if the local copy is missing. -->
+<!-- The brain is the home page; /brain/ serves the same file. three.js r170 (MIT) is vendored under /brain/vendor/. -->
 
 </head>
 <body>
@@ -19,7 +38,7 @@
 <header class="hud">
   <h1>Jacob Metoyer</h1>
   <p class="lede">Step into the mind. Two eyes open onto two worlds; the rest of the brain holds the research.</p>
-  <p class="proto">Work in progress. <a href="../">Main site</a> · <a href="../forge/">The new forge</a></p>
+  <p class="proto">Work in progress. <a href="/forge/">The forge</a> · <a href="/lobby/#projects">Projects</a> · <a href="/wildside/">Wildside</a> · <a href="/lobby/">Portfolio</a> · <a href="/hamon.html">HAMON</a></p>
 </header>
 
 <!-- The plain, crawlable content. It is the real site when WebGL is off and the keyboard / screen-reader path when it is on. -->
@@ -56,14 +75,14 @@
   <section class="static" id="r-hamon">
     <p class="kicker">The company</p><h2>HAMON 刃文</h2><p>The estate is the blade; Hamon is the gleam the world can see.</p>
     <ul><li><b>The forge</b>: Dusk approach → yard → threshold → hearth. HAMON Engine renders, work in progress.</li><li><b>Hamon Engine</b>: A Rust engine for worlds and the systems inside them. Repository private.</li><li><b>Wildside</b>: Flagship world built on the engine.</li><li><b>Hackathons</b>: DOMINO, Phantom Window, Replay Forge, Captionverse.</li></ul>
-    <a class="destLink" href="../forge/">Walk the new forge →</a>
-    <img src="media/kajiba-hearth-1280.webp" alt="The new forge: the hearth inside the kajiba. HAMON Engine render, work in progress." width="1280" loading="lazy">
+    <a class="destLink" href="/forge/">Walk the new forge →</a>
+    <img src="/brain/media/kajiba-hearth-1280.webp" alt="The new forge: the hearth inside the kajiba. HAMON Engine render, work in progress." width="1280" loading="lazy">
   </section>
   <section class="static" id="r-spire">
     <p class="kicker">The fiction world</p><h2>Spire of Octaves</h2><p>A vertical world born from an unfinished sacred song. Stories free to read on its own site.</p>
     <ul><li><b>Read</b>: Begin with Salt’s End, What Strays and Seamwork, on spireofoctaves.com.</li><li><b>Echo</b>: Game work in progress (not public yet).</li></ul>
     <a class="destLink" href="https://spireofoctaves.com/">Read on spireofoctaves.com ↗</a>
-    <img src="media/spire-eye-e1-ribs-up-1280.webp" alt="A Spire interior study: engine test render for Echo, work in progress." width="1280" loading="lazy">
+    <img src="/brain/media/spire-eye-e1-ribs-up-1280.webp" alt="A Spire interior study: engine test render for Echo, work in progress." width="1280" loading="lazy">
   </section>
   <section class="static" id="r-frontal">
     <p class="kicker">Research · who I am</p><h2>Questions &amp; method</h2><p>What would change our explanation? How I observe a system, test an idea, and learn from what does not fit.</p>
@@ -104,6 +123,6 @@
 </main>
 <!--/STATIC-->
 <noscript><p class="noscript">This page works without JavaScript: every region is listed above and written out below.</p></noscript>
-<script type="module" src="main.js"></script>
+<script type="module" src="/brain/main.js"></script>
 </body>
 </html>

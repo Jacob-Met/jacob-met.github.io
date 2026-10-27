@@ -50,9 +50,9 @@ export const REGIONS = [
 export const EYES = {
   hamon: { id: 10, key: 'hamon', name: 'Right eye', title: 'HAMON 刃文', color: [0.80, 0.86, 1.0],
     kicker: 'The company', lead: 'The estate is the blade; Hamon is the gleam the world can see.',
-    media: 'media/kajiba-hearth-1280.webp',
+    media: '/brain/media/kajiba-hearth-1280.webp',
     mediaTag: 'The new forge: the hearth inside the kajiba. HAMON Engine render, work in progress.',
-    link: ['../forge/', 'Walk the new forge →'],
+    link: ['/forge/', 'Walk the new forge →'],
     items: [
       ['The forge', 'Dusk approach → yard → threshold → hearth. HAMON Engine renders, work in progress.'],
       ['Hamon Engine', 'A Rust engine for worlds and the systems inside them. Repository private.'],
@@ -61,7 +61,7 @@ export const EYES = {
     ], note: '' },
   spire: { id: 11, key: 'spire', name: 'Left eye', title: 'Spire of Octaves', color: [1.0, 0.78, 0.52],
     kicker: 'The fiction world', lead: 'A vertical world born from an unfinished sacred song. Stories free to read on its own site.',
-    media: 'media/spire-eye-e1-ribs-up-1280.webp',
+    media: '/brain/media/spire-eye-e1-ribs-up-1280.webp',
     mediaTag: 'A Spire interior study: engine test render for Echo, work in progress.',
     link: ['https://spireofoctaves.com/', 'Read on spireofoctaves.com ↗'],
     items: [

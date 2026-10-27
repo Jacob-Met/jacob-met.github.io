@@ -123,7 +123,7 @@ def body(wildside_page) -> str:
         f'{_games(GAMES)}'
         '<h3 class="hamon-subhead">Other worlds</h3>'
         f'{_cards(OTHER_WORLDS, "hamon-instruments hamon-compact")}'
-        '<p class="hamon-actions"><a class="hamon-secondary" href="https://spireofoctaves.com/">Visit Spire of Octaves &#8599;</a><a class="hamon-secondary" href="index.html#forge">See the recorded forge</a></p></section>'
+        '<p class="hamon-actions"><a class="hamon-secondary" href="https://spireofoctaves.com/">Visit Spire of Octaves &#8599;</a><a class="hamon-secondary" href="lobby/#forge">See the recorded forge</a></p></section>'
         '<section class="ws-section hamon-section" id="video"><p class="section-context">03 · VIDEO, FILM AND MOTION</p><h2>Tools for working with moving images</h2>'
         '<p>Creation and analysis tools for video, from new camera angles on ordinary footage to forecasts replayed against what actually happened. They are early and mostly private; each says plainly what it does not claim.</p>'
         f'{_cards(VIDEO, "hamon-instruments")}</section>'
@@ -135,6 +135,6 @@ def body(wildside_page) -> str:
         f'{_cards(ESTATE, "hamon-instruments")}</section>'
         '<section class="ws-section hamon-section hamon-founder" id="founder"><p class="section-context">FOUNDER</p><h2>Jacob Metoyer</h2>'
         '<p>I study computer science and physics at Cal State Long Beach, and I build HAMON. My research, writing and other work are on the main site.</p>'
-        '<p class="hamon-actions"><a class="hamon-secondary" href="index.html#about">About me and my research</a><a class="hamon-secondary" href="https://github.com/Jacob-Met">GitHub &#8599;</a></p></section>'
+        '<p class="hamon-actions"><a class="hamon-secondary" href="lobby/#about">About me and my research</a><a class="hamon-secondary" href="https://github.com/Jacob-Met">GitHub &#8599;</a></p></section>'
         '</main>'
         f'<footer class="hamon-foot"><p>{footer_line()}</p></footer>')
