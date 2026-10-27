@@ -1,6 +1,121 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Jacob Metoyer</title><meta name="description" content="Jacob Metoyer: worlds, perception, accessibility and research software. Enter the mind, or view the outside."><meta name="theme-color" content="#0d0c0b"><link rel="icon" href="/assets/mark.svg" type="image/svg+xml"><link rel="preload" href="/assets/fonts/fraunces-vf.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/site/site.css"></head><body><main class="gate">
-<div class="gate-name reveal"><h1>Jacob <em>Metoyer</em></h1><p>Builds worlds, instruments, and tools that help people see and do more.</p></div>
-<div class="doors"><a class="door mind" href="/brain/"><span class="img" style="background-image:url(/assets/demos/brain-door.webp)"></span><span class="k">I.</span><b>Enter the mind</b><em>An explorable brain: each region a part of the work.</em><span class="go">Step inside →</span></a>
-<a class="door out" href="/outside/"><span class="img" style="background-image:url(/assets/wildside/wildside-hero.webp)"></span><span class="k">II.</span><b>View the outside</b><em>27 projects, plainly laid out.</em><span class="go">See the work →</span></a></div>
-<nav class="elsewhere"><span class="eyebrow">Elsewhere</span><a href="https://spireofoctaves.com/">Spire of Octaves <i>fiction world</i></a><a href="https://hamon.works/">hamon.works <i>the company</i></a><a href="/forge/">Walk the forge <i>on this site</i></a></nav>
-</main><script src="/site/motion.js" defer></script></body></html>
+<!doctype html>
+<html lang="en" class="nojs">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-cvlem2Rlcb+inScVb7910PMAU98gRDEfAIUVUKXOWd4='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self'; font-src 'self'; connect-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jacob Metoyer: research, HAMON and Spire of Octaves</title>
+<meta name="description" content="Jacob Metoyer studies computer science and physics at CSULB. Research in movement, neuroscience and scientific computing; HAMON, his company; and Spire of Octaves, his fiction world.">
+<meta name="theme-color" content="#050507">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="canonical" href="https://jacobmetoyer.com/">
+<link rel="icon" href="/assets/mark.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Jacob Metoyer: research, HAMON and Spire of Octaves">
+<meta property="og:description" content="Jacob Metoyer studies computer science and physics at CSULB. Research in movement, neuroscience and scientific computing; HAMON, his company; and Spire of Octaves, his fiction world.">
+<meta property="og:url" content="https://jacobmetoyer.com/">
+<meta property="og:site_name" content="Jacob Metoyer">
+<meta property="og:image" content="https://jacobmetoyer.com/assets/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Jacob Metoyer: research, HAMON and Spire of Octaves">
+<meta name="twitter:description" content="Jacob Metoyer studies computer science and physics at CSULB. Research in movement, neuroscience and scientific computing; HAMON, his company; and Spire of Octaves, his fiction world.">
+<meta name="twitter:image" content="https://jacobmetoyer.com/assets/og-card.png">
+<link rel="stylesheet" href="/brain/style.css">
+<script>document.documentElement.className="js"</script>
+<!-- The brain is the home page; /brain/ serves the same file. three.js r170 (MIT) is vendored under /brain/vendor/. -->
+
+</head>
+<body>
+<a class="skip" href="#plain">Skip to the plain-text map</a>
+<div id="stage" aria-hidden="true"><canvas id="gl"></canvas></div>
+<div id="label" class="label" aria-hidden="true"></div>
+<div id="veil" aria-hidden="true"></div>
+
+<header class="hud">
+  <h1>Jacob Metoyer</h1>
+  <p class="lede">Drag the mind. Each region holds a body of work — the right eye opens HAMON, the left opens the Spire.</p>
+  <div class="proto"><span class="links"><span><a href="https://hamon.works/">HAMON</a></span> <span><a href="https://spireofoctaves.com/">Spire</a></span> <span><a href="/wildside/">Play Wildside</a></span> <span><a href="https://github.com/Jacob-Met">GitHub</a></span></span></div>
+</header>
+
+<!-- The plain, crawlable content. It is the real site when WebGL is off and the keyboard / screen-reader path when it is on. -->
+<nav id="plain" class="plain" aria-label="Regions of the brain">
+  <h2>Ways in</h2>
+  <ul id="regionList"><!--LIST-->
+    <li class="eye"><a href="#r-hamon" data-id="10" style="--c:rgb(204,219,255)">HAMON 刃文<small>Right eye</small></a></li>
+    <li class="eye"><a href="#r-spire" data-id="11" style="--c:rgb(255,199,133)">Spire of Octaves<small>Left eye</small></a></li>
+    <li><a href="#r-frontal" data-id="1" style="--c:rgb(158,204,242)">Decisions<small>Frontal lobe</small></a></li>
+    <li><a href="#r-parietal" data-id="2" style="--c:rgb(140,217,204)">Systems &amp; space<small>Parietal lobe</small></a></li>
+    <li><a href="#r-temporal" data-id="3" style="--c:rgb(199,184,242)">Memory &amp; sound<small>Temporal lobe</small></a></li>
+    <li><a href="#r-occipital" data-id="4" style="--c:rgb(242,217,158)">Vision<small>Occipital lobe</small></a></li>
+    <li><a href="#r-cerebellum" data-id="5" style="--c:rgb(179,242,179)">Movement<small>Cerebellum</small></a></li>
+    <li><a href="#r-stem" data-id="6" style="--c:rgb(204,209,219)">Tools &amp; about<small>Brainstem</small></a></li>
+    <!--/LIST--></ul>
+  <p class="hint">Drag to turn the brain. Hover or tap a region, then select it to step in. Arrow keys move between regions, Enter steps in, Escape steps out.</p>
+  <label class="rm"><input type="checkbox" id="rmToggle"> Reduce motion</label>
+</nav>
+
+<section id="dest" class="dest" hidden aria-live="polite">
+  <div class="destMedia" id="destMedia"></div>
+  <div class="destBody">
+    <button id="stepOut" class="stepOut">← Step out</button>
+    <p class="kicker" id="destKicker"></p>
+    <h2 id="destTitle"></h2>
+    <p id="destLead"></p>
+    <ul id="destItems"></ul>
+    <p class="placeholder" id="destNote"></p>
+  </div>
+</section>
+
+<!--STATIC-->
+<main class="staticWrap">
+  <section class="static" id="r-hamon">
+    <p class="kicker">The company</p><h2>HAMON 刃文</h2><p>One company that takes a rough seed and grinds it, iteration by iteration, into something real: tools for AI and experiences for people.</p>
+    <ul><li class="flag"><a href="/work/wildside/"><b>Wildside</b></a> <span class="ms">First in-person hackathon</span>: A painted nature game that turns real places into living, explorable worlds — ecology, weather and wildlife rendered in a hand-painted style in the browser.</li><li class="flag"><a href="/work/hamon-engine/"><b>Hamon Engine</b></a>: A Rust + wgpu game engine built for agent control: typed ECS commands, deterministic replay, native and browser targets.</li><li><a href="/work/hamon-model-research/"><b>Hamon model research</b></a>: Agents running real experiments on new model architectures, representations and learning algorithms designed for clusters from the start.</li><li><a href="/work/hamon-memory-research/"><b>Hamon memory research</b></a>: How should an agent decide what to remember, revise or forget? Working prototypes, Python with a Rust core.</li></ul>
+    <a class="destLink" href="https://hamon.works/">hamon.works ↗</a>
+    <img src="/brain/media/kajiba-hearth-1280.webp" alt="The hearth inside the kajiba. Native Hamon Engine render, work in progress." width="1280" loading="lazy">
+  </section>
+  <section class="static" id="r-spire">
+    <p class="kicker">The fiction world</p><h2>Spire of Octaves</h2><p>A vertical world of cities stacked on cities — go down to be born, go up to be remembered. Thirty-seven free stories across nine heights of the Spire, from the boiler-row Clans of Geargrave to the brine courts of the Salt Scriptoria, plus serials, a short novel on Royal Road, and a game in progress on the Hamon Engine.</p>
+    <ul><li class="flag"><a href="/work/spire-of-octaves/"><b>Spire of Octaves</b></a>: The project page: the world, the heights, the long works and the game.</li><li><a href="https://spireofoctaves.com/"><b>Where to begin</b></a>: Salt’s End, then What Strays and The Shelf Must Eat — an annotator from the Salt Scriptoria goes down the ladder-streets to read a wall nobody else can.</li><li><b>The game</b>: You play a copyist who cannot speak, and every page you commit leans the world one way. Being built in the Hamon Engine.</li></ul>
+    <a class="destLink" href="https://spireofoctaves.com/">Start with Salt’s End on spireofoctaves.com ↗</a>
+    <img src="/brain/media/spire-eye-e1-ribs-up-1280.webp" alt="A Spire interior: Hamon Engine test render for the game, work in progress." width="1280" loading="lazy">
+  </section>
+  <section class="static" id="r-frontal">
+    <p class="kicker">Agents that act, with a human in charge</p><h2>Decisions</h2><p>Software that plans and handles real errands — money, meals, paperwork — and stops to ask before anything irreversible.</p>
+    <ul><li><a href="/work/tastetable/"><b>TasteTable</b></a>: Agentic weekly dining and outing planner for seniors and caregivers, grounded in Qloo taste signals.</li><li><a href="/work/ledgerly/"><b>Ledgerly</b></a>: Agentic invoice and payout copilot for freelancers with a human approval gate.</li><li><a href="/work/scopesignal/"><b>ScopeSignal</b></a>: Evidence-backed milestone checkout with deterministic PayPal Sandbox replay.</li><li><a href="/work/workflow-checks/"><b>workflow-checks</b></a>: Evidence-first back-office checks on synthetic data: freight detention, invoice audit, PT authorization, utility exceptions.</li></ul>
+    <img src="/assets/demos/tastetable.webp" alt="TasteTable — live demo" width="1280" loading="lazy">
+  </section>
+  <section class="static" id="r-parietal">
+    <p class="kicker">Seeing how things connect</p><h2>Systems &amp; space</h2><p>Making invisible systems legible: cause and effect in a smart home, aircraft converging in a sky, a running program you can walk inside.</p>
+    <ul><li><a href="/work/domino/"><b>Domino</b></a>: A causal digital twin for smart-home automations: reconstruct event chains, expose rule conflicts and timing races, and prove fixes by replay.</li><li><a href="/work/synapse/"><b>synapse</b></a>: Walk around inside a live, running software system in XR — see processes and data move, reach in and change them.</li><li><a href="/work/towerops/"><b>TowerOps</b></a> <span class="ms">First hackathon submission ever · Sept 2026</span>: An air-traffic-control conflict-awareness demo where bounded AI agents flag converging aircraft on a live radar view — built in a weekend with Strands Agents.</li><li><a href="/work/threshold/"><b>Threshold</b></a>: A doorbell that works for people who can't easily hear, see or reach the door: who's there, what they want, and a way to answer.</li></ul>
+    <img src="/assets/demos/domino.webp" alt="Domino — from the demo" width="1280" loading="lazy">
+  </section>
+  <section class="static" id="r-temporal">
+    <p class="kicker">What happened, who said it</p><h2>Memory &amp; sound</h2><p>Reconstructing the past from fragments, putting sound where it came from, and helping people hold on to what matters.</p>
+    <ul><li class="flag"><a href="/work/afterimage/"><b>afterimage</b></a>: Hand it scraps — a blurry clip, a few photos, a partial log — and it reconstructs what most likely happened, then tells you which single observation would settle the rest.</li><li><a href="/work/captionverse/"><b>Captionverse</b></a>: Captions placed in space beside whoever is speaking, with directional sound cues — accessibility that tells you who and where, not just what.</li><li><a href="/work/recallweave/"><b>RecallWeave</b></a>: Browser-only adaptive learning toolkit: transparent Bayesian learner, interactive labs, lesson authoring.</li><li><a href="/work/familiar-memories/"><b>Familiar Memories</b></a>: When a relative visits, it recognizes them and brings up the photos you share — with consent and revocation built in, for families living with memory loss.</li></ul>
+    <img src="/assets/demos/afterimage.webp" alt="afterimage — from the demo" width="1280" loading="lazy">
+  </section>
+  <section class="static" id="r-occipital">
+    <p class="kicker">Video in, understanding out</p><h2>Vision</h2><p>Ordinary footage turned into depth, motion, mechanism and forecast.</p>
+    <ul><li class="flag"><a href="/work/chronos-vision/"><b>chronos-vision</b></a>: Watches ordinary video and forecasts where every object in the scene is going next — and which constraints will change.</li><li><a href="/work/phantom-window/"><b>Phantom Window</b></a>: Turns flat phone video into a window you can look around: estimated depth, tracked camera, cinematic parallax and novel views.</li><li><a href="/work/mechanism/"><b>mechanism</b></a>: Recovers the joints, linkages and working dynamics of real machinery from nothing but a video of it moving.</li><li><a href="/work/materialtruth/"><b>materialtruth</b></a>: Lights a part from many controlled angles and reads the surface back, catching scratches and defects a single photo misses.</li></ul>
+    <img src="/assets/demos/chronos-vision.webp" alt="chronos-vision — from the demo" width="1280" loading="lazy">
+  </section>
+  <section class="static" id="r-cerebellum">
+    <p class="kicker">Bodies, machines, measurement</p><h2>Movement</h2><p>Athletes, surgeons and robots in motion, and the instruments that capture it.</p>
+    <ul><li class="flag"><a href="/work/replay-forge/"><b>Replay Forge</b></a>: Rebuilds a real basketball play in 3D from game footage, then lets you branch the replay and ask what-if — every frame tied back to source video.</li><li><a href="/work/surgical-ergonomics/"><b>Surgical ergonomics</b></a>: Tracking surgeons' posture, muscle load and heart rate during procedures, with a realtime demo — built for the Soangra Lab at UCI.</li><li><a href="/work/pneumatic-mri-sim/"><b>Pneumatic MRI sim</b></a>: A deterministic Rust simulation of the control stack for an air-driven surgical robot that works inside an MRI scanner.</li><li><a href="/work/capturesuite/"><b>CaptureSuite</b></a>: Windows-first multimodal research capture: daemon, versioned worker plugins, sealed sessions, PySide6 operator UI.</li></ul>
+    <img src="/assets/demos/replay-forge.webp" alt="Replay Forge — from the demo" width="1280" loading="lazy">
+  </section>
+  <section class="static" id="r-stem">
+    <p class="kicker">Jacob Metoyer · CS + physics, CSULB</p><h2>Tools &amp; about</h2><p>BUILD Scholar working toward MD/PhD training; runs HAMON; writes the Spire. The small tools that keep everything else moving live here too.</p>
+    <ul><li><a href="/work/canvaspilot/"><b>CanvasPilot</b></a>: Agentic Canvas LMS tooling: MCP + CLI, a stay-open SSO session broker, structured Canvas REST tools.</li><li><a href="/work/testpilot/"><b>testpilot</b></a>: Give it a code change; it writes the regression tests, runs them, and fixes the ones that break. Nebius × NVIDIA hackathon entry.</li><li><a href="https://github.com/Jacob-Met"><b>GitHub</b></a>: github.com/Jacob-Met</li><li><a href="https://www.linkedin.com/in/jacob-metoyer-15b701352"><b>LinkedIn</b></a>: Jacob Metoyer</li><li><a href="/outside/"><b>Text index</b></a>: Every project on one plain page.</li></ul>
+  </section>
+</main>
+<!--/STATIC-->
+<noscript><p class="noscript">This page works without JavaScript: every region is listed above and written out below.</p></noscript>
+<script type="module" src="/brain/main.js"></script>
+</body>
+</html>

@@ -85,3 +85,13 @@ html.nojs .plain{max-width:700px}
 .static h2{font-weight:400;margin:0 0 6px}.static img{max-width:100%;height:auto;opacity:.9}
 .static ul{color:#b9bec7}
 body.nogl .staticWrap{display:block}body.nogl{overflow:auto}
+/* project items inside a region */
+#destItems li a b,.static li a b{color:#ecd9ad;border-bottom:1px solid rgba(217,179,106,.35)}#destItems li a:hover b{color:#ffd98a}
+#destItems li .ln{display:block;margin-top:.25em;opacity:.82}#destItems li{margin-bottom:.95em}
+#destItems li.flag b{font-size:1.18em}#destItems li.flag b::after{content:" ✦";color:#d9b36a;font-size:.7em}
+.ms{font-style:italic;color:#d9b36a;font-size:.86em;margin-left:.4em}
+@font-face{font-family:"Fraunces";src:url(/assets/fonts/fraunces-vf.woff2) format("woff2");font-weight:300 900;font-display:swap}
+.dest h2,.hud h1,#destItems li b,.static h2,.plain a{font-family:"Fraunces",Georgia,serif}
+#destItems a,.static a{text-decoration:none;color:inherit}
+.dest{background:linear-gradient(180deg,#0e0c0a,#070605);border-left:1px solid rgba(217,179,106,.22)}
+.dest .kicker{color:#d9b36a;letter-spacing:.16em}

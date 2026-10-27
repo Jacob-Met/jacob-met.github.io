@@ -441,7 +441,7 @@ function openDest(id) {
   document.getElementById('destKicker').textContent = r.kicker;
   document.getElementById('destTitle').textContent = r.title;
   document.getElementById('destLead').textContent = r.lead;
-  document.getElementById('destItems').innerHTML = r.items.map(([a, b]) => `<li><b>${a}</b>: ${b}</li>`).join('');
+  document.getElementById('destItems').innerHTML = r.items.map(([a, b, h, f, ms]) => `<li${f ? ' class="flag"' : ''}>${h ? `<a href="${h}"><b>${a}</b></a>` : `<b>${a}</b>`}${ms ? ` <span class="ms">${ms}</span>` : ''}<span class="ln">${b}</span></li>`).join('');
   document.getElementById('destNote').textContent = r.note;
   if (r.link) { const a = document.createElement('a'); a.href = r.link[0]; a.textContent = r.link[1]; a.className = 'destLink'; const li = document.createElement('li'); li.appendChild(a); document.getElementById('destItems').appendChild(li); }
   m.innerHTML = '';
