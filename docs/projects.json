@@ -20,7 +20,9 @@
    },
    "thumbnail": "/assets/wildside/wildside-hero.webp",
    "flagship": true,
-   "scope": "Browser build; the painted view targets WebGPU with a WebGL fallback."
+   "scope": "Browser build; the painted view targets WebGPU with a WebGL fallback.",
+   "rank": 1,
+   "milestone": "First in-person hackathon"
   },
   {
    "slug": "hamon-engine",
@@ -34,7 +36,51 @@
    },
    "thumbnail": "/assets/hamon/hamon-share.jpg",
    "flagship": true,
-   "scope": null
+   "scope": null,
+   "rank": 2,
+   "milestone": null
+  },
+  {
+   "slug": "afterimage",
+   "title": "afterimage",
+   "group": "Perception & physical AI",
+   "oneLiner": "Reconstruct what probably happened from fragments of real media, and learn which observation to make next.",
+   "status": "demo-video",
+   "sourcePublic": false,
+   "links": {},
+   "thumbnail": "/assets/demos/afterimage.webp",
+   "flagship": true,
+   "scope": null,
+   "rank": 3,
+   "milestone": null
+  },
+  {
+   "slug": "replay-forge",
+   "title": "Replay Forge",
+   "group": "Perception & physical AI",
+   "oneLiner": "Rebuilds a real basketball play in 3D from game footage, then lets you branch the replay and ask what-if \u2014 every frame tied back to source video.",
+   "status": "demo-video",
+   "sourcePublic": false,
+   "links": {},
+   "thumbnail": "/assets/demos/replay-forge.webp",
+   "flagship": true,
+   "scope": null,
+   "rank": 4,
+   "milestone": null
+  },
+  {
+   "slug": "chronos-vision",
+   "title": "chronos-vision",
+   "group": "Perception & physical AI",
+   "oneLiner": "Watches ordinary video and forecasts where every object in the scene is going next \u2014 and which constraints will change.",
+   "status": "demo-video",
+   "sourcePublic": false,
+   "links": {},
+   "thumbnail": "/assets/demos/chronos-vision.webp",
+   "flagship": true,
+   "scope": null,
+   "rank": 5,
+   "milestone": null
   },
   {
    "slug": "spire-of-octaves",
@@ -48,46 +94,9 @@
    },
    "thumbnail": "/assets/demos/spire-of-octaves.webp",
    "flagship": true,
-   "scope": null
-  },
-  {
-   "slug": "towerops",
-   "title": "TowerOps",
-   "group": "Worlds & games",
-   "oneLiner": "Synthetic ATC conflict-awareness and bounded-agent research demo built with Strands Agents.",
-   "status": "live",
-   "sourcePublic": true,
-   "links": {
-    "demo": "https://jacobmetoyer.com/TowerOps/airspace/",
-    "repo": "https://github.com/Jacob-Met/TowerOps"
-   },
-   "thumbnail": "/assets/demos/towerops-desktop.webp",
-   "flagship": false,
-   "scope": null
-  },
-  {
-   "slug": "afterimage",
-   "title": "afterimage",
-   "group": "Perception & physical AI",
-   "oneLiner": "Reconstruct what probably happened from fragments of real media, and learn which observation to make next.",
-   "status": "demo-video",
-   "sourcePublic": false,
-   "links": {},
-   "thumbnail": "/assets/demos/afterimage.webp",
-   "flagship": true,
-   "scope": null
-  },
-  {
-   "slug": "chronos-vision",
-   "title": "chronos-vision",
-   "group": "Perception & physical AI",
-   "oneLiner": "Watches ordinary video and forecasts where every object in the scene is going next \u2014 and which constraints will change.",
-   "status": "demo-video",
-   "sourcePublic": false,
-   "links": {},
-   "thumbnail": "/assets/demos/chronos-vision.webp",
-   "flagship": true,
-   "scope": null
+   "scope": null,
+   "rank": 6,
+   "milestone": null
   },
   {
    "slug": "mechanism",
@@ -99,31 +108,9 @@
    "links": {},
    "thumbnail": "/assets/demos/mechanism.webp",
    "flagship": false,
-   "scope": null
-  },
-  {
-   "slug": "synapse",
-   "title": "synapse",
-   "group": "Perception & physical AI",
-   "oneLiner": "A spatial environment for exploring and manipulating real running computational systems in XR.",
-   "status": "private-source",
-   "sourcePublic": false,
-   "links": {},
-   "thumbnail": null,
-   "flagship": false,
-   "scope": null
-  },
-  {
-   "slug": "materialtruth",
-   "title": "materialtruth",
-   "group": "Perception & physical AI",
-   "oneLiner": "Surface-defect and material inspection using controlled multi-illumination imagery.",
-   "status": "private-source",
-   "sourcePublic": false,
-   "links": {},
-   "thumbnail": null,
-   "flagship": false,
-   "scope": null
+   "scope": null,
+   "rank": 7,
+   "milestone": null
   },
   {
    "slug": "phantom-window",
@@ -135,31 +122,9 @@
    "links": {},
    "thumbnail": "/assets/demos/phantom-window.webp",
    "flagship": false,
-   "scope": null
-  },
-  {
-   "slug": "replay-forge",
-   "title": "Replay Forge",
-   "group": "Perception & physical AI",
-   "oneLiner": "Rebuilds a real basketball play in 3D from game footage, then lets you branch the replay and ask what-if \u2014 every frame tied back to source video.",
-   "status": "demo-video",
-   "sourcePublic": false,
-   "links": {},
-   "thumbnail": "/assets/demos/replay-forge.webp",
-   "flagship": true,
-   "scope": null
-  },
-  {
-   "slug": "domino",
-   "title": "Domino",
-   "group": "Perception & physical AI",
-   "oneLiner": "A causal digital twin for smart-home automations: reconstruct event chains, expose rule conflicts and timing races, and prove fixes by replay.",
-   "status": "demo-video",
-   "sourcePublic": false,
-   "links": {},
-   "thumbnail": "/assets/demos/domino.webp",
-   "flagship": false,
-   "scope": null
+   "scope": null,
+   "rank": 8,
+   "milestone": null
   },
   {
    "slug": "captionverse",
@@ -171,47 +136,51 @@
    "links": {},
    "thumbnail": "/assets/demos/captionverse.webp",
    "flagship": false,
-   "scope": null
+   "scope": null,
+   "rank": 9,
+   "milestone": null
   },
   {
-   "slug": "threshold",
-   "title": "Threshold",
-   "group": "Accessibility & care",
-   "oneLiner": "Accessibility-focused visitor awareness and interaction around a doorbell camera.",
+   "slug": "domino",
+   "title": "Domino",
+   "group": "Perception & physical AI",
+   "oneLiner": "A causal digital twin for smart-home automations: reconstruct event chains, expose rule conflicts and timing races, and prove fixes by replay.",
+   "status": "demo-video",
+   "sourcePublic": false,
+   "links": {},
+   "thumbnail": "/assets/demos/domino.webp",
+   "flagship": false,
+   "scope": null,
+   "rank": 10,
+   "milestone": null
+  },
+  {
+   "slug": "synapse",
+   "title": "synapse",
+   "group": "Perception & physical AI",
+   "oneLiner": "A spatial environment for exploring and manipulating real running computational systems in XR.",
    "status": "private-source",
    "sourcePublic": false,
    "links": {},
    "thumbnail": null,
    "flagship": false,
-   "scope": null
+   "scope": null,
+   "rank": 11,
+   "milestone": null
   },
   {
-   "slug": "familiar-memories",
-   "title": "Familiar Memories",
-   "group": "Accessibility & care",
-   "oneLiner": "Recognize a visiting relative and surface relevant family photos, subject to consent.",
+   "slug": "materialtruth",
+   "title": "materialtruth",
+   "group": "Perception & physical AI",
+   "oneLiner": "Surface-defect and material inspection using controlled multi-illumination imagery.",
    "status": "private-source",
    "sourcePublic": false,
    "links": {},
    "thumbnail": null,
    "flagship": false,
-   "scope": null
-  },
-  {
-   "slug": "recallweave",
-   "title": "RecallWeave",
-   "group": "Accessibility & care",
-   "oneLiner": "Browser-only adaptive learning toolkit: transparent Bayesian learner, interactive labs, lesson authoring.",
-   "status": "live",
-   "sourcePublic": true,
-   "links": {
-    "demo": "https://jacobmetoyer.com/RecallWeave/explore.html",
-    "repo": "https://github.com/Jacob-Met/RecallWeave",
-    "hackathon": "ForgeHacks 2026"
-   },
-   "thumbnail": "/assets/demos/recallweave-desktop.webp",
-   "flagship": false,
-   "scope": null
+   "scope": null,
+   "rank": 12,
+   "milestone": null
   },
   {
    "slug": "hamon-model-research",
@@ -223,102 +192,9 @@
    "links": {},
    "thumbnail": null,
    "flagship": false,
-   "scope": null
-  },
-  {
-   "slug": "hamon-memory-research",
-   "title": "Hamon memory research",
-   "group": "Research instruments",
-   "oneLiner": "Research prototypes for evolving agent memory, stdlib-only Python with a small Rust compute core.",
-   "status": "private-source",
-   "sourcePublic": false,
-   "links": {},
-   "thumbnail": null,
-   "flagship": false,
-   "scope": null
-  },
-  {
-   "slug": "pneumatic-mri-sim",
-   "title": "Pneumatic MRI sim",
-   "group": "Research instruments",
-   "oneLiner": "Deterministic Rust experiments with a reduced-order pneumatic MRI-guided surgical-robot control stack.",
-   "status": "private-source",
-   "sourcePublic": false,
-   "links": {},
-   "thumbnail": null,
-   "flagship": false,
-   "scope": null
-  },
-  {
-   "slug": "surgical-ergonomics",
-   "title": "Surgical ergonomics",
-   "group": "Research instruments",
-   "oneLiner": "Surgeon pose tracking and a realtime demo for the Soangra Lab at UCI.",
-   "status": "private-source",
-   "sourcePublic": false,
-   "links": {},
-   "thumbnail": null,
-   "flagship": false,
-   "scope": null
-  },
-  {
-   "slug": "canvaspilot",
-   "title": "CanvasPilot",
-   "group": "Tools",
-   "oneLiner": "Agentic Canvas LMS tooling: MCP + CLI, a stay-open SSO session broker, structured Canvas REST tools.",
-   "status": "private-source",
-   "sourcePublic": true,
-   "links": {
-    "repo": "https://github.com/Jacob-Met/canvaspilot"
-   },
-   "thumbnail": null,
-   "flagship": false,
-   "scope": null
-  },
-  {
-   "slug": "capturesuite",
-   "title": "CaptureSuite",
-   "group": "Tools",
-   "oneLiner": "Windows-first multimodal research capture: daemon, versioned worker plugins, sealed sessions, PySide6 operator UI.",
-   "status": "private-source",
-   "sourcePublic": true,
-   "links": {
-    "repo": "https://github.com/Jacob-Met/CaptureSuite"
-   },
-   "thumbnail": null,
-   "flagship": false,
-   "scope": null
-  },
-  {
-   "slug": "workflow-checks",
-   "title": "workflow-checks",
-   "group": "Tools",
-   "oneLiner": "Evidence-first back-office checks on synthetic data: freight detention, invoice audit, PT authorization, utility exceptions.",
-   "status": "live",
-   "sourcePublic": true,
-   "links": {
-    "demo": "https://jacobmetoyer.com/workflow-checks/",
-    "repo": "https://github.com/Jacob-Met/workflow-checks"
-   },
-   "thumbnail": "/assets/demos/workflow-checks.webp",
-   "flagship": false,
-   "scope": null
-  },
-  {
-   "slug": "ledgerly",
-   "title": "Ledgerly",
-   "group": "Tools",
-   "oneLiner": "Agentic invoice and payout copilot for freelancers with a human approval gate.",
-   "status": "live",
-   "sourcePublic": true,
-   "links": {
-    "demo": "https://jacobmetoyer.com/ledgerly/",
-    "repo": "https://github.com/Jacob-Met/ledgerly",
-    "hackathon": "PayPal AI Hackathon"
-   },
-   "thumbnail": "/assets/demos/ledgerly.webp",
-   "flagship": false,
-   "scope": null
+   "scope": null,
+   "rank": 13,
+   "milestone": null
   },
   {
    "slug": "tastetable",
@@ -334,22 +210,132 @@
    },
    "thumbnail": "/assets/demos/tastetable.webp",
    "flagship": false,
-   "scope": null
+   "scope": null,
+   "rank": 14,
+   "milestone": null
   },
   {
-   "slug": "testpilot",
-   "title": "testpilot",
+   "slug": "ledgerly",
+   "title": "Ledgerly",
    "group": "Tools",
-   "oneLiner": "An agent that writes, runs and repairs regression tests for a diff.",
-   "status": "private-source",
+   "oneLiner": "Agentic invoice and payout copilot for freelancers with a human approval gate.",
+   "status": "live",
    "sourcePublic": true,
    "links": {
-    "repo": "https://github.com/Jacob-Met/testpilot",
-    "hackathon": "Nebius x NVIDIA Global AI Hackathon"
+    "demo": "https://jacobmetoyer.com/ledgerly/",
+    "repo": "https://github.com/Jacob-Met/ledgerly",
+    "hackathon": "PayPal AI Hackathon"
    },
+   "thumbnail": "/assets/demos/ledgerly.webp",
+   "flagship": false,
+   "scope": null,
+   "rank": 15,
+   "milestone": null
+  },
+  {
+   "slug": "recallweave",
+   "title": "RecallWeave",
+   "group": "Accessibility & care",
+   "oneLiner": "Browser-only adaptive learning toolkit: transparent Bayesian learner, interactive labs, lesson authoring.",
+   "status": "live",
+   "sourcePublic": true,
+   "links": {
+    "demo": "https://jacobmetoyer.com/RecallWeave/explore.html",
+    "repo": "https://github.com/Jacob-Met/RecallWeave",
+    "hackathon": "ForgeHacks 2026"
+   },
+   "thumbnail": "/assets/demos/recallweave-desktop.webp",
+   "flagship": false,
+   "scope": null,
+   "rank": 16,
+   "milestone": null
+  },
+  {
+   "slug": "pneumatic-mri-sim",
+   "title": "Pneumatic MRI sim",
+   "group": "Research instruments",
+   "oneLiner": "Deterministic Rust experiments with a reduced-order pneumatic MRI-guided surgical-robot control stack.",
+   "status": "private-source",
+   "sourcePublic": false,
+   "links": {},
    "thumbnail": null,
    "flagship": false,
-   "scope": null
+   "scope": null,
+   "rank": 17,
+   "milestone": null
+  },
+  {
+   "slug": "towerops",
+   "title": "TowerOps",
+   "group": "Worlds & games",
+   "oneLiner": "An air-traffic-control conflict-awareness demo where bounded AI agents flag converging aircraft on a live radar view \u2014 built in a weekend with Strands Agents.",
+   "status": "live",
+   "sourcePublic": true,
+   "links": {
+    "demo": "https://jacobmetoyer.com/TowerOps/airspace/",
+    "repo": "https://github.com/Jacob-Met/TowerOps"
+   },
+   "thumbnail": "/assets/demos/towerops-desktop.webp",
+   "flagship": false,
+   "scope": null,
+   "rank": 18,
+   "milestone": "First hackathon submission ever \u00b7 Sept 2026"
+  },
+  {
+   "slug": "hamon-memory-research",
+   "title": "Hamon memory research",
+   "group": "Research instruments",
+   "oneLiner": "Research prototypes for evolving agent memory, stdlib-only Python with a small Rust compute core.",
+   "status": "private-source",
+   "sourcePublic": false,
+   "links": {},
+   "thumbnail": null,
+   "flagship": false,
+   "scope": null,
+   "rank": 19,
+   "milestone": null
+  },
+  {
+   "slug": "surgical-ergonomics",
+   "title": "Surgical ergonomics",
+   "group": "Research instruments",
+   "oneLiner": "Surgeon pose tracking and a realtime demo for the Soangra Lab at UCI.",
+   "status": "private-source",
+   "sourcePublic": false,
+   "links": {},
+   "thumbnail": null,
+   "flagship": false,
+   "scope": null,
+   "rank": 20,
+   "milestone": null
+  },
+  {
+   "slug": "threshold",
+   "title": "Threshold",
+   "group": "Accessibility & care",
+   "oneLiner": "Accessibility-focused visitor awareness and interaction around a doorbell camera.",
+   "status": "private-source",
+   "sourcePublic": false,
+   "links": {},
+   "thumbnail": null,
+   "flagship": false,
+   "scope": null,
+   "rank": 21,
+   "milestone": null
+  },
+  {
+   "slug": "familiar-memories",
+   "title": "Familiar Memories",
+   "group": "Accessibility & care",
+   "oneLiner": "Recognize a visiting relative and surface relevant family photos, subject to consent.",
+   "status": "private-source",
+   "sourcePublic": false,
+   "links": {},
+   "thumbnail": null,
+   "flagship": false,
+   "scope": null,
+   "rank": 22,
+   "milestone": null
   },
   {
    "slug": "scopesignal",
@@ -364,7 +350,75 @@
    },
    "thumbnail": "/assets/demos/scopesignal.webp",
    "flagship": false,
-   "scope": null
+   "scope": null,
+   "rank": 23,
+   "milestone": null
+  },
+  {
+   "slug": "workflow-checks",
+   "title": "workflow-checks",
+   "group": "Tools",
+   "oneLiner": "Evidence-first back-office checks on synthetic data: freight detention, invoice audit, PT authorization, utility exceptions.",
+   "status": "live",
+   "sourcePublic": true,
+   "links": {
+    "demo": "https://jacobmetoyer.com/workflow-checks/",
+    "repo": "https://github.com/Jacob-Met/workflow-checks"
+   },
+   "thumbnail": "/assets/demos/workflow-checks.webp",
+   "flagship": false,
+   "scope": null,
+   "rank": 24,
+   "milestone": null
+  },
+  {
+   "slug": "capturesuite",
+   "title": "CaptureSuite",
+   "group": "Tools",
+   "oneLiner": "Windows-first multimodal research capture: daemon, versioned worker plugins, sealed sessions, PySide6 operator UI.",
+   "status": "private-source",
+   "sourcePublic": true,
+   "links": {
+    "repo": "https://github.com/Jacob-Met/CaptureSuite"
+   },
+   "thumbnail": null,
+   "flagship": false,
+   "scope": null,
+   "rank": 25,
+   "milestone": null
+  },
+  {
+   "slug": "canvaspilot",
+   "title": "CanvasPilot",
+   "group": "Tools",
+   "oneLiner": "Agentic Canvas LMS tooling: MCP + CLI, a stay-open SSO session broker, structured Canvas REST tools.",
+   "status": "private-source",
+   "sourcePublic": true,
+   "links": {
+    "repo": "https://github.com/Jacob-Met/canvaspilot"
+   },
+   "thumbnail": null,
+   "flagship": false,
+   "scope": null,
+   "rank": 26,
+   "milestone": null
+  },
+  {
+   "slug": "testpilot",
+   "title": "testpilot",
+   "group": "Tools",
+   "oneLiner": "An agent that writes, runs and repairs regression tests for a diff.",
+   "status": "private-source",
+   "sourcePublic": true,
+   "links": {
+    "repo": "https://github.com/Jacob-Met/testpilot",
+    "hackathon": "Nebius x NVIDIA Global AI Hackathon"
+   },
+   "thumbnail": null,
+   "flagship": false,
+   "scope": null,
+   "rank": 27,
+   "milestone": null
   }
  ]
 }

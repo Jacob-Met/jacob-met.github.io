@@ -10,7 +10,7 @@ W,Pe,Ac,R,T="Worlds & games","Perception & physical AI","Accessibility & care","
 a("wildside","Wildside",W,"A painted nature game that turns real places into living, explorable worlds — ecology, weather and wildlife rendered in a hand-painted style in the browser.",demo=J+"/wildside/",thumb="../wildside/wildside-hero.webp",flag=True,scope="Browser build; the painted view targets WebGPU with a WebGL fallback.")
 a("hamon-engine","Hamon Engine",W,"A Rust + wgpu game engine built for agent control: typed ECS commands, deterministic replay, native and browser targets.",demo=J+"/hamon.html",thumb="../hamon/hamon-share.jpg",flag=True)
 a("spire-of-octaves","Spire of Octaves",W,"An original fiction world: stories, the Spire, and the long works.",demo="https://spireofoctaves.com/",thumb="spire-of-octaves.webp",flag=True)
-a("towerops","TowerOps",W,"Synthetic ATC conflict-awareness and bounded-agent research demo built with Strands Agents.",demo=J+"/TowerOps/airspace/",repo="TowerOps",thumb="towerops-desktop.webp")
+a("towerops","TowerOps",W,"An air-traffic-control conflict-awareness demo where bounded AI agents flag converging aircraft on a live radar view — built in a weekend with Strands Agents.",demo=J+"/TowerOps/airspace/",repo="TowerOps",thumb="towerops-desktop.webp")
 a("afterimage","afterimage",Pe,"Reconstruct what probably happened from fragments of real media, and learn which observation to make next.",thumb="afterimage.webp",flag=True)
 a("chronos-vision","chronos-vision",Pe,"Watches ordinary video and forecasts where every object in the scene is going next — and which constraints will change.",thumb="chronos-vision.webp",flag=True)
 a("mechanism","mechanism",Pe,"Recovers the joints, linkages and working dynamics of real machinery from nothing but a video of it moving.",thumb="mechanism.webp")
@@ -36,5 +36,9 @@ a("testpilot","testpilot",T,"An agent that writes, runs and repairs regression t
 a("scopesignal","ScopeSignal",T,"Evidence-backed milestone checkout with deterministic PayPal Sandbox replay.",demo=J+"/scopesignal/",repo="scopesignal",thumb="scopesignal.webp")
 for p in P:
   if p["thumbnail"] and p["thumbnail"].startswith("/assets/demos/../"): p["thumbnail"]="/assets/"+p["thumbnail"][len("/assets/demos/../"):]
+RANK=['wildside', 'hamon-engine', 'afterimage', 'replay-forge', 'chronos-vision', 'spire-of-octaves', 'mechanism', 'phantom-window', 'captionverse', 'domino', 'synapse', 'materialtruth', 'hamon-model-research', 'tastetable', 'ledgerly', 'recallweave', 'pneumatic-mri-sim', 'towerops', 'hamon-memory-research', 'surgical-ergonomics', 'threshold', 'familiar-memories', 'scopesignal', 'workflow-checks', 'capturesuite', 'canvaspilot', 'testpilot']
+MS={"towerops":"First hackathon submission ever · Sept 2026","wildside":"First in-person hackathon"}
+for p in P: p["rank"]=RANK.index(p["slug"])+1; p["milestone"]=MS.get(p["slug"])
+P.sort(key=lambda p:p["rank"])
 json.dump({"updated":"2026-10-27","groups":[W,Pe,Ac,R,T],"projects":P},open("docs/projects.json","w"),indent=1)
 print(len(P))
