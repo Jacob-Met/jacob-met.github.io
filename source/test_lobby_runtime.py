@@ -39,7 +39,7 @@ class LobbyRuntime(unittest.TestCase):
     def test_exact_adapter_history_media_races(self):
         result=self.run_contract('lobby_adapter_contract.cjs',ROOT)
         final=json.loads(result.strip().splitlines()[-1])
-        self.assertEqual(final['failed'],0);self.assertEqual(final['passed'],15)
+        self.assertEqual(final['failed'],0);self.assertEqual(final['passed'],17)
     def test_legacy_sections_focus_visibility_and_history(self):
         d=json.loads(self.run_contract('lobby_sections_contract.cjs',ROOT))
         self.assertEqual(d['researchEngineReturn'],dict(hash='#forge',phase='home',focused='researchLink'))
