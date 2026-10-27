@@ -1,0 +1,30 @@
+import { chromium } from 'playwright-core';
+const base = process.argv[2] || 'http://127.0.0.1:8790/';
+const out = process.argv[3] || '/workspace/site_publish/shots/local_';
+const b = await chromium.launch({ executablePath: '/usr/bin/google-chrome', args: ['--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist'] });
+const report = [];
+async function shot(path, w, h, name, fn, js = true) {
+  const ctx = await b.newContext({ viewport: { width: w, height: h }, javaScriptEnabled: js });
+  const p = await ctx.newPage(); const errs = [], bad = [];
+  p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
+  p.on('pageerror', e => errs.push(String(e)));
+  p.on('response', r => { if (r.status() >= 400) bad.push(r.status() + ' ' + r.url()); });
+  p.on('requestfailed', r => bad.push('FAILED ' + r.url()));
+  await p.goto(base + path + (path.includes("?") ? "&" : "?") + "cb=1", { waitUntil: 'load' }); await p.waitForTimeout(js ? 7000 : 1000);
+  if (fn) await fn(p);
+  await p.evaluate(() => window.scrollTo(0, 0)).catch(() => {});
+  await p.screenshot({ path: out + name + '.png', fullPage: false });
+  const overflow = await p.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1);
+  report.push({ name, errs, bad, overflow }); await ctx.close();
+}
+await shot('', 1440, 900, 'home_1440');
+await shot('', 390, 844, 'home_390');
+await shot('brain/?t=2', 1600, 1000, 'brain_1600');
+await shot('brain/?t=2', 1600, 1000, 'brain_hamon_dest', async p => { await p.evaluate(() => window.__dive(10)); await p.waitForTimeout(25000); });
+await shot('brain/?t=2&reduce', 1600, 1000, 'brain_spire_dest', async p => { await p.evaluate(() => window.__dive(11)); await p.waitForTimeout(4000); });
+await shot('brain/?t=2', 390, 844, 'brain_390');
+await shot('brain/', 1280, 800, 'brain_nojs', null, false);
+await shot('forge/', 1440, 900, 'forge_1440');
+await shot('forge/', 390, 844, 'forge_390');
+console.log(JSON.stringify(report, null, 1));
+await b.close();

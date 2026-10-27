@@ -1,0 +1,36 @@
+import { chromium } from 'playwright-core';
+const base = 'http://127.0.0.1:8765/';
+const out = '/workspace/site_brain/shots/';
+const b = await chromium.launch({ executablePath: '/usr/bin/google-chrome', args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
+const errs = [];
+async function page(w, h, q = '') {
+  const p = await b.newPage({ viewport: { width: w, height: h } });
+  p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
+  p.on('pageerror', e => errs.push(String(e)));
+  await p.goto(base + q, { waitUntil: 'load' });
+  await p.waitForTimeout(6000);
+  return p;
+}
+const p = await page(1600, 1000, '?t=2&slow=12');
+await p.screenshot({ path: out + '01_landing_1600.png' });
+await p.evaluate(() => document.querySelector('#regionList a[data-id="10"]').dispatchEvent(new Event('mouseenter')));
+await p.waitForTimeout(800); await p.screenshot({ path: out + '02_hover_hamon_eye.png' });
+await p.evaluate(() => document.querySelector('#regionList a[data-id="11"]').dispatchEvent(new Event('mouseenter')));
+await p.waitForTimeout(800); await p.screenshot({ path: out + '03_hover_spire_eye.png' });
+await p.evaluate(() => document.querySelector('#regionList a[data-id="3"]').dispatchEvent(new Event('mouseenter')));
+await p.waitForTimeout(800); await p.screenshot({ path: out + '04_hover_temporal.png' });
+await p.evaluate(() => window.__dive(10));
+await p.waitForTimeout(9000); await p.screenshot({ path: out + '05_dive_hamon_approach.png' });
+await p.waitForTimeout(12000); await p.screenshot({ path: out + '06_dive_hamon_tissue.png' });
+await p.waitForTimeout(14000); await p.screenshot({ path: out + '07_inside_hamon_placeholder.png' });
+await p.keyboard.press('Escape'); await p.waitForTimeout(33000);
+await p.evaluate(() => window.__dive(11));
+await p.waitForTimeout(22000); await p.screenshot({ path: out + '08_dive_spire_tissue.png' });
+await p.waitForTimeout(14000); await p.screenshot({ path: out + '09_inside_spire_placeholder.png' });
+console.log('state', await p.evaluate(() => window.__state()));
+const m = await page(390, 844, '?t=2');
+await m.screenshot({ path: out + '10_mobile_390.png' });
+const n = await b.newPage({ viewport: { width: 1280, height: 800 }, javaScriptEnabled: false });
+await n.goto(base); await n.screenshot({ path: out + '11_no_js.png' });
+console.log('errors', JSON.stringify(errs));
+await b.close();
