@@ -172,3 +172,6 @@ body.flat .hud, body.flat .plain { position: static; max-width: 980px; width: au
   .syn a { padding: 12px 14px 13px 16px; } .syn a b { font-size: 17.5px; } .lead { font-size: 16.5px; }
   .region h2, .world h2 { font-size: 30px; }
 }
+/* dive clips + end frames: feather every edge to black so the still never shows a hard frame edge (all widths) */
+#stage video { -webkit-mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent), linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+  -webkit-mask-composite: source-in; mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent), linear-gradient(to right, transparent, #000 10%, #000 90%, transparent); mask-composite: intersect; }

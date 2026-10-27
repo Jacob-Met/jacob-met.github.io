@@ -2,7 +2,7 @@
 // orbit: 96 turntable frames scrubbed by drag / scroll; labels.png holds a region id per pixel for every orbit frame.
 // A click turns the orbit to the region's hub frame (the first frame of its dive), plays the dive, and opens the region.
 // An eye plays the flight out along the visual pathway (V1 -> optic radiation -> LGN -> tract -> chiasm -> nerve -> pupil)
-// and the pupil opens onto that eye's world. Old realtime build: /brain/realtime.js.
+// and the pupil opens onto that eye's world.
 import { REGIONS, EYES } from './content.js';
 import { GRAPH } from './graph.js';
 
