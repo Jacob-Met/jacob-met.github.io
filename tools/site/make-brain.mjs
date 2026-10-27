@@ -1,31 +1,63 @@
-// Writes docs/brain/regions.js and the crawlable list/static blocks in docs/brain/index.html from docs/projects.json,
-// then copies the brain to docs/index.html so the mind is the whole site.
+// Curates docs/projects.json into the v3.1 prerendered brain: writes docs/brain/content.js (tips + panel data),
+// the region list and the region panels in docs/brain/index.html, then copies it to docs/index.html (the brain is the site root).
+// The two eye worlds (#w-hamon, #w-spire) stay hand-written in index.html; only their project links are injected.
 import fs from "node:fs";
-const P=Object.fromEntries(JSON.parse(fs.readFileSync("docs/projects.json","utf8")).projects.map(p=>[p.slug,p]));
-const SHORT={'spire-of-octaves':'The project page: the world, the heights, the long works and the game.'};
-const it=s=>{const p=P[s];return [p.title,SHORT[s]||p.oneLiner,`/work/${s}/`,p.flagship?1:0,p.milestone||""];};
-const R=[
- {id:1,key:'frontal',name:'Frontal lobe',title:'Decisions',color:[0.62,0.80,0.95],kicker:'Agents that act, with a human in charge',lead:'Software that plans and handles real errands — money, meals, paperwork — and stops to ask before anything irreversible.',slugs:['tastetable','ledgerly','scopesignal','workflow-checks']},
- {id:2,key:'parietal',name:'Parietal lobe',title:'Systems & space',color:[0.55,0.85,0.80],kicker:'Seeing how things connect',lead:'Making invisible systems legible: cause and effect in a smart home, aircraft converging in a sky, a running program you can walk inside.',slugs:['domino','synapse','towerops','threshold']},
- {id:3,key:'temporal',name:'Temporal lobe',title:'Memory & sound',color:[0.78,0.72,0.95],kicker:'What happened, who said it',lead:'Reconstructing the past from fragments, putting sound where it came from, and helping people hold on to what matters.',slugs:['afterimage','captionverse','recallweave','familiar-memories']},
- {id:4,key:'occipital',name:'Occipital lobe',title:'Vision',color:[0.95,0.85,0.62],kicker:'Video in, understanding out',lead:'Ordinary footage turned into depth, motion, mechanism and forecast.',slugs:['chronos-vision','phantom-window','mechanism','materialtruth']},
- {id:5,key:'cerebellum',name:'Cerebellum',title:'Movement',color:[0.70,0.95,0.70],kicker:'Bodies, machines, measurement',lead:'Athletes, surgeons and robots in motion, and the instruments that capture it.',slugs:['replay-forge','surgical-ergonomics','pneumatic-mri-sim','capturesuite']},
- {id:6,key:'stem',name:'Brainstem',title:'Tools & about',color:[0.80,0.82,0.86],kicker:'Jacob Metoyer · CS + physics, CSULB',lead:'BUILD Scholar working toward MD/PhD training; runs HAMON; writes the Spire. The small tools that keep everything else moving live here too.',slugs:['canvaspilot','testpilot'],extra:[['GitHub','github.com/Jacob-Met','https://github.com/Jacob-Met'],['LinkedIn','Jacob Metoyer','https://www.linkedin.com/in/jacob-metoyer-15b701352'],['Text index','Every project on one plain page.','/outside/']]},
+const P = Object.fromEntries(JSON.parse(fs.readFileSync("docs/projects.json", "utf8")).projects.map(p => [p.slug, p]));
+const W = s => { const p = P[s]; if (!p) throw new Error("missing project " + s); return [p.title, p.oneLiner, `/work/${s}/`, p.milestone || "", p.flagship ? 1 : 0]; };
+const X = (a, b, h) => [a, b, h, "", 0];
+// Curated: the strongest, demonstrable work leads; private stubs and near-duplicates are left to /outside/.
+const REGIONS = [
+ { id: 8, key: 'hippocampus', seg: 'dive_hippocampus', name: 'Hippocampus', title: 'Wildside', hue: '#ff9db8', deep: true,
+   kicker: 'The place this brain keeps', lead: 'The hippocampus holds place cells, the neurons that fire for one spot in a remembered landscape. Wildside turns real places into living, explorable worlds.',
+   figure: ['/assets/wildside/wildside-card.webp', 'Wildside: a painted lake under autumn trees.'],
+   items: [W('wildside'), X('Play Wildside', 'A painted place you can walk through, rendered live by the HAMON Engine.', '/wildside/')] },
+ { id: 4, key: 'occipital', seg: 'dive_occipital', name: 'Occipital lobe', title: 'Vision', hue: '#ffd98a',
+   kicker: 'Video in, understanding out', lead: 'Ordinary footage turned into depth, motion, mechanism and forecast. The visual cortex is where the pathway to both eyes begins.',
+   figure: ['/assets/demos/chronos-vision.webp', 'chronos-vision, from the demo.'],
+   items: ['chronos-vision', 'mechanism', 'phantom-window'].map(W) },
+ { id: 3, key: 'temporal', seg: 'dive_temporal', name: 'Temporal lobe', title: 'Memory & sound', hue: '#c8b8ff',
+   kicker: 'What happened, who said it', lead: 'Reconstructing the past from fragments, and putting sound where it came from.',
+   figure: ['/assets/demos/afterimage.webp', 'afterimage, from the demo.'],
+   items: ['afterimage', 'captionverse', 'recallweave'].map(W) },
+ { id: 7, key: 'motor', seg: 'dive_motor', name: 'Motor strip', title: 'Hackathons', hue: '#ffa05a',
+   kicker: 'One constraint. A working idea.', lead: 'Competition-built projects. The precentral gyrus is where intent becomes movement.',
+   figure: ['/assets/demos/replay-forge.webp', 'Replay Forge, from the demo.'],
+   items: ['replay-forge', 'domino', 'towerops'].map(W) },
+ { id: 2, key: 'parietal', seg: 'dive_parietal', name: 'Parietal lobe', title: 'Models & measurement', hue: '#8fe0cf',
+   kicker: 'Independent research', lead: 'What would change our explanation? Workbenches that put competing models in front of a measurement.',
+   figure: ['/assets/figures/worldlaw-computed.svg', 'WORLDLAW: spring and gravity models of a pendulum agree at 5° and separate at 30°.'],
+   items: [X('WORLDLAW', 'Compare competing models of motion, choose a revealing measurement, and see how their predictions change.', '/lobby/#worldlaw'),
+           X('Kernel Garden', 'Generate competing CUDA kernels, run them on a real GPU, and drop any that fail independent numerical checks.', '/lobby/#kernel-garden')] },
+ { id: 5, key: 'cerebellum', seg: 'dive_cerebellum', name: 'Cerebellum', title: 'Movement', hue: '#a6f0a6',
+   kicker: 'Academic research · research software', lead: 'Human movement, surgery and rehabilitation, and the instruments that record them.',
+   items: [W('surgical-ergonomics'), X('Gait & rehabilitation', 'Participant sessions, motion-capture marker labelling, fixes to gait-analysis code.', '/lobby/#research'), W('capturesuite')] },
+ { id: 1, key: 'frontal', seg: 'dive_frontal', name: 'Frontal lobe', title: 'About & contact', hue: '#ffb08a',
+   kicker: 'Who is thinking', lead: 'From human movement to computational models, I’m interested in how we observe a system, test an idea, and learn from what does not fit.',
+   body: 'I’m a CSULB BUILD Scholar studying computer science and physics, with a biology minor, working toward MD/PhD training.',
+   items: [X('GitHub', 'Public source for the tools and research software.', 'https://github.com/Jacob-Met'),
+           X('LinkedIn', 'Research and work history.', 'https://www.linkedin.com/in/jacob-metoyer-15b701352'),
+           X('Every project', 'The plain index, including the smaller prototypes.', '/outside/')] },
+ { id: 6, key: 'stem', seg: 'dive_brainstem', name: 'Brainstem', title: 'Tools', hue: '#cfd6e6',
+   kicker: 'Small public tools', lead: 'The plumbing that keeps everything else breathing.',
+   items: ['canvaspilot', 'workflow-checks'].map(W) },
 ];
-const EY={
- hamon:{id:10,key:'hamon',name:'Right eye',title:'HAMON 刃文',color:[0.80,0.86,1.0],kicker:'The company',lead:'One company that takes a rough seed and grinds it, iteration by iteration, into something real: tools for AI and experiences for people.',media:'/brain/media/kajiba-hearth-1280.webp',mediaTag:'The hearth inside the kajiba. Native Hamon Engine render, work in progress.',link:['https://hamon.works/','hamon.works ↗'],slugs:['wildside','hamon-engine','hamon-model-research','hamon-memory-research']},
- spire:{id:11,key:'spire',name:'Left eye',title:'Spire of Octaves',color:[1.0,0.78,0.52],kicker:'The fiction world',lead:P['spire-of-octaves'].oneLiner,media:'/brain/media/spire-eye-e1-ribs-up-1280.webp',mediaTag:'A Spire interior: Hamon Engine test render for the game, work in progress.',link:['https://spireofoctaves.com/','Start with Salt’s End on spireofoctaves.com ↗'],slugs:['spire-of-octaves'],extra:[['Where to begin','Salt’s End, then What Strays and The Shelf Must Eat — an annotator from the Salt Scriptoria goes down the ladder-streets to read a wall nobody else can.','https://spireofoctaves.com/'],['The game','You play a copyist who cannot speak, and every page you commit leans the world one way. Being built in the Hamon Engine.','']]},
-};
-const fin=r=>{if(!r.media){const t=r.slugs.map(x=>P[x]).find(p=>p.thumbnail);if(t){r.media=t.thumbnail;r.mediaTag=t.title+' — '+(t.status==='live'?'live demo':'from the demo');}}r.items=[...r.slugs.map(it),...(r.extra||[]).map(x=>[x[0],x[1],x[2],0,""])];delete r.slugs;delete r.extra;r.note='';return r;};
-R.forEach(fin);Object.values(EY).forEach(fin);
-fs.writeFileSync("docs/brain/regions.js","// GENERATED by tools/site/make-brain.mjs from docs/projects.json. Items: [title, line, href, flagship, milestone].\nexport const REGIONS = "+JSON.stringify(R,null,1)+";\nexport const EYES = "+JSON.stringify(EY,null,1)+";\n");
-const e=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const rgb=c=>`rgb(${c.map(x=>Math.round(x*255)).join(',')})`;
-const all=[EY.hamon,EY.spire,...R];
-const list=all.map(r=>`\n    <li${r.id>=10?' class="eye"':''}><a href="#r-${r.key}" data-id="${r.id}" style="--c:${rgb(r.color)}">${e(r.title)}<small>${e(r.name)}</small></a></li>`).join("")+"\n    ";
-const li=([a,b,h,f,m])=>`<li${f?' class="flag"':''}>${h?`<a href="${e(h)}"><b>${e(a)}</b></a>`:`<b>${e(a)}</b>`}${m?` <span class="ms">${e(m)}</span>`:''}: ${e(b)}</li>`;
-const stat="\n<main class=\"staticWrap\">"+all.map(r=>`\n  <section class="static" id="r-${r.key}">\n    <p class="kicker">${e(r.kicker)}</p><h2>${e(r.title)}</h2><p>${e(r.lead)}</p>\n    <ul>${r.items.map(li).join("")}</ul>${r.link?`\n    <a class="destLink" href="${e(r.link[0])}">${e(r.link[1])}</a>`:''}${r.media?`\n    <img src="${r.media}" alt="${e(r.mediaTag)}" width="1280" loading="lazy">`:''}\n  </section>`).join("")+"\n</main>\n";
-let h=fs.readFileSync("docs/brain/index.html","utf8");
-h=h.replace(/<!--LIST-->[\s\S]*?<!--\/LIST-->/,`<!--LIST-->${list}<!--/LIST-->`).replace(/<!--STATIC-->[\s\S]*?<!--\/STATIC-->/,`<!--STATIC-->${stat}<!--/STATIC-->`);
-fs.writeFileSync("docs/brain/index.html",h);fs.writeFileSync("docs/index.html",h);
-console.log("brain:",all.reduce((n,r)=>n+r.items.filter(i=>i[2]&&i[2].startsWith('/work/')).length,0),"projects wired");
+const EYES = { 10: { key: 'hamon', seg: 'eye_hamon', name: 'Right eye', title: 'HAMON 刃文', hue: '#a9c4ff' },
+               9: { key: 'spire', seg: 'eye_spire', name: 'Left eye', title: 'Spire of Octaves', hue: '#ffc27a' } };
+fs.writeFileSync("docs/brain/content.js", "// GENERATED by tools/site/make-brain.mjs from docs/projects.json. Items: [title, line, href, milestone, flagship].\n// id = label value in pr/labels.png (1-8 cortex/deep, 9 left eye, 10 right eye); seg = the prerendered dive.\nexport const REGIONS = " + JSON.stringify(REGIONS, null, 1) + ";\nexport const EYES = " + JSON.stringify(EYES, null, 1) + ";\n");
+const e = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const ext = h => /^https?:/.test(h) ? ' rel="noopener"' : '';
+const li = ([a, b, h, m, f]) => `<li${f ? ' class="flag"' : ''}><a href="${e(h)}"${ext(h)}><b>${e(a)}</b>${m ? `<em class="ms">${e(m)}</em>` : ''}<span>${e(b)}</span></a></li>`;
+const list = "\n    " + [[10, 'Right eye · the company'], [9, 'Left eye · the fiction']].map(([id, sm]) => `<li class="eye"><a href="#w-${EYES[id].key}" data-id="${id}" style="--c:${EYES[id].hue}">${e(EYES[id].title)}<small>${sm}</small></a></li>`).join("\n    ")
+  + REGIONS.map(r => `\n    <li><a href="#r-${r.key}" data-id="${r.id}" style="--c:${r.hue}">${e(r.title)}<small>${e(r.name)}</small></a></li>`).join("") + "\n  ";
+const secs = REGIONS.map(r => `\n  <section class="region" id="r-${r.key}" data-id="${r.id}" style="--c:${r.hue}">\n    <p class="kicker">${e(r.name)} · ${e(r.kicker)}</p><h2>${e(r.title)}</h2><p class="lead">${e(r.lead)}</p>${r.body ? `<p class="body">${e(r.body)}</p>` : ''}\n    <ul class="syn">${r.items.map(li).join("")}</ul>${r.figure ? `<figure><img src="${r.figure[0]}" alt="${e(r.figure[1])}" loading="lazy" decoding="async"><figcaption>${e(r.figure[1])}</figcaption></figure>` : ''}\n  </section>`).join("") + "\n";
+let h = fs.readFileSync("docs/brain/index.html", "utf8");
+const rep = (re, s) => { if (!re.test(h)) throw new Error("anchor not found " + re); h = h.replace(re, s); };
+rep(/(<ul id="regionList">)[\s\S]*?(<\/ul>)/, `$1${list}$2`);
+rep(/(<div class="regions">)[\s\S]*?(<\/div>\n\n  <section class="world" id="w-hamon")/, `$1${secs}$2`);
+// project links inside the eye worlds
+h = h.replace(/\n\s*<li data-gen="work"[^\n]*/g, "");
+rep(/(<section class="world" id="w-hamon"[\s\S]*?<ul class="syn">)/, `$1\n        ${li(W('hamon-engine')).replace('<li', '<li data-gen="work"')}`);
+rep(/(<section class="world" id="w-spire"[\s\S]*?<ul class="syn">)/, `$1\n        ${li(W('spire-of-octaves')).replace('<li', '<li data-gen="work"')}`);
+fs.writeFileSync("docs/brain/index.html", h); fs.writeFileSync("docs/index.html", h);
+const n = REGIONS.reduce((k, r) => k + r.items.filter(i => i[2].startsWith('/work/')).length, 0) + 2;
+console.log("brain:", n, "curated projects wired");
