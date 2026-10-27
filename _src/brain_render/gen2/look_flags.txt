@@ -1,0 +1,1 @@
+--ssr 0 --contact 0.15 --ao 0.06 --rough 0.62 --coat 0.0 --amb 0.3 --exposure 0.95 --rim 3800 --sat 1.6 --contrast 1.25 --key 1300 --fill 250 --sss 0.34 --sssr 0.95 --sssg 0.42 --sssb 0.32 --gsh 0.18 --ghi 0.06 --vig 0.38
