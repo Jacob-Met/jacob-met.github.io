@@ -10,7 +10,9 @@ const mqReduce = matchMedia('(prefers-reduced-motion: reduce)');
 let reduceMotion = mqReduce.matches || qs.has('reduce');
 const rmToggle = document.getElementById('rmToggle');
 rmToggle.checked = reduceMotion;
-rmToggle.addEventListener('change', () => { reduceMotion = rmToggle.checked; });
+const syncRm = () => document.documentElement.classList.toggle('rm', reduceMotion);
+syncRm();
+rmToggle.addEventListener('change', () => { reduceMotion = rmToggle.checked; syncRm(); });
 
 let hoverImpl = () => {}, diveImpl = id => openDest(id), stepOutImpl = () => { document.getElementById('dest').hidden = true; };
 // ---------- plain list (works with or without WebGL) ----------
@@ -300,6 +302,45 @@ if (renderer) {
   // ---------- state machine ----------
   let state = 'brain', hover = 0, sel = 0, t0 = 0, diveFrom = null, diveTo = null, diveCtl = null;
   const label = document.getElementById('label');
+  // On-scene entry cues: soft rings on the two eye exits and on the active region, plus a "Select to step in" pill.
+  const mkCue = cls => { const s = document.createElement('span'); s.className = cls; s.setAttribute('aria-hidden', 'true'); document.body.appendChild(s); return s; };
+  const eyeCue = { 10: mkCue('cue eyeCue'), 11: mkCue('cue eyeCue') };
+  eyeCue[10].style.setProperty('--c', 'rgb(204,219,255)'); eyeCue[11].style.setProperty('--c', 'rgb(255,198,132)');
+  const activeCue = mkCue('cue activeCue');
+  const enterCue = document.createElement('button');
+  enterCue.className = 'enterCue'; enterCue.type = 'button'; enterCue.tabIndex = -1; enterCue.setAttribute('aria-hidden', 'true');
+  enterCue.textContent = 'Select to step in \u2192';
+  enterCue.addEventListener('click', () => { if (state === 'brain' && hover) dive(hover); });
+  document.body.appendChild(enterCue);
+  const eyeSeen = { 10: true, 11: true }; let cueTick = 0;
+  const plainEl = document.getElementById('plain');
+  const v3 = new THREE.Vector3(), v3b = new THREE.Vector3(), camRight = new THREE.Vector3();
+  const toScreen = v => { const p = v.clone().project(camera); return [(p.x * 0.5 + 0.5) * innerWidth, (-p.y * 0.5 + 0.5) * innerHeight, p.z]; };
+  function placeCue(el, x, y, d, on) { el.style.left = `${x}px`; el.style.top = `${y}px`; el.style.setProperty('--d', `${d}px`); el.classList.toggle('show', on); }
+  function updateCues() {
+    camRight.setFromMatrixColumn(camera.matrixWorld, 0);
+    if (cueTick++ % 12 === 0) for (const id of [10, 11]) { // is the eye in front of the brain from here?
+      const eye = id === 10 ? eyes.hamon : eyes.spire; eye.getWorldPosition(v3);
+      ray.set(camera.position, v3b.copy(v3).sub(camera.position).normalize());
+      const hit = ray.intersectObjects(pickables, false)[0]; eyeSeen[id] = !!hit && hit.object === eye;
+    }
+    for (const id of [10, 11]) {
+      const eye = id === 10 ? eyes.hamon : eyes.spire; eye.getWorldPosition(v3);
+      const [x, y] = toScreen(v3), [x2, y2] = toScreen(v3b.copy(v3).addScaledVector(camRight, 0.12));
+      const d = Math.max(30, Math.hypot(x2 - x, y2 - y) * 2 + 18);
+      placeCue(eyeCue[id], x, y, d, eyeSeen[id]); eyeCue[id].classList.toggle('hot', hover === id);
+    }
+    if (hover && hover < 10) { const [x, y] = toScreen(worldAnchor(hover)); const r = byId.get(hover);
+      activeCue.style.setProperty('--c', `rgb(${r.color.map(c => c * 255 | 0).join(',')})`); placeCue(activeCue, x, y, 34, true); }
+    else activeCue.classList.remove('show');
+    if (hover) { let lx = parseFloat(label.style.left) || 0; const ly = parseFloat(label.style.top) || 0;
+      const lw = label.offsetWidth, ew = enterCue.offsetWidth || 160;
+      const edge = innerWidth > 760 ? plainEl.getBoundingClientRect().left - 8 : innerWidth - 8; // stay clear of the side panel
+      if (lx + lw > edge) { lx = Math.max(8, Math.min(edge - lw, lx - 28 - lw)); label.style.left = `${lx}px`; } // flip left of the point so the name stays on screen
+      enterCue.style.left = `${Math.max(8, Math.min(lx, edge - ew))}px`; enterCue.style.top = `${ly + 26}px`; enterCue.classList.add('show'); }
+    else enterCue.classList.remove('show');
+  }
+  function hideCues() { for (const el of [eyeCue[10], eyeCue[11], activeCue, enterCue]) el.classList.remove('show'); }
   const anchors = { 1: [0, 0.62, 0.75], 2: [0.35, 0.72, -0.25], 3: [0.72, -0.30, 0.25], 4: [0.35, 0.25, -0.92], 5: [0.45, -0.55, -0.70], 6: [0, -1.0, -0.38], 10: [-0.34, -0.50, 1.10], 11: [0.34, -0.50, 1.10] };
   function setHoverImpl(id) {
     hover = id; uni.uHover.value = id;
@@ -323,7 +364,7 @@ if (renderer) {
       const gaze = new THREE.Vector3(0, 0, 1).applyQuaternion((id === 10 ? eyes.hamon : eyes.spire).getWorldQuaternion(new THREE.Quaternion()));
       diveCtl = a.clone().addScaledVector(gaze, 1.2).add(new THREE.Vector3(0, 0.15, 0)); diveTo = a.clone().addScaledVector(gaze, 0.13);
     } else { diveCtl = null; diveTo = a.clone().add(a.clone().sub(target).normalize().multiplyScalar(0.12)); }
-    state = 'diving'; t0 = performance.now(); document.body.classList.add('away');
+    state = 'diving'; t0 = performance.now(); document.body.classList.add('away'); hideCues();
     label.style.opacity = 0;
   };
   stepOutImpl = () => {
@@ -342,7 +383,7 @@ if (renderer) {
   function frame(now) {
     const time = fixedT ?? now / 1000; uni.uTime.value = time; tUni.uTime.value = time;
     if (state === 'brain') {
-      if (!drag) { orbit.vy *= 0.93; orbit.vp *= 0.93; if (!reduceMotion && fixedT === null) orbit.yaw += 0.0006; }
+      if (!drag) { orbit.vy *= 0.93; orbit.vp *= 0.93; if (!reduceMotion && fixedT === null && !hover) orbit.yaw += 0.0006; /* idle drift pauses while a region is active, so its cue holds still */ }
       orbit.yaw += orbit.vy; orbit.pitch = Math.min(0.7, Math.max(-0.45, orbit.pitch + orbit.vp));
       camera.position.copy(orbitPos()); camera.lookAt(target);
       if (mouseIn && !drag) { const id = pick(); if (id !== hover) setHoverImpl(id); }
@@ -352,6 +393,7 @@ if (renderer) {
       else label.style.opacity = 0;
       uni.uDim.value = 1;
       renderer.render(scene, camera);
+      updateCues();
     } else if (state === 'diving' || state === 'out') {
       const D = (reduceMotion ? 0.35 : 2.6) * (+qs.get('slow') || 1);
       let k = Math.min(1, (now - t0) / 1000 / D); const kk = state === 'out' ? 1 - k : k;
