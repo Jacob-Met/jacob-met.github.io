@@ -18,6 +18,9 @@ from site_policy import (FONT_FILES, validate_fonts, SCENE_ASSETS, SCENE_FILES, 
                          EXPERIENCE_CSS, audit_scripts, script_integrity, ART_FILES, validate_art, EDITORIAL_FILES, validate_editorial, PRESENTATION_STILLS, DELIVERY_STILLS, PRESENTATION_FILES, validate_presentation_stills, CAPTIONVERSE_FILES, validate_captionverse_captures)
 import portfolio
 import wildside_page
+
+# Separately maintained static subtrees under docs/: preserved by the builder, never generated or deleted.
+PRESERVED_APP_DIRS = (wildside_page.APP_DIR + '/', 'brain/', 'forge/')
 import hamon_page
 from tastetable import DIRECTORY as TASTETABLE_DIRECTORY, directories as tastetable_directories, manifest_entries as tastetable_entries, read_files as read_tastetable_files
 from engine_motion_policy import FILES as ENGINE_MOTION_FILES, validate_motion
@@ -276,8 +279,8 @@ def build(out: Path, data: dict | None = None, *, preview=False) -> dict:
     if out.exists():
         for f in out.rglob('*'):
             rel = f.relative_to(out).as_posix()
-            if rel.startswith(wildside_page.APP_DIR + '/') and not f.is_symlink():
-                continue  # the deployed static Wildside app is preserved untouched
+            if rel.startswith(PRESERVED_APP_DIRS) and not f.is_symlink():
+                continue  # preserved static apps (Wildside, brain, forge) stay untouched
             if (f.is_symlink() or (f.is_file() and rel not in allowed and not SHOT_RE.fullmatch(rel))
                     or (f.is_dir() and rel.startswith(TASTETABLE_DIRECTORY + '/') and rel not in application_dirs)):
                 raise ValueError('Output contains unexpected material; refuse to overwrite it')
@@ -330,11 +333,11 @@ def build(out: Path, data: dict | None = None, *, preview=False) -> dict:
     (out / '.nojekyll').write_text('', encoding='utf-8', newline='\n')
     (out / 'CNAME').write_text('jacobmetoyer.com\n', encoding='utf-8', newline='\n')
     (out / 'robots.txt').write_text(f'User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n', encoding='utf-8', newline='\n')
-    sm = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>{BASE}/</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{hamon_page.PAGE}</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{wildside_page.PAGE}</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{wildside_page.APP_DIR}/</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{TASTETABLE_DIRECTORY}/</loc><lastmod>{record["updated"]}</lastmod></url></urlset>'
+    sm = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>{BASE}/</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{hamon_page.PAGE}</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{wildside_page.PAGE}</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{wildside_page.APP_DIR}/</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{TASTETABLE_DIRECTORY}/</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/brain/</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/forge/</loc><lastmod>{record["updated"]}</lastmod></url></urlset>'
     (out / 'sitemap.xml').write_text(sm, encoding='utf-8', newline='\n')
     (out / 'cv.json').write_text(json.dumps(record, indent=2, ensure_ascii=False) + '\n', encoding='utf-8', newline='\n')
     (out / 'portfolio.json').write_text(json.dumps(current, indent=2, ensure_ascii=False) + '\n', encoding='utf-8', newline='\n')
-    files = [f for f in out.rglob('*') if f.is_file() and f.name != 'build-manifest.json' and not f.relative_to(out).as_posix().startswith(wildside_page.APP_DIR + '/')]
+    files = [f for f in out.rglob('*') if f.is_file() and f.name != 'build-manifest.json' and not f.relative_to(out).as_posix().startswith(PRESERVED_APP_DIRS)]
     manifest = {f.relative_to(out).as_posix(): hashlib.sha256(f.read_bytes()).hexdigest()
                 for f in sorted(files, key=lambda f: f.relative_to(out).as_posix())}
     (out / 'build-manifest.json').write_text(json.dumps({'schema': 7, 'date': record['updated'], 'publication': lobby['visibility'], 'sha256': manifest}, indent=2) + '\n', encoding='utf-8', newline='\n')

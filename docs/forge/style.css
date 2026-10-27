@@ -1,0 +1,17 @@
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:#07080a;color:#d9dbe1;font:16px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:#cdd9ff}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 24px;max-width:1048px;margin:0 auto}
+.top .home{color:#e6e8ee;text-decoration:none;letter-spacing:.16em;text-transform:uppercase;font-size:13px}
+.top nav a{margin-left:18px;font-size:14px;text-decoration:none}
+main{max-width:1048px;margin:0 auto;padding:0 24px 48px}
+.intro{padding:32px 0 24px;max-width:640px}
+.kicker{margin:0 0 6px;font:12px ui-monospace,Menlo,monospace;letter-spacing:.12em;text-transform:uppercase;color:#a9b4cf}
+h1{margin:0 0 12px;font-weight:500;font-size:40px;letter-spacing:.02em}
+figure{margin:0 0 36px}
+figure img{display:block;width:100%;height:auto;background:#000}
+figcaption{margin-top:10px;color:#b4b7c0;font-size:15px}
+figcaption span{font:12px ui-monospace,Menlo,monospace;color:#8e95a8;margin-right:8px}
+.note{border-top:1px solid #1d2027;padding-top:16px;color:#a3a7b1;font-size:14px}
+@media (max-width:600px){.top{padding:14px 16px}main{padding:0 16px 40px}h1{font-size:30px}}

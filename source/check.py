@@ -29,7 +29,7 @@ from site_policy import (FONT_PROPERTIES, validate_fonts, SCRIPT_FILES, LOADED_S
 ROOT_RELATIVE_PAGES = frozenset({'404.html'})
 CSP_REQUIRED = {'default-src': "'none'", 'style-src': "'self'", 'script-src': "'self'", 'img-src': "'self'", 'media-src': "'self'", 'font-src': "'self'", 'connect-src': "'none'", 'object-src': "'none'", 'frame-src': "'none'", 'worker-src': "'none'", 'base-uri': "'none'", 'form-action': "'none'"}
 EXPECTED_HTML = {'index.html', '404.html', wildside_page.PAGE, hamon_page.PAGE}
-APP_PREFIX = wildside_page.APP_DIR + '/'  # static deployed Wildside app: preserved, audited by its own project
+APP_PREFIX = (wildside_page.APP_DIR + '/', 'brain/', 'forge/')  # preserved static apps (Wildside, brain, forge): not generated, audited separately
 
 
 def rooted_ref(page: str, value: str) -> str | None:

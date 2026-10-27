@@ -104,8 +104,9 @@ class BuildTests(Built):
         self.assertEqual(json.loads((self.root / 'cv.json').read_text(encoding='utf-8')), self.data)
     def test_sitemap_lists_front_page_and_wildside(self):
         sm = (self.root / 'sitemap.xml').read_text(encoding='utf-8')
-        self.assertEqual(sm.count('<loc>'), 5); self.assertIn(f'<loc>{build.BASE}/</loc>', sm)
+        self.assertEqual(sm.count('<loc>'), 7); self.assertIn(f'<loc>{build.BASE}/</loc>', sm)
         self.assertIn(f'<loc>{build.BASE}/tastetable/</loc>', sm)
+        self.assertIn(f'<loc>{build.BASE}/brain/</loc>', sm); self.assertIn(f'<loc>{build.BASE}/forge/</loc>', sm)
     def test_only_declared_captures_ship(self):
         shots = {f.relative_to(self.root).as_posix() for f in (self.root / 'assets' / 'demos').iterdir()}
         self.assertEqual(shots, set(build.shot_files(self.data)) | set(build.CAPTIONVERSE_FILES))

@@ -63,10 +63,12 @@ fi
 # Wildside is a separately maintained staged application, not generated source/.
 # Seed only that preserved subtree so the full docs comparison stays exact.
 # The builder still rejects symlinks and unexpected files in its managed output.
-if [ -d "$SCRATCH/staged/docs/wildside" ]; then
-    mkdir -p "$SCRATCH/checked-site"
-    cp -R "$SCRATCH/staged/docs/wildside" "$SCRATCH/checked-site/wildside"
-fi
+for app in wildside brain forge; do
+    if [ -d "$SCRATCH/staged/docs/$app" ]; then
+        mkdir -p "$SCRATCH/checked-site"
+        cp -R "$SCRATCH/staged/docs/$app" "$SCRATCH/checked-site/$app"
+    fi
+done
 
 if ! python3 "$SCRATCH/staged/source/build.py" "$@" --out "$SCRATCH/checked-site" \
         >"$SCRATCH/build.log" 2>&1; then
