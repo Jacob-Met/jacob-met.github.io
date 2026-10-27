@@ -1,0 +1,1 @@
+document.querySelectorAll(".filters button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".filters button").forEach(x=>x.classList.toggle("on",x===b));const f=b.dataset.f;document.querySelectorAll(".card").forEach(c=>c.hidden=f!=="all"&&c.dataset.g!==f)});
