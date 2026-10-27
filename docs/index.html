@@ -26,103 +26,122 @@
 <meta name="twitter:image" content="https://jacobmetoyer.com/assets/og-card.png">
 <link rel="stylesheet" href="/brain/style.css">
 <script>document.documentElement.className="js"</script>
-<!-- The brain is the home page; /brain/ serves the same file. three.js r170 (MIT) is vendored under /brain/vendor/. -->
-
+<!-- The brain is the home page; /brain/ serves the same file. It is prerendered with the HAMON Engine (no live 3D): an orbit
+     turntable, a dive per region and two flights out along the visual pathway, played back as image frames and video. -->
 </head>
 <body>
 <a class="skip" href="#plain">Skip to the plain-text map</a>
-<div id="stage" aria-hidden="true"><canvas id="gl"></canvas></div>
-<div id="label" class="label" aria-hidden="true"></div>
-<div id="veil" aria-hidden="true"></div>
+<div id="stage" aria-hidden="true">
+  <img id="poster" src="/brain/pr/orbit/o00-1280.webp" alt="" width="1280" height="720" fetchpriority="high">
+  <canvas id="view"></canvas>
+  <canvas id="glow"></canvas>
+  <video id="segA" muted playsinline preload="none"></video>
+  <video id="segB" muted playsinline preload="none"></video>
+  <div id="flash"></div>
+</div>
+<div id="tip" class="tip" aria-hidden="true"></div>
 
 <header class="hud">
   <h1>Jacob Metoyer</h1>
-  <p class="lede">Step into the mind. Two eyes open onto two worlds; the rest of the brain holds the research.</p>
-  <p class="proto">Work in progress. <a href="/forge/">The forge</a> · <a href="/lobby/#projects">Projects</a> · <a href="/wildside/">Wildside</a> · <a href="/lobby/">Portfolio</a> · <a href="/hamon.html">HAMON</a></p>
+  <p class="lede">Step into the mind. Two eyes open onto two worlds; the rest of the brain holds the work.</p>
+  <p class="proto"><a href="/lobby/">Portfolio</a> · <a href="/lobby/#projects">Projects</a> · <a href="/lobby/#research">Research</a> · <a href="/forge/">The forge</a> · <a href="/wildside/">Wildside</a> · <a href="https://hamon.works/">HAMON</a></p>
 </header>
 
-<!-- The plain, crawlable content. It is the real site when WebGL is off and the keyboard / screen-reader path when it is on. -->
 <nav id="plain" class="plain" aria-label="Regions of the brain">
   <h2>Ways in</h2>
-  <ul id="regionList"><!--LIST-->
-    <li class="eye"><a href="#r-hamon" data-id="10" style="--c:rgb(204,219,255)">HAMON 刃文<small>Right eye</small></a></li>
-    <li class="eye"><a href="#r-spire" data-id="11" style="--c:rgb(255,198,132)">Spire of Octaves<small>Left eye</small></a></li>
-    <li><a href="#r-frontal" data-id="1" style="--c:rgb(158,204,242)">Questions &amp; method<small>Frontal lobe</small></a></li>
-    <li><a href="#r-parietal" data-id="2" style="--c:rgb(140,216,204)">Models &amp; measurement<small>Parietal lobe</small></a></li>
-    <li><a href="#r-temporal" data-id="3" style="--c:rgb(198,183,242)">Memory<small>Temporal lobe</small></a></li>
-    <li><a href="#r-occipital" data-id="4" style="--c:rgb(242,216,158)">Seeing behaviour<small>Occipital lobe</small></a></li>
-    <li><a href="#r-cerebellum" data-id="5" style="--c:rgb(178,242,178)">Movement<small>Cerebellum</small></a></li>
-    <li><a href="#r-stem" data-id="6" style="--c:rgb(204,209,219)">Tools<small>Brainstem</small></a></li>
-    <!--/LIST--></ul>
-  <p class="hint">Drag to turn the brain. Hover or tap a region, then select it to step in. Arrow keys move between regions, Enter steps in, Escape steps out.</p>
-  <label class="rm"><input type="checkbox" id="rmToggle"> Reduce motion</label>
+  <ul id="regionList">
+    <li class="eye"><a href="#w-hamon" data-id="10" style="--c:#a9c4ff">HAMON 刃文<small>Right eye · the company</small></a></li>
+    <li class="eye"><a href="#w-spire" data-id="9" style="--c:#ffc27a">Spire of Octaves<small>Left eye · the fiction</small></a></li>
+    <li><a href="#r-frontal" data-id="1" style="--c:#ffb08a">About &amp; contact<small>Frontal lobe</small></a></li>
+    <li><a href="#r-parietal" data-id="2" style="--c:#8fe0cf">Models &amp; measurement<small>Parietal lobe</small></a></li>
+    <li><a href="#r-temporal" data-id="3" style="--c:#c8b8ff">Projects<small>Temporal lobe</small></a></li>
+    <li><a href="#r-occipital" data-id="4" style="--c:#ffd98a">Seeing behaviour<small>Occipital lobe</small></a></li>
+    <li><a href="#r-cerebellum" data-id="5" style="--c:#a6f0a6">Movement<small>Cerebellum</small></a></li>
+    <li><a href="#r-stem" data-id="6" style="--c:#cfd6e6">Tools<small>Brainstem</small></a></li>
+    <li><a href="#r-motor" data-id="7" style="--c:#ffa05a">Hackathons<small>Motor strip</small></a></li>
+    <li><a href="#r-hippocampus" data-id="8" style="--c:#ff9db8">Wildside<small>Hippocampus</small></a></li>
+  </ul>
+  <p class="hint">Drag or scroll to turn the brain. Hover a region, click to dive in. Click an eye to leave through it. Arrow keys move between regions, Enter steps in, Escape steps out.</p>
+  <p class="credit">Prerendered with the HAMON Engine on the render farm: 1,008 frames, no live 3D in your browser.</p>
 </nav>
 
-<section id="dest" class="dest" hidden aria-live="polite">
-  <div class="destMedia" id="destMedia"></div>
-  <div class="destBody">
-    <button id="stepOut" class="stepOut">← Step out</button>
-    <p class="kicker" id="destKicker"></p>
-    <h2 id="destTitle"></h2>
-    <p id="destLead"></p>
-    <ul id="destItems"></ul>
-    <p class="placeholder" id="destNote"></p>
-  </div>
-</section>
+<button id="stepOut" class="stepOut" hidden>← Step out</button>
 
-<!--STATIC-->
-<main class="staticWrap">
-  <section class="static" id="r-hamon">
-    <p class="kicker">The company</p><h2>HAMON 刃文</h2><p>The estate is the blade; Hamon is the gleam the world can see.</p>
-    <ul><li><b>The forge</b>: Dusk approach → yard → threshold → hearth. HAMON Engine renders, work in progress.</li><li><b>Hamon Engine</b>: A Rust engine for worlds and the systems inside them. Repository private.</li><li><b>Wildside</b>: Flagship world built on the engine.</li><li><b>Hackathons</b>: DOMINO, Phantom Window, Replay Forge, Captionverse.</li></ul>
-    <a class="destLink" href="/forge/">Walk the new forge →</a>
-    <img src="/brain/media/kajiba-hearth-1280.webp" alt="The new forge: the hearth inside the kajiba. HAMON Engine render, work in progress." width="1280" loading="lazy">
+<main class="content">
+<div class="regions">
+  <section class="region" id="r-frontal" data-id="1" style="--c:#ffb08a">
+    <p class="kicker">Frontal lobe · Who is thinking</p><h2>About &amp; contact</h2><p class="lead">From human movement to computational models, I’m interested in how we observe a system, test an idea, and learn from what does not fit.</p><p class="body">I’m a CSULB BUILD Scholar studying computer science and physics, with a biology minor, working toward MD/PhD training.</p>
+    <ul class="syn"><li><a href="https://github.com/Jacob-Met" rel="noopener"><b>GitHub</b><span>Public source for the tools and research software.</span></a></li><li><a href="https://www.linkedin.com/in/jacob-metoyer-15b701352" rel="noopener"><b>LinkedIn</b><span>Research and work history.</span></a></li><li><a href="/lobby/#about"><b>The full portfolio</b><span>The forge lobby, with every section of the old home page.</span></a></li></ul>
   </section>
-  <section class="static" id="r-spire">
-    <p class="kicker">The fiction world</p><h2>Spire of Octaves</h2><p>A vertical world born from an unfinished sacred song. Stories free to read on its own site.</p>
-    <ul><li><b>Read</b>: Begin with Salt’s End, What Strays and Seamwork, on spireofoctaves.com.</li><li><b>Echo</b>: Game work in progress (not public yet).</li></ul>
-    <a class="destLink" href="https://spireofoctaves.com/">Read on spireofoctaves.com ↗</a>
-    <img src="/brain/media/spire-eye-e1-ribs-up-1280.webp" alt="A Spire interior study: engine test render for Echo, work in progress." width="1280" loading="lazy">
+  <section class="region" id="r-parietal" data-id="2" style="--c:#8fe0cf">
+    <p class="kicker">Parietal lobe · Independent research</p><h2>Models &amp; measurement</h2><p class="lead">What would change our explanation? Workbenches that put competing models in front of a measurement.</p>
+    <ul class="syn"><li><a href="/lobby/#worldlaw"><b>WORLDLAW</b><span>Compare competing models of motion, choose a revealing measurement, and see how their predictions change.</span></a></li><li><a href="/lobby/#kernel-garden"><b>Kernel Garden</b><span>Generate competing CUDA implementations, run them on a real GPU, and remove candidates that fail independent numerical checks.</span></a></li><li><a href="/lobby/#research"><b>Protein molecular dynamics</b><span>Cleaned protein-simulation data and wrote plausibility checks for proposed structures (collaborative).</span></a></li></ul><figure><img src="/assets/figures/worldlaw-computed.svg" alt="WORLDLAW: spring and gravity models of a pendulum agree at 5° (gap 0.0001) and separate at 30° (gap 0.0236)." loading="lazy" decoding="async"><figcaption>WORLDLAW: spring and gravity models of a pendulum agree at 5° (gap 0.0001) and separate at 30° (gap 0.0236).</figcaption></figure>
   </section>
-  <section class="static" id="r-frontal">
-    <p class="kicker">Research · who I am</p><h2>Questions &amp; method</h2><p>What would change our explanation? How I observe a system, test an idea, and learn from what does not fit.</p>
-    <ul><li><b>About</b>: CS + physics at CSULB, biology minor; BUILD Scholar working toward MD/PhD training.</li><li><b>Research approach</b>: Academic collaboration and independent investigation, including research developed through HAMON.</li><li><b>Contact</b>: github.com/Jacob-Met · linkedin.com/in/jacob-metoyer-15b701352</li></ul>
-    
-    
+  <section class="region" id="r-temporal" data-id="3" style="--c:#c8b8ff">
+    <p class="kicker">Temporal lobe · Use it. Change something.</p><h2>Projects</h2><p class="lead">A few tools and worlds you can try. The temporal lobe keeps what was made, and what it remembers.</p>
+    <ul class="syn"><li><a href="/tastetable/"><b>TasteTable</b><span>A familiar taste. A week of possibilities. Offline studio.</span></a></li><li><a href="https://jacobmetoyer.com/TowerOps/airspace/"><b>TowerOps Airspace Lab</b><span>See the conflict. Change the outcome.</span></a></li><li><a href="https://jacobmetoyer.com/RecallWeave/courses/feedback-control-lab.html"><b>RecallWeave</b><span>A flat line can hide a growing problem. Try the feedback experiment.</span></a></li><li><a href="/lobby/#captionverse"><b>Captionverse</b><span>What if the film waited for you?</span></a></li><li><a href="/lobby/#computational-memory"><b>Computational memory</b><span>When should a system change what it remembers? Offline studies on synthetic data.</span></a></li><li><a href="/lobby/#projects"><b>Threadline · Familiar Memories · Threshold · LedgerDock · Teachback · Clearway</b><span>Smaller prototypes, each a question.</span></a></li></ul><figure><img src="/assets/demos/towerops-desktop.webp" alt="TowerOps Airspace Lab, desktop capture." loading="lazy" decoding="async"><figcaption>TowerOps Airspace Lab, desktop capture.</figcaption></figure>
   </section>
-  <section class="static" id="r-parietal">
-    <p class="kicker">Independent research</p><h2>Models &amp; measurement</h2><p>Workbenches for comparing models against measurements.</p>
-    <ul><li><b>WORLDLAW</b>: Which experiment would separate two explanations? Experimental scientific workbench.</li><li><b>Kernel Garden</b>: Can a faster kernel keep the right answer? Experimental optimization workbench.</li><li><b>Protein molecular dynamics</b>: Cleaned protein-simulation data and wrote plausibility checks for proposed structures (collaborative).</li></ul>
-    
-    
+  <section class="region" id="r-occipital" data-id="4" style="--c:#ffd98a">
+    <p class="kicker">Occipital lobe · Academic research (collaborative)</p><h2>Seeing behaviour</h2><p class="lead">Turning video into measurements. The visual cortex is where the pathway to both eyes begins.</p>
+    <ul class="syn"><li><a href="/lobby/#research"><b>Behavioral neurobiology</b><span>Scored mouse behaviour from video, checked automated tracking by hand, analysed in GraphPad Prism.</span></a></li><li><a href="/lobby/#research"><b>Surgical ergonomics</b><span>Video-tracking workflows; recorded and analysed muscle activity, heart rate and movement.</span></a></li></ul>
   </section>
-  <section class="static" id="r-temporal">
-    <p class="kicker">Independent research · prototypes</p><h2>Memory</h2><p>When should a system change what it remembers?</p>
-    <ul><li><b>Computational memory</b>: Exploratory research prototypes.</li><li><b>Threadline</b>: Review commitments beside the exact conversation words. Local prototype.</li><li><b>Familiar Memories</b>: Local photo stories with visitor-specific sharing and revocation. Local prototype.</li><li><b>RecallWeave</b>: Offline learning toolkit with adaptive lessons and labs.</li></ul>
-    
-    
+  <section class="region" id="r-cerebellum" data-id="5" style="--c:#a6f0a6">
+    <p class="kicker">Cerebellum · Academic research · research software</p><h2>Movement</h2><p class="lead">Human movement, rehabilitation and the instruments that record it.</p>
+    <ul class="syn"><li><a href="/lobby/#research"><b>Gait &amp; rehabilitation</b><span>Participant sessions, motion-capture marker labelling, fixes to gait-analysis code.</span></a></li><li><a href="https://github.com/Jacob-Met/CaptureSuite" rel="noopener"><b>CaptureSuite</b><span>Research software for recording multiple streams in one session and keeping the source intact. Offline QC demo on synthetic data.</span></a></li></ul>
   </section>
-  <section class="static" id="r-occipital">
-    <p class="kicker">Academic research (collaborative)</p><h2>Seeing behaviour</h2><p>Turning video into measurements.</p>
-    <ul><li><b>Behavioral neurobiology</b>: Scored mouse behaviour from video, checked automated tracking by hand, analysed in GraphPad Prism.</li><li><b>Surgical ergonomics</b>: Video-tracking workflows; recorded and analysed muscle activity, heart rate and movement.</li></ul>
-    
-    
+  <section class="region" id="r-stem" data-id="6" style="--c:#cfd6e6">
+    <p class="kicker">Brainstem · Small public tools</p><h2>Tools</h2><p class="lead">The plumbing that keeps everything else breathing.</p>
+    <ul class="syn"><li><a href="https://github.com/Jacob-Met/canvaspilot" rel="noopener"><b>CanvasPilot</b><span>An MCP server and CLI for Canvas LMS that rides the browser session you already have.</span></a></li><li><a href="https://github.com/Jacob-Met/multi-agent-fanout-engine" rel="noopener"><b>Multi-agent Fan-out Engine</b><span>Dependency plans, a SQLite dispatch queue, and recovery that reconciles state.</span></a></li><li><a href="https://github.com/Jacob-Met/workflow-checks" rel="noopener"><b>workflow-checks</b><span>Three small Python checks for back-office paperwork, run on synthetic data with file:row evidence.</span></a></li></ul>
   </section>
-  <section class="static" id="r-cerebellum">
-    <p class="kicker">Academic research · research software</p><h2>Movement</h2><p>Human movement, rehabilitation and the instruments that record it.</p>
-    <ul><li><b>Gait &amp; rehabilitation</b>: Participant sessions, motion-capture marker labelling, fixes to gait-analysis code.</li><li><b>CaptureSuite</b>: Windows-first multimodal research capture; offline QC demo on synthetic EMG/IMU data.</li></ul>
-    
-    
+  <section class="region" id="r-motor" data-id="7" style="--c:#ffa05a">
+    <p class="kicker">Motor strip · One constraint. A working idea.</p><h2>Hackathons</h2><p class="lead">Competition-built projects, each with a question to answer. The precentral gyrus is where intent becomes movement.</p>
+    <ul class="syn"><li><a href="/lobby/#domino"><b>DOMINO</b><span>Amazon Developer Hackathon · Alexa+. Why did the door unlock when nobody was home?</span></a></li><li><a href="/lobby/#phantom-window"><b>Phantom Window</b><span>Amazon Developer Hackathon · Fire TV concept. What is just outside the camera’s view?</span></a></li><li><a href="/lobby/#replay-forge"><b>Replay Forge · court reconstruction</b><span>Amazon Developer Hackathon. Could you watch the possession from above?</span></a></li><li><a href="https://devpost.com/software/replayforge-ypvoia" rel="noopener"><b>ReplayForge · replay debugging</b><span>Life After Code · GitLab.</span></a></li><li><a href="https://devpost.com/software/shadewindow" rel="noopener"><b>ShadeWindow</b><span>Historical competition entry.</span></a></li></ul><figure><img src="/assets/scene/forge-hifi-hackathons-1280.webp" alt="The hackathon bench in the forge lobby. HAMON Engine render." loading="lazy" decoding="async"><figcaption>The hackathon bench in the forge lobby. HAMON Engine render.</figcaption></figure>
   </section>
-  <section class="static" id="r-stem">
-    <p class="kicker">Small public tools</p><h2>Tools</h2><p>The plumbing.</p>
-    <ul><li><b>CanvasPilot</b>: MCP server and CLI for Canvas LMS that rides your existing browser session.</li><li><b>Multi-agent Fan-out Engine</b>: Dependency plans, a SQLite dispatch queue, recovery that reconciles state.</li><li><b>workflow-checks</b>: Three small Python checks for back-office paperwork, on synthetic data.</li></ul>
-    
-    
+  <section class="region" id="r-hippocampus" data-id="8" style="--c:#ff9db8">
+    <p class="kicker">Hippocampus · A place I made · personal</p><h2>Wildside</h2><p class="lead">The hippocampus holds place cells, the neurons that fire for one spot in a remembered landscape. Wildside is the place this brain keeps.</p>
+    <ul class="syn"><li><a href="/wildside/"><b>Play Wildside</b><span>A painted place you can walk through, rendered live by the HAMON Engine.</span></a></li><li><a href="/wildside-project.html"><b>About the project</b><span>How it was made, at MarinaHacks.</span></a></li></ul><figure><img src="/assets/wildside/wildside-card.webp" alt="Wildside: a painted lake under autumn trees." loading="lazy" decoding="async"><figcaption>Wildside: a painted lake under autumn trees.</figcaption></figure>
+  </section>
+</div>
+
+  <section class="world" id="w-hamon" data-id="10">
+    <div class="wHero"><img src="/forge/media/kajiba-hearth-1920.webp" alt="The hearth inside the kajiba, HAMON Engine render." loading="lazy" decoding="async" width="1920" height="1080"></div>
+    <div class="wBody">
+      <p class="kicker">Right eye · the company</p>
+      <h2>HAMON <span lang="ja">刃文</span></h2>
+      <p class="lead">An AI-native creation engine for games and worlds, video and film, animation, sculpting, physics and simulation, built so agents can drive it directly. The estate is the blade; Hamon is the gleam the world can see.</p>
+      <h3>Walk the forge</h3>
+      <ol class="walk"><li><img src="/forge/media/kajiba-approach-960.webp" alt="The forge, dusk approach. HAMON Engine render." loading="lazy" decoding="async" width="960" height="540"><p><b>01 · Dusk approach</b></p></li><li><img src="/forge/media/kajiba-yard-960.webp" alt="The forge, the yard. HAMON Engine render." loading="lazy" decoding="async" width="960" height="540"><p><b>02 · The yard</b></p></li><li><img src="/forge/media/kajiba-doorway-960.webp" alt="The forge, the doorway. HAMON Engine render." loading="lazy" decoding="async" width="960" height="540"><p><b>03 · The doorway</b></p></li><li><img src="/forge/media/kajiba-threshold-960.webp" alt="The forge, the threshold. HAMON Engine render." loading="lazy" decoding="async" width="960" height="540"><p><b>04 · The threshold</b></p></li><li><img src="/forge/media/kajiba-hearth-960.webp" alt="The forge, the hearth. HAMON Engine render." loading="lazy" decoding="async" width="960" height="540"><p><b>05 · The hearth</b></p></li></ol>
+      <ul class="syn">
+        <li><a href="https://hamon.works/" rel="noopener"><b>hamon.works ↗</b><span>The company site: the engine, the forge, and what it is building.</span></a></li>
+        <li><a href="/forge/"><b>Enter the forge</b><span>Dusk approach → yard → threshold → hearth, rendered in the HAMON Engine.</span></a></li>
+        <li><a href="/hamon.html"><b>About HAMON on this site</b><span>The company and the engine, in brief.</span></a></li>
+        <li><a href="/lobby/#engine"><b>Make a world. Give it rules.</b><span>Shape what you see; make it respond. The engine section of the lobby.</span></a></li>
+        <li><a href="/games/lanternwake/"><b>Lanternwake</b><span>Restore the lights. Return at dawn. A published snapshot built on the engine.</span></a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="world" id="w-spire" data-id="9">
+    <div class="wHero"><img src="/brain/media/spire-eye-e1-ribs-up-1280.webp" alt="A Spire interior study: engine test render for Echo, work in progress." loading="lazy" decoding="async" width="1280" height="720"></div>
+    <div class="wBody">
+      <p class="kicker">Left eye · the fiction world</p>
+      <h2>Spire of Octaves</h2>
+      <p class="lead">A vertical world born from an unfinished sacred song: cities stacked on cities. Below the bells lies Geargrave, the working dark of the Spire.</p>
+      <ol class="lore">
+        <li><b>Tolman’s Walk</b><span>The great shift-wheel turns over the bearing house: “the wheel as government”.</span></li>
+        <li><b>The weld-trunks</b><span>“Vertical arteries carrying workers, hot freight, pipes, hoists, and shift bells.”</span></li>
+        <li><b>The forge chapels</b><span>“Forge-orange caught behind black shrouds.”</span></li>
+        <li><b>The boiler rows</b><span>“Narrow attached rooms along warm mains”, and boiler-stew held at working temperature.</span></li>
+        <li><b>The cold light</b><span>“Black girders crossed by frost-pale geometry; no source for the cold light.”</span></li>
+      </ol>
+      <p class="note">A lore-true Geargrave render is in progress; the image above is an earlier Spire interior study.</p>
+      <ul class="syn">
+        <li><a href="https://spireofoctaves.com/" rel="noopener"><b>Read on spireofoctaves.com ↗</b><span>Begin with Salt’s End, What Strays and Seamwork. Free to read.</span></a></li>
+      </ul>
+    </div>
   </section>
 </main>
-<!--/STATIC-->
-<noscript><p class="noscript">This page works without JavaScript: every region is listed above and written out below.</p></noscript>
+<noscript><p class="noscript">This page works without JavaScript: every region of the brain is written out above.</p></noscript>
 <script type="module" src="/brain/main.js"></script>
 </body>
 </html>
