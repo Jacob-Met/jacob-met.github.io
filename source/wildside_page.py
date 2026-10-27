@@ -40,7 +40,7 @@ def video_files(root: Path) -> tuple[str, ...]:
 def site_nav(current: str) -> str:
     """One site-wide navigation for the secondary pages: Home, HAMON, Wildside, Projects, About."""
     items = [('index.html', 'Home', 'home'), ('hamon.html', 'HAMON', 'hamon'), (PAGE, 'Wildside', 'wildside'),
-             ('index.html#projects', 'Projects', 'projects'), ('index.html#about', 'About', 'about')]
+             ('lobby/#projects', 'Projects', 'projects'), ('lobby/#about', 'About', 'about')]
     links = ''.join(f'<a href="{h}"' + (' aria-current="page"' if k == current else '') + f'>{t}</a>' for h, t, k in items)
     return f'<nav aria-label="Site">{links}</nav>'
 
@@ -79,5 +79,5 @@ def body(has_video: bool) -> str:
             '<p class="ws-honest">Honest scope: the places are interpreted, imagined worlds, not surveys, and the wildlife is simulated, not a live feed. This is a work in progress.</p></section>'
             '<section class="ws-section"><h2>Made for MarinaHacks</h2>'
             '<p>Wildside is my MarinaHacks project: a way to build emotional attachment to the living places around us, which is where caring for them starts. There are no quizzes, streaks or chores, only a world worth visiting.</p>'
-            f'<p><a class="ws-play" href="{APP_URL}">Play Wildside</a> <a class="public-action" href="index.html#projects">Back to projects</a></p></section>'
+            f'<p><a class="ws-play" href="{APP_URL}">Play Wildside</a> <a class="public-action" href="lobby/#projects">Back to projects</a></p></section>'
             '</main><footer class="hamon-foot"><p>Wildside is a world from <a href="hamon.html">HAMON</a>, the name behind a game engine, worlds and research instruments, founded and built by Jacob Metoyer. <a href="index.html">Home</a></p></footer>')

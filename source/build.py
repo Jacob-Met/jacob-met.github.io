@@ -21,6 +21,11 @@ import wildside_page
 
 # Separately maintained static subtrees under docs/: preserved by the builder, never generated or deleted.
 PRESERVED_APP_DIRS = (wildside_page.APP_DIR + '/', 'brain/', 'forge/')
+# The brain is the home page: index.html is source/brain_home.html verbatim (root-absolute URLs into the
+# preserved brain/ app), and docs/brain/index.html carries the same bytes so /brain/ links keep working.
+BRAIN_HOME = 'brain_home.html'
+# The captured forge lobby/portfolio moved from / to /lobby/; its relative URLs are rewritten root-absolute.
+LOBBY_PAGE = 'lobby/index.html'
 import hamon_page
 from tastetable import DIRECTORY as TASTETABLE_DIRECTORY, directories as tastetable_directories, manifest_entries as tastetable_entries, read_files as read_tastetable_files
 from engine_motion_policy import FILES as ENGINE_MOTION_FILES, validate_motion
@@ -221,9 +226,9 @@ def page_html(name: str, title: str, desc: str, body: str, data: dict) -> str:
     social = {wildside_page.PAGE: wildside_page.SOCIAL, hamon_page.PAGE: hamon_page.SOCIAL}.get(name)
     image, iw, ih, ialt = social or (SHARE_CARD, 1200, 630, SHARE_ALT)
     structured = json.dumps(schema, ensure_ascii=False).replace('<', '\\u003c').replace('>', '\\u003e')
-    canonical = BASE + '/' + ('' if name == 'index.html' else name)
+    canonical = BASE + '/' + ('' if name == 'index.html' else 'lobby/' if name == LOBBY_PAGE else name)
     enhancement = ''
-    if name == 'index.html':
+    if name == LOBBY_PAGE:
         hashes = audit_scripts(ROOT)
         enhancement = ''.join(f'<script src="{script}" defer integrity="{script_integrity(hashes[script])}"></script>' for script in LOADED_SCRIPT_FILES)
     return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="{CSP}"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -235,10 +240,19 @@ def page_html(name: str, title: str, desc: str, body: str, data: dict) -> str:
 <body>{body}</body></html>'''
 
 
+ROOT_URL_ATTR = r'(\s(?:href|src|poster|data-[a-z-]+-src)=")(?![a-z][a-z0-9+.-]*:|/|#)'
+
+
 def root_links(name: str, markup: str) -> str:
-    if name != '404.html':
+    if name == '404.html':
+        return re.sub(r'(\s(?:href|src)=")(?![a-z][a-z0-9+.-]*:|/|#)', r'\1/', markup)
+    if name != LOBBY_PAGE:
         return markup
-    return re.sub(r'(\s(?:href|src)=")(?![a-z][a-z0-9+.-]*:|/|#)', r'\1/', markup)
+    markup = re.sub(ROOT_URL_ATTR, r'\1/', markup)
+    def srcset(m):
+        parts = [c.strip() for c in m[2].split(',')]
+        return m[1] + ', '.join(c if re.match(r'[a-z][a-z0-9+.-]*:|/', c) else '/' + c for c in parts) + '"'
+    return re.sub(r'(\ssrcset=")([^"]*)"', srcset, markup)
 
 
 def shot_files(record: dict) -> list[str]:
@@ -249,7 +263,7 @@ def output_files(record: dict, lobby=None, figures=None, branches=None) -> set[s
     branches = load_branches(ROOT) if branches is None else branches
     route_files = lobby_files(load_lobby(ROOT) if lobby is None else lobby)
     illustrations = figure_files(load_figures(ROOT) if figures is None else figures)
-    return {'index.html', '404.html', 'style.css', EXPERIENCE_CSS, '.nojekyll', 'CNAME',
+    return {'index.html', LOBBY_PAGE, '404.html', 'style.css', EXPERIENCE_CSS, '.nojekyll', 'CNAME',
             'robots.txt', 'sitemap.xml', 'cv.json', 'build-manifest.json', 'portfolio.json',
             *(f'{TASTETABLE_DIRECTORY}/{name}' for name in tastetable_entries()),
             'assets/mark.svg', SHARE_CARD, *ROOT_ICONS, *FONT_FILES, *SCENE_FILES, *ART_FILES, *EDITORIAL_FILES, *PRESENTATION_FILES, *CAPTIONVERSE_FILES, *ENGINE_MOTION_FILES,
@@ -289,16 +303,18 @@ def build(out: Path, data: dict | None = None, *, preview=False) -> dict:
             shutil.rmtree(stale)
     out.mkdir(parents=True, exist_ok=True)
     pages = {
-        'index.html': (TITLE, DESC, render_index(record, current, preview=preview)),
+        LOBBY_PAGE: (TITLE, DESC, render_index(record, current, preview=preview)),
         wildside_page.PAGE: (wildside_page.TITLE, wildside_page.DESC, wildside_page.body(wildside_page.video_present(ROOT))),
         hamon_page.PAGE: (hamon_page.TITLE, hamon_page.DESC, hamon_page.body(wildside_page)),
         '404.html': ('Not found · Jacob Metoyer', 'Return to Jacob Metoyer’s work.',
                      '<a class="skip" href="#main">Skip to content</a><main id="main" class="not-found"><h1>Nothing here.</h1>'
                      '<p>That page does not exist, or it has moved. These are good places to start.</p>'
-                     '<nav class="not-found-links" aria-label="Pages"><a class="btn" href="index.html">Home</a><a class="btn" href="hamon.html">HAMON</a><a class="btn" href="wildside-project.html">Wildside</a></nav></main>'),
+                     '<nav class="not-found-links" aria-label="Pages"><a class="btn" href="index.html">Home</a><a class="btn" href="lobby/">Portfolio</a><a class="btn" href="hamon.html">HAMON</a><a class="btn" href="wildside-project.html">Wildside</a></nav></main>'),
     }
+    (out / 'lobby').mkdir(exist_ok=True)
     for name, (title, desc, body) in pages.items():
         (out / name).write_text(root_links(name, page_html(name, title, desc, body, record)), encoding='utf-8', newline='\n')
+    shutil.copyfile(ROOT / BRAIN_HOME, out / 'index.html')
     # Preserve the established stylesheet URL as an alias to the current system.
     css = (ROOT / EXPERIENCE_CSS).read_text(encoding='utf-8')
     for name in ('style.css', EXPERIENCE_CSS):
@@ -333,7 +349,7 @@ def build(out: Path, data: dict | None = None, *, preview=False) -> dict:
     (out / '.nojekyll').write_text('', encoding='utf-8', newline='\n')
     (out / 'CNAME').write_text('jacobmetoyer.com\n', encoding='utf-8', newline='\n')
     (out / 'robots.txt').write_text(f'User-agent: *\nAllow: /\nSitemap: {BASE}/sitemap.xml\n', encoding='utf-8', newline='\n')
-    sm = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>{BASE}/</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{hamon_page.PAGE}</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{wildside_page.PAGE}</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{wildside_page.APP_DIR}/</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{TASTETABLE_DIRECTORY}/</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/brain/</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/forge/</loc><lastmod>{record["updated"]}</lastmod></url></urlset>'
+    sm = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>{BASE}/</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{hamon_page.PAGE}</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{wildside_page.PAGE}</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{wildside_page.APP_DIR}/</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/{TASTETABLE_DIRECTORY}/</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/lobby/</loc><lastmod>{record["updated"]}</lastmod></url><url><loc>{BASE}/forge/</loc><lastmod>{record["updated"]}</lastmod></url></urlset>'
     (out / 'sitemap.xml').write_text(sm, encoding='utf-8', newline='\n')
     (out / 'cv.json').write_text(json.dumps(record, indent=2, ensure_ascii=False) + '\n', encoding='utf-8', newline='\n')
     (out / 'portfolio.json').write_text(json.dumps(current, indent=2, ensure_ascii=False) + '\n', encoding='utf-8', newline='\n')

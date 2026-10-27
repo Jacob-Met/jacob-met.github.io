@@ -83,7 +83,7 @@ class EngineMotionStudy(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             out=Path(tmp)/'site';build.build(out,preview=True)
             self.assertTrue(check.check(out,preview=True)['passed'])
-            p=out/'index.html';markup=p.read_text()
+            p=out/'lobby'/'index.html';markup=p.read_text()
             self.assertEqual(markup.count('<video '),7)
             p.write_text(markup.replace('id="engine-follow-through" controls','id="engine-follow-through" autoplay controls'))
             result=check.check(out,preview=True)

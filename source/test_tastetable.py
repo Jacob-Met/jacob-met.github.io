@@ -154,12 +154,12 @@ class TasteTableDeliveryTests(unittest.TestCase):
         for addition, reason in [('<script>void 0;</script>', 'script: inline executable or unapproved data forbidden'),
                                  ('<form></form>', 'form: outside')]:
             with self.subTest(reason=reason):
-                target = self.out / 'index.html'
-                target.write_bytes(self.original['index.html'] + addition.encode())
+                target = self.out / 'lobby' / 'index.html'
+                target.write_bytes(self.original['lobby/index.html'] + addition.encode())
                 self.refresh_general_manifest(self.out)
                 receipt = self.check_refused()
                 self.assertTrue(any(reason in e for e in receipt['failures']), receipt)
-                target.write_bytes(self.original['index.html'])
+                target.write_bytes(self.original['lobby/index.html'])
 
     def test_unknown_existing_output_is_never_replaced(self):
         for name, directory in [('extra.mjs', False), ('empty-extra', True)]:

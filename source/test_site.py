@@ -16,10 +16,10 @@ class Built(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory(); self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name) / 'out'; build.build(self.root, self.data, preview=True)
 
-    def page(self, name='index.html'):
+    def page(self, name='lobby/index.html'):
         return (self.root / name).read_text(encoding='utf-8')
 
-    def main(self, name='index.html'):
+    def main(self, name='lobby/index.html'):
         t = self.page(name); return t[t.index('<main'):t.index('</main>')]
 
     def rewrite(self, name, old, new):
@@ -68,10 +68,10 @@ class RecordTests(unittest.TestCase):
 
 class BuildTests(Built):
     def test_dynamic_still_endpoints_are_exact(self):
-        failures=self.rewrite('index.html','data-arrival-src="assets/scene/forge-hifi-engine-arrival-1920.webp"','data-arrival-src="https://example.org/unreviewed.png"')
+        failures=self.rewrite('lobby/index.html','data-arrival-src="/assets/scene/forge-hifi-engine-arrival-1920.webp"','data-arrival-src="https://example.org/unreviewed.png"')
         self.assertTrue(any('scene endpoint' in failure for failure in failures))
     def test_native_arrival_dimensions_are_truthful(self):
-        failures=self.rewrite('index.html','src="assets/scene/forge-hifi-engine-arrival-1920.webp" width="1920" height="1200"','src="assets/scene/forge-hifi-engine-arrival-1920.webp" width="960" height="600"')
+        failures=self.rewrite('lobby/index.html','src="/assets/scene/forge-hifi-engine-arrival-1920.webp" width="1920" height="1200"','src="/assets/scene/forge-hifi-engine-arrival-1920.webp" width="960" height="600"')
         self.assertTrue(any('native presentation dimensions' in failure for failure in failures))
     def test_output_passes_checks(self): self.assertTrue(check(self.root, preview=True)['passed'], check(self.root, preview=True))
     def test_deterministic(self):
@@ -106,7 +106,21 @@ class BuildTests(Built):
         sm = (self.root / 'sitemap.xml').read_text(encoding='utf-8')
         self.assertEqual(sm.count('<loc>'), 7); self.assertIn(f'<loc>{build.BASE}/</loc>', sm)
         self.assertIn(f'<loc>{build.BASE}/tastetable/</loc>', sm)
-        self.assertIn(f'<loc>{build.BASE}/brain/</loc>', sm); self.assertIn(f'<loc>{build.BASE}/forge/</loc>', sm)
+        self.assertIn(f'<loc>{build.BASE}/lobby/</loc>', sm); self.assertIn(f'<loc>{build.BASE}/forge/</loc>', sm)
+        self.assertNotIn(f'<loc>{build.BASE}/brain/</loc>', sm)  # /brain/ mirrors the home page; canonical is /
+    def test_brain_is_the_home_page(self):
+        home = (self.root / 'index.html').read_text(encoding='utf-8')
+        self.assertEqual(home, (build.ROOT / build.BRAIN_HOME).read_text(encoding='utf-8'))
+        self.assertIn('<script type="module" src="/brain/main.js"></script>', home)
+        self.assertIn('<link rel="canonical" href="https://jacobmetoyer.com/">', home)
+        for link in ('href="/forge/"', 'href="/lobby/"', 'href="/lobby/#projects"'): self.assertIn(link, home)
+        self.assertIn('<link rel="canonical" href="https://jacobmetoyer.com/lobby/">', self.page())
+    def test_brain_home_inline_script_hash_is_enforced(self):
+        failures = self.rewrite('index.html', 'className="js"', 'className="js "')
+        self.assertIn('index.html: script: inline script hash missing from CSP', failures)
+    def test_brain_mirror_must_match_home(self):
+        app = self.root / 'brain'; app.mkdir(); (app / 'index.html').write_text('<p>stale</p>', encoding='utf-8')
+        self.assertIn('index.html: brain/index.html must carry the same bytes as the home page', check(self.root, preview=True)['failures'])
     def test_only_declared_captures_ship(self):
         shots = {f.relative_to(self.root).as_posix() for f in (self.root / 'assets' / 'demos').iterdir()}
         self.assertEqual(shots, set(build.shot_files(self.data)) | set(build.CAPTIONVERSE_FILES))
@@ -129,7 +143,7 @@ class ContentTests(Built):
             with self.subTest(tag=tag): self.assertNotIn(tag, m)
         self.assertNotIn('<script src="detail.js"', self.page())
         for name in ('lobby-journey.js', 'scene-handoff.js', 'lobby.js'):
-            self.assertEqual(self.page().count(f'<script src="{name}" defer integrity="sha256-'), 1)
+            self.assertEqual(self.page().count(f'<script src="/{name}" defer integrity="sha256-'), 1)
         self.assertEqual(self.page().count('<video id="route-'), 6)
         self.assertNotIn('autoplay', m)
         self.assertNotIn('WebAssembly', self.page())
@@ -146,7 +160,7 @@ class ContentTests(Built):
         for demo in self.data['demos']:
             from figure_policy import load_figures
             card = public_demo(demo, load_figures(build.ROOT).get(demo['id']))
-            self.assertIn(card, self.main())
+            self.assertIn(build.root_links(build.LOBBY_PAGE, card), self.main())
             self.assertIn(demo['play']['url'], card)
             self.assertIn(demo['repo'], card)
             for shot in demo['shots'].values(): self.assertIn(shot['src'], card)
@@ -244,7 +258,7 @@ class ContentTests(Built):
     def test_external_hosts_are_only_verifiable_ones(self):
         hosts = {urlsplit(u).hostname for u in re.findall(r'href="(https://[^"]+)"', self.main())}
         self.assertTrue(hosts <= build.ALLOWED_HOSTS, hosts)
-        self.assertIn(f'<link rel="canonical" href="{build.BASE}/">', self.page())
+        self.assertIn(f'<link rel="canonical" href="{build.BASE}/lobby/">', self.page())
 
 
 class CheckerTests(Built):
@@ -258,14 +272,14 @@ class CheckerTests(Built):
                          '<a href="http://github.com/Jacob-Met">plain</a>', '<a href="//example.invalid/x">rel</a>', '<style>body{}</style>',
                          '<a href="#nowhere">gone</a>', '<a href="gone.html">gone</a>', '<div onclick="void(0)">x</div>'):
             with self.subTest(fragment=fragment):
-                failures = self.rewrite('index.html', '</main>', fragment + '</main>')
+                failures = self.rewrite('lobby/index.html', '</main>', fragment + '</main>')
                 self.assertTrue(failures); self.assertFalse(any('Hash mismatch' in f for f in failures))
                 build.build(self.root, self.data, preview=True)
     def test_csp_enforced(self):
         self.assertEqual(build.CSP, '; '.join(f'{k} {v}' for k, v in check_module.CSP_REQUIRED.items()))
-        self.assertIn('index.html: expected exactly one Content-Security-Policy meta', self.rewrite('index.html', f'<meta http-equiv="Content-Security-Policy" content="{build.CSP}">', ''))
+        self.assertIn('lobby/index.html: expected exactly one Content-Security-Policy meta', self.rewrite('lobby/index.html', f'<meta http-equiv="Content-Security-Policy" content="{build.CSP}">', ''))
         build.build(self.root, self.data, preview=True)
-        self.assertIn("index.html: CSP default-src must be 'none'", self.rewrite('index.html', "default-src 'none'", "default-src *"))
+        self.assertIn("lobby/index.html: CSP default-src must be 'none'", self.rewrite('lobby/index.html', "default-src 'none'", "default-src *"))
         build.build(self.root, self.data, preview=True)
         self.assertIn('404.html: CSP contains duplicate directive: script-src', self.rewrite('404.html', "form-action 'none'", "form-action 'none'; script-src 'self'"))
     def test_css_surface(self):
@@ -300,6 +314,7 @@ class NotFoundTests(Built):
         for ref in refs:
             if ref.startswith('#'): continue
             path = urlsplit(urljoin('https://jacobmetoyer.com/research/old/deeper', ref)).path.lstrip('/') or 'index.html'
+            if path.endswith('/'): path += 'index.html'
             with self.subTest(ref=ref): self.assertTrue((self.root / path).is_file(), ref)
     def test_not_found_keeps_readable_spacing_and_return_target(self):
         css = (self.root / 'experience.css').read_text()
@@ -307,10 +322,11 @@ class NotFoundTests(Built):
         self.assertRegex(css, r'\.not-found\s*\{[^}]*padding:')
         self.assertRegex(css, r'\.not-found \.btn\s*\{[^}]*min-height:\s*44px')
         self.assertIn('href="/index.html">Home</a>', self.page('404.html'))
-    def test_index_stays_relative(self):
-        self.assertFalse([v for v in self.refs('index.html') if v.startswith('/')])
-    def test_root_relative_outside_404_rejected(self):
-        self.assertIn('index.html: unsafe local link /experience.css', self.rewrite('index.html', 'href="experience.css"', 'href="/experience.css"'))
+    def test_lobby_is_root_absolute(self):
+        refs = [v for v in self.refs('lobby/index.html') if not v.startswith('#')]
+        self.assertTrue(refs); self.assertFalse([v for v in refs if not v.startswith('/') or v.startswith('//')], refs)
+    def test_root_relative_outside_404_and_lobby_rejected(self):
+        self.assertIn('hamon.html: unsafe local link /experience.css', self.rewrite('hamon.html', 'href="experience.css"', 'href="/experience.css"'))
 
 
 # ---------------------------------------------------------------------------
