@@ -1,5 +1,5 @@
 // Curates docs/projects.json into the v3.1 prerendered brain: writes docs/brain/content.js (tips + panel data),
-// the region list and the region panels in docs/brain/index.html, then copies it to docs/index.html (the brain is the site root).
+// the region list and the region panels in docs/brain/index.html (served at /brain/, linked from the grid front door as "Enter the mind").
 // The two eye worlds (#w-hamon, #w-spire) stay hand-written in index.html; only their project links are injected.
 import fs from "node:fs";
 const P = Object.fromEntries(JSON.parse(fs.readFileSync("docs/projects.json", "utf8")).projects.map(p => [p.slug, p]));
@@ -58,6 +58,6 @@ rep(/(<div class="regions">)[\s\S]*?(<\/div>\n\n  <section class="world" id="w-h
 h = h.replace(/\n\s*<li data-gen="work"[^\n]*/g, "");
 rep(/(<section class="world" id="w-hamon"[\s\S]*?<ul class="syn">)/, `$1\n        ${li(W('hamon-engine')).replace('<li', '<li data-gen="work"')}`);
 rep(/(<section class="world" id="w-spire"[\s\S]*?<ul class="syn">)/, `$1\n        ${li(W('spire-of-octaves')).replace('<li', '<li data-gen="work"')}`);
-fs.writeFileSync("docs/brain/index.html", h); fs.writeFileSync("docs/index.html", h);
+fs.writeFileSync("docs/brain/index.html", h);
 const n = REGIONS.reduce((k, r) => k + r.items.filter(i => i[2].startsWith('/work/')).length, 0) + 2;
 console.log("brain:", n, "curated projects wired");
