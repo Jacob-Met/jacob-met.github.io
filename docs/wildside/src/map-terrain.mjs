@@ -6,9 +6,11 @@ const cross=(a,b,p)=>(b[0]-a[0])*(p[1]-a[1])-(b[1]-a[1])*(p[0]-a[0]);
 const xz=p=>[p[0],p[2]];
 
 export function triangleHeight(vertices,x,z,{inside=true}={}){
- const [a,b,c]=vertices.map(xz),p=[x,z],area=cross(a,b,c);
+ // Read the current vertices directly: height queries do not need projected arrays.
+ const ax=vertices[0][0],az=vertices[0][2],bx=vertices[1][0],bz=vertices[1][2],cx=vertices[2][0],cz=vertices[2][2];
+ const area=(bx-ax)*(cz-az)-(bz-az)*(cx-ax);
  if(!Number.isFinite(x)||!Number.isFinite(z)||Math.abs(area)<1e-10)return null;
- const u=cross(b,c,p)/area,v=cross(c,a,p)/area,w=1-u-v;
+ const u=((cx-bx)*(z-bz)-(cz-bz)*(x-bx))/area,v=((ax-cx)*(z-cz)-(az-cz)*(x-cx))/area,w=1-u-v;
  if(inside&&Math.min(u,v,w)<-1e-8)return null;
  return u*vertices[0][1]+v*vertices[1][1]+w*vertices[2][1];
 }

@@ -71,13 +71,16 @@ export function createWaterColumn({waterSurfaces=[],groundSupports=[],obstacles=
  function seed(radius=FLEA_BODY.radius){
   if(!Number.isFinite(radius)||radius<=0)return null;
   const margin=Math.max(radius,.025),queue=cellQueue();let evaluations=0;
+  const verticalCandidates=[];
   const orderedSupports=supports.slice().sort((a,b)=>b.y-a.y||a.id.localeCompare(b.id));
   function candidate(water,p){
    if(waterClearance(water,p)<margin)return null;
    const floor=orderedSupports.find(s=>waterClearance(s,p)>=margin);
    if(!floor||water.y-floor.y<radius*3)return null;
    const position=[p[0],(floor.y+water.y)/2,p[1]],column=at(position,radius,water.id);
-   return column?{position,...column}:null;
+   if(column)return {position,...column};
+   if(verticalCandidates.length<4096)verticalCandidates.push({water,floor,p});
+   return null;
   }
   function visit(water,floor,min,max){
    if(++evaluations>4096)return null;
@@ -103,6 +106,30 @@ export function createWaterColumn({waterSurfaces=[],groundSupports=[],obstacles=
    const axis=cell.half[0]>=cell.half[1]?0:1,middle=(cell.min[axis]+cell.max[axis])/2;
    const leftMax=cell.max.slice(),rightMin=cell.min.slice();leftMax[axis]=middle;rightMin[axis]=middle;
    for(const [min,max] of [[cell.min,leftMax],[rightMin,cell.max]]){const found=visit(cell.water,cell.floor,min,max);if(found)return found;}
+  }
+  // Finish the original search before trying other depths, preserving every
+  // previously successful seed. A rock can block the midpoint of a usable column.
+  let verticalEvaluations=0;
+  for(const {water,floor,p} of verticalCandidates){
+   const low=floor.y+radius,high=water.y-radius,cuts=[low,high];
+   const cut=y=>{if(y>low&&y<high)cuts.push(y);};
+   for(const solid of solids){
+    // Match segmentBox's strict overlap for a stationary X/Z coordinate.
+    if(p[0]<=solid.min[0]-radius||p[0]>=solid.max[0]+radius||
+       p[1]<=solid.min[2]-radius||p[1]>=solid.max[2]+radius)continue;
+    cut(solid.min[1]-radius);cut(solid.max[1]+radius);
+   }
+   for(const support of supports){
+    if(circleIntersectsPolygon(p,radius,support.points))cut(support.y+radius);
+   }
+   cuts.sort((a,b)=>a-b);
+   for(let i=cuts.length-1;i>0;i--){
+    if(cuts[i]<=cuts[i-1])continue;
+    if(verticalEvaluations>=4096)return null;
+    verticalEvaluations++;
+    const position=[p[0],(cuts[i-1]+cuts[i])/2,p[1]],column=at(position,radius,water.id);
+    if(column)return {position,...column};
+   }
   }
   return null;
  }

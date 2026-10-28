@@ -63,20 +63,25 @@ export function mountEvidenceRevisit(element) {
         }, { once: true });
       } else {
         item.controls = false; item.preload = 'auto'; item.playsInline = true;
-        let located = false;
+        let located = false, verifiedMoment = false;
         const locate = () => {
-          if (!current() || located || item.readyState < 2 || item.seeking || Math.abs(item.currentTime - selected.offsetSeconds) > 0.05) return;
+          if (!current() || !verifiedMoment || located || item.readyState < 2 || item.seeking || Math.abs(item.currentTime - selected.offsetSeconds) > 0.05) return;
           // Enable native controls after the hidden initial seek has completed;
           // otherwise Chromium can retain its loading overlay on a ready frame.
           located = true; window.clearTimeout(timer); item.hidden = false; item.controls = true; $('return').hidden = false; detail.attach(item, selected);
           remembered = {file, sourceId: selected.sourceId, mediaKind: selected.mediaKind};
           say('Original clip reattached at the kept moment. Playback does not add observations.');
         };
-        item.addEventListener('loadedmetadata', () => {
-          if (!current()) return;
-          try { verifyRecordedMoment(selected.offsetSeconds, item.duration); item.currentTime = selected.offsetSeconds; }
-          catch (error) { fail(error.message); }
-        }, { once: true });
+        const seekToMoment = () => {
+          // Completed browser recordings may report Infinity at loadedmetadata.
+          // Keep the existing opening deadline while native duration settles.
+          if (!current() || verifiedMoment || item.readyState < 1 || item.duration === Infinity) return;
+          try {
+            verifyRecordedMoment(selected.offsetSeconds, item.duration);
+            item.currentTime = selected.offsetSeconds; verifiedMoment = true; locate();
+          } catch (error) { fail(error.message); }
+        };
+        for (const event of ['loadedmetadata', 'durationchange']) item.addEventListener(event, seekToMoment);
         for (const event of ['loadeddata', 'seeked', 'canplay']) item.addEventListener(event, locate);
         item.addEventListener('timeupdate', () => {
           if (current()) $('position').textContent = `Playback: ${item.currentTime.toFixed(2)} seconds · kept moment: ${selected.offsetSeconds.toFixed(2)} seconds`;

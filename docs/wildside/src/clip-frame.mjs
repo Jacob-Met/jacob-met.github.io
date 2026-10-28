@@ -8,13 +8,14 @@ export function validateClipMoment(seconds, duration) {
 }
 
 function aborted() { return new DOMException('Clip scan cancelled.', 'AbortError'); }
-function waitFor(video, events, ready, timeoutMs, signal) {
+function waitFor(video, events, ready, timeoutMs, signal, cancelEvents = []) {
   return new Promise((resolve, reject) => {
     if (signal?.aborted) { reject(aborted()); return; }
     let complete = false;
     const cleanup = () => {
       clearTimeout(timer);
       for (const name of events) video.removeEventListener(name, check);
+      for (const name of cancelEvents) video.removeEventListener(name, cancel);
       video.removeEventListener('error', fail);
       signal?.removeEventListener('abort', cancel);
     };
@@ -31,18 +32,30 @@ function waitFor(video, events, ready, timeoutMs, signal) {
       timeoutMs,
     );
     for (const name of events) video.addEventListener(name, check);
+    for (const name of cancelEvents) video.addEventListener(name, cancel);
     video.addEventListener('error', fail);
     signal?.addEventListener('abort', cancel, {once: true});
     check();
   });
 }
 
-export async function loadClipMetadata(video, {timeoutMs = 15000} = {}) {
-  await waitFor(video, ['loadedmetadata', 'durationchange'], () => video.readyState >= 1, timeoutMs);
-  if (!Number.isFinite(video.duration) || video.duration <= 0 ||
-      !Number.isInteger(video.videoWidth) || !Number.isInteger(video.videoHeight) ||
+export async function loadClipMetadata(video, {timeoutMs = 15000, signal} = {}) {
+  const deadline = performance.now() + timeoutMs;
+  await waitFor(video, ['loadedmetadata', 'durationchange'], () => video.readyState >= 1,
+    timeoutMs, signal, ['emptied']);
+  if (signal?.aborted) throw aborted();
+  if (!Number.isInteger(video.videoWidth) || !Number.isInteger(video.videoHeight) ||
       video.videoWidth <= 0 || video.videoHeight <= 0 ||
       video.videoWidth * video.videoHeight > 50_000_000)
+    throw new Error('Choose a decodable finite clip with frames of at most 50 megapixels.');
+  // A completed MediaRecorder clip can first report Infinity, then expose its
+  // native finite duration as decoding loads. Keep the original timeout budget.
+  if (video.duration === Infinity) {
+    await waitFor(video, ['durationchange', 'loadeddata'],
+      () => Number.isFinite(video.duration) && video.duration > 0,
+      Math.max(0, deadline - performance.now()), signal, ['emptied']);
+  }
+  if (!Number.isFinite(video.duration) || video.duration <= 0)
     throw new Error('Choose a decodable finite clip with frames of at most 50 megapixels.');
   return video.duration;
 }

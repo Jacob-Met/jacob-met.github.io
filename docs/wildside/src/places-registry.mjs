@@ -10,8 +10,12 @@
  *     honesty:'Imagined',               // optional small label; imagined places must say so
  *     order:30,
  *     current:()=>place.id==='autumn-lake',   // is the visitor here now?
- *     async travel(){…}                 // load/switch the place; the picker plays the transition
+ *     async travel(request){…}          // load/switch the place; the picker plays the transition
  *   });
+ * A picker request exposes isCurrent(). Check it at the actual save boundary
+ * and again after awaits before changing the view; a newer context cancels it.
+ * Return false when no arrival was committed. Existing undefined success
+ * returns remain supported. The picker suppresses obsolete arrival/error UI.
  */
 const places=new Map(),listeners=new Set();
 export function registerPlace(def){

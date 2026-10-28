@@ -7,10 +7,13 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 /** Engine heading (0 faces +X, positive turns left) -> simulation yaw (0 faces +Z) -> view yaw (0 faces -Z). */
 const simYawOf=e=>e+Math.PI/2;
 const viewYawOf=e=>Math.PI/2-e;
+// A replacement acquires native control before the previous driver is disposed.
+const residentDriverOwners=new WeakMap();
 
 function engineDriver({hamon,index}){
   let headYaw=0,headPitch=0,pose=hamon.residentPoses()[index],last=pose?.pos?.slice();
   const read=()=>hamon.residentPoses()[index]??pose;
+  const owner={};residentDriverOwners.set(hamon,owner);
   return {
     look(dx,dy){headYaw=clamp(headYaw+dx,-2.2,2.2);headPitch=clamp(headPitch+dy,-1.2,1.2);},
     step(input,dt){
@@ -25,7 +28,10 @@ function engineDriver({hamon,index}){
       const p=read()??pose;
       return {body:p.pos.slice(),yaw:viewYawOf(p.yaw)+headYaw,pitch:clamp(headPitch,-1.2,1.2),bob:0};
     },
-    dispose(){hamon.possessResident(-1);},
+    dispose(){
+      if(residentDriverOwners.get(hamon)!==owner)return;
+      residentDriverOwners.delete(hamon);hamon.possessResident(-1);
+    },
   };
 }
 

@@ -75,7 +75,7 @@ export function webgpuNotice(reason,device={},ua=''){
    return v&&v<26?`This iPhone is on iOS ${v}. HAMON's painted view needs WebGPU, which arrives with iOS 26. Showing the simpler view for now.`
     :'HAMON’s painted view needs WebGPU. In Safari, turn it on under Settings, Apps, Safari, Advanced, Feature Flags, WebGPU. Showing the simpler view for now.';}
   if(device.android)return 'HAMON’s painted view needs WebGPU, which this browser does not offer (try Chrome 121 or newer on Android 12+). Showing the simpler view for now.';
-  return 'HAMON’s painted view needs WebGPU, which this browser does not offer. Showing the simpler view for now.';
+  return 'HAMON’s painted view needs WebGPU or WebGL2, and this browser offers neither. Showing the simpler view for now.';
  }
  return `HAMON’s painted view could not start on this device (${text.slice(0,120)||'unknown error'}). Showing the simpler view for now.`;
 }

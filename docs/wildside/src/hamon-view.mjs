@@ -12,14 +12,34 @@ export const RENDERER_KEY='wildside.renderer.v1';
 const read=key=>{try{return localStorage.getItem(key);}catch{return null;}};
 const write=(key,value)=>{try{value===null?localStorage.removeItem(key):localStorage.setItem(key,value);}catch{}};
 
-/** Whether to draw with the Engine renderer: the default wherever WebGPU exists (three.js is the
+/** Whether to draw with the Engine renderer: the default wherever WebGPU or WebGL2 exists (three.js is the
  * fallback). `?hamon=0` opts out and is remembered; `?hamon=1` opts back in and clears the choice. */
-export function wantsHamon(location=globalThis.location,gpu=globalThis.navigator?.gpu){
+/** Whether this browser can open a WebGL2 context (the Engine's downlevel backend). */
+export function hasWebGL2(doc=globalThis.document){
+ try{
+  const c=doc?.createElement?.('canvas'),gl=c?.getContext?.('webgl2');
+  if(!gl)return false;
+  gl.getExtension?.('WEBGL_lose_context')?.loseContext?.();
+  return true;
+ }catch{return false;}
+}
+
+/** Which graphics API the Engine should use: `?hamon_backend=webgl2|webgpu` forces one; otherwise
+ * `auto` (WebGPU when the browser has it, WebGL2 when not). */
+export function hamonBackend(location=globalThis.location){
+ const q=new URLSearchParams(location?.search??'').get('hamon_backend');
+ return q==='webgl2'||q==='webgpu'?q:'auto';
+}
+
+/** Whether any painted (Engine) backend exists here: WebGPU or WebGL2. */
+export function hamonCapable(gpu=globalThis.navigator?.gpu,gl2=gpu?false:hasWebGL2()){return !!gpu||!!gl2;}
+
+export function wantsHamon(location=globalThis.location,gpu=globalThis.navigator?.gpu,gl2=gpu?false:hasWebGL2()){
  const q=new URLSearchParams(location?.search??'').get('hamon');
  if(q==='1'){write(RENDERER_KEY,null);return true;}
  if(q==='0'){write(RENDERER_KEY,'three');return false;}
  if(read(RENDERER_KEY)==='three')return false;
- return !!gpu;
+ return !!gpu||!!gl2;
 }
 
 /** Render scale for a viewport: native up to `budget` pixels (720p by default), then TAAU renders that budget and upscales. */
@@ -32,7 +52,7 @@ export function hamonResolution(width,height,pixelRatio=1,budget=1280*720){
 export function mountHamonView(parent,{onState=()=>{},skyContainer=null,requestFrame=()=>{},budget=undefined,quality=undefined}={}){
  const canvas=document.createElement('canvas');canvas.className='hamon-canvas';canvas.setAttribute('aria-label','Living place rendered by HAMON Engine');canvas.hidden=true;parent.append(canvas);
  let worldTrees=[],engine=null,view=null,phase='loading',error=null,stream=null,looks=[],look=null,size=null,busy=false,inhabitants=[],skyState=null,currentPlace=null,live=null;const skyMounts=[];
- const state=()=>({phase,error:error?String(error.message??error):null,look,looks,adapter:view?.adapter()??null,stats:view?JSON.parse(view.stats()):null});
+ const state=()=>({phase,error:error?String(error.message??error):null,look,looks,adapter:view?.adapter()??null,backend:view?.backend()??null,stats:view?JSON.parse(view.stats()):null});
  const emit=()=>{parent.dataset.renderer=phase==='ready'?'hamon':'three';onState(state());};
  const fail=e=>{error=e;phase='failed';canvas.hidden=true;try{view?.free();}catch{}view=null;emit();console.error('HAMON view unavailable:',e);};
  const fit=()=>{
@@ -50,10 +70,10 @@ export function mountHamonView(parent,{onState=()=>{},skyContainer=null,requestF
   // onState would run before the host's `const hamon = mountHamonView(...)` has been assigned.
   await null;
   try{
-   if(!navigator.gpu)throw new Error('WebGPU is not available in this browser');
+   if(!navigator.gpu&&!hasWebGL2())throw new Error('WebGPU is not available in this browser, and neither is WebGL2');
    engine=await import('../hamon/hamon_browser.js');await engine.default();
    looks=JSON.parse(engine.looks_json());const saved=read(LOOK_KEY);look=looks.some(l=>l.id===saved)?saved:engine.default_look();
-   fit();view=await engine.open_view(canvas);view.resize(size.width,size.height,size.scale);
+   fit();view=await engine.open_view(canvas,hamonBackend());view.resize(size.width,size.height,size.scale);
    // the engine resolves retired ids (a look saved under its old name), so saved choices survive renames
    if(saved&&!looks.some(l=>l.id===saved)&&view.set_look(saved)){look=view.look();write(LOOK_KEY,look);}
    else if(!view.set_look(look))look=view.look();

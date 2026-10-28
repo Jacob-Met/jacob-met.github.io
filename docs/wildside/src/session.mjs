@@ -16,7 +16,17 @@ export function validateSession(input){
       if(water?.kind!=='water'||!sources.length||m.sourceIds.length!==sources.length||new Set(m.sourceIds).size!==sources.length||sources.some(id=>!m.sourceIds.includes(id)))
         throw new Error('A saved underwater moment does not match its water source.');
     }
-    return {id:m.id,kind:'personal-visit',label:m.label,at:typeof m.at==='string'?m.at:null,placeId:m.placeId,revision:m.revision,epoch:m.epoch,anchorId:m.anchorId,offset:m.offset.slice(),mode:m.mode,yaw:m.yaw,pitch:m.pitch,...(m.mode==='underwater'?{waterId:m.waterId}:{}),sourceIds:m.sourceIds.slice(),provenance:'personal-recollection'};
+    if(Object.hasOwn(m,'supportAnchorId')){
+      // Prove dependencies against the captured revision. Today's support can
+      // change while the historical moment remains valid and worth keeping.
+      const support=historical.anchors.find(a=>a.id===m.supportAnchorId);
+      const landmark=historical.anchors.find(a=>a.id===m.anchorId);
+      const supportSources=support?.sourceIds??[];
+      const sources=[...new Set([...(landmark?.sourceIds??[]),...supportSources])];
+      if(m.mode!=='insect'||!support||!supportSources.length||m.sourceIds.length!==sources.length||new Set(m.sourceIds).size!==sources.length||sources.some(id=>!m.sourceIds.includes(id)))
+        throw new Error('A saved insect moment does not match its supporting landmark and sources.');
+    }
+    return {id:m.id,kind:'personal-visit',label:m.label,at:typeof m.at==='string'?m.at:null,placeId:m.placeId,revision:m.revision,epoch:m.epoch,anchorId:m.anchorId,offset:m.offset.slice(),mode:m.mode,yaw:m.yaw,pitch:m.pitch,...(m.mode==='underwater'?{waterId:m.waterId}:{}),...(Object.hasOwn(m,'supportAnchorId')?{supportAnchorId:m.supportAnchorId}:{}),sourceIds:m.sourceIds.slice(),provenance:'personal-recollection'};
   });
   return {version:1,sequence:input.sequence,activePlaceId:input.activePlaceId,places,memories};
 }

@@ -1,3 +1,4 @@
+import {deriveUrbanHabitatDetail} from './urban-habitat-detail.mjs';
 import {createMapTerrain} from './map-terrain.mjs';
 import {addMapArt} from './map-art.mjs';
 import {addContextArt} from './context-art.mjs';
@@ -81,6 +82,16 @@ function inGroundPolygon(x,z,points){let inside=false;for(let i=0,j=points.lengt
 /** Original anchor-bound procedural scenery. Artistic detail is simulated completion. */
 export function buildWorldArt(place,{rain=false}={}){
  const group=new THREE.Group();group.name='interpreted-place-and-artistic-detail';const perches=[],obstacles=[],waters=[],waterSurfaces=[],leafSways=[];
+ const birdVegetationObstacles=[];
+ const captureBirdVegetation=(a,local)=>{
+  if(a.kind!=='plant'||!['garden-hedge','wall-climber','container-foliage'].includes(a.contextForm))return;
+  local.updateWorldMatrix(true,true);
+  const occupied=new THREE.Box3().setFromObject(local,true);
+  if(occupied.isEmpty())return;
+  const min=occupied.min.toArray(),max=occupied.max.toArray();
+  if(![...min,...max].every(Number.isFinite)||!min.every((v,i)=>v<max[i]))throw Error('Invalid rendered vegetation envelope');
+  birdVegetationObstacles.push({id:`context-vegetation:${a.id}`,min,max,modes:['bird'],sourceIds:[...(a.sourceIds??[])],contextObservationId:a.contextObservationId??null,provenance:'rendered-urban-vegetation-envelope'});
+ };
  const box=new THREE.Box3();const grounds=[],surfaces=[],polygonWaters=[];
  const terrain=createMapTerrain(place),mapContexts=new Map((place.observations??[]).map(o=>[o.id,o.mapContext]));
  const bark=texturedMaterial('bark',.018),darkBark=material('#4d5140'),soil=texturedMaterial('soil',.008),stone=texturedMaterial('stone',.012),rim=texturedMaterial('clay',.006);
@@ -120,7 +131,7 @@ export function buildWorldArt(place,{rain=false}={}){
   }
   box.expandByPoint(V([x-w/2,y,z-d/2]));box.expandByPoint(V([x+w/2,y+h,z+d/2]));
   if(a.kind==='ground'&&addContextArt(a,local,random)){grounds.push({x,z,w,d,y:y+h});continue;}
-  if(a.kind==='plant'&&addContextArt(a,local,random))continue;
+  if(a.kind==='plant'&&addContextArt(a,local,random)){captureBirdVegetation(a,local);continue;}
   if(a.kind==='ground'){
    mesh(cube,texturedMaterial('ground',.009),local,[0,h/2,0],[w,h,d]);grounds.push({x,z,w,d,y:y+h});
    const grass=instance(leaf,leafMaterial('#829365'),250,local);
@@ -151,6 +162,7 @@ export function buildWorldArt(place,{rain=false}={}){
    const marks=instance(cube,material('#976b51'),20,local);for(let i=0;i<20;i++)put(marks,i,[(random()-.5)*w,h*(.15+random()*.65),d*.501],[0,0,.05],[.02+random()*.09,.006, .002]);
    perches.push({id:`${a.id}:rim`,position:[x+w*.35,y+h+.045,z+d*.46],radius:.06,shelter:.05});addObstacle(a,[w/2,h/2,d/2],[x,y+h/2,z]);
   }else if(a.kind==='rock'){
+   if(a.contextForm==='intertidal-shelf'&&addContextArt(a,local,random)){addObstacle(a,[w*.53,h*.5,d*.53],[x,y+h*.5,z]);continue;}
    // Smooth nonuniform river stone, with a flattened supported top for contact.
    const geo=new THREE.SphereGeometry(1,24,16),p=geo.attributes.position;for(let i=0;i<p.count;i++){const px=p.getX(i),py=p.getY(i),pz=p.getZ(i);p.setXYZ(i,px*(1+.06*Math.sin(pz*7)),Math.min(py,.86),pz*(1+.04*Math.cos(px*8)));}geo.computeVertexNormals();
    mesh(geo,stone,local,[0,h*.5,0],[w*.5,h*.5/.93,d*.5]);
@@ -180,11 +192,19 @@ export function buildWorldArt(place,{rain=false}={}){
  const bounds={min:[box.min.x-.6,Math.min(0,box.min.y),box.min.z-.6],max:[box.max.x+.6,Math.max(6,box.max.y+1),box.max.z+.6]};
  const surfaceAt=(x,z)=>{let height=terrain?.heightAt(x,z)??null;for(const g of grounds)if(g.polygon?(g.annotated?pointInPolygon([x,z],g.polygon):inGroundPolygon(x,z,g.polygon)):Math.abs(x-g.x)<=g.w/2&&Math.abs(z-g.z)<=g.d/2)height=height===null?g.y:Math.max(height,g.y);return height;};
  const groundAt=(x,z)=>surfaceAt(x,z)??0;
+ // Temporary context detail is recomputed from the same finite support used by
+ // navigation. It never becomes an observed landmark or a separately saved mesh.
+ const urbanHabitatDetails=deriveUrbanHabitatDetail(place,{surfaceAt});
+ for(const a of urbanHabitatDetails){const local=new THREE.Group();local.name=a.id;local.position.fromArray(a.position);local.rotation.y=a.rotationY;
+  local.userData={kind:'contextual-planting',supportAnchorId:a.supportAnchorId,sourceIds:a.sourceIds,provenance:a.provenance};
+  addContextArt(a,local,rng(a.id));local.userData.provenance=a.provenance;group.add(local);captureBirdVegetation(a,local);
+ }
+
  // Exact rendered support planes, including their finite footprint. Submerged consumers
  // must not interpret groundAt's compatibility fallback as an unseen underwater bottom.
  const groundSupports=grounds.map((g,i)=>({id:`ground-support-${i}`,y:g.y,points:g.polygon?g.polygon.map(p=>[...p]):[[g.x-g.w/2,g.z-g.d/2],[g.x+g.w/2,g.z-g.d/2],[g.x+g.w/2,g.z+g.d/2],[g.x-g.w/2,g.z+g.d/2]]}));
  const detail=createFoliageDetail(group,leaf);
- return {group,perches,obstacles,bounds,groundAt,surfaceAt,groundCoverageRequired:(place.observations??[]).some(o=>o.mapContext?.verticalPolicy==='source-relative'),terrainTriangleCount:terrain?.triangleCount??0,surfaces,waterSurfaces,groundSupports,updateDetail:detail.update,detailSnapshot:detail.snapshot,update(time,{rain:wet=rain}={}){for(const clock of polygonWaters)clock.value=time*(wet?2:1);for(const item of leafSways){item.group.rotation.z=Math.sin(time*.7+item.phase)*(wet?.006:.002);item.group.rotation.x=Math.sin(time*.45+item.phase)*.002;}for(const water of waters)water.rings.forEach((ring,i)=>{const t=(time*(wet?.35:.10)+i/5+water.phase)%1;ring.scale.set(water.w*.5*t,water.d*.5*t,1);ring.material.opacity=(1-t)*(wet?.25:.10);});},dispose(){detail.dispose();disposeGroup(group);}};
+ return {group,perches,obstacles,bounds,birdVegetationObstacles,urbanHabitatDetails,groundAt,surfaceAt,groundCoverageRequired:(place.observations??[]).some(o=>o.mapContext?.verticalPolicy==='source-relative'),terrainTriangleCount:terrain?.triangleCount??0,surfaces,waterSurfaces,groundSupports,updateDetail:detail.update,detailSnapshot:detail.snapshot,update(time,{rain:wet=rain}={}){for(const clock of polygonWaters)clock.value=time*(wet?2:1);for(const item of leafSways){item.group.rotation.z=Math.sin(time*.7+item.phase)*(wet?.006:.002);item.group.rotation.x=Math.sin(time*.45+item.phase)*.002;}for(const water of waters)water.rings.forEach((ring,i)=>{const t=(time*(wet?.35:.10)+i/5+water.phase)%1;ring.scale.set(water.w*.5*t,water.d*.5*t,1);ring.material.opacity=(1-t)*(wet?.25:.10);});},dispose(){detail.dispose();disposeGroup(group);}};
 }
 
 /** Smooth original bird silhouette, independently articulated feathers and locked world toes. */
@@ -208,4 +228,5 @@ export function createBirdArt(){
   b.feet.forEach((f,i)=>{line(segments[i][0],f.hip,f.knee,.005);line(segments[i][1],f.knee,f.toe,.004);for(let j=0;j<3;j++){const angle=b.yaw+(j-1)*.55;const end=[f.toe[0]+Math.sin(angle)*.028,f.toe[1]-(f.contact?.008:0),f.toe[2]+Math.cos(angle)*.028];line(toes[i][j],f.toe,end,.0025);}});
  },dispose(){disposeGroup(group);}};
 }
+
 

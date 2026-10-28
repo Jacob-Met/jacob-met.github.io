@@ -59,6 +59,7 @@ export function fitOverview({min,max},aspect=1,direction=[.8,.65,1],fov=58,margi
 
 const anchors=(place)=>Array.isArray(place.anchors)?place.anchors:Object.values(place.anchors||{});
 const anchorPosition=a=>a.position||a.transform?.position;
+const supportId=value=>typeof value==='string'&&/^[a-zA-Z0-9:_-]{1,180}$/.test(value);
 /** Snapshot of personal visit intent, never an animal observation. Caller persists it with the place. */
 export function captureVisit(place,pose,{id,anchorId,label='A quiet moment',at=null}={}){
  const anchor=anchors(place).find(a=>a.id===anchorId&&!a.deleted);if(!anchor||!vec(anchorPosition(anchor)))throw new Error('A surviving landmark is required');
@@ -66,7 +67,17 @@ export function captureVisit(place,pose,{id,anchorId,label='A quiet moment',at=n
  if(underwater){if(anchor.kind!=='water'||pose.waterId!==`${anchorId}:water`||Math.abs(pose.pitch)>1.35)throw new TypeError('A matching water landmark is required');}
  else profile(pose.mode);
  if(!id||!vec(pose.position)||![pose.yaw,pose.pitch].every(Number.isFinite))throw new TypeError('Invalid visit');
- return {id,kind:'personal-visit',label,at,placeId:place.id,revision:place.revision,epoch:place.epoch??0,anchorId,offset:sub(pose.position,anchorPosition(anchor)),mode:pose.mode,yaw:pose.yaw,pitch:pose.pitch,...(underwater?{waterId:pose.waterId}:{}),sourceIds:[...(anchor.sourceIds||[])],provenance:'personal-recollection'};
+ let support=null;
+ if(Object.hasOwn(pose,'surfaceContact')){
+  if(pose.mode!=='insect'||!supportId(pose.surfaceContact?.anchorId))throw new TypeError('Invalid visit support');
+  support=anchors(place).find(a=>a.id===pose.surfaceContact.anchorId&&!a.deleted);
+  if(!support||!vec(anchorPosition(support))||!Array.isArray(support.sourceIds)||!support.sourceIds.length)
+   throw new Error('A surviving support landmark and its sources are required');
+ }
+ // Keep the chosen personal landmark and the surface beneath the visitor as
+ // separate identities. Only stable anchor/source IDs survive mesh rebuilds.
+ const sourceIds=support?[...new Set([...(anchor.sourceIds||[]),...support.sourceIds])]:[...(anchor.sourceIds||[])];
+ return {id,kind:'personal-visit',label,at,placeId:place.id,revision:place.revision,epoch:place.epoch??0,anchorId,offset:sub(pose.position,anchorPosition(anchor)),mode:pose.mode,yaw:pose.yaw,pitch:pose.pitch,...(underwater?{waterId:pose.waterId}:{}),...(support?{supportAnchorId:support.id}:{}),sourceIds,provenance:'personal-recollection'};
 }
 export function resolveVisit(place,visit){
  const fail=reason=>({ok:false,reason});if(visit.placeId!==place.id)return fail('different-place');if((place.epoch??0)!==visit.epoch)return fail('history-invalidated');
@@ -74,9 +85,61 @@ export function resolveVisit(place,visit){
  const sources=place.observations?.map(o=>o.source)||(Array.isArray(place.sources)?place.sources:Object.values(place.sources||{}));if(!Array.isArray(visit.sourceIds)||visit.sourceIds.some(id=>(place.revokedSources||[]).includes(id)||!sources.some(s=>s.id===id&&!['deleted','revoked'].includes(s.status))))return fail('source-removed');
  const underwater=visit.mode==='underwater';
  if(!vec(visit.offset)||![visit.yaw,visit.pitch].every(Number.isFinite)||(underwater?(visit.waterId!==`${visit.anchorId}:water`||Math.abs(visit.pitch)>1.35):!Object.hasOwn(MODES,visit.mode)))return fail('invalid-visit');
+ const supported=Object.hasOwn(visit,'supportAnchorId');
+ if(supported&&(visit.mode!=='insect'||!supportId(visit.supportAnchorId)))return fail('invalid-visit');
  // A changed water shape may make today's viewpoint unavailable while its
  // retained revision is still meaningful. Geometry admission belongs to the
  // receiving controller, so this structural check does not erase that memory.
- return {ok:true,revised:place.revision!==visit.revision,pose:{position:add(anchorPosition(anchor),visit.offset),mode:visit.mode,yaw:visit.yaw,pitch:visit.pitch,...(underwater?{waterId:visit.waterId}:{})},sourceIds:visit.sourceIds.slice(),capturedRevision:visit.revision,currentRevision:place.revision};
+ // The same applies to insect support: retain its identity for restore(), but
+ // do not require today's surface to exist before the old revision can load.
+ return {ok:true,revised:place.revision!==visit.revision,pose:{position:add(anchorPosition(anchor),visit.offset),mode:visit.mode,yaw:visit.yaw,pitch:visit.pitch,...(underwater?{waterId:visit.waterId}:{}),...(supported?{surfaceContact:{anchorId:visit.supportAnchorId}}:{})},sourceIds:visit.sourceIds.slice(),capturedRevision:visit.revision,currentRevision:place.revision};
 }
 
+
+/** Admit the last presented camera as an ordinary personal viewpoint. No live
+ * navigator or animal state is changed; unsupported clamping or roll is refused. */
+export function admitCameraViewpoint(world, camera, preferredMode = 'human') {
+ const positionTolerance=1e-6,directionTolerance=1e-7;
+ const isVector=value=>Array.isArray(value)&&value.length===3&&value.every(Number.isFinite);
+ const distance=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2]);
+ const normalized=value=>{
+  if(!isVector(value))return null;
+  const size=Math.hypot(...value);
+  return Number.isFinite(size)&&size>1e-12?value.map(component=>component/size):null;
+ };
+ const orthogonalUp=(up,forward)=>{
+  const n=normalized(up);if(!n||!forward)return null;
+  const projection=n.reduce((sum,component,index)=>sum+component*forward[index],0);
+  return normalized(n.map((component,index)=>component-projection*forward[index]));
+ };
+ const targetPosition=isVector(camera?.position)?camera.position.slice():null;
+ const targetForward=normalized(camera?.forward),targetUp=orthogonalUp(camera?.up,targetForward);
+ if(!targetPosition||!targetForward||!targetUp)return {ok:false,reason:'camera-unavailable',failures:[]};
+ const yaw=Math.atan2(targetForward[0],-targetForward[2]);
+ const pitch=Math.atan2(targetForward[1],Math.hypot(targetForward[0],targetForward[2]));
+ const initialMode=Object.hasOwn(MODES,preferredMode)?preferredMode:'human';
+ const failures=[];
+ const mismatch=pose=>{
+  if(!isVector(pose?.position)||distance(pose.position,targetPosition)>positionTolerance)return 'position-adjusted';
+  const forward=normalized(pose.forward),up=orthogonalUp(pose.up,forward);
+  if(!forward||!up||distance(forward,targetForward)>directionTolerance||distance(up,targetUp)>directionTolerance)return 'orientation-adjusted';
+  return null;
+ };
+ for(const mode of new Set([initialMode,'bird'])){
+  try{
+   const trial=createNavigator(world),restored=trial.restore({mode,position:targetPosition.slice(),yaw,pitch});
+   if(!restored.ok){failures.push({mode,reason:restored.reason||'viewpoint-unavailable'});continue;}
+   const firstMismatch=restored.adjusted?'position-adjusted':mismatch(restored.pose);
+   if(firstMismatch){failures.push({mode,reason:firstMismatch});continue;}
+   // Replay the persisted ordinary pose and optional stable support anchor.
+   // Runtime mesh/contact metadata is reconstructed by the receiving navigator.
+   const saved={mode:restored.pose.mode,position:restored.pose.position.slice(),yaw:restored.pose.yaw,pitch:restored.pose.pitch};
+   if(restored.pose.surfaceContact)saved.surfaceContact={anchorId:restored.pose.surfaceContact.anchorId};
+   const replayed=createNavigator(world).restore(saved);
+   const replayMismatch=!replayed.ok?(replayed.reason||'viewpoint-unavailable'):replayed.adjusted?'position-adjusted':mismatch(replayed.pose);
+   if(replayMismatch){failures.push({mode,reason:replayMismatch});continue;}
+   return {ok:true,pose:replayed.pose};
+  }catch{failures.push({mode,reason:'viewpoint-unavailable'});}
+ }
+ return {ok:false,reason:'viewpoint-not-representable',failures};
+}

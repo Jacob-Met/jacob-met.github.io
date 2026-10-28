@@ -124,7 +124,7 @@ function normalizeObservation(input) {
     if(f.imagePoint){if(!calibration)fail('Image points require ground-plane control points');const [x,z]=projectGroundPoint(calibration.matrix,f.imagePoint);position=vector([x,f.height??0,z]);}
     else position=vector(f.position);
     if(f.contextForm!==undefined){
-      const allowed=geographicContext?.profileId==='saguaro-desert-scrub'?{ground:['desert-ground'],plant:['columnar-succulent','scrub']}:geographicContext?.profileId==='everglades-sawgrass-marsh'?{ground:['marsh-substrate'],plant:['sedge']}:{};
+      const allowed=geographicContext?.profileId==='redwood-rocky-intertidal'?{ground:['intertidal-substrate'],rock:['intertidal-shelf']}:geographicContext?.profileId==='saguaro-desert-scrub'?{ground:['desert-ground'],plant:['columnar-succulent','scrub']}:geographicContext?.profileId==='everglades-sawgrass-marsh'?{ground:['marsh-substrate'],plant:['sedge']}:geographicContext?.profileId==='london-urban-courtyard'?{ground:['courtyard-foundation'],plant:['garden-hedge','wall-climber']}:{};
       if(!allowed[f.kind]?.includes(f.contextForm))fail('Unsupported contextual form for this habitat and feature');
     }
     const size=vector(f.size);if(size.some(v=>v<=0||v>1000))fail('Feature size must be positive');

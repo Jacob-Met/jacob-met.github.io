@@ -95,10 +95,10 @@ export const kit={
  },
  /** Continuous value. */
  range({label,min=0,max=1,step=.01,value=0,format=v=>String(v),onInput=()=>{}}){
-  const doc=document,element=doc.createElement('label');element.className='ctl ctl-range';
-  const head=doc.createElement('span');head.className='ctl-range-head';const l=doc.createElement('span');l.className='ctl-label';l.textContent=label;
+  const doc=document,element=doc.createElement('div');element.className='ctl ctl-range';
+  const head=doc.createElement('span');head.className='ctl-range-head';const l=doc.createElement('label');l.className='ctl-label';l.textContent=label;
   const out=doc.createElement('output');head.append(l,out);
-  const input=doc.createElement('input');input.type='range';Object.assign(input,{min,max,step});
+  const input=doc.createElement('input');input.type='range';input.id=uniq('ctl');l.htmlFor=input.id;Object.assign(input,{min,max,step});
   const set=v=>{input.value=String(v);out.textContent=format(Number(input.value));};set(value);
   input.addEventListener('input',()=>{out.textContent=format(Number(input.value));onInput(Number(input.value));});
   element.append(head,input);return {element,set,input};

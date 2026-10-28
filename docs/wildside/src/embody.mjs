@@ -28,18 +28,19 @@ export function createEmbodiment(deps){
   const emit=()=>onChange(snapshot());
 
   function locate(id){const c=creatureById(id);return c?c.locate(context()):null;}
-  function bump(id,key,amount){
+  const canObserveTime=()=>mode==='outside'&&!!creature&&!!locate(creature);
+  function bump(id,key,amount,{notifyChange=true}={}){
     if(!(amount>0))return;
     const p=prog(id),story=creature&&CREATURE_IDS.includes(id)?creatureStory(id):null;
     const before=story?story.beats.map(b=>beatUnlocked(b,p)):[];
     p[key]=(p[key]??0)+amount;
-    if(story)story.beats.forEach((b,i)=>{if(!before[i]&&beatUnlocked(b,p)){persist();onUnlock({creature:id,beat:b});emit();}});
+    if(story)story.beats.forEach((b,i)=>{if(!before[i]&&beatUnlocked(b,p)){persist();onUnlock({creature:id,beat:b});if(notifyChange)emit();}});
   }
 
   function list(){
     return CREATURES.map(c=>{
       const found=c.locate(context());
-      return {id:c.id,name:c.name,kind:c.kind,present:!!found,canBecome:!!c.canBecome&&hamonActive()&&!c.blocked?.(context()),becomeBlocked:c.canBecome?(!hamonActive()?'Becoming an animal needs the HAMON view (?hamon=1).':c.blocked?.(context())??null):null,activity:found?.activity??null,hasStory:CREATURE_IDS.includes(c.id)};
+      return {id:c.id,name:c.name,kind:c.kind,present:!!found,canBecome:!!c.canBecome&&hamonActive()&&!c.blocked?.(context()),becomeBlocked:c.canBecome?(!hamonActive()?'Becoming an animal needs the HAMON painted view, which needs WebGPU or WebGL2 (?hamon=1 turns it back on if it was switched off).':c.blocked?.(context())??null):null,activity:found?.activity??null,hasStory:CREATURE_IDS.includes(c.id)};
     });
   }
 
@@ -49,7 +50,7 @@ export function createEmbodiment(deps){
     if(!found)return {ok:false,reason:'The '+c.name.toLowerCase()+' is not out right now.'};
     if(nextMode==='inside'){
       if(!c.canBecome)return {ok:false,reason:'Not yet.'};
-      if(!hamonActive())return {ok:false,reason:'Becoming an animal needs the HAMON view (?hamon=1).'};
+      if(!hamonActive())return {ok:false,reason:'Becoming an animal needs the HAMON painted view, which needs WebGPU or WebGL2 (?hamon=1 turns it back on if it was switched off).'};
       const blocked=c.blocked?.(context());if(blocked)return {ok:false,reason:blocked};
       const d=c.become(context(),found);
       if(!d)return {ok:false,reason:'There is no safe space to stand where the '+c.name.toLowerCase()+' is. Try again when it moves.'};
@@ -108,6 +109,16 @@ export function createEmbodiment(deps){
       if(mode!=='outside'||!creature)return;
       const o=creatureById(creature).camera.outside;
       orbit.distance=clamp(orbit.distance*Math.exp(delta*.0012),o.min,o.max);
+    },
+    /** Account for visible, stationary watching without advancing any body.
+     * The host owns attention/visibility timing and refreshes only story DOM.
+     * A bounded interval cannot credit a hidden or suspended catch-up gap. */
+    canObserveTime,
+    observeTime(dt){
+      if(!Number.isFinite(dt)||dt<=0||dt>1||!canObserveTime())return false;
+      bump(creature,'observe',dt,{notifyChange:false});
+      dirty+=dt;if(dirty>5){dirty=0;persist();}
+      return true;
     },
     /** Advance the animal you are, and the clock of what you have watched. */
     update(input,dt){

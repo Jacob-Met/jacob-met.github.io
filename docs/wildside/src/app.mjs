@@ -1,3 +1,8 @@
+import {intertidalAttachments,createIntertidalLife} from './intertidal-habitat.mjs';
+import {intertidalFaces,createIntertidalArt} from './intertidal-art.mjs';
+import {mapEntryView} from './map-entry-view.mjs';
+import {mountContextEnrichment} from './context-enrichment-view.mjs';
+import {deriveUrbanHabitatDetail} from './urban-habitat-detail.mjs';
 import {createRainField} from './rain-field.mjs';
 import {createResidentFocus,residentView} from './resident-focus.mjs';
 import {createCrawlerFocusRules} from './crawler-focus.mjs';
@@ -6,14 +11,17 @@ import {birdForagingSites} from './bird-foraging.mjs';
 import {mountLocationContext} from './location-context-view.mjs';
 import {mountEcologyDiscovery} from './ecology-discovery-view.mjs';
 import {createFrameLoop} from './frame-loop.mjs';
+import {createPausedObservationClock} from './paused-observation-clock.mjs';
 import {createOverviewZoom} from './overview-zoom.mjs';
 import {createOverviewPan,overviewKeyboardDrag} from './overview-pan.mjs';
 import {downloadRenderedPNG} from './visit-picture.mjs';
 import {createShadowReuseGuard} from './shadow-reuse-guard.mjs';
 import {prepareWorldContact} from './surface-contact-art.mjs';
 import * as THREE from '../vendor/three.module.js';
-import {createPlace,placeAtRevision} from './place.mjs';
-import {createNavigator,fitOverview,captureVisit,resolveVisit,MODES} from './visits.mjs';
+import {createPlace,placeAtRevision,admitObservation} from './place.mjs';
+import {createExamplePlace} from './example-place.mjs';
+import {createNavigator,fitOverview,captureVisit,resolveVisit,admitCameraViewpoint,MODES} from './visits.mjs';
+import {createUrbanBirdHabitat} from './urban-bird-habitat.mjs';
 import {createHabitatSimulation} from './habitat.mjs';
 import {createCrawlerSimulation,CRAWLER_BODY} from './crawler.mjs';
 import {createCrawlerArt} from './crawler-art.mjs';
@@ -53,14 +61,15 @@ import {registerPlace} from './places-registry.mjs';
 import {mountPlacesPicker} from './places-picker.mjs';
 const $=id=>document.getElementById(id), el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
 const uid=prefix=>`${prefix}-${crypto.randomUUID()}`;
-let store,session,saveFault=null,frameLoop=null,placesPicker=null;
-const requestWorldFrame=()=>frameLoop?.invalidate();
+let store,session,saveFault=null,frameLoop=null,placesPicker=null,pausedObservation=null;
+const requestWorldFrame=()=>{pausedObservation?.sync();frameLoop?.invalidate();};
 try{store=createSessionStore(localStorage);session=store.load();}catch(e){saveFault=e.message;session=defaultSession();}
 let place=session.places.find(p=>p.id===session.activePlaceId),displayPlace=place,historical=false;
 let simContext=null,crawlerContext=null,crawler=null,crawlerArt=null,crawlerNear=false;
 let salamanderContext=null,salamander=null,salamanderArt=null;
 let orbWeaver=null,orbArt=null,orbContext=null,webFocus=false;
 let pondSkater=null,skaterArt=null,skaterContext=null,skaterFocus=false;
+let intertidalLife=null,intertidalArt=null,intertidalContext=null,anemoneFocus=false;
 let submergedLife=null,submergedArt=null,submergedView=null,submergedContext=null,underwaterFocus=false;
 function leaveUnderwater(){underwaterFocus=false;submergedView?.clear();}
 let art,sim,nav,bird,frameCount=0,worldTime=0,rain=false,paused=matchMedia('(prefers-reduced-motion: reduce)').matches,overview=true;
@@ -69,9 +78,9 @@ function cancelPicture(){pictureSerial++;picturePending=null;pictureSaving=false
 let editor=null,toastTimer,worldReady=false,orbit=0,pointer=null,pendingMode=null,focusFov=null,sourceView=null;
 const overviewZoom=createOverviewZoom(),overviewPan=createOverviewPan(),overviewTouches=new Map();let lastPinchDistance=null,lastPinchCenter=null;
 let birdFocus=null,crawlerFocus=null;
-function releaseResidentFocus(){if(birdFocus||crawlerFocus){birdFocus=null;crawlerFocus=null;if(sim)updateEncounter();}}
+function releaseResidentFocus(){anemoneFocus=false;if(birdFocus||crawlerFocus){birdFocus=null;crawlerFocus=null;if(sim)updateEncounter();}}
 
-const pressed=new Set(),touch={};
+const pressed=new Set(),touch={},padTouch={};
 const soundscape=createSoundscape(),soundForward=new THREE.Vector3(),soundUp=new THREE.Vector3();
 const syncSoundState=()=>soundscape.setPaused(paused||underwaterFocus).catch(()=>{});
 function notify(message,persistent=false){$('status').textContent=message;$('status').classList.add('visible');clearTimeout(toastTimer);if(!persistent)toastTimer=setTimeout(()=>$('status').classList.remove('visible'),6500);}
@@ -80,7 +89,7 @@ try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference
 const mobile=createMobile({world:$('world'),onChange:()=>requestWorldFrame(),canPinch:()=>!overview&&!sourceView&&!$('panel').open});
 renderer.setPixelRatio(mobile.pixelRatio(Math.min(devicePixelRatio,1.5)));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.18;renderer.shadowMap.enabled=true;renderer.shadowMap.type=mobile.active?THREE.PCFShadowMap:THREE.PCFSoftShadowMap;
 $('world').append(renderer.domElement);renderer.domElement.setAttribute('aria-label','Living garden scene');
-// Opt-in HAMON Engine renderer (WebGPU). three.js keeps the scene graph and remains the fallback.
+// HAMON Engine renderer (WebGPU, or WebGL2 without it). three.js keeps the scene graph and is the last resort.
 // World drawer: features register controls (src/controls.mjs); the drawer gives them one home.
 const worldDrawer=mountWorldDrawer({drawer:$('world-drawer'),toggle:$('world-toggle'),close:$('world-drawer-close'),sectionsRoot:$('drawer-sections'),sections:WORLD_SECTIONS,isBlocked:()=>$('panel').open});
 const settingsDrawer=mountWorldDrawer({drawer:$('settings-drawer'),toggle:$('settings-toggle'),close:$('settings-close'),sectionsRoot:$('settings-sections'),sections:SETTINGS_SECTIONS,isBlocked:()=>$('panel').open});
@@ -102,11 +111,13 @@ function updateLookPicker(s){
  hamonState=s;hamonResidents.setVisible(!!hamon&&s.phase==='ready');refreshControls();try{registerCorePlaces();}catch{}
  if(s.phase==='failed'&&s.error&&!hamonNoticeShown){hamonNoticeShown=true;notify(/WebGPU is not available/i.test(s.error)?webgpuNotice(s.error,mobile.device,navigator.userAgent):'Wildside is showing its standard view here: this device can’t draw the painted view just now. Your place is unchanged.');}
 }
-function hamonContext(){return {sim,bird,crawler,crawlerArt,salamander,salamanderArt,orbWeaver,orbArt,pondSkater,skaterArt,submergedLife,submergedArt,nav,place:displayPlace,art,embody};}
+function hamonContext(){return {sim,bird,crawler,crawlerArt,salamander,salamanderArt,orbWeaver,orbArt,pondSkater,skaterArt,submergedLife,submergedArt,nav:momentPreview?{pose:()=>momentPreview}:nav,place:displayPlace,art,embody};}
 // Watch or become an animal (embody.mjs). The host supplies the simulation and applies the camera.
 const embodyRay=new THREE.Raycaster();
 const embodyProbe=new THREE.Vector3();
 let embodyClock=0;
+let momentPreview=null,momentPreviewCanvas=null,lastEmbodiedView=null,viewGeneration=0;
+let observationGeneration=0,observedGeneration=-1,observationContextLost=false,observationPageActive=true;
 const embody=createEmbodiment({
   context:()=>({sim,nav,groundAt:art?.groundAt,crawler,salamander,pondSkater,orbWeaver,submergedLife,hamon}),
  hamonActive:()=>!!hamon?.active,
@@ -126,20 +137,38 @@ const embody=createEmbodiment({
  project:p=>{embodyProbe.fromArray(p).project(camera);const rect=$('world').getBoundingClientRect();return {x:rect.left+(embodyProbe.x+1)/2*rect.width,y:rect.top+(1-embodyProbe.y)/2*rect.height,visible:embodyProbe.z>-1&&embodyProbe.z<1};},
  storage:(()=>{try{return localStorage;}catch{return null;}})(),
  onActive:on=>{
-  if(on){releaseResidentFocus();leaveUnderwater();webFocus=false;skaterFocus=false;sourceView=null;overview=false;focusFov=null;pendingMode=null;pressed.clear();Object.keys(touch).forEach(k=>delete touch[k]);if($('panel').open)closePanel();worldDrawer.close?.();embodyClock=0;}
+  lastEmbodiedView=null;viewGeneration++;
+  if(on){releaseResidentFocus();leaveUnderwater();webFocus=false;skaterFocus=false;sourceView=null;overview=false;focusFov=null;pendingMode=null;pressed.clear();Object.keys(touch).forEach(k=>delete touch[k]);Object.keys(padTouch).forEach(k=>delete padTouch[k]);if($('panel').open)closePanel();worldDrawer.close?.();embodyClock=0;}
   else{overview=true;}
   updateLabels();requestWorldFrame();
  },
- onChange:()=>{requestWorldFrame();embodyUI.sync();},
+ onChange:()=>{observationGeneration++;requestWorldFrame();embodyUI.sync();},
  onUnlock:({creature,beat})=>{embodyUI?.unlocked(beat.id);notify(`A new moment in the ${creature}\u2019s story: ${beat.title}`);},
 });
-const embodyUI=mountEmbodyUI(embody,{notify});
+const embodyUI=mountEmbodyUI(embody,{notify,onKeep:keepMoment,canKeep:()=>!historical});
+// Attentive watching can reveal a story while the simulation and renderer stay still.
+pausedObservation=createPausedObservationClock({
+ enabled:()=>worldReady&&paused&&observationPageActive&&!document.hidden&&!observationContextLost&&embody.mode==='outside',
+ target:()=>{
+  if(!embody.canObserveTime()||$('panel').open||worldDrawer.isOpen||settingsDrawer.isOpen||!$('places').hidden||
+     momentPreview||sourceView||document.body.matches('.arriving,.travelling')||
+     observedGeneration!==observationGeneration||!lastEmbodiedView||
+     lastEmbodiedView.generation!==viewGeneration||lastEmbodiedView.placeId!==displayPlace.id||
+     lastEmbodiedView.revision!==displayPlace.revision||lastEmbodiedView.creature!==embody.creature)return null;
+  return JSON.stringify([displayPlace.id,displayPlace.revision,displayPlace.epoch??0,embody.creature,observationGeneration,viewGeneration]);
+ },
+ observe:dt=>{const accepted=embody.observeTime(dt);if(accepted)embodyUI.refreshObservation();return accepted;},
+});
+// Observe existing visibility state without changing drawer or Places behavior.
+const observationVisibility=new MutationObserver(()=>pausedObservation.sync());
+observationVisibility.observe(document.body,{attributes:true,attributeFilter:['class']});
+observationVisibility.observe($('places'),{attributes:true,attributeFilter:['hidden']});
 // Simulated residents and the third-person traveller (HAMON view only; see hamon-residents.mjs).
 let residentEncounter=null;
 if(hamon){hamonResidents.onChange=()=>syncHamonWorld();
  registerControl({id:'hamon-residents',section:'life',order:5,when:()=>!!hamonState&&hamonState.phase==='ready',mount({container}){hamonResidents.mount(container);return {update(){hamonResidents.refresh();}};}});}
-function hamonDynamicRoots(){return [bird,crawlerArt,salamanderArt,orbArt,skaterArt,submergedArt].filter(Boolean).map(a=>({group:a.group,role:'creature'}));}
-function syncHamonWorld(){if(!hamon&&liveIdOf(displayPlace))notify('This imagined place is drawn by the HAMON Engine. Open Wildside with ?hamon=1 (WebGPU) to see it.');if(hamon&&art)void hamon.ready.then(ok=>{if(ok&&art){const shown=hamon.setWorld(art,displayPlace,hamonDynamicRoots(),hamonContext());return Promise.resolve(shown).then(()=>{adoptLiveWalk();if(ok)hamon.setRain(rain);requestWorldFrame();});}if(ok)hamon.setRain(rain);requestWorldFrame();});}
+function hamonDynamicRoots(){return [bird,crawlerArt,salamanderArt,orbArt,skaterArt,submergedArt,intertidalArt].filter(Boolean).map(a=>({group:a.group,role:'creature'}));}
+function syncHamonWorld(){if(!hamon&&liveIdOf(displayPlace))notify('This imagined place is drawn by the HAMON Engine, which needs WebGPU or WebGL2 — this browser offers neither (or the painted view is turned off; ?hamon=1 turns it back on).');if(hamon&&art)void hamon.ready.then(ok=>{if(ok&&art){const shown=hamon.setWorld(art,displayPlace,hamonDynamicRoots(),hamonContext());return Promise.resolve(shown).then(()=>{adoptLiveWalk();if(ok)hamon.setRain(rain);requestWorldFrame();});}if(ok)hamon.setRain(rain);requestWorldFrame();});}
 // An Engine live place (hamon-places.mjs): walk its own ground, buildings and trunks, not the token patch Wildside built.
 function adoptLiveWalk(){
  const live=hamon?.livePlace();if(!live||!art||!liveIdOf(displayPlace))return;
@@ -148,25 +177,24 @@ function adoptLiveWalk(){
  const old=nav?.pose();nav=createNavigator(world(),{mode:old?.mode||'human',position:[w.start.position[0],w.start.position[1]+(MODES[old?.mode||'human'].eye),w.start.position[2]],yaw:w.start.yaw,pitch:-.06});
  crawler?.setWorld?.(world());updateLabels();
 }
-async function activatePlace(next,message){
- await changeSession(s=>({...s,places:s.places.some(p=>p.id===next.id)?s.places:[...s.places,next],activePlaceId:next.id}));
+async function activatePlace(next,message,request=null,expectedSequence=session.sequence){
+ const saved=await changeSession(s=>({...s,places:s.places.some(p=>p.id===next.id)?s.places:[...s.places,next],activePlaceId:next.id}),{request,expectedSequence});
+ if(saved===false||(request&&!request.isCurrent()))return false;
  displayPlace=place;historical=false;rebuild(place);overview=true;updateLabels();closePanel();if(message)notify(message);
+ return true;
 }
 /** The "Places" list for the controls registry (src/places-list.mjs): window.__wildsidePlaces(). */
 const placesActions={
  hamonAvailable:()=>!!hamon&&['waiting','ready'].includes(hamon.state().phase),
- courtyard:()=>activatePlace(session.places.find(p=>p.id==='imagined-courtyard')??createExamplePlace(),'An imagined courtyard. Its life is simulated.'),
- kyoto:async()=>{const r=await fetch('data/kyoto-public-block.json');if(!r.ok)throw Error('The bundled public map is unavailable.');const {parseTransfer}=await import('./transfer.mjs');const parsed=await parseTransfer(await r.text());if(parsed.data.places.length!==1)throw Error('The bundled map has an unsupported layout.');await activatePlace(parsed.data.places[0],'A Kyoto block from public map data, with imagined life.');},
- live:id=>openLiveImagined(id),
+ courtyard:request=>activatePlace(session.places.find(p=>p.id==='imagined-courtyard')??createExamplePlace(),'An imagined courtyard. Its life is simulated.',request),
+ kyoto:async request=>{const expectedSequence=session.sequence;const r=await fetch('data/kyoto-public-block.json');if(!r.ok)throw Error('The bundled public map is unavailable.');const {parseTransfer}=await import('./transfer.mjs');const parsed=await parseTransfer(await r.text());if(parsed.data.places.length!==1)throw Error('The bundled map has an unsupported layout.');return activatePlace(parsed.data.places[0],'A Kyoto block from public map data, with imagined life.',request,expectedSequence);},
+ live:(id,request)=>openLiveImagined(id,request),
 };
 export const getPlacesList=()=>buildPlacesList(placesActions);
 window.__wildsidePlaces=getPlacesList;
 window.__wildsideSetLook=id=>hamon?.setLook(id)&&(requestWorldFrame(),true);
-async function openLiveImagined(id){
- const next=createLiveImaginedPlace(id);
- await changeSession(s=>({...s,places:s.places.some(p=>p.id===next.id)?s.places:[...s.places,next],activePlaceId:next.id}));
- displayPlace=place;historical=false;rebuild(place);overview=true;updateLabels();closePanel();
- notify('An imagined place, composed by the HAMON Engine. Its wildlife is simulated. Choose Human, Bird or Insect to step in.');
+async function openLiveImagined(id,request=null){
+ return activatePlace(createLiveImaginedPlace(id),'An imagined place, composed by the HAMON Engine. Its wildlife is simulated. Choose Human, Bird or Insect to step in.',request);
 }
 const scene=new THREE.Scene();scene.background=new THREE.Color('#d8e3cb');scene.fog=new THREE.FogExp2('#d8e3cb',.023);
 const camera=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,.02,150);
@@ -217,18 +245,23 @@ function updateEncounter(){
  if(!sim)return;
  if(liveIdOf(displayPlace)){$('encounter').hidden=true;return;} // an Engine place's own wildlife is drawn by the Engine
  const robin=sim.snapshot().bird,beetle=crawler?.snapshot().crawler;
+ const hasBird=robin.state!=='unplaced',hasBeetle=!!beetle&&beetle.state!=='unplaced';
  const web=orbWeaver?.snapshot(),hasWeb=!!web?.web;
  const skater=pondSkater?.snapshot().skater,hasSkater=skater&&skater.state!=='unplaced';
  const aquatic=submergedLife?.snapshot().swimmers[0],hasAquatic=!!aquatic;
  if(!hasAquatic&&!submergedView?.pose())leaveUnderwater();
  if(!hasSkater)skaterFocus=false;
  if(!hasWeb)webFocus=false;
+ $('discover-ecology').textContent=anemoneFocus?'Coastal sources':'Its story';
  const small=(!overview&&nav.pose().mode==='insect')||robin.state==='unplaced';
  const inhabitant=underwaterFocus?aquatic:skaterFocus?skater:webFocus?web.spider:small?beetle:robin;
+ const neutralEncounter=!underwaterFocus&&!skaterFocus&&!webFocus&&(!inhabitant||inhabitant.state==='unplaced');
+ $('discover-ecology').hidden=neutralEncounter;
  $('encounter').hidden=(!inhabitant||inhabitant.state==='unplaced')&&!hasWeb&&!hasSkater&&!hasAquatic;
  $('encounter-title').textContent=underwaterFocus?'A world within the water':skaterFocus?'On a silver surface':webFocus?'A world held by silk':small?'Between the stems':['foraging','hopping'].includes(robin.activity)?'A closer look at the ground':'A pause between flights';
  $('bird-state').textContent=underwaterFocus&&!hasAquatic?'A kept underwater viewpoint':`Simulated ${underwaterFocus?'water flea':skaterFocus?'water strider':webFocus?'orb-weaver':small?'ground beetle':'robin'} · ${inhabitant?.activity==='hopping'?'hopping':inhabitant?.activity==='foraging'?'searching':inhabitant?.state.replaceAll('-',' ')||'no supported ground'}`;
- $('watch-bird').textContent=birdFocus?'Stop following':'Look closer';$('watch-bird').setAttribute('aria-pressed',String(!!birdFocus));$('watch-bird').hidden=small||webFocus||skaterFocus||underwaterFocus;$('watch-crawler').hidden=!small||webFocus||skaterFocus||underwaterFocus;
+ $('watch-bird').textContent=birdFocus?'Stop following':'Look closer';$('watch-bird').setAttribute('aria-pressed',String(!!birdFocus));$('watch-bird').hidden=!hasBird||small||webFocus||skaterFocus||underwaterFocus;$('watch-crawler').hidden=!hasBeetle||!small||webFocus||skaterFocus||underwaterFocus;
+ if(neutralEncounter){$('encounter-title').textContent='Life nearby';$('bird-state').textContent='Simulated life · Choose a nearby inhabitant to look closer.';}
  embodyUI.bindEncounter($('become-creature'),underwaterFocus?(hasAquatic?'flea':null):skaterFocus?'skater':webFocus?'spider':small?(beetle&&beetle.state!=='unplaced'?'beetle':null):robin.state!=='unplaced'?'robin':null);
  $('watch-underwater').hidden=!hasAquatic;$('watch-underwater').textContent=underwaterFocus?'Find the swimmers':'Underwater';
  $('watch-skater').hidden=!hasSkater;$('ripple-water').hidden=!hasSkater||!skaterFocus;
@@ -240,9 +273,10 @@ function updateEncounter(){
  $('watch-visitor').textContent=['flying','escaping'].includes(web.encounter?.phase)?'Meet the visitor':'Look at the catch';
  // HAMON view: a simulated resident nearby in Human view takes the card (labelled simulated)
  residentEncounter=hamon?.active&&!overview&&!webFocus&&!skaterFocus&&!underwaterFocus&&!birdFocus&&nav.pose().mode==='human'?hamonResidents.encounter(camera):null;
- if(residentEncounter){$('encounter').hidden=false;$('encounter-title').textContent={squirrel:'A life up and down the trunk',songbird:'Voices in the crown',rabbit:'Out on the grass',butterfly:'Among the flowers',gull:'Over open water'}[residentEncounter.kind];$('bird-state').textContent=residentLine(residentEncounter);$('watch-bird').hidden=true;$('watch-crawler').hidden=true;}
+ if(residentEncounter){$('discover-ecology').hidden=false;$('encounter').hidden=false;$('encounter-title').textContent={squirrel:'A life up and down the trunk',songbird:'Voices in the crown',rabbit:'Out on the grass',butterfly:'Among the flowers',gull:'Over open water'}[residentEncounter.kind];$('bird-state').textContent=residentLine(residentEncounter);$('watch-bird').hidden=true;$('watch-crawler').hidden=true;}
  $('brush-web').hidden=!hasWeb||!webFocus;$('brush-web').disabled=paused;
  $('brush-web').title=paused?'Resume simulated life to brush a strand':'Send a ripple along the silk';
+ if(anemoneFocus){const a=intertidalLife?.snapshot().residents[0];if(a){$('discover-ecology').hidden=false;$('encounter').hidden=false;$('encounter-title').textContent='Held to the rocky shore';$('bird-state').textContent=`Illustrative anemone · ${a.wet?'opening under water':'contracted on an exposed shelf'}`;$('watch-bird').hidden=true;$('watch-crawler').hidden=true;$('become-creature').hidden=true;}}
  $('watch-crawler').textContent=crawlerFocus?'Stop following':'Look closer';$('watch-crawler').setAttribute('aria-pressed',String(!!crawlerFocus));
  $('navigation-hint').textContent=touchHint(overview&&!sourceView?'Drag to orbit · Shift-drag, Shift+Arrow or two fingers to pan · Scroll or pinch to zoom':crawlerFocus?'Following the beetle · Drag or move to explore · Esc for overview':birdFocus?'Following the robin · Drag or move to explore · Esc for overview':underwaterFocus?'Drag to look · W A S D to swim · E / Q to rise / sink · Esc to surface':webFocus?'Tap a strand · Drag to look · W A S D to move · Esc for overview':(nav.pose().mode==='bird'?'Drag to look around · W A S D to fly · E / Q for up and down · Esc to step back':'Drag to look around · W A S D to walk · Esc to step back'));
  $('watch-web').textContent=webFocus?'See the whole web':'Find a web';
@@ -280,6 +314,9 @@ function safeStart(mode='human'){
     if(distance>bestDistance){bestDistance=distance;bestYaw=yaw;}
    }
    test.restore({mode,position,yaw:bestYaw,pitch:mode==='insect'?.10:-.06});
+   // A clear road ray can face away from every acquired building. Preserve the
+   // admitted street position, but let human arrivals see surviving map geometry.
+   if(mode==='human'){const view=mapEntryView(test.pose().position,displayPlace.anchors);if(view)test.restore({...test.pose(),yaw:view.yaw,pitch:view.pitch});}
   }
   return test;
  }
@@ -297,6 +334,7 @@ function enterMapVantage(){
  }catch{return false;}
 }
 function rebuild(p,{keepPose=false}={}){
+ momentPreview=null;momentPreviewCanvas=null;lastEmbodiedView=null;viewGeneration++;
  overviewZoom.reset();overviewPan.reset();overviewTouches.clear();lastPinchDistance=null;lastPinchCenter=null;pointer=null;
  releaseResidentFocus();
  embody.exit();
@@ -312,23 +350,31 @@ function rebuild(p,{keepPose=false}={}){
  rainField=createRainField({supportAt:rainSupportAt,requireSupport:art.groundCoverageRequired});
  const b=art.bounds,c=b.min.map((v,i)=>(v+b.max[i])/2);sun.target.position.set(c[0],0,c[2]);sun.position.set(c[0]+5,11,c[2]+7);const span=Math.max(b.max[0]-b.min[0],b.max[2]-b.min[2],8);sun.shadow.camera.left=-span;sun.shadow.camera.right=span;sun.shadow.camera.top=span;sun.shadow.camera.bottom=-span;sun.shadow.camera.updateProjectionMatrix();
  const lightingScale=Math.max(1,span/20);sun.shadow.normalBias=.02*lightingScale;sun.position.set(c[0]+5*lightingScale,11*lightingScale,c[2]+7*lightingScale);sun.shadow.camera.far=40*lightingScale+Math.max(0,b.max[1]-11);sun.shadow.camera.updateProjectionMatrix();worldFogDensity=.023/lightingScale;scene.fog.density=worldFogDensity;
- if(!bird){bird=createBirdArt();scene.add(bird.group);}const habitat={perches:art.perches,foragingSites:birdForagingSites(art),obstacles:art.obstacles,groundY:art.groundAt?.(0,0)||0};
+ const coastal=p.observations.some(o=>o.geographicContext?.profileId==='redwood-rocky-intertidal');
+ // Marine eligibility is deliberately limited to the new attached inhabitant.
+ if(!bird){bird=createBirdArt();scene.add(bird.group);}const habitat={perches:coastal?[]:art.perches,foragingSites:coastal?[]:birdForagingSites(art),obstacles:art.obstacles,groundY:art.groundAt?.(0,0)||0};
+ const birdHabitat=coastal?habitat:createUrbanBirdHabitat(art,habitat);
  const context=p.id+':'+(historical?'revision-'+p.revision:'current');
- if(sim&&simContext===context)sim.setHabitat(habitat);else sim=createHabitatSimulation(habitat,{seed:42});simContext=context;sim.setWeather({rain:rain?1:0});
+ if(sim&&simContext===context)sim.setHabitat(birdHabitat);else sim=createHabitatSimulation(birdHabitat,{seed:42});simContext=context;sim.setWeather({rain:rain?1:0});
  if(!salamanderArt){salamanderArt=createSalamanderArt();scene.add(salamanderArt.group);}
- if(!salamander||salamanderContext!==context){salamander=spawnSalamander(p);}else salamander.setWorld(salamanderWorld());salamanderContext=context;
+ if(coastal)salamander=null;else if(!salamander||salamanderContext!==context){salamander=spawnSalamander(p);}else salamander.setWorld(salamanderWorld());salamanderContext=context;
  if(salamander)salamanderArt.update(salamander.snapshot().salamander);else salamanderArt.group.visible=false;
  if(!crawlerArt){crawlerArt=createCrawlerArt();scene.add(crawlerArt.group);}
- if(!crawler||crawlerContext!==context){crawler=spawnGroundCrawler(p);crawlerNear=false;}else crawler.setWorld(world());crawlerContext=context;
+ if(coastal){crawler=null;crawlerNear=false;}else if(!crawler||crawlerContext!==context){crawler=spawnGroundCrawler(p);crawlerNear=false;}else crawler.setWorld(world());crawlerContext=context;
  if(crawler)crawlerArt.update(crawler.snapshot().crawler);else crawlerArt.group.visible=false;
  if(orbWeaver&&orbContext===context)orbWeaver.setHabitat(habitat);else orbWeaver=createOrbWeaver(habitat,{encounters:true});orbContext=context;orbWeaver.setWeather({rain:rain?1:0});
  if(!orbArt){orbArt=createOrbWebArt(orbWeaver.getWeb());scene.add(orbArt.group);}else orbArt.setWeb(orbWeaver.getWeb());orbArt.update(orbWeaver.snapshot(),{rain});
- const skaterSurfaces=art.waterSurfaces.slice(0,64);
+ // The new marine context must not borrow the existing freshwater strider.
+ const marineSources=new Set(p.observations.filter(o=>o.geographicContext?.profileId==='redwood-rocky-intertidal').map(o=>o.source.id));
+ const skaterSurfaces=art.waterSurfaces.filter(w=>!w.sourceIds?.some(id=>marineSources.has(id))).slice(0,64);
  if(pondSkater&&skaterContext===context)pondSkater.setHabitat(skaterSurfaces);else pondSkater=createPondSkater(skaterSurfaces);skaterContext=context;pondSkater.setWeather({rain:rain?1:0});
  if(!skaterArt){skaterArt=createPondSkaterArt();scene.add(skaterArt.group);}skaterArt.update(pondSkater.snapshot());
  const column=createWaterColumn({waterSurfaces:freshwaterWaterSurfaces(p,art.waterSurfaces.slice(0,64)),groundSupports:art.groundSupports,obstacles:art.obstacles});
  if(submergedLife&&submergedContext===context)submergedLife.setColumn(column);else submergedLife=createSubmergedLife(column);submergedContext=context;
  submergedView=createSubmergedView(column);if(!submergedArt){submergedArt=createSubmergedArt();scene.add(submergedArt.group);}submergedArt.update(submergedLife.snapshot());
+ const attached=intertidalAttachments(p,intertidalFaces(art.group),art.waterSurfaces,art.obstacles);
+ if(intertidalLife&&intertidalContext===context)intertidalLife.setHabitat(attached);else intertidalLife=createIntertidalLife(attached);intertidalContext=context;
+ if(intertidalArt){scene.remove(intertidalArt.group);intertidalArt.dispose();}intertidalArt=createIntertidalArt();intertidalArt.update(intertidalLife.snapshot());scene.add(intertidalArt.group);
  nav=safeStart(old?.mode||'human')||createNavigator(world(),{mode:'bird',position:[c[0],b.max[1]-.2,c[2]]});
  if(keepPose&&old){const result=nav.restore(old);if(!result.ok){overview=true;notify('The revised place covers your previous viewpoint. Choose a scale to enter at an open location.');}}
  syncHamonWorld();
@@ -349,9 +395,16 @@ function updateLabels(){
  $('rain-toggle').setAttribute('aria-pressed',String(rain));$('motion-toggle').setAttribute('aria-pressed',String(paused));$('motion-toggle').title=paused?'Resume simulated life · P':'Pause simulated life · P';$('motion-toggle').setAttribute('aria-label',paused?'Resume simulated life':'Pause simulated life');
  $('observe').disabled=historical;$('save-memory').disabled=historical;$('save-memory').title='Keep this viewpoint · K';for(const control of document.querySelectorAll('[data-move="up"],[data-move="down"]'))control.hidden=nav.pose().mode!=='bird'&&!underwaterFocus&&!embody.driving;updateEncounter();refreshControls();requestWorldFrame();
 }
-async function changeSession(transform){
+async function changeSession(transform,{request=null,expectedSequence=null}={}){
  if(saveFault)throw new Error(saveFault);
- const task=async()=>{const latest=store.load(),next=transform(latest);const saved=store.save(next,latest.sequence);session=saved;place=session.places.find(p=>p.id===session.activePlaceId);return saved;};
+ const task=async()=>{
+  // Admission belongs inside the existing lock: a later choice can arrive
+  // while an earlier travel is queued. A cancelled trip must not save at all.
+  if(request&&!request.isCurrent())return false;
+  const latest=store.load();
+  if(request&&latest.sequence!==expectedSequence)return false;
+  const next=transform(latest),saved=store.save(next,latest.sequence);session=saved;place=session.places.find(p=>p.id===session.activePlaceId);return saved;
+ };
  return navigator.locks? navigator.locks.request('wildside-local-session',task):task();
 }
 async function importPlaceFile(transfer,options){
@@ -360,8 +413,9 @@ async function importPlaceFile(transfer,options){
  return navigator.locks?navigator.locks.request('wildside-local-session',task):task();
 }
 function openTransfer(){editor=mountTransferView(openPanel('Move a continuing place'),{getSession:()=>session,onImport:importPlaceFile,onClose:closePanel});}
-function closePanel(){editor?.dispose();editor=null;$('panel').close();pressed.clear();pointer=null;$('world').focus({preventScroll:true});requestWorldFrame();}
-function openPanel(label){mobile.releaseStick?.();mobile.resetZoom();releaseResidentFocus();editor?.dispose();editor=null;pressed.clear();Object.keys(touch).forEach(k=>delete touch[k]);pointer=null;$('panel-label').textContent=label;$('panel-content').replaceChildren();if(!$('panel').open)$('panel').showModal();const body=el('div',undefined,'panel-body');$('panel-content').append(body);return body;}
+function clearMomentPreview(){if(momentPreview)lastEmbodiedView=null;momentPreview=null;momentPreviewCanvas=null;}
+function closePanel(){clearMomentPreview();editor?.dispose();editor=null;$('panel').close();pressed.clear();pointer=null;$('world').focus({preventScroll:true});requestWorldFrame();}
+function openPanel(label){placesPicker?.cancelTravel();clearMomentPreview();mobile.releaseStick?.();mobile.resetZoom();releaseResidentFocus();editor?.dispose();editor=null;pressed.clear();Object.keys(touch).forEach(k=>delete touch[k]);Object.keys(padTouch).forEach(k=>delete padTouch[k]);pointer=null;$('panel-label').textContent=label;$('panel-content').replaceChildren();if(!$('panel').open)$('panel').showModal();pausedObservation?.sync();const body=el('div',undefined,'panel-body');$('panel-content').append(body);return body;}
 $('close-panel').onclick=closePanel;$('panel').addEventListener('cancel',e=>{e.preventDefault();closePanel();});
 function button(parent,text,action,cls){const b=el('button',text,cls);b.type='button';b.onclick=async()=>{try{await action(b);}catch(e){notify(e.message,true);}};parent.append(b);return b;}
 function field(parent,label,initial='',type='text'){const wrap=el('label',label),input=el('input');input.type=type;input.value=initial;wrap.append(input);parent.append(wrap);return input;}
@@ -381,11 +435,12 @@ function showSourceView(observation){
 function openSources(){
  const sourcePlaceId=place.id;
  const body=openPanel('The story of this place');body.id='source-panel';body.append(el('h2',place.name));
- body.append(el('p','A place grows through observations. Its shapes are interpreted; the robin, beetle, spider and silk, water strider, freshwater micro-life, weather, fine foliage and surface detail are imagined.','lede'));
+ body.append(el('p','A place grows through observations. Its shapes are interpreted; the robin, beetle, spider and silk, water strider, freshwater micro-life, attached anemones, weather, fine foliage and surface detail are imagined.','lede'));
  const select=el('select');select.setAttribute('aria-label','Choose a saved place');for(const p of session.places){const o=el('option',p.name);o.value=p.id;o.selected=p.id===place.id;select.append(o);}body.append(select);
  select.onchange=async()=>{try{await changeSession(s=>({...s,activePlaceId:select.value}));returnCurrent();openSources();}catch(e){notify(e.message,true);}};
  body.append(el('p',`Revision ${place.revision} · ${place.anchors.length} stable landmarks · saved on this browser only`,'note'));
  button(body,'Export or import places',openTransfer).id='transfer';
+ if(!historical&&!place.observations.some(o=>o.geographicContext?.profileId==='london-urban-courtyard'))button(body,'Add habitat context',enrichHabitat).id='add-habitat-context';
  if(historical)button(body,'Return to the current place',()=>{returnCurrent();closePanel();});
  if(place.conflicts.length)body.append(el('p',`${place.conflicts.length} conflicting interpretation(s) remain unresolved. The existing landmark has been preserved. Reopen Add a view and choose a correction or a change deliberately.`,'conflict'));
  for(const o of place.observations){const card=el('div',undefined,'source-card');card.append(el('span',o.source.kind==='imagined'?'Imagined example':'Original source → interpreted structure','tag'),el('h3',o.source.label||'A view of this place'),el('small',o.source.capturedAt?`Recorded ${o.source.capturedAt}`:'Recording time unknown'),el('p',o.mapContext?`${o.features.length} public map features · ${o.mapContext.year} dataset · ${o.mapContext.verticalPolicy==='source-relative'?'source-derived terrain and elevations':'illustrative flat terrain'}`:o.geographicContext?`${o.geographicContext.region} · procedural habitat interpretation · ${o.geographicContext.waterScenario==='illustrative-wet'?'illustrative wet state':'illustrative dry state'}`:o.regionProposals?`${o.regionProposals.regions.length} automatic image-region proposals · ${o.features.length} spatial landmarks · descriptions are inferred.`:`${o.features.length} annotated landmarks · ${o.mode} · geometry comes from supplied points and dimensions.`),el('small',o.mapContext?'Public source file identities and derived geometry are retained; the original map XML is not stored in this visit.':'Original photo or clip bytes are not saved or uploaded. Source identity binds each annotation to the same file.'));
@@ -472,18 +527,46 @@ function observation(provisionalPlace=null){
    displayPlace=place;historical=false;rebuild(place,{keepPose:!provisionalPlace});closePanel();overview=true;updateLabels();notify('Your view is now part of this place. Original media stays with you.');
  }});
 }
-function newPlace(){const body=openPanel('Begin with somewhere you care about');editor=mountLocationContext(body,{onPhoto:newPhotoPlace,imagined:{places:LIVE_PLACES,available:()=>!!hamon&&['waiting','ready'].includes(hamon.state().phase),open:openLiveImagined},onCreate:async next=>{await changeSession(s=>({...s,places:s.places.some(p=>p.id===next.id)?s.places:[...s.places,next],activePlaceId:next.id}));displayPlace=place;historical=false;rebuild(place);overview=true;updateLabels();closePanel();notify('Your place is ready to explore. Add local views to keep enriching it.');}});}
+function enrichHabitat(){
+ const originalId=place.id,originalRevision=place.revision,body=openPanel('Enrich this place');
+ editor=mountContextEnrichment(body,{preview:observation=>deriveUrbanHabitatDetail(admitObservation(place,observation),{surfaceAt:art.surfaceAt}).length,
+  onApply:async observation=>{await changeSession(s=>{const current=s.places.find(p=>p.id===originalId);
+   if(s.activePlaceId!==originalId||current?.revision!==originalRevision)throw Error('This place changed. Reopen habitat context to fit its current structure.');
+   return {...s,places:s.places.map(p=>p.id===originalId?admitObservation(p,observation):p)};
+  });returnCurrent();closePanel();notify('Habitat context now follows the supported walls and containers of this place.');}
+ });
+}
+function newPlace(){const body=openPanel('Begin with somewhere you care about');editor=mountLocationContext(body,{existingPlace:place,onPhoto:newPhotoPlace,imagined:{places:LIVE_PLACES,available:()=>!!hamon&&['waiting','ready'].includes(hamon.state().phase),open:openLiveImagined},onCreate:async next=>{await changeSession(s=>({...s,places:s.places.some(p=>p.id===next.id)?s.places:[...s.places,next],activePlaceId:next.id}));displayPlace=place;historical=false;rebuild(place);overview=true;updateLabels();closePanel();notify('Your place is ready to explore. Add local views to keep enriching it.');}});}
 function newPhotoPlace(){const body=openPanel('Begin with somewhere you care about');body.append(el('h2','Bring your place.'),el('p','Choose an original photo or a moment from a local clip you are allowed to use. Mark a patch of approximately flat ground and its familiar landmarks. New views will refine this same place.','lede'));const name=field(body,'What do you call this place?','Our quiet corner');name.maxLength=100;body.append(el('p','Your original stays in this browser session. Saved geometry records your interpretation, not automatic recognition. No upload or exact geographic location is needed.','note'));const b=button(body,'Choose a photo or video →',async()=>{const value=name.value.trim();if(!value)throw new Error('Give this place a name.');const pendingPlace=createPlace({id:uid('place'),name:value});observation(pendingPlace);},'dark');b.id='create-place-confirm';}
 function keepMoment(){
  if(historical)return;
- if(!underwaterFocus&&nav.pose().transitioning){notify('Let this change of scale finish before keeping its viewpoint.');return;}
+ if(embody.mode==='inside'){notify('Watch the animal from outside to keep a viewpoint.');return;}
+ if(!embody.active&&!underwaterFocus&&nav.pose().transitioning){notify('Let this change of scale finish before keeping its viewpoint.');return;}
  if(!place.anchors.length){notify('Add a landmark before keeping a moment.');return;}
+ let watchedPose=null;
+ if(embody.active){
+  const shown=lastEmbodiedView,state=embody.snapshot();
+  if(!shown||shown.generation!==viewGeneration||shown.placeId!==displayPlace.id||shown.revision!==displayPlace.revision||shown.creature!==state.creature||shown.mode!==state.mode||shown.view!==state.view){notify('Wait for the view to appear, then try again.');return;}
+  // Painted Human view can use the traveller's third-person camera. A Bird
+  // viewpoint uses the admitted camera itself when returning to this moment.
+  const result=admitCameraViewpoint(world(),shown,hamon?.active?'bird':nav.pose().mode);
+  if(!result.ok){notify('This view cannot be kept here. Zoom out, or leave the animal view and choose a viewpoint, then try again.');return;}
+  const p=result.pose;
+  watchedPose=Object.freeze({...p,position:Object.freeze(p.position.slice()),forward:Object.freeze(p.forward.slice()),up:Object.freeze(p.up.slice())});
+ }
  if(overview){overview=false;nav=safeStart()||nav;updateLabels();}
- const memoryPlace=place,pose=underwaterFocus?submergedView.pose():nav.pose();
+ const memoryPlace=place,pose=watchedPose||(underwaterFocus?submergedView.pose():nav.pose());
  const waterAnchor=pose?.mode==='underwater'?memoryPlace.anchors.find(a=>a.kind==='water'&&`${a.id}:water`===pose.waterId):null;
  if(!pose||(pose.mode==='underwater'&&!waterAnchor)){notify('This underwater viewpoint no longer belongs to a surviving water landmark.');return;}
  const body=openPanel('Keep a moment');
- body.append(el('h2','Somewhere to return to.'),el('p',waterAnchor?'Keep this underwater viewpoint with its water. You can return to this revision even if the place later changes.':'This saves your viewpoint and a personal memory, attached to a landmark. It does not record a wildlife sighting.'));
+ if(watchedPose){momentPreview=watchedPose;requestWorldFrame();}
+ body.append(el('h2',watchedPose?'Keep this viewpoint.':'Somewhere to return to.'),el('p',waterAnchor?'Keep this underwater viewpoint with its water. You can return to this revision even if the place later changes.':'This saves your viewpoint and a personal memory, attached to a landmark. It does not record a wildlife sighting.'));
+ if(watchedPose){
+  const note=el('p','Preview in '+(pose.mode==='bird'?'Bird':pose.mode==='insect'?'Insect':'Human')+' view, with ordinary framing. Closing returns to watching.','note');note.id='memory-viewpoint-preview';
+  const figure=el('figure',undefined,'moment-viewpoint-preview'),image=el('canvas'),caption=el('figcaption','Still preview of this viewpoint. Simulated life can change when you return.');
+  image.id='memory-viewpoint-image';image.width=1;image.height=1;image.setAttribute('role','img');image.setAttribute('aria-label','Still preview of the viewpoint to keep');
+  caption.id='memory-viewpoint-caption';figure.append(image,caption);body.append(note,figure);momentPreviewCanvas=image;
+ }
  const name=field(body,'A name for this moment','A quiet pause');name.maxLength=100;name.id='memory-label';
  let select=null;
  if(waterAnchor)body.append(el('p',`Kept with ${waterAnchor.label||'this water'}. Simulated life can change when you return.`,'note'));
@@ -525,6 +608,7 @@ function keepMoment(){
   if(savingMoment)return;
   savingMoment=true;saveButton.disabled=true;
   try{
+   if(watchedPose&&momentPreviewCanvas?.dataset.ready!=='true')throw new Error('Wait for the viewpoint preview, or close this review and try again.');
    const m=captureVisit(memoryPlace,pose,{id:uid('visit'),anchorId:waterAnchor?.id??select.value,label:name.value.trim()||'A quiet pause',at:new Date().toISOString()});
    const selection=replacing?replacing():{};
    if(replacing&&!selection.replaceId)throw new Error('Choose an older moment to replace before keeping the new viewpoint.');
@@ -533,15 +617,27 @@ function keepMoment(){
   }catch(error){savingMoment=false;saveButton.disabled=false;throw error;}
  },'dark');b.id='memory-save-confirm';
 }
+function refuseMomentViewpoint(moment,historicalVisit){
+ const underwater=moment.mode==='underwater';
+ const supportMessage=historicalVisit?'That retained surface cannot support the kept viewpoint. Your moment is preserved.':'The current surface no longer supports your kept viewpoint. Your moment is preserved; try As remembered.';
+ const message=underwater?'This water no longer supports the kept viewpoint. Your moment is preserved; try As remembered.':moment.supportAnchorId?supportMessage:'The viewpoint is covered by changed geometry. The memory is preserved; choose another place to stand.';
+ if(moment.supportAnchorId&&$('moment-results')){
+  $('moment-visit-error')?.remove();
+  const notice=el('p',message,'conflict');notice.id='moment-visit-error';notice.setAttribute('role','alert');
+  $('moment-results').prepend(notice);
+  notice.scrollIntoView({block:'center'});
+ }
+ throw new Error(message);
+}
 function visitMoment(moment,historicalVisit){
  const p=historicalVisit?placeAtRevision(place,moment.revision):place;
  const resolved=resolveVisit(p,moment);if(!resolved.ok)throw new Error(`This moment is unavailable: ${resolved.reason}.`);
  displayPlace=p;historical=historicalVisit;rebuild(p);
  const underwater=resolved.pose.mode==='underwater';
  const result=underwater?submergedView.restore(resolved.pose):nav.restore(resolved.pose);
- if(!result.ok){
+ if(!result.ok||(moment.supportAnchorId&&result.adjusted)){
   returnCurrent();
-  throw new Error(underwater?'This water no longer supports the kept viewpoint. Your moment is preserved; try As remembered.':'The viewpoint is covered by changed geometry. The memory is preserved; choose another place to stand.');
+  refuseMomentViewpoint(moment,historicalVisit);
  }
  underwaterFocus=underwater;overview=false;focusFov=null;pendingMode=null;updateLabels();closePanel();
  notify(historicalVisit?'Visiting the retained revision. Simulated life remains imagined.':resolved.revised?'Your viewpoint followed its landmark into the current place.':'Welcome back.');
@@ -582,8 +678,20 @@ function moments(){
  }
  async function visitFromLibrary(m,historicalVisit){
   const target=session.places.find(p=>p.id===m.placeId);
-  if(!target||!resolveVisit(historicalVisit?placeAtRevision(target,m.revision):target,m).ok)
+  const resolved=target&&resolveVisit(historicalVisit?placeAtRevision(target,m.revision):target,m);
+  if(!resolved?.ok)
    throw new Error('This moment cannot be revisited. Its original place or supported viewpoint changed.');
+  // Probe the world already on screen before any place switch or rebuild can
+  // discard the visitor's current view. A different place, retained revision,
+  // or Engine live world must still use its existing receiving path.
+  if(!historicalVisit&&!historical&&target===place&&displayPlace.id===target.id&&
+     displayPlace.revision===target.revision&&(displayPlace.epoch??0)===(target.epoch??0)&&
+     !liveIdOf(target)){
+   const result=resolved.pose.mode==='underwater'
+    ?createSubmergedView(createWaterColumn({waterSurfaces:freshwaterWaterSurfaces(target,art.waterSurfaces.slice(0,64)),groundSupports:art.groundSupports,obstacles:art.obstacles})).restore(resolved.pose)
+    :createNavigator(world()).restore(resolved.pose);
+   if(!result.ok||(m.supportAnchorId&&result.adjusted))refuseMomentViewpoint(m,false);
+  }
   await switchToMomentPlace(m);
   visitMoment(m,historicalVisit);
  }
@@ -649,6 +757,7 @@ function moments(){
 }
 
 function openEcologyDiscovery(){
+ if(anemoneFocus){openSources();return;}
  // A simulated inhabitant invites an optional comparison, never a sighting claim.
  const encounter=residentEncounter?.kind??(underwaterFocus?'water-flea':skaterFocus?'water-strider':webFocus?'orb-weaver':!overview&&nav.pose().mode==='insect'?'beetle':'robin');
  const region=[...displayPlace.observations].reverse().find(o=>o.geographicContext)?.geographicContext.region??null;
@@ -656,8 +765,11 @@ function openEcologyDiscovery(){
 }
 $('discover-ecology').onclick=openEcologyDiscovery;
 $('sources').onclick=openSources;$('observe').onclick=()=>observation();$('new-place').onclick=newPlace;$('save-memory').onclick=keepMoment;$('memories').onclick=moments;
-$('overview').onclick=()=>{leaveUnderwater();if(historical)returnCurrent();webFocus=false;skaterFocus=false;sourceView=null;overview=true;updateLabels();};
-function enter(mode){try{releaseResidentFocus();leaveUnderwater();webFocus=false;skaterFocus=false;sourceView=null;focusFov=null;if(overview){const start=safeStart(mode);if(!start)throw new Error('This scale has no clear starting location in the current geometry.');nav=start;overview=false;pendingMode=null;}else{nav.changeMode(mode,{duration:paused?.05:1.2});pendingMode=mode;}updateLabels();$('world').focus({preventScroll:true});if(mode==='insect')notify('At ground level, small edges become a landscape. Move slowly and look upward.');}catch(e){notify(e.message);}}
+// An explicit viewpoint choice hands the camera back to ordinary exploration.
+// exit() synchronously sets overview in onActive(false), so commit the chosen
+// viewpoint after it returns; failed encounter admission keeps the animal view.
+$('overview').onclick=()=>{embody.exit();leaveUnderwater();if(historical)returnCurrent();webFocus=false;skaterFocus=false;sourceView=null;overview=true;updateLabels();};
+function enter(mode){try{releaseResidentFocus();leaveUnderwater();webFocus=false;skaterFocus=false;sourceView=null;focusFov=null;if(overview||embody.active){const start=safeStart(mode);if(!start)throw new Error('This scale has no clear starting location in the current geometry.');embody.exit();nav=start;overview=false;pendingMode=null;}else{nav.changeMode(mode,{duration:paused?.05:1.2});pendingMode=mode;}updateLabels();$('world').focus({preventScroll:true});if(mode==='insect')notify('At ground level, small edges become a landscape. Move slowly and look upward.');}catch(e){notify(e.message);}}
 /** Metres of `a`→`b` that pass through an Engine crown (their leaf masses fill the lens when the camera sits inside). */
 function crownChord(a,b){
  if(!hamon?.active)return 0;
@@ -702,8 +814,9 @@ $('watch-bird').onclick=()=>{
   if(!pose||!rules.visible(position,target)||!rules.admit(pose))continue;
   const result=nav.restore(pose);
   if(result.ok&&!result.adjusted){
+   embody.exit();
    birdFocus={controller:createResidentFocus(position,target),rules};sourceView=null;overview=false;focusFov=36;pendingMode=null;
-   pressed.clear();Object.keys(touch).forEach(k=>delete touch[k]);updateLabels();$('world').focus({preventScroll:true});return;
+   pressed.clear();Object.keys(touch).forEach(k=>delete touch[k]);Object.keys(padTouch).forEach(k=>delete padTouch[k]);updateLabels();$('world').focus({preventScroll:true});return;
   }
  }
  notify('The robin is tucked behind foliage. Let it settle at an open perch, or explore around the tree.');
@@ -722,7 +835,7 @@ $('watch-crawler').onclick=()=>{
   const pose={mode:'insect',position,yaw:Math.atan2(d[0],-d[2]),pitch:Math.asin(d[1]/distance)};
   if(!rules.admit(pose))continue;
   const result=nav.restore(pose);
-  if(result.ok&&!result.adjusted){crawlerFocus={controller:createResidentFocus(position,target,'insect'),rules};sourceView=null;overview=false;focusFov=48;pendingMode=null;pressed.clear();Object.keys(touch).forEach(k=>delete touch[k]);updateLabels();$('world').focus({preventScroll:true});return;}
+  if(result.ok&&!result.adjusted){embody.exit();crawlerFocus={controller:createResidentFocus(position,target,'insect'),rules};sourceView=null;overview=false;focusFov=48;pendingMode=null;pressed.clear();Object.keys(touch).forEach(k=>delete touch[k]);Object.keys(padTouch).forEach(k=>delete padTouch[k]);updateLabels();$('world').focus({preventScroll:true});return;}
  }
  notify('The beetle is behind a plant or near an edge. Try again after it reaches an open patch.');
 };
@@ -736,7 +849,7 @@ function watchWeb(detail=false,visitor=false){
   ray.set(new THREE.Vector3(...position),new THREE.Vector3(...direction).normalize());ray.near=.005;ray.far=distance-.025;
   if(ray.intersectObjects(art.group.children,true).length)continue;
   const result=nav.restore({mode:'bird',position,yaw:Math.atan2(direction[0],-direction[2]),pitch:Math.asin(direction[1]/distance)});
-  if(result.ok){leaveUnderwater();sourceView=null;overview=false;webFocus=true;skaterFocus=false;focusFov=detail?26:46;pendingMode=null;updateLabels();$('world').focus({preventScroll:true});return;}
+  if(result.ok){embody.exit();leaveUnderwater();sourceView=null;overview=false;webFocus=true;skaterFocus=false;focusFov=detail?26:46;pendingMode=null;updateLabels();$('world').focus({preventScroll:true});return;}
  }
  notify('The web is behind these branches. Try exploring around the tree.');
 }
@@ -752,13 +865,30 @@ $('watch-skater').onclick=()=>{
   ray.set(new THREE.Vector3(...position),new THREE.Vector3(...direction).normalize());ray.near=.005;ray.far=distance-.008;
   if(ray.intersectObjects(art.group.children,true).length)continue;
   const result=nav.restore({mode:'bird',position,yaw:Math.atan2(direction[0],-direction[2]),pitch:Math.asin(direction[1]/distance)});
-  if(result.ok){leaveUnderwater();sourceView=null;overview=false;webFocus=false;skaterFocus=true;focusFov=40;pendingMode=null;updateLabels();$('world').focus({preventScroll:true});return;}
+  if(result.ok){embody.exit();leaveUnderwater();sourceView=null;overview=false;webFocus=false;skaterFocus=true;focusFov=40;pendingMode=null;updateLabels();$('world').focus({preventScroll:true});return;}
  }
  notify('The water is hidden from this angle. Explore around its edge and try again.');
 };
+function watchAnemone(){
+ const resident=intertidalLife?.snapshot().residents[0];if(!resident)return;
+ const target=resident.position.map((v,i)=>v+(i===1?.07:0)),ray=new THREE.Raycaster();scene.updateMatrixWorld(true);
+ for(const radius of [.38,.5,.7])for(const turn of [0,.8,-.8,Math.PI]){
+  const position=[target[0]+Math.sin(turn)*radius,target[1]+.11,target[2]+Math.cos(turn)*radius],direction=target.map((v,i)=>v-position[i]),distance=Math.hypot(...direction);
+  ray.set(new THREE.Vector3(...position),new THREE.Vector3(...direction).normalize());ray.near=.005;ray.far=distance-.12;
+  const solids=art.group.children.filter(g=>g.userData.kind!=='water');if(ray.intersectObjects(solids,true).length)continue;
+  const result=nav.restore({mode:'bird',position,yaw:Math.atan2(direction[0],-direction[2]),pitch:Math.asin(direction[1]/distance)});
+  if(!result.ok||result.adjusted)continue;
+  embody.exit();releaseResidentFocus();leaveUnderwater();sourceView=null;overview=false;webFocus=false;skaterFocus=false;focusFov=38;pendingMode=null;anemoneFocus=true;pressed.clear();Object.keys(touch).forEach(k=>delete touch[k]);Object.keys(padTouch).forEach(k=>delete padTouch[k]);worldDrawer.close?.();updateLabels();$('world').focus({preventScroll:true});return;
+ }
+ notify('This attachment is hidden from a clear close view. Explore around the shelf.');
+}
+registerControl({id:'intertidal-life',section:'life',order:15,when:()=>!!intertidalLife?.snapshot().residents.length,mount({container,kit}){
+ const action=kit.action({label:'Look into the tidepool',onClick:watchAnemone});action.element.id='watch-anemone';
+ const note=kit.note('Illustrative anemones attached to this interpreted coast. Shape, motion and exposure timing are authored; no animal was observed.');container.append(action.element,note.element);return {};
+}});
 $('watch-underwater').onclick=()=>{
  const swimmer=submergedLife?.snapshot().swimmers[0];if(!swimmer||!submergedView.focus(swimmer)){notify('This water has no clear submerged viewpoint.');return;}
- sourceView=null;overview=false;webFocus=false;skaterFocus=false;underwaterFocus=true;focusFov=null;pendingMode=null;pressed.clear();Object.keys(touch).forEach(k=>delete touch[k]);updateLabels();$('world').focus({preventScroll:true});
+ embody.exit();sourceView=null;overview=false;webFocus=false;skaterFocus=false;underwaterFocus=true;focusFov=null;pendingMode=null;pressed.clear();Object.keys(touch).forEach(k=>delete touch[k]);Object.keys(padTouch).forEach(k=>delete padTouch[k]);updateLabels();$('world').focus({preventScroll:true});
 };
 $('ripple-water').onclick=()=>{
  const snap=pondSkater?.snapshot();if(!snap?.surface||snap.skater.state==='unplaced')return;
@@ -855,7 +985,7 @@ for(const type of ['pointerup','pointercancel','lostpointercapture'])$('world').
 const movementKeys=new Set(['KeyW','KeyA','KeyS','KeyD','KeyE','KeyQ','ArrowUp','ArrowDown','ArrowLeft','ArrowRight']);
 // Drawers own keyboard focus. A held key or touch must not resume motion after dismissal.
 addEventListener('wildside:drawer-open',()=>{
- mobile.releaseStick?.();pressed.clear();Object.keys(touch).forEach(key=>delete touch[key]);requestWorldFrame();
+ mobile.releaseStick?.();pressed.clear();Object.keys(touch).forEach(key=>delete touch[key]);Object.keys(padTouch).forEach(key=>delete padTouch[key]);requestWorldFrame();
 });
 addEventListener('keydown',e=>{
  if($('panel').open||e.target?.isContentEditable||/INPUT|TEXTAREA|SELECT/.test(e.target?.tagName||''))return;
@@ -885,11 +1015,11 @@ addEventListener('keydown',e=>{
  }
 });
 addEventListener('keyup',e=>{if(pressed.delete(e.code))requestWorldFrame();});
-addEventListener('blur',()=>{mobile.releaseStick?.();pressed.clear();Object.keys(touch).forEach(k=>delete touch[k]);resetOverviewTouch();requestWorldFrame();});
+addEventListener('blur',()=>{mobile.releaseStick?.();pressed.clear();Object.keys(touch).forEach(k=>delete touch[k]);Object.keys(padTouch).forEach(k=>delete padTouch[k]);resetOverviewTouch();requestWorldFrame();});
 document.querySelectorAll('[data-move]').forEach(b=>{b.addEventListener('pointerdown',e=>{e.preventDefault();releaseResidentFocus();focusFov=null;touch[b.dataset.move]=true;b.setPointerCapture(e.pointerId);requestWorldFrame();});for(const t of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(t,()=>{delete touch[b.dataset.move];requestWorldFrame();});});
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);hamon?.resize();requestWorldFrame();});
+addEventListener('resize',()=>{if(momentPreviewCanvas)momentPreviewCanvas.dataset.ready='';camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);hamon?.resize();requestWorldFrame();});
 
-addEventListener('storage',e=>{if(e.key!==SESSION_KEY)return;try{session=store.load();place=session.places.find(p=>p.id===session.activePlaceId);const hadPanel=$('panel').open;if(hadPanel)closePanel();displayPlace=place;historical=false;rebuild(place,{keepPose:true});notify(hadPanel?'Another window changed the saved world. The open review closed to keep its actions bound to the right place.':'Received the latest saved place from another window.');}catch(err){notify(err.message,true);}});
+addEventListener('storage',e=>{if(e.key!==SESSION_KEY)return;placesPicker?.cancelTravel();try{session=store.load();place=session.places.find(p=>p.id===session.activePlaceId);const hadPanel=$('panel').open;if(hadPanel)closePanel();displayPlace=place;historical=false;rebuild(place,{keepPose:true});notify(hadPanel?'Another window changed the saved world. The open review closed to keep its actions bound to the right place.':'Received the latest saved place from another window.');}catch(err){notify(err.message,true);}});
 function renderWorld(viewportHeight){
  const shadow=sun.shadow,pixelsPerWorldUnit=Math.max(shadow.mapSize.x/(shadow.camera.right-shadow.camera.left),shadow.mapSize.y/(shadow.camera.top-shadow.camera.bottom));
  art.updateDetail(camera,viewportHeight*renderer.getPixelRatio(),pixelsPerWorldUnit);
@@ -915,22 +1045,50 @@ function renderWorld(viewportHeight){
   else shadowReuse.invalidate();
  }catch(error){shadowReuse.invalidate();renderer.shadowMap.needsUpdate=true;throw error;}
 }
+function paintMomentPreview(source){
+ const canvas=momentPreviewCanvas;if(!momentPreview||!canvas)return;
+ try{
+  if(!source||!Number.isFinite(source.width)||!Number.isFinite(source.height)||source.width<=0||source.height<=0)throw Error('No presented image');
+  const scale=Math.min(640/source.width,320/source.height);
+  const width=Math.max(1,Math.round(source.width*scale)),height=Math.max(1,Math.round(source.height*scale));
+  if(canvas.width===width&&canvas.height===height&&canvas.dataset.ready)return;
+  canvas.dataset.ready='';canvas.width=width;canvas.height=height;
+  const context=canvas.getContext('2d');if(!context)throw Error('No preview canvas');
+  context.drawImage(source,0,0,width,height);canvas.dataset.ready='true';
+  const caption=$('memory-viewpoint-caption');if(caption)caption.textContent='Still preview of this viewpoint. Simulated life can change when you return.';
+ }catch{
+  canvas.dataset.ready='unavailable';
+  const caption=$('memory-viewpoint-caption');
+  if(caption)caption.textContent='The preview could not be drawn. Close this review and try again.';
+ }
+}
+
+function applyOrdinaryViewCamera(pose,{focused=true}={}){
+ const focus=focused?focusFov:null;
+ camera.up.fromArray(pose.up);camera.aspect=innerWidth/innerHeight;
+ camera.position.fromArray(pose.position);cameraTarget.fromArray(pose.position.map((v,i)=>v+pose.forward[i]));camera.lookAt(cameraTarget);
+ camera.fov=(skaterFocus||!webFocus&&pose.mode==='bird')&&focus?2*Math.atan(Math.tan(focus*Math.PI/360)/Math.min(1,camera.aspect))*180/Math.PI:focus||mobile.horizontalFov(pose.fov+settings.get().fovOffset,camera.aspect);
+ camera.fov=mobile.zoomFov(camera.fov);camera.near=pose.near;
+ camera.far=Math.max(150,Math.hypot(...art.bounds.max.map((v,i)=>v-art.bounds.min[i]))*1.2);
+}
 function updateViewCamera(){
- if(underwaterFocus&&submergedView.pose()){
+ if(momentPreview)applyOrdinaryViewCamera(momentPreview,{focused:false});
+ else if(underwaterFocus&&submergedView.pose()){
    const p=submergedView.pose();camera.position.fromArray(p.position);camera.up.fromArray(p.up);camera.lookAt(new THREE.Vector3(...p.position.map((v,i)=>v+p.forward[i])));camera.aspect=innerWidth/innerHeight;camera.fov=2*Math.atan(Math.tan(p.fov*Math.PI/360)/Math.min(1,camera.aspect))*180/Math.PI;camera.near=p.near;camera.far=8;
   }else if(sourceView){
    camera.position.fromArray(sourceView.position);camera.up.fromArray(sourceView.up);
    cameraTarget.fromArray(sourceView.position.map((v,i)=>v+sourceView.forward[i]));camera.lookAt(cameraTarget);
    camera.fov=sourceView.verticalFovDegrees;camera.aspect=sourceView.imageAspect;camera.near=.02;camera.far=200;
-  }else if(overview){camera.up.set(0,1,0);camera.aspect=innerWidth/innerHeight;const direction=[Math.sin(.5+orbit)*.9,.48,Math.cos(.5+orbit)];const pose=fitOverview(art.bounds,innerWidth<=750?Math.max(camera.aspect,.78):camera.aspect,direction,48,1.05);camera.position.fromArray(pose.target).lerp(new THREE.Vector3(...pose.position),1/overviewZoom.value());cameraTarget.fromArray(pose.target);const pan=overviewPan.position(art.bounds,overviewZoom.value());camera.position.x+=pan.x;camera.position.z+=pan.z;cameraTarget.x+=pan.x;cameraTarget.z+=pan.z;cameraTarget.y+=innerWidth<=750?1.4:-.4;if(innerWidth>750)cameraTarget.x-=2;camera.up.fromArray(pose.up);camera.lookAt(cameraTarget);camera.fov=48;camera.near=.05;camera.far=Math.max(200,pose.far);}else{camera.up.set(0,1,0);camera.aspect=innerWidth/innerHeight;const pose=nav.pose();camera.position.fromArray(pose.position);cameraTarget.fromArray(pose.position.map((v,i)=>v+pose.forward[i]));camera.up.fromArray(pose.up);camera.lookAt(cameraTarget);camera.fov=(skaterFocus||!webFocus&&pose.mode==='bird')&&focusFov?2*Math.atan(Math.tan(focusFov*Math.PI/360)/Math.min(1,camera.aspect))*180/Math.PI:focusFov||mobile.horizontalFov(pose.fov+settings.get().fovOffset,camera.aspect);if(!sourceView)camera.fov=mobile.zoomFov(camera.fov);camera.near=pose.near;camera.far=Math.max(150,Math.hypot(...art.bounds.max.map((v,i)=>v-art.bounds.min[i]))*1.2);}camera.updateProjectionMatrix();
+  }else if(overview){camera.up.set(0,1,0);camera.aspect=innerWidth/innerHeight;const direction=[Math.sin(.5+orbit)*.9,.48,Math.cos(.5+orbit)];const pose=fitOverview(art.bounds,innerWidth<=750?Math.max(camera.aspect,.78):camera.aspect,direction,48,1.05);camera.position.fromArray(pose.target).lerp(new THREE.Vector3(...pose.position),1/overviewZoom.value());cameraTarget.fromArray(pose.target);const pan=overviewPan.position(art.bounds,overviewZoom.value());camera.position.x+=pan.x;camera.position.z+=pan.z;cameraTarget.x+=pan.x;cameraTarget.z+=pan.z;cameraTarget.y+=innerWidth<=750?1.4:-.4;if(innerWidth>750)cameraTarget.x-=2;camera.up.fromArray(pose.up);camera.lookAt(cameraTarget);camera.fov=48;camera.near=.05;camera.far=Math.max(200,pose.far);}else applyOrdinaryViewCamera(nav.pose());camera.updateProjectionMatrix();
 }
 function advanceWorld(dt){if(!worldReady)return;if(!paused&&!document.hidden)worldTime+=dt;
- if(!overview&&!$('panel').open&&!worldDrawer.isOpen&&!settingsDrawer.isOpen){const moveInput={forward:Math.max(-1,Math.min(1,Number(Boolean(pressed.has('KeyW')||pressed.has('ArrowUp')||touch.forward))-Number(Boolean(pressed.has('KeyS')||pressed.has('ArrowDown')||touch.back))+mobile.axes.forward)),right:Math.max(-1,Math.min(1,Number(Boolean(pressed.has('KeyD')||pressed.has('ArrowRight')||touch.right))-Number(Boolean(pressed.has('KeyA')||pressed.has('ArrowLeft')||touch.left))+mobile.axes.right)),up:Number(Boolean(pressed.has('KeyE')||touch.up))-Number(Boolean(pressed.has('KeyQ')||touch.down))};
+ if(!overview&&!$('panel').open&&!worldDrawer.isOpen&&!settingsDrawer.isOpen){const moveInput={forward:Math.max(-1,Math.min(1,Number(Boolean(pressed.has('KeyW')||pressed.has('ArrowUp')||touch.forward||padTouch.forward))-Number(Boolean(pressed.has('KeyS')||pressed.has('ArrowDown')||touch.back||padTouch.back))+mobile.axes.forward)),right:Math.max(-1,Math.min(1,Number(Boolean(pressed.has('KeyD')||pressed.has('ArrowRight')||touch.right||padTouch.right))-Number(Boolean(pressed.has('KeyA')||pressed.has('ArrowLeft')||touch.left||padTouch.left))+mobile.axes.right)),up:Number(Boolean(pressed.has('KeyE')||touch.up||padTouch.up))-Number(Boolean(pressed.has('KeyQ')||touch.down||padTouch.down))};
+  if((birdFocus||crawlerFocus)&&(moveInput.forward||moveInput.right||moveInput.up)){releaseResidentFocus();focusFov=null;}
   if(embody.active){if(!paused)embody.update(moveInput,dt);}else (underwaterFocus?submergedView:nav).step(moveInput,dt);}
  if(!paused&&!document.hidden){
   const visitor=!overview&&!sourceView&&!underwaterFocus&&!embody.active&&!$('panel').open?nav.pose():null;
   sim.setVisitor(visitor?{position:visitor.position,radius:visitor.mode==='human'?1.1:visitor.mode==='bird'?.65:.045}:null);
-  const advanced=sim.step(dt);orbWeaver?.setNearbyBird(advanced.bird);orbWeaver?.step(dt);pondSkater?.step(dt);submergedLife?.step(dt);if(crawler){
+  const advanced=sim.step(dt);orbWeaver?.setNearbyBird(advanced.bird);orbWeaver?.step(dt);pondSkater?.step(dt);submergedLife?.step(dt);intertidalLife?.step(dt);if(crawler){
   if(!overview&&!underwaterFocus){const visitor=nav.pose(),c=crawler.snapshot().crawler,feet=[visitor.position[0],visitor.position[1]-visitor.eye,visitor.position[2]],distance=Math.hypot(...feet.map((v,i)=>v-c.position[i])),radius=visitor.mode==='human'?.3:visitor.mode==='bird'?.12:.035;
    if(distance<radius&&!crawlerNear){crawler.disturb();crawlerNear=true;}else if(distance>radius*1.5)crawlerNear=false;
   }crawler.step(dt);
@@ -940,23 +1098,24 @@ function advanceWorld(dt){if(!worldReady)return;if(!paused&&!document.hidden)wor
 }
 function animate(){if(!worldReady)return;
  if(!birdFocus&&!crawlerFocus)updateViewCamera();
- if(embody.active){const now=performance.now(),dt=embodyClock?Math.min(.1,(now-embodyClock)/1000):1/60;embodyClock=now;embody.applyCamera(camera,dt);}
+ if(embody.active&&!momentPreview){const now=performance.now(),dt=embodyClock?Math.min(.1,(now-embodyClock)/1000):1/60;embodyClock=now;embody.applyCamera(camera,dt);}
  embodyUI.sync();
- if(pendingMode&&!nav.pose().transitioning){if(nav.pose().mode!==pendingMode)notify('There is not enough clearance to change scale here. Move to an open part of the place.');pendingMode=null;updateLabels();}$('save-memory').disabled=historical||(!underwaterFocus&&nav.pose().transitioning);
-const snap=sim.snapshot();bird.update(snap.bird);if(crawler)crawlerArt.update(crawler.snapshot().crawler);if(salamander)salamanderArt.update(salamander.snapshot().salamander);if(orbArt)orbArt.update(orbWeaver.snapshot(),{rain});if(skaterArt)skaterArt.update(pondSkater.snapshot());if(submergedArt){const aquatic=submergedLife.snapshot();submergedArt.update(aquatic);submergedArt.group.visible=aquatic.swimmers.some(s=>camera.position.distanceTo(new THREE.Vector3(...s.position))<.20);}art.update(worldTime,{rain});
+ if(pendingMode&&!nav.pose().transitioning){if(nav.pose().mode!==pendingMode)notify('There is not enough clearance to change scale here. Move to an open part of the place.');pendingMode=null;updateLabels();}$('save-memory').disabled=historical||(!embody.active&&!underwaterFocus&&nav.pose().transitioning);
+const snap=sim.snapshot();bird.update(snap.bird);if(crawler)crawlerArt.update(crawler.snapshot().crawler);if(salamander)salamanderArt.update(salamander.snapshot().salamander);if(orbArt)orbArt.update(orbWeaver.snapshot(),{rain});if(skaterArt)skaterArt.update(pondSkater.snapshot());if(submergedArt){const aquatic=submergedLife.snapshot();submergedArt.update(aquatic);submergedArt.group.visible=aquatic.swimmers.some(s=>camera.position.distanceTo(new THREE.Vector3(...s.position))<.20);}intertidalArt?.update(intertidalLife.snapshot());art.update(worldTime,{rain});
  if(birdFocus||crawlerFocus){updateResidentFocus(birdFocus?snap.bird:crawler?.snapshot().crawler);updateViewCamera();}
- soundscape.update({listener:camera.position.toArray(),forward:camera.getWorldDirection(soundForward).toArray(),up:soundUp.setFromMatrixColumn(camera.matrixWorld,1).toArray(),mode:overview?'human':nav.pose().mode,bird:snap.bird,crawler:crawler?.snapshot().crawler??null,rain,paused:paused||underwaterFocus,hidden:document.hidden});
+ soundscape.update({listener:camera.position.toArray(),forward:camera.getWorldDirection(soundForward).toArray(),up:soundUp.setFromMatrixColumn(camera.matrixWorld,1).toArray(),mode:overview?'human':(momentPreview||nav.pose()).mode,bird:snap.bird,crawler:crawler?.snapshot().crawler??null,rain,paused:paused||underwaterFocus,hidden:document.hidden});
  if(frameCount%15===0)updateEncounter();
  sun.intensity=underwaterFocus?2.0:rain?1.45:3.5;sky.intensity=underwaterFocus?1.45:rain?1.7:2.1;scene.background.set(underwaterFocus?'#557f73':rain?'#b9ccc0':'#d8e3cb');scene.fog.color.copy(scene.background);scene.fog.density=underwaterFocus?6:worldFogDensity;
  rainLines.visible=rain&&!underwaterFocus;
  if(rainLines.visible){
-  const mode=overview?'overview':sourceView?'human':nav.pose().mode;
+  const mode=overview?'overview':sourceView?'human':(momentPreview||nav.pose()).mode;
   const center=(overview?cameraTarget:camera.position).toArray();
   const cellSize=overview?Math.min(1000,Math.max(1.6,(art.bounds.max[0]-art.bounds.min[0])/5,(art.bounds.max[2]-art.bounds.min[2])/5)):undefined;
   rainFieldStats=rainField.update({time:worldTime,center,mode,cellSize,positions:rainPoints});
   rainGeo.setDrawRange(0,rainFieldStats.segments*2);
   rainGeo.attributes.position.needsUpdate=true;
  }
+ let presentedCamera=camera;
  if(sourceView){
    // Letterbox without changing the camera's source-image aspect.
    // Explicitly clear the entire canvas so previous frames cannot survive in the bars.
@@ -967,8 +1126,15 @@ const snap=sim.snapshot();bird.update(snap.bird);if(crawler)crawlerArt.update(cr
    renderer.setViewport(x,y,w,h);renderer.setScissor(x,y,w,h);renderer.setScissorTest(true);
    renderWorld(h);
    renderer.setScissorTest(false);renderer.setViewport(0,0,innerWidth,innerHeight);
-  }else if(hamon?.active){hamon.frame(hamonResidents.view(camera,{nav,art,follow:!overview&&!birdFocus&&!crawlerFocus&&!underwaterFocus}),worldTime,hamonContext());}
+  }else if(hamon?.active){presentedCamera=hamonResidents.view(camera,{nav:momentPreview?{pose:()=>momentPreview}:nav,art,follow:!overview&&!birdFocus&&!crawlerFocus&&!underwaterFocus});hamon.frame(presentedCamera,worldTime,hamonContext());}
   else{renderer.setScissorTest(false);renderer.setViewport(0,0,innerWidth,innerHeight);renderWorld(innerHeight);}
+  // Copy once in the same task as rendering, before an unpreserved buffer can clear.
+  if(momentPreviewCanvas)paintMomentPreview(hamon?.active&&!sourceView?hamon.canvas:renderer.domElement);
+  if(embody.mode==='outside'&&!momentPreview){
+   const state=embody.snapshot();presentedCamera.updateMatrixWorld();
+   lastEmbodiedView={generation:viewGeneration,placeId:displayPlace.id,revision:displayPlace.revision,creature:state.creature,mode:state.mode,view:state.view,position:presentedCamera.getWorldPosition(new THREE.Vector3()).toArray(),forward:presentedCamera.getWorldDirection(new THREE.Vector3()).toArray(),up:new THREE.Vector3().setFromMatrixColumn(presentedCamera.matrixWorld,1).toArray()};
+   observedGeneration=observationGeneration;
+  }
   // Snapshot the complete presented view in the same rendering task before
   // an unpreserved WebGL drawing buffer can be cleared by composition.
   const pending=picturePending;
@@ -985,26 +1151,30 @@ const snap=sim.snapshot();bird.update(snap.bird);if(crawler)crawlerArt.update(cr
   }
   frameCount++;
 }
-frameLoop=createFrameLoop({draw:animate,minInterval:()=>mobile.minInterval(),advance:advanceWorld,maxCatchUpSteps:3,hidden:()=>document.hidden,continuous:()=>!paused||(!overview&&!$('panel').open&&!worldDrawer.isOpen&&!settingsDrawer.isOpen&&(pressed.size>0||mobile.moving()||Object.values(touch).some(Boolean)||(!underwaterFocus&&nav.pose().transitioning)))});
-document.addEventListener('visibilitychange',()=>{void soundscape.setHidden(document.hidden).catch(()=>{});if(document.hidden){mobile.releaseStick?.();cancelPicture();pressed.clear();Object.keys(touch).forEach(k=>delete touch[k]);resetOverviewTouch();}frameLoop.visibilityChanged();});
-addEventListener('pagehide',()=>{void soundscape.dispose().catch(()=>{});});
-addEventListener('pageshow',()=>{if(worldReady)updateLabels();});
-renderer.domElement.addEventListener('webglcontextlost',()=>{cancelPicture();shadowResourceEpoch++;shadowReuse.invalidate();});
-renderer.domElement.addEventListener('webglcontextrestored',()=>{shadowResourceEpoch++;shadowReuse=createShadowReuseGuard(THREE);renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;requestWorldFrame();});
-createGamepad({touch,requestFrame:()=>requestWorldFrame(),
+frameLoop=createFrameLoop({draw:animate,minInterval:()=>mobile.minInterval(),advance:advanceWorld,maxCatchUpSteps:3,hidden:()=>document.hidden,continuous:()=>!paused||(!overview&&!$('panel').open&&!worldDrawer.isOpen&&!settingsDrawer.isOpen&&(pressed.size>0||mobile.moving()||Object.values(touch).some(Boolean)||Object.values(padTouch).some(Boolean)||(!underwaterFocus&&nav.pose().transitioning)))});
+document.addEventListener('visibilitychange',()=>{void soundscape.setHidden(document.hidden).catch(()=>{});pausedObservation.reset();if(document.hidden){mobile.releaseStick?.();cancelPicture();pressed.clear();Object.keys(touch).forEach(k=>delete touch[k]);Object.keys(padTouch).forEach(k=>delete padTouch[k]);resetOverviewTouch();}else pausedObservation.sync();frameLoop.visibilityChanged();});
+addEventListener('pagehide',()=>{observationPageActive=false;pausedObservation.reset();void soundscape.dispose().catch(()=>{});});
+addEventListener('pageshow',()=>{observationPageActive=true;if(worldReady)updateLabels();pausedObservation.sync();});
+renderer.domElement.addEventListener('webglcontextlost',()=>{observationContextLost=true;observedGeneration=-1;pausedObservation.reset();cancelPicture();shadowResourceEpoch++;shadowReuse.invalidate();});
+renderer.domElement.addEventListener('webglcontextrestored',()=>{observationContextLost=false;observedGeneration=-1;shadowResourceEpoch++;shadowReuse=createShadowReuseGuard(THREE);renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;requestWorldFrame();});
+createGamepad({touch:padTouch,requestFrame:()=>requestWorldFrame(),
  canAct:()=>worldReady&&!overview&&!$('panel').open&&!worldDrawer.isOpen&&!settingsDrawer.isOpen&&!sourceView,
- look:(dx,dy)=>{releaseResidentFocus();const s=settings.get();(underwaterFocus?submergedView:nav).look(dx*s.sensitivity,-dy*s.sensitivity*(s.invertY?-1:1));},
+ look:(dx,dy)=>{
+  releaseResidentFocus();const s=settings.get();
+  const activeView=embody.active?embody:underwaterFocus?submergedView:nav;
+  activeView.look(dx*s.sensitivity,-dy*s.sensitivity*(s.invertY?-1:1));
+ },
  wake:()=>{document.body.classList.remove('chrome-idle');},
  onStart:()=>{if(settingsDrawer.isOpen)settingsDrawer.close();else settingsDrawer.open();}});
 registerCoreControls();
 if(settings.get().renderScale!==1)applyRenderScale();
 registerCorePlaces();
 placesPicker=mountPlacesPicker({pill:$('place-pill'),nameEl:$('place-pill-name'),panel:$('places'),list:$('places-list'),close:$('places-close'),titleCard:$('title-card'),prompt:$('places-prompt'),getPlaceName:()=>displayPlace.name,notify,isBlocked:()=>$('panel').open,
- onArrive:()=>{try{requestAnimationFrame(()=>{if(!overview)return;if(displayPlace.anchors.some(x=>x.mapGeometry)&&enterMapVantage())return;enter('human');});}catch{}}});
+ onArrive:(_,request)=>{try{requestAnimationFrame(()=>{if(!request?.isCurrent()||!overview||$('panel').open)return;if(displayPlace.anchors.some(x=>x.mapGeometry)&&enterMapVantage())return;enter('human');});}catch{}}});
 registerControl({id:'places-open',section:'place',order:0,mount({container,kit}){container.append(kit.action({label:'Choose another place',onClick:()=>{worldDrawer.close();placesPicker.open();}}).element);}});
 rebuild(displayPlace);requestWorldFrame();if(saveFault)notify(saveFault,true);
 window.__wildsideEmbody=()=>({...embody.snapshot(),orbit:embody.orbitState?.(),body:embody.bodyState('robin')});
-window.__wildsideInspect=()=>({overviewZoom:overviewZoom.value(),overviewPan:overviewPan.position(art?.bounds,overviewZoom.value()),hamon:hamon?.state()??null,hamonTrees:hamon?.trees??[],crawlerFocus:crawlerFocus?.controller.snapshot()??null,birdFocus:birdFocus?.controller.snapshot()??null,sourceView:sourceView?{observationId:sourceView.observationId,sourceId:sourceView.sourceId,rms:sourceView.rmsImageHeightFraction,imageAspect:sourceView.imageAspect}:null,mode:underwaterFocus?'underwater':sourceView?'source-view':overview?'overview':nav.pose().mode,pose:underwaterFocus?submergedView.pose():nav.pose(),placeId:place.id,revision:place.revision,memoryCount:session.memories.filter(m=>m.placeId===place.id).length,rain,rainField:{visible:rainLines.visible,segments:rainFieldStats.segments,supportQueries:rainFieldStats.supportQueries,cachedColumns:rainFieldStats.cachedColumns},paused,soundEnabled:soundscape.isEnabled(),simulationTime:worldTime,frameCount,anchorCount:place.anchors.length,anchorIds:place.anchors.map(a=>a.id),historical,birdDetail:{activity:sim.snapshot().bird.activity,forageAmount:sim.snapshot().bird.forageAmount,attention:sim.snapshot().bird.attention,reason:sim.snapshot().bird.reason,perchId:sim.snapshot().bird.perchId,targetId:sim.snapshot().bird.targetId,position:sim.snapshot().bird.position,wingLeft:sim.snapshot().bird.wingLeft,feet:sim.snapshot().bird.feet.map(f=>({toe:f.toe,contact:f.contact}))},foliageDetail:art.detailSnapshot(),publicContext:place.observations.find(o=>o.geographicContext)?.geographicContext??null,contextForms:place.anchors.filter(a=>a.contextForm).map(a=>({id:a.id,form:a.contextForm})),renderer:{calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures},bird:sim.snapshot().bird.state,crawler:crawler?.snapshot().crawler??null,orbWeb:orbWeaver?.snapshot()??null,orbSilk:orbWeaver?.getWeb()?.silkGeometry??null,webVisitor:orbArt?.visitorInspection()??null,webResident:orbArt?.residentInspection()??null,webFocus,pondSkater:pondSkater?.snapshot()??null,skaterFocus,underwaterFocus,submergedLife:submergedLife?.snapshot()??null,camera:{position:camera.position.toArray(),forward:camera.getWorldDirection(new THREE.Vector3()).toArray(),up:new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld,1).toArray(),fov:camera.fov,aspect:camera.aspect,near:camera.near,far:camera.far}});
+window.__wildsideInspect=()=>({overviewZoom:overviewZoom.value(),overviewPan:overviewPan.position(art?.bounds,overviewZoom.value()),hamon:hamon?.state()??null,hamonTrees:hamon?.trees??[],crawlerFocus:crawlerFocus?.controller.snapshot()??null,birdFocus:birdFocus?.controller.snapshot()??null,sourceView:sourceView?{observationId:sourceView.observationId,sourceId:sourceView.sourceId,rms:sourceView.rmsImageHeightFraction,imageAspect:sourceView.imageAspect}:null,mode:underwaterFocus?'underwater':sourceView?'source-view':overview?'overview':nav.pose().mode,pose:underwaterFocus?submergedView.pose():nav.pose(),placeId:place.id,revision:place.revision,memoryCount:session.memories.filter(m=>m.placeId===place.id).length,rain,rainField:{visible:rainLines.visible,segments:rainFieldStats.segments,supportQueries:rainFieldStats.supportQueries,cachedColumns:rainFieldStats.cachedColumns},paused,soundEnabled:soundscape.isEnabled(),simulationTime:worldTime,frameCount,anchorCount:place.anchors.length,anchorIds:place.anchors.map(a=>a.id),historical,birdDetail:{activity:sim.snapshot().bird.activity,forageAmount:sim.snapshot().bird.forageAmount,attention:sim.snapshot().bird.attention,reason:sim.snapshot().bird.reason,perchId:sim.snapshot().bird.perchId,targetId:sim.snapshot().bird.targetId,position:sim.snapshot().bird.position,wingLeft:sim.snapshot().bird.wingLeft,feet:sim.snapshot().bird.feet.map(f=>({toe:f.toe,contact:f.contact}))},foliageDetail:art.detailSnapshot(),publicContext:place.observations.find(o=>o.geographicContext)?.geographicContext??null,urbanHabitatDetails:art.urbanHabitatDetails??[],birdVegetationObstacles:art.birdVegetationObstacles??[],contextForms:place.anchors.filter(a=>a.contextForm).map(a=>({id:a.id,form:a.contextForm})),renderer:{calls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries,textures:renderer.info.memory.textures},bird:sim.snapshot().bird.state,crawler:crawler?.snapshot().crawler??null,salamander:salamander?.snapshot().salamander??null,residentVisibility:{crawler:!!crawlerArt?.group.visible,salamander:!!salamanderArt?.group.visible},orbWeb:orbWeaver?.snapshot()??null,orbSilk:orbWeaver?.getWeb()?.silkGeometry??null,webVisitor:orbArt?.visitorInspection()??null,webResident:orbArt?.residentInspection()??null,webFocus,pondSkater:pondSkater?.snapshot()??null,skaterFocus,underwaterFocus,submergedLife:submergedLife?.snapshot()??null,intertidalLife:intertidalLife?.snapshot()??null,anemoneFocus,camera:{position:camera.position.toArray(),forward:camera.getWorldDirection(new THREE.Vector3()).toArray(),up:new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld,1).toArray(),fov:camera.fov,aspect:camera.aspect,near:camera.near,far:camera.far}});
 
 
 
@@ -1053,6 +1223,6 @@ function registerCorePlaces(){
   registerPlace({id:p.id,name:p.name,line:p.description,thumb:p.thumbnail,honesty:honest[p.id]??'Imagined',order:order*10,
    status:ok?'ready':'soon',soonLabel:p.needsHamon&&!ok?'Needs the painted view':undefined,
    current:()=>p.id==='courtyard'?place.id==='imagined-courtyard':p.id==='kyoto-block'?place.anchors.some(a=>a.mapGeometry):liveIdOf(displayPlace)===p.id,
-   travel:()=>p.enter()});
+   travel:request=>p.enter(request)});
  });
 }

@@ -94,7 +94,7 @@ export function exportStaticWorld(art,place,writer=createWriter()){
   const [x,y,z]=a.position,[w,h,d]=a.size,form=a.appearance?.interpretation?.form;
   if(['path','water','wall','bench','rock','planter','building'].includes(a.kind))clear.push([x-w/2-.08,z-d/2-.08,x+w/2+.08,z+d/2+.08]);
   if(a.kind==='tree')clear.push([x-.35,z-.35,x+.35,z+.35]);
-  if(a.kind==='ground'&&w*d<=900)beds.push({center:[x,z],size:[w,d],y:y+h,mix:'meadow',density:.3,seed:seedOf(a.id),avoid:true});
+  if(a.kind==='ground'&&a.contextForm!=='intertidal-substrate'&&w*d<=900)beds.push({center:[x,z],size:[w,d],y:y+h,mix:'meadow',density:.3,seed:seedOf(a.id),avoid:true});
   if(a.kind==='plant'&&!treeAnchors.has(a.id)){
    engineFlora.add(a.id);
    if(form==='shrub'||form==='broadleaf')shrubs.push({pos:[x,y,z],radius:Math.max(.15,Math.max(w,d)/2),height:Math.max(.2,h),seed:seedOf(a.id)});

@@ -13,9 +13,10 @@ export function readPad(pad){
 const FLAGS=['forward','back','left','right','up','down'];
 /** hooks: {touch (object the app reads for movement), look(dxRad,dyRad), canAct(), onStart(), wake()} */
 export function createGamepad({touch,look,canAct=()=>true,onStart=()=>{},wake=()=>{},requestFrame=()=>{},getPads=()=>navigator.getGamepads?.()??[]}){
- let raf=0,last=0,startHeld=false,owned=new Set();
+ let raf=0,last=0,startHeld=false,owned=new Set(),stopped=false;
  const release=()=>{for(const k of owned)delete touch[k];owned.clear();};
  function step(now){
+  if(stopped)return;
   raf=0;const dt=Math.min(.1,(now-(last||now))/1000);last=now;
   const pad=[...getPads()].find(p=>p&&p.connected);if(!pad){release();last=0;return;}
   const s=readPad(pad);
@@ -28,9 +29,9 @@ export function createGamepad({touch,look,canAct=()=>true,onStart=()=>{},wake=()
   }else release();
   raf=requestAnimationFrame(step);
  }
- const start=()=>{if(!raf)raf=requestAnimationFrame(step);};
+ const start=()=>{if(!stopped&&!raf)raf=requestAnimationFrame(step);};
  addEventListener('gamepadconnected',start);
  addEventListener('gamepaddisconnected',release);
  if([...getPads()].some(p=>p?.connected))start();
- return {stop(){if(raf)cancelAnimationFrame(raf);raf=0;release();}};
+ return {stop(){if(stopped)return;stopped=true;if(raf)cancelAnimationFrame(raf);raf=0;release();removeEventListener('gamepadconnected',start);removeEventListener('gamepaddisconnected',release);}};
 }

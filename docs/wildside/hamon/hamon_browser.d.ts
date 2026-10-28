@@ -7,6 +7,10 @@ export class HamonView {
     [Symbol.dispose](): void;
     adapter(): string;
     /**
+     * `"webgpu"` or `"webgl2"`: which graphics API this view uses.
+     */
+    backend(): string;
+    /**
      * Render and present one frame. `cam` = eye xyz, target xyz, up xyz, vertical fov (deg),
      * near, far. Returns false when the browser skipped the frame.
      */
@@ -82,9 +86,10 @@ export function default_look(): string;
 export function looks_json(): string;
 
 /**
- * Open a HAMON view on `canvas` (WebGPU). Rejects when WebGPU is unavailable.
+ * Open a HAMON view on `canvas`. `backend` is `"auto"` (WebGPU, else the WebGL2 downlevel
+ * renderer), `"webgpu"` or `"webgl2"`. Rejects when neither graphics API can open the canvas.
  */
-export function open_view(canvas: HTMLCanvasElement): Promise<HamonView>;
+export function open_view(canvas: HTMLCanvasElement, backend?: string | null): Promise<HamonView>;
 
 /**
  * The input resident `i` is steered with on the next ticks (see `hamon_sculpt::residents::Drive`).
@@ -116,6 +121,7 @@ export interface InitOutput {
     readonly __wbg_hamonview_free: (a: number, b: number) => void;
     readonly default_look: () => [number, number];
     readonly hamonview_adapter: (a: number) => [number, number];
+    readonly hamonview_backend: (a: number) => [number, number];
     readonly hamonview_frame: (a: number, b: number, c: number, d: number) => [number, number, number];
     readonly hamonview_look: (a: number) => [number, number];
     readonly hamonview_place_heights: (a: number) => [number, number];
@@ -132,16 +138,16 @@ export interface InitOutput {
     readonly hamonview_sky_animating: (a: number) => number;
     readonly hamonview_stats: (a: number) => [number, number];
     readonly looks_json: () => [number, number];
-    readonly open_view: (a: any) => any;
+    readonly open_view: (a: any, b: number, c: number) => any;
     readonly resident_drive: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
     readonly resident_poses_json: () => [number, number];
     readonly resident_possess: (a: number) => number;
     readonly resident_states_json: () => [number, number];
-    readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___js_sys_522f2cbc6d838fb6___Function_fn_wasm_bindgen_569c88abdbd95b4d___JsValue_____wasm_bindgen_569c88abdbd95b4d___sys__Undefined___js_sys_522f2cbc6d838fb6___Function_fn_wasm_bindgen_569c88abdbd95b4d___JsValue_____wasm_bindgen_569c88abdbd95b4d___sys__Undefined_______true_: (a: number, b: number, c: any, d: any) => void;
-    readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___wasm_bindgen_569c88abdbd95b4d___JsValue__core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_569c88abdbd95b4d___JsError___true_: (a: number, b: number, c: any) => [number, number];
-    readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___wasm_bindgen_569c88abdbd95b4d___sys__JsNullable_wgpu_f96de166a00bd368___backend__webgpu__webgpu_sys__gen_GpuError__GpuError___core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_569c88abdbd95b4d___JsError___true_: (a: number, b: number, c: any) => [number, number];
-    readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___wasm_bindgen_569c88abdbd95b4d___sys__JsNullable_wgpu_f96de166a00bd368___backend__webgpu__webgpu_sys__gen_GpuError__GpuError___core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_569c88abdbd95b4d___JsError___true__26: (a: number, b: number, c: any) => [number, number];
-    readonly wasm_bindgen_569c88abdbd95b4d___convert__closures_____invoke___wasm_bindgen_569c88abdbd95b4d___sys__JsNullable_wgpu_f96de166a00bd368___backend__webgpu__webgpu_sys__gen_GpuError__GpuError___core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_569c88abdbd95b4d___JsError___true__27: (a: number, b: number, c: any) => [number, number];
+    readonly wasm_bindgen_b2f03db477057c3e___convert__closures_____invoke___js_sys_13a58073f6373092___Function_fn_wasm_bindgen_b2f03db477057c3e___JsValue_____wasm_bindgen_b2f03db477057c3e___sys__Undefined___js_sys_13a58073f6373092___Function_fn_wasm_bindgen_b2f03db477057c3e___JsValue_____wasm_bindgen_b2f03db477057c3e___sys__Undefined_______true_: (a: number, b: number, c: any, d: any) => void;
+    readonly wasm_bindgen_b2f03db477057c3e___convert__closures_____invoke___wasm_bindgen_b2f03db477057c3e___JsValue__core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_b2f03db477057c3e___JsError___true_: (a: number, b: number, c: any) => [number, number];
+    readonly wasm_bindgen_b2f03db477057c3e___convert__closures_____invoke___wasm_bindgen_b2f03db477057c3e___sys__JsNullable_wgpu_c2c7af3e3bea9328___backend__webgpu__webgpu_sys__gen_GpuError__GpuError___core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_b2f03db477057c3e___JsError___true_: (a: number, b: number, c: any) => [number, number];
+    readonly wasm_bindgen_b2f03db477057c3e___convert__closures_____invoke___wasm_bindgen_b2f03db477057c3e___sys__JsNullable_wgpu_c2c7af3e3bea9328___backend__webgpu__webgpu_sys__gen_GpuError__GpuError___core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_b2f03db477057c3e___JsError___true__27: (a: number, b: number, c: any) => [number, number];
+    readonly wasm_bindgen_b2f03db477057c3e___convert__closures_____invoke___wasm_bindgen_b2f03db477057c3e___sys__JsNullable_wgpu_c2c7af3e3bea9328___backend__webgpu__webgpu_sys__gen_GpuError__GpuError___core_37ee0ce0c4cd57d5___result__Result_____wasm_bindgen_b2f03db477057c3e___JsError___true__28: (a: number, b: number, c: any) => [number, number];
     readonly __wbindgen_malloc: (a: number, b: number) => number;
     readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
     readonly __wbindgen_exn_store: (a: number) => void;
