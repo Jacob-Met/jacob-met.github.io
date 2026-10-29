@@ -160,6 +160,7 @@
     "experience_policy.py",
     "figure_policy.py",
     "game_assets.py",
+    "game_loader_contract.cjs",
     "games/lanternwake/build-info.json",
     "games/lanternwake/desktop.png",
     "games/lanternwake/evidence.json",
