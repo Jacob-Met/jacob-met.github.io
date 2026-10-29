@@ -55,7 +55,7 @@ export const REGIONS = [
    ],
    [
     "mechanism",
-    "Recovers the joints, linkages and working dynamics of real machinery from nothing but a video of it moving.",
+    "Track selected points in machine footage, compare possible motion constraints, and test them against later frames.",
     "/work/mechanism/",
     "",
     0
