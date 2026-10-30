@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#eee9de">
+<meta name="description" content="Jacob Metoyer — CSULB BUILD Scholar. Research at the intersection of biology, measurement, and computation. Connect at SACNAS 2026.">
+<meta property="og:title" content="Jacob Metoyer / Research + Engineering">
+<meta property="og:description" content="Scientific research, real systems, and work you can inspect. Meet Jacob at SACNAS.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jacobmetoyer.com/meet/">
+<link rel="canonical" href="https://jacobmetoyer.com/meet/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%2319231b'/%3E%3Cpath d='M14 47V17h9v22h12V17h9v30H14Z' fill='%23dffe73'/%3E%3C/svg%3E">
+<title>Jacob Metoyer — Meet / SACNAS 2026</title>
+<style>
+:root{--paper:#eee9de;--ink:#182019;--deep:#111913;--sub:#526052;--line:#c7c9bc;--lime:#dffe73;--orange:#ff5e42;--shadow:#e0dacd}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}button{font:inherit}a,button{outline-offset:5px}a:focus-visible,button:focus-visible{outline:3px solid var(--orange)}
+::selection{background:var(--lime);color:var(--ink)}
+.grid-paper{background-image:linear-gradient(to right,rgba(30,45,31,.044) 1px,transparent 1px),linear-gradient(to bottom,rgba(30,45,31,.044) 1px,transparent 1px);background-size:28px 28px}
+.site{width:min(1440px,100%);margin:auto;border-left:1px solid var(--line);border-right:1px solid var(--line);min-height:100vh}
+.topbar{height:78px;border-bottom:1px solid var(--ink);display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,4.8vw,68px);gap:22px}
+.brand{display:flex;align-items:center;gap:13px;font-size:12px;letter-spacing:.18em;font-weight:800;text-transform:uppercase;white-space:nowrap}
+.brandmark{width:39px;height:39px;background:var(--ink);color:var(--lime);display:grid;place-items:center;font:900 18px/1 Georgia,serif;letter-spacing:-.12em;transform:rotate(-3deg)}.brandmark span{transform:rotate(3deg)}
+.topright{display:flex;gap:30px;align-items:center;font:700 11px/1.5 "Courier New",monospace;text-transform:uppercase;letter-spacing:.12em}.topright a:hover{text-decoration:underline;text-underline-offset:6px}.live{display:flex;align-items:center;gap:8px}.live i{width:7px;height:7px;background:#d0f65d;border:1px solid var(--ink);border-radius:50%}
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(340px,.95fr);min-height:740px;border-bottom:1px solid var(--ink)}
+.hero-content{padding:61px clamp(20px,4.8vw,68px) 45px;border-right:1px solid var(--ink);display:flex;flex-direction:column;justify-content:space-between}
+.eyebrow{font:700 11px/1.6 "Courier New",monospace;letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:12px}.index-dot{width:8px;height:8px;background:var(--orange);display:inline-block;transform:rotate(45deg)}
+.headline{margin:42px 0 20px;font-size:clamp(82px,11.4vw,170px);font-family:Impact,"Arial Narrow",Arial,sans-serif;letter-spacing:-.066em;line-height:.78;font-stretch:condensed;font-weight:900;max-width:8ch}.headline span{display:block}.headline span:last-child{color:transparent;-webkit-text-stroke:2px var(--ink);text-stroke:2px var(--ink);position:relative}.headline span:last-child::after{content:".";color:var(--orange);-webkit-text-stroke:0}
+.hero-tag{font:italic clamp(26px,3.2vw,43px)/1.12 Georgia,serif;letter-spacing:-.055em;max-width:470px;margin:42px 0 22px}
+.intro{max-width:480px;font-size:16px;line-height:1.55;color:#354339;margin:0}.identity{display:flex;flex-wrap:wrap;gap:8px;margin:25px 0 35px}.identity span{font:700 10px/1.3 "Courier New",monospace;border:1px solid #aeb6a7;padding:9px 10px;text-transform:uppercase;letter-spacing:.06em}
+.actions{display:flex;flex-wrap:wrap;gap:9px}.btn{display:inline-flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 19px;min-height:56px;border:1px solid var(--ink);font:800 12px/1.2 "Courier New",monospace;text-transform:uppercase;letter-spacing:.035em;cursor:pointer;transition:background .15s,transform .15s}.btn:hover{transform:translateY(-2px)}.btn.primary{background:var(--ink);color:var(--lime);min-width:245px}.btn.primary:hover{background:#314a32}.btn.secondary{background:transparent}.btn.secondary:hover{background:var(--lime)}.arrow{font-size:19px;line-height:1}
+.hero-bottom{border-top:1px solid var(--line);padding-top:22px;display:flex;justify-content:space-between;align-items:center;color:var(--sub);margin-top:45px;gap:15px;font:700 11px/1.5 "Courier New",monospace;text-transform:uppercase}.hero-bottom strong{color:var(--ink)}
+.instrument{background:var(--deep);color:var(--paper);overflow:hidden;display:flex;flex-direction:column;position:relative;min-height:630px}.instrument::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(223,254,115,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(223,254,115,.055) 1px,transparent 1px);background-size:39px 39px;pointer-events:none}.instrument-top{z-index:1;display:flex;justify-content:space-between;padding:31px 36px;font:700 10px/1.5 "Courier New",monospace;letter-spacing:.12em;text-transform:uppercase;color:#b9c4b0}.instrument-top b{color:var(--lime);font-weight:700}
+.figure{flex:1;display:grid;place-items:center;position:relative;padding:30px}.figure svg{width:min(90%,560px);height:auto;max-height:530px;filter:drop-shadow(0 0 18px rgba(222,255,119,.04))}.figure-note{position:absolute;bottom:9%;left:8%;font:700 10px/1.7 "Courier New",monospace;letter-spacing:.12em;color:var(--lime);text-transform:uppercase}
+.instrument-bottom{z-index:1;display:flex;justify-content:space-between;align-items:end;padding:30px 36px;border-top:1px solid #445344;gap:18px}.instrument-bottom span{display:block;font:700 10px/1.8 "Courier New",monospace;color:#a1ac9a;text-transform:uppercase;letter-spacing:.1em}.instrument-bottom strong{display:block;font:italic 31px/1.05 Georgia,serif;letter-spacing:-.05em;color:var(--paper)}.instrument-bottom .serial{font:700 11px/1.2 "Courier New",monospace;letter-spacing:.13em;color:var(--lime);white-space:nowrap}
+.ticker{display:flex;align-items:center;gap:0;background:var(--lime);border-bottom:1px solid var(--ink);white-space:nowrap;overflow:hidden;font:900 clamp(12px,1.4vw,17px)/1.2 "Courier New",monospace;letter-spacing:.01em}.ticker span{padding:14px clamp(15px,2.4vw,32px);border-right:1px solid var(--ink)}.ticker em{font-style:normal;font-size:17px;color:#58702a}
+.section{padding:74px clamp(20px,4.8vw,68px);border-bottom:1px solid var(--ink)}.section-head{display:flex;justify-content:space-between;align-items:baseline;gap:30px;border-bottom:1px solid var(--ink);padding-bottom:23px;margin-bottom:36px}.section-id{font:800 11px/1.4 "Courier New",monospace;letter-spacing:.11em;color:var(--sub);text-transform:uppercase}.section-title{font:900 clamp(48px,7vw,90px)/.89 Impact,"Arial Narrow",sans-serif;letter-spacing:-.04em;margin:11px 0 0;text-transform:uppercase}.section-note{max-width:250px;font:12px/1.6 "Courier New",monospace;color:var(--sub);text-align:right}
+.research-grid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--ink)}.research-card{padding:28px 24px 34px;min-height:260px;border-right:1px solid var(--ink);display:flex;flex-direction:column;justify-content:space-between}.research-card:last-child{border-right:0}.research-card .num{font:700 11px "Courier New",monospace;color:var(--sub)}.research-card h3{font:italic clamp(23px,2.3vw,36px)/1.09 Georgia,serif;letter-spacing:-.055em;margin:30px 0 12px}.research-card p{font:13px/1.55 Arial,sans-serif;color:#596258;margin:0}.research-card:nth-child(2){background:#e5e3d7}.research-card:nth-child(4){background:var(--ink);color:var(--paper)}.research-card:nth-child(4) .num,.research-card:nth-child(4) p{color:#a6b4a6}
+.work-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.work{border:1px solid var(--ink);display:flex;flex-direction:column;min-height:350px;background:#f4f1e8;transition:box-shadow .18s,transform .18s}.work:hover{transform:translateY(-4px);box-shadow:6px 6px 0 var(--ink)}.work-top{height:135px;position:relative;overflow:hidden;border-bottom:1px solid var(--ink)}.work-top .work-type{position:absolute;top:18px;left:20px;font:800 10px "Courier New",monospace;letter-spacing:.1em;text-transform:uppercase}.work-top .work-symbol{position:absolute;right:18px;bottom:-26px;font:900 135px/.9 Impact,"Arial Narrow",sans-serif;letter-spacing:-.13em;opacity:.85}.work-a .work-top{background:var(--lime)}.work-b .work-top{background:var(--orange)}.work-c .work-top{background:#bfc9d4}.work-body{padding:24px 22px;flex:1;display:flex;flex-direction:column}.work h3{font:900 35px/1 Impact,"Arial Narrow",sans-serif;letter-spacing:-.025em;text-transform:uppercase;margin:0 0 12px}.work p{font:14px/1.55 Arial,sans-serif;color:var(--sub);margin:0 0 22px}.work a{margin-top:auto;font:800 11px/1.3 "Courier New",monospace;text-transform:uppercase;letter-spacing:.08em;border-top:1px solid var(--line);padding-top:19px;display:flex;justify-content:space-between}.work a:hover{text-decoration:underline;text-underline-offset:4px}
+.band{display:grid;grid-template-columns:1.1fr .9fr;background:var(--ink);color:var(--paper)}.band-text{padding:65px clamp(20px,4.8vw,68px);border-right:1px solid #506052}.band-label{font:800 11px/1.5 "Courier New",monospace;color:var(--lime);letter-spacing:.12em;text-transform:uppercase}.band h2{font:italic clamp(37px,4.4vw,62px)/1.06 Georgia,serif;letter-spacing:-.05em;margin:23px 0 20px}.band p{max-width:540px;font:15px/1.65 Arial,sans-serif;color:#b6c1b5}.band-cta{padding:54px clamp(20px,4.4vw,62px);display:flex;flex-direction:column;justify-content:center;gap:12px}.band-cta a,.band-cta button{width:100%;padding:22px 20px;background:transparent;border:1px solid #647667;color:var(--paper);text-align:left;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font:800 12px "Courier New",monospace;text-transform:uppercase;letter-spacing:.06em}.band-cta a:hover,.band-cta button:hover{background:var(--lime);color:var(--ink);border-color:var(--lime)}.band-cta a:first-child{background:var(--lime);color:var(--ink);border-color:var(--lime)}.band-cta small{font:11px/1.5 "Courier New",monospace;color:#a8b6a9;margin-top:10px}
+.footer{padding:35px clamp(20px,4.8vw,68px);display:flex;justify-content:space-between;align-items:center;gap:20px;font:700 10px/1.6 "Courier New",monospace;letter-spacing:.09em;text-transform:uppercase}.footer a{text-decoration:underline;text-underline-offset:4px}.footer .red{color:#bd442f}
+.bottomdock{display:none}.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--lime);font:700 11px "Courier New",monospace;padding:13px 20px;opacity:0;pointer-events:none;transition:.2s;z-index:10}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:1020px){.hero{grid-template-columns:minmax(0,1fr) minmax(300px,.8fr)}.headline{font-size:clamp(74px,11.8vw,125px)}.hero-content{padding-top:50px}.research-grid{grid-template-columns:repeat(2,1fr)}.research-card:nth-child(2){border-right:0}.research-card:nth-child(-n+2){border-bottom:1px solid var(--ink)}.work-grid{grid-template-columns:1fr 1fr}.work:last-child{grid-column:span 2;min-height:270px}.band{grid-template-columns:1fr 1fr}}
+@media(max-width:680px){body{padding-bottom:77px}.site{border:0}.topbar{height:62px;padding:0 20px}.brand{font-size:10px}.brandmark{width:33px;height:33px}.topright{gap:14px;font-size:9px}.topright .nothere{display:none}.hero{grid-template-columns:1fr;min-height:0}.hero-content{border-right:0;padding:34px 22px 27px}.eyebrow{font-size:9px}.headline{font-size:clamp(70px,19.2vw,120px);margin:33px 0 10px;line-height:.84}.headline span:last-child{-webkit-text-stroke:1.5px var(--ink)}.hero-tag{font-size:29px;max-width:350px;margin:26px 0 14px}.intro{font-size:14px}.identity{margin:21px 0 25px}.identity span{font-size:9px;padding:8px}.actions{gap:7px}.btn{width:100%;padding:15px 17px;min-height:53px}.btn.primary{min-width:0}.hero-bottom{margin-top:29px;padding-top:17px;font-size:9px}.instrument{min-height:425px}.instrument-top{padding:20px 22px;font-size:9px}.figure{padding:4px 20px}.figure svg{width:min(79%,350px);max-height:320px}.figure-note{font-size:8px;bottom:8%;left:7%}.instrument-bottom{padding:20px 22px}.instrument-bottom strong{font-size:26px}.ticker{font-size:12px}.ticker span{padding:12px 16px}.section{padding:53px 20px}.section-head{margin-bottom:25px;padding-bottom:18px}.section-title{font-size:53px}.section-note{max-width:120px;font-size:10px}.research-grid{grid-template-columns:1fr 1fr}.research-card{padding:20px 16px;min-height:245px}.research-card h3{font-size:25px;margin:30px 0 12px}.research-card p{font-size:12px}.work-grid{grid-template-columns:1fr;gap:12px}.work:last-child{grid-column:auto}.work{min-height:0}.work-top{height:110px}.work-top .work-symbol{font-size:118px}.work-body{padding:21px}.work p{margin-bottom:17px}.band{grid-template-columns:1fr}.band-text{padding:47px 22px 30px;border-right:0;border-bottom:1px solid #516552}.band h2{font-size:40px}.band-cta{padding:23px 22px 42px}.footer{padding:28px 22px;display:block}.footer p{margin:4px 0}.bottomdock{position:fixed;bottom:0;left:0;right:0;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:var(--ink);display:flex;gap:5px;z-index:8;box-shadow:0 -10px 30px #0c120e22}.bottomdock a,.bottomdock button{display:flex;align-items:center;justify-content:center;min-height:47px;flex:1;padding:0 8px;border:1px solid #667564;background:none;color:var(--paper);font:800 10px "Courier New",monospace;letter-spacing:.03em;text-transform:uppercase}.bottomdock a:first-child{flex:1.6;background:var(--lime);color:var(--ink);border-color:var(--lime)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="site">
+<header class="topbar">
+<a class="brand" href="#top" aria-label="Jacob Metoyer, top of page"><span class="brandmark"><span>JM</span></span><span>Field notes / 001</span></a>
+<nav class="topright" aria-label="Top navigation"><span class="live"><i aria-hidden="true"></i> SACNAS / 2026</span><a class="nothere" href="#research">Research</a><a href="#connect">Connect ↗</a></nav>
+</header>
+<main id="top">
+<section class="hero" aria-labelledby="name">
+<div class="hero-content grid-paper">
+<div>
+<div class="eyebrow"><span class="index-dot" aria-hidden="true"></span> CSULB BUILD Scholar <span aria-hidden="true">/</span> In person at SACNAS</div>
+<h1 class="headline" id="name"><span>JACOB</span><span>METOYER</span></h1>
+<p class="hero-tag">Make the work <em>measurable.</em> Make the result <em>inspectable.</em></p>
+<p class="intro">I work across biology, computation, and research software—from human movement and neuroscience to systems that make evidence easier to examine.</p>
+<div class="identity" aria-label="Areas of study"><span>Computer Science + Physics</span><span>Biology minor</span><span>MD/PhD direction</span></div>
+<div class="actions"><a class="btn primary" href="https://www.linkedin.com/in/jacob-metoyer-15b701352" target="_blank" rel="noopener noreferrer">Connect on LinkedIn <span class="arrow" aria-hidden="true">↗</span></a><a class="btn secondary" href="/"><span>Explore full website</span><span class="arrow" aria-hidden="true">↗</span></a></div>
+</div>
+<div class="hero-bottom"><span><strong>Research × Engineering</strong><br>Long Beach, California</span><span>Scroll to explore ↓</span></div>
+</div>
+<div class="instrument" role="img" aria-label="Original scientific-inspired line illustration with layered orbit tracings and measurement points">
+<div class="instrument-top"><span>Figure 01 / Cross-disciplinary practice</span><b>OBSERVE → BUILD</b></div>
+<div class="figure">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 510 520" fill="none" aria-hidden="true">
+<defs><linearGradient id="arc" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#DFFE73"/><stop offset="1" stop-color="#68866D"/></linearGradient><clipPath id="slice"><circle cx="252" cy="254" r="178"/></clipPath></defs>
+<circle cx="252" cy="254" r="179" stroke="#92AD84" stroke-width="1.2"/><circle cx="252" cy="254" r="151" stroke="#6B8169" stroke-width=".7" stroke-dasharray="2 8"/><circle cx="252" cy="254" r="101" stroke="#425947"/><circle cx="252" cy="254" r="38" stroke="#DFFE73" stroke-width="2"/>
+<path d="M252 24V478M24 254H480" stroke="#72896E" stroke-opacity=".5" stroke-dasharray="4 9"/><path d="M72 72L438 438M438 72L72 438" stroke="#62765D" stroke-opacity=".35" stroke-dasharray="3 10"/>
+<g clip-path="url(#slice)"><path d="M25 287C100 56 179 489 251 258S396 67 483 241" stroke="url(#arc)" stroke-width="2.6"/><path d="M35 370C111 170 174 374 248 259S391 207 479 112" stroke="#DFFE73" stroke-width="1.4"/><path d="M18 203C106 431 173 78 254 250S406 435 491 165" stroke="#FF5E42" stroke-width="2"/><path d="M88 120C195 260 120 399 263 281S339 134 424 429" stroke="#94B189" stroke-width="1"/></g>
+<g fill="#DFFE73"><circle cx="252" cy="254" r="7"/><circle cx="138" cy="120" r="5"/><circle cx="366" cy="124" r="4"/><circle cx="393" cy="366" r="5"/><circle cx="109" cy="350" r="4"/></g>
+<g fill="#FF5E42"><circle cx="205" cy="401" r="5"/><circle cx="324" cy="112" r="3.5"/></g>
+<path d="M252 254L366 124H467M252 254L109 350H38M205 401V463H291" stroke="#DFFE73" stroke-width="1.1"/><g fill="#DFFE73" font-family="monospace" font-size="10" letter-spacing="1.2"><text x="346" y="112">01 / SAMPLE</text><text x="40" y="338">02 / TRACE</text><text x="296" y="460">03 / TEST</text></g>
+<path d="M252 54v-19M252 455v22M53 254H34M450 254h22" stroke="#DFFE73" stroke-width="2"/><path d="M199 254h106M252 202v105" stroke="#DFFE73" opacity=".8" stroke-width=".5"/>
+</svg>
+<div class="figure-note">Not a stock image. / A visual system for finding signals.</div>
+</div>
+<div class="instrument-bottom"><div><span>Working method</span><strong>Observe. Model.<br>Verify.</strong></div><div class="serial">JM / 2026<br>01—∞</div></div>
+</div>
+</section>
+<div class="ticker" aria-label="Areas of interest"><span>GAIT + REHABILITATION</span><em aria-hidden="true">✳</em><span>BEHAVIORAL NEUROSCIENCE</span><em aria-hidden="true">✳</em><span>SCIENTIFIC SOFTWARE</span><em aria-hidden="true">✳</em><span>REPRODUCIBLE SYSTEMS</span></div>
+<section id="research" class="section" aria-labelledby="research-title">
+<div class="section-head"><div><div class="section-id">01 / Research domains</div><h2 class="section-title" id="research-title">Across the lab.</h2></div><div class="section-note">Research experience spans these areas; collaborative contributions are distinguished from solo engineering work.</div></div>
+<div class="research-grid">
+<article class="research-card"><span class="num">01 — HUMAN MOVEMENT</span><div><h3>Gait &amp;<br>rehabilitation</h3><p>Movement measurement, pose-based analysis, and reproducible workflows.</p></div></article>
+<article class="research-card"><span class="num">02 — BEHAVIOR</span><div><h3>Neurobiology</h3><p>Behavioral research and questions that connect observation to analysis.</p></div></article>
+<article class="research-card"><span class="num">03 — MOLECULES</span><div><h3>Protein dynamics</h3><p>Computational investigation of molecular motion and biological systems.</p></div></article>
+<article class="research-card"><span class="num">04 — PEOPLE + TOOLS</span><div><h3>Surgical ergonomics</h3><p>Collaborative work where measurement and usable analysis meet.</p></div></article>
+</div>
+</section>
+<section id="systems" class="section" aria-labelledby="systems-title">
+<div class="section-head"><div><div class="section-id">02 / Selected built work</div><h2 class="section-title" id="systems-title">Working systems.</h2></div><div class="section-note">Not mock-ups. Projects below link to public source or runnable demonstrations.</div></div>
+<div class="work-grid">
+<article class="work work-a"><div class="work-top"><span class="work-type">Research instrumentation / 01</span><span class="work-symbol" aria-hidden="true">C</span></div><div class="work-body"><h3>CaptureSuite</h3><p>Multimodal scientific capture: session packaging, worker plugins, and synthetic EMG/IMU quality-control examples.</p><a href="https://github.com/Jacob-Met/CaptureSuite" target="_blank" rel="noopener noreferrer">Inspect public source <span aria-hidden="true">↗</span></a></div></article>
+<article class="work work-b"><div class="work-top"><span class="work-type">Explainable learning / 02</span><span class="work-symbol" aria-hidden="true">R</span></div><div class="work-body"><h3>RecallWeave</h3><p>An offline adaptive-learning toolkit with transparent Bayesian estimates, lesson creation, and interactive labs. No measured learning-gain claim.</p><a href="https://jacobmetoyer.com/RecallWeave/explore.html" target="_blank" rel="noopener noreferrer">Try live application <span aria-hidden="true">↗</span></a></div></article>
+<article class="work work-c"><div class="work-top"><span class="work-type">Decision support / 03</span><span class="work-symbol" aria-hidden="true">T</span></div><div class="work-body"><h3>TowerOps</h3><p>A synthetic airspace workbench that proposes conflict resolutions through explicit approval, readback, and audit gates—not real-world ATC.</p><a href="https://jacobmetoyer.com/TowerOps/airspace/" target="_blank" rel="noopener noreferrer">Explore live simulation <span aria-hidden="true">↗</span></a></div></article>
+</div>
+</section>
+<section class="band" id="connect" aria-labelledby="connect-title">
+<div class="band-text"><div class="band-label">03 / Exchange information</div><h2 id="connect-title">The conversation doesn't have to end here.</h2><p>Research collaboration, interdisciplinary science, software, reproducibility—or just a good question. Here's the quickest way to stay in touch.</p></div>
+<div class="band-cta">
+<a href="https://www.linkedin.com/in/jacob-metoyer-15b701352" target="_blank" rel="noopener noreferrer">01 / Connect on LinkedIn <span aria-hidden="true">↗</span></a>
+<a href="./technical.html">02 / Technical profile <span aria-hidden="true">↗</span></a>
+<a href="https://github.com/Jacob-Met" target="_blank" rel="noopener noreferrer">03 / GitHub + public source <span aria-hidden="true">↗</span></a>
+<a href="./qr.html">Display the QR code <span aria-hidden="true">▦</span></a>
+<button id="savecontact" type="button">04 / Save contact card <span aria-hidden="true">↓</span></button>
+<button id="sharebutton" type="button">05 / Share this page <span aria-hidden="true">↗</span></button>
+<small>No forms. No tracking. No required accounts. Just the work and a direct connection.</small>
+</div>
+</section>
+</main>
+<footer class="footer"><span>© 2026 Jacob Metoyer <span class="red">✳</span> SACNAS conference edition.</span><p><a href="/">Full portfolio</a> &nbsp;/&nbsp; <a href="#top">Back to top ↑</a></p></footer>
+</div>
+<div class="bottomdock" aria-label="Quick actions"><a href="https://www.linkedin.com/in/jacob-metoyer-15b701352" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a><a href="./technical.html">Technical CV</a><a href="./qr.html">QR code</a><button id="dockshare" type="button">Share ↗</button></div>
+<div id="toast" class="toast" role="status" aria-live="polite">Link copied</div>
+<script>
+(function(){
+var url='https://jacobmetoyer.com/meet/';
+var toast=document.getElementById('toast'),t;
+function show(message){toast.textContent=message;toast.classList.add('show');clearTimeout(t);t=setTimeout(function(){toast.classList.remove('show')},2400);}
+function copy(){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(function(){show('Link copied')}).catch(function(){show('Open: jacobmetoyer.com/meet/')})}else{show('Open: jacobmetoyer.com/meet/')}}
+function share(){if(navigator.share){navigator.share({title:'Jacob Metoyer / Research + Engineering',url:url}).catch(function(){})}else{copy()}}
+document.getElementById('sharebutton').addEventListener('click',share);document.getElementById('dockshare').addEventListener('click',share);
+document.getElementById('savecontact').addEventListener('click',function(){
+var value=['BEGIN:VCARD','VERSION:3.0','N:Metoyer;Jacob;;;','FN:Jacob Metoyer','TITLE:Student researcher / scientific software','ORG:CSULB BUILD Scholar','URL:https://jacobmetoyer.com/meet/','X-SOCIALPROFILE;TYPE=linkedin:https://www.linkedin.com/in/jacob-metoyer-15b701352','NOTE:Research and engineering portfolio: https://jacobmetoyer.com/','END:VCARD'].join('\r\n');
+var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([value],{type:'text/vcard;charset=utf-8'}));a.download='Jacob-Metoyer.vcf';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},250);show('Contact card ready')});
+})();
+</script>
+</body>
+</html>
