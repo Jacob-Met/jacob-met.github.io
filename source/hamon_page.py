@@ -10,8 +10,8 @@ BRAND = 'HAMON'
 HAMON_LEGAL_NAME: str | None = None
 TAGLINE = 'Engines, worlds and instruments.'
 FOUNDER = 'Jacob Metoyer'
-TITLE = 'HAMON · An AI-native creation engine and everything built on it'
-DESC = ('HAMON is the name behind everything Jacob Metoyer builds: the HAMON Engine, an AI-native creation engine for games and worlds, video and film, '
+TITLE = 'HAMON · Engines, worlds and instruments'
+DESC = ('HAMON is Jacob Metoyer’s company and independent body of work: agent tools, worlds, research instruments and the HAMON Engine for games, video and film, '
         'animation, sculpting, physics and simulation, and science and engineering tools; plus the games, creation tools and instruments made with it.')
 SOCIAL = ('assets/hamon/hamon-share.jpg', 1200, 630,
           'HAMON: engines, worlds and instruments. A painted autumn lake from Wildside, a world built on the HAMON Engine.')
@@ -74,7 +74,7 @@ OTHER_WORLDS = [
 ]
 VIDEO = [
     ('Phantom Window', 'Walk a virtual camera through ordinary video. It estimates depth per frame, recovers the camera path, and renders new viewpoints on the GPU, marking which pixels were observed and which inferred.'),
-    ('Replay Forge', 'A basketball replay studio: connect a discussion to the relevant possession, branch the replay, and keep every claim bound to the source video.'),
+    ('Replay Forge — basketball studio', 'A separate project from ReplayForge, the replay-debugging hackathon tool. A basketball replay studio: connect a discussion to the relevant possession, branch the replay, and keep every claim bound to the source video.'),
     ('Captionverse', 'Spatial, speaker-aware captions and sound cues for video, with hash-matched cue manifests and local speech recognition that produces reviewable drafts.'),
     ('Chronos Vision', 'A temporal observatory for video: color-track measurements, three contrasting future-trajectory hypotheses, and past forecasts replayed against later frames. An experimental first release.'),
     ('Mechanism', 'A motion lab for machinery. Track markers in real video, compare image-plane paths and fit constrained kinematic models recomputed from saved evidence.'),
@@ -104,7 +104,7 @@ def body(wildside_page) -> str:
         '<div class="hamon-hero-copy">'
         f'<p class="section-context">FOUNDED AND BUILT BY {FOUNDER.upper()}</p><h1>{wordmark("span")}<span class="visually-hidden"> {e(TAGLINE)}</span></h1>'
         f'<p class="hamon-tagline">{e(TAGLINE)}</p>'
-        '<p class="ws-lede">HAMON is the single name behind everything I build: an AI-native creation engine, and the games, worlds, video and film tools, physics and simulation, and science instruments made with it.</p>'
+        '<p class="ws-lede">HAMON is my company and the home of my independent work: engines, agent tools, games, fiction worlds and research instruments. HAMON Engine is one system within it, developed alongside the things we make.</p>'
         f'<p class="hamon-actions"><a class="ws-play" href="{app}">Play Wildside</a><a class="hamon-secondary" href="#engine">Explore HAMON</a></p>'
         '<nav class="hamon-jump" aria-label="On this page"><a href="#engine">Engine</a><a href="#worlds">Games</a><a href="#video">Video &amp; film</a><a href="#instruments">Science</a><a href="#estate">Agents</a></nav></div></section>'
         '<section class="ws-section hamon-section" id="engine"><p class="section-context">01 · CORE TECHNOLOGY</p><h2>The HAMON Engine</h2>'
