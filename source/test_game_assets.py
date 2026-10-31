@@ -1,5 +1,7 @@
 """Publication contract tests. Tiny fixtures exercise validation, not a gameplay claim."""
 import json
+import shutil
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -46,5 +48,22 @@ class PublicationBoundary(unittest.TestCase):
     def test_nested_repository_refused(self):
         (self.root/'crates').mkdir()
         with self.assertRaises(ValueError): audit_game_bundle(self.root)
+
+class LoaderLifecycle(unittest.TestCase):
+    def test_shipped_loader_lifecycle(self):
+        root = Path(__file__).resolve().parents[1]
+        source = root / 'source/games/lanternwake/loader.js'
+        shipped = root / 'docs/games/lanternwake/loader.js'
+        self.assertEqual(source.read_bytes(), shipped.read_bytes())
+        node = shutil.which('node')
+        self.assertIsNotNone(node, 'Node is required for the loader lifecycle contract')
+        result = subprocess.run(
+            [node, str(root / 'source/game_loader_contract.cjs'), str(source)],
+            cwd=root, capture_output=True, text=True, timeout=15, check=False)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stderr, '')
+        report = json.loads(result.stdout)
+        self.assertEqual(report['passed'], 6)
+        self.assertEqual(len(report['outcomes']), 6)
 
 if __name__ == '__main__': unittest.main()
