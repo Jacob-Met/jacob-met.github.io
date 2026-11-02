@@ -15,3 +15,14 @@ figcaption{margin-top:10px;color:#b4b7c0;font-size:15px}
 figcaption span{font:12px ui-monospace,Menlo,monospace;color:#8e95a8;margin-right:8px}
 .note{border-top:1px solid #1d2027;padding-top:16px;color:#a3a7b1;font-size:14px}
 @media (max-width:600px){.top{padding:14px 16px}main{padding:0 16px 40px}h1{font-size:30px}}
+
+/* Keep the visual walk intact; expose its five stops and the native image detail. */
+.route{display:flex;flex-wrap:wrap;align-items:baseline;gap:7px 16px;margin:0 0 26px;padding:0 0 16px;border-bottom:1px solid #282e38}
+.route span{flex-basis:100%;color:#929caf;font:11px/1.7 ui-monospace,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase}
+.route a{display:inline-block;padding:7px 0;color:#cdd9ff;text-decoration:none;font-size:13px;white-space:nowrap}
+.route a:hover,.inspect:hover{color:#fff;text-decoration:underline;text-underline-offset:4px}
+figcaption{display:flex;align-items:baseline;flex-wrap:wrap;gap:5px 11px}
+.inspect{display:inline-block;margin-left:auto;color:#cdd9ff;text-decoration:none;font-size:13px;white-space:nowrap}
+.inspect span{font:inherit;color:inherit;margin:0 0 0 3px}
+a:focus-visible{outline:2px solid #cdd9ff;outline-offset:4px;border-radius:2px}
+@media (max-width:600px){.route{gap:0 15px}.route a{padding:7px 0}.inspect{margin-left:0}}
