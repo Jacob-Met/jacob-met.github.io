@@ -1,10 +1,11 @@
 #!/bin/sh
-# Pre-commit guard: docs/ is generated output, never hand-edit it.
+# Pre-commit guard: generated pages must match the maintained staged inputs.
 #
 # Validates the STAGED tree (what the commit will actually contain), not the
 # working tree: it materializes the index into a temp dir with
-# `git checkout-index`, rebuilds the site from the staged source/, and fails
-# the commit when the staged docs/ differs from a fresh build. This blocks the
+# `git checkout-index`, composes the staged source/ and tools/site/ generators
+# with declared static inputs, and fails when staged docs/ differs from the
+# complete fresh output. This blocks the
 # exact failure class behind jacob-met.github.io#11 (committing a source
 # change without the regenerated docs/, which the Verify public site
 # workflow then rejects).
@@ -26,8 +27,8 @@ SCRATCH="$(mktemp -d 2>/dev/null)" || {
 }
 trap 'rm -rf "$SCRATCH"' EXIT INT TERM
 
-# Fast path: nothing staged under source/ or docs/ -> nothing to validate.
-if git -C "$REPO_ROOT" diff --cached --quiet -- source docs; then
+# Fast path: no staged build input, output or guard change.
+if git -C "$REPO_ROOT" diff --cached --quiet -- source docs tools/site .githooks/pre-commit; then
     exit 0
 fi
 
@@ -60,31 +61,27 @@ if [ "$BUILD_MODE" = "local-preview" ]; then
     set -- --preview
 fi
 
-# Wildside is a separately maintained staged application, not generated source/.
-# Seed only that preserved subtree so the full docs comparison stays exact.
-# The builder still rejects symlinks and unexpected files in its managed output.
-for app in wildside brain forge; do
-    if [ -d "$SCRATCH/staged/docs/$app" ]; then
-        mkdir -p "$SCRATCH/checked-site"
-        cp -R "$SCRATCH/staged/docs/$app" "$SCRATCH/checked-site/$app"
-    fi
-done
-
-if ! python3 "$SCRATCH/staged/source/build.py" "$@" --out "$SCRATCH/checked-site" \
+# The staged composer owns application preservation and declared static inputs.
+# It builds into a fresh sibling directory, then runs the maintained Node stages.
+# Explicit paths keep the worktree's tooling and inventory out of this check.
+if ! python3 "$SCRATCH/staged/tools/site/rebuild.py" \
+        --source-tree "$SCRATCH/staged" \
+        --inputs "$SCRATCH/staged/tools/site/current-inputs.json" \
+        --out "$SCRATCH/checked-site" "$@" \
         >"$SCRATCH/build.log" 2>&1; then
-    echo "pre-commit: site build failed on the staged source/; fix the build errors before committing" >&2
+    echo "pre-commit: site build failed on the staged inputs; fix the build errors before committing" >&2
     tail -5 "$SCRATCH/build.log" >&2 || true
     exit 1
 fi
 
 if ! diff -qr "$SCRATCH/staged/docs" "$SCRATCH/checked-site" >/dev/null 2>&1; then
-    echo "pre-commit: staged docs/ differs from a fresh build of the staged source/" >&2
+    echo "pre-commit: staged docs/ differs from a fresh build of the staged inputs" >&2
     if [ "$BUILD_MODE" = "local-preview" ]; then
-        echo "pre-commit: run 'python3 source/build.py --preview --out docs && git add docs'" >&2
+        echo "pre-commit: rebuild with 'python3 tools/site/rebuild.py --preview --out /path/to/new-output'" >&2
     else
-        echo "pre-commit: run 'python3 source/build.py --out docs && git add docs'" >&2
+        echo "pre-commit: rebuild with 'python3 tools/site/rebuild.py --out /path/to/new-output'" >&2
     fi
-    echo "pre-commit: then commit the source change and regenerated docs/ together" >&2
+    echo "pre-commit: use a new output directory outside this checkout; review and stage the matching inputs and docs/ together" >&2
     exit 1
 fi
 
@@ -93,3 +90,4 @@ if [ "$BUILD_MODE" = "local-preview" ]; then
 fi
 
 exit 0
+

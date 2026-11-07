@@ -388,6 +388,16 @@ class PrecommitHookTests(unittest.TestCase):
         self.work = Path(self.tmp.name) / 'site'
         shutil.copytree(self.repo_root / 'source', self.work / 'source')
         shutil.copytree(self.repo_root / '.githooks', self.work / '.githooks')
+        # Real composed inputs, not the tiny protocol double in test_review_hook.
+        shutil.copytree(self.repo_root / 'tools' / 'site', self.work / 'tools' / 'site')
+        inventory = json.loads((self.work / 'tools/site/current-inputs.json').read_text())
+        for app in ('wildside', 'brain', 'forge'):
+            shutil.copytree(self.repo_root / 'docs' / app, self.work / 'docs' / app)
+        names = inventory['authored_files'] + [entry['path'] for entry in inventory['media_files']]
+        for name in names:
+            destination = self.work / 'docs' / name
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(self.repo_root / 'docs' / name, destination)
         # Simulate a qualified projection only inside this disposable hook fixture.
         # The production lane remains separately covered; review-lane index cases
         # live in test_review_hook.py without full media-tree copies.
@@ -413,8 +423,16 @@ class PrecommitHookTests(unittest.TestCase):
         return r
 
     def rebuild(self):
-        subprocess.run([sys.executable, 'source/build.py', '--out', 'docs'],
-                       cwd=self.work, check=True, capture_output=True, text=True)
+        # The composer requires fresh output outside its input checkout.
+        with tempfile.TemporaryDirectory(dir=self.tmp.name) as temporary:
+            output = Path(temporary) / 'composed'
+            subprocess.run([sys.executable, 'tools/site/rebuild.py',
+                            '--source-tree', str(self.work),
+                            '--inputs', str(self.work / 'tools/site/current-inputs.json'),
+                            '--out', str(output)],
+                           cwd=self.work, check=True, capture_output=True, text=True)
+            shutil.rmtree(self.work / 'docs')
+            shutil.copytree(output, self.work / 'docs')
 
     def edit_content(self):
         p = self.work / 'source' / 'content.json'
@@ -444,13 +462,13 @@ class PrecommitHookTests(unittest.TestCase):
 
     def test_separate_staged_wildside_is_preserved_without_masking_drift(self):
         app = self.work / 'docs/wildside'
-        app.mkdir()
-        (app / 'index.html').write_text('<p>Separately maintained Wildside fixture</p>')
+        fixture = app / 'hook-preservation-fixture.html'
+        fixture.write_text('<p>Separately maintained Wildside fixture</p>')
         self.edit_content(); self.rebuild()
         self.git('add', 'source/content.json', 'docs')
         code, error = self.hook()
         self.assertEqual(code, 0, error)
-        self.assertEqual((app / 'index.html').read_text(), '<p>Separately maintained Wildside fixture</p>')
+        self.assertEqual(fixture.read_text(), '<p>Separately maintained Wildside fixture</p>')
         self.git('commit', '-qm', 'separate app and matching projection')
         self.edit_content()
         data = json.loads((self.work / 'source/content.json').read_text())
@@ -482,3 +500,4 @@ class PrecommitHookTests(unittest.TestCase):
 
 
 if __name__ == '__main__': unittest.main()
+
