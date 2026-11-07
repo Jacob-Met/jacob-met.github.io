@@ -1,0 +1,110 @@
+{
+  "schema": 1,
+  "authored_files": [
+    "meet/index.html",
+    "meet/qr.html",
+    "meet/qr.svg",
+    "meet/technical.html",
+    "projects.json",
+    "site/filter.js",
+    "site/motion.js",
+    "site/site.css"
+  ],
+  "media_files": [
+    {
+      "path": "assets/demos/afterimage.webp",
+      "bytes": 18424,
+      "sha256": "4d59e9006528453d030352ef8da7e887f009797ada0ced861322b03a7513ffff"
+    },
+    {
+      "path": "assets/demos/brain-door.webp",
+      "bytes": 37604,
+      "sha256": "c4bdd21f7bb034ce6848983b8df7d01978c54f1c8b10250d27504a8f61b791f1"
+    },
+    {
+      "path": "assets/demos/captionverse.webp",
+      "bytes": 23732,
+      "sha256": "0e8547ab0cc81f83bb1e168e13e286738bed1901d86263b921ca5d6ae50112eb"
+    },
+    {
+      "path": "assets/demos/chronos-vision.webp",
+      "bytes": 49996,
+      "sha256": "f8738b83b5d680b104d91df2896c88f15268968974151b19996a9fc93e90ceb0"
+    },
+    {
+      "path": "assets/demos/domino.webp",
+      "bytes": 28660,
+      "sha256": "d9e1ba0507f88f069bd37dd0c9edc3310dd2498a3357c38886c254e777870870"
+    },
+    {
+      "path": "assets/demos/lanternwake.webp",
+      "bytes": 25250,
+      "sha256": "6e21fa5e2471e3eb5cb3eee0755b35566803a37554de983488cbe13adfac40f7"
+    },
+    {
+      "path": "assets/demos/ledgerly.webp",
+      "bytes": 47836,
+      "sha256": "bf51955990c586ba5395391041f38d2388eabfa8840d4d1cdd538dc3acaa55e4"
+    },
+    {
+      "path": "assets/demos/longwater.webp",
+      "bytes": 32194,
+      "sha256": "4785bf87c206c6fe57bb714e119cee77be990245e9f7fa3bf1f185ea35ee159e"
+    },
+    {
+      "path": "assets/demos/mechanism.webp",
+      "bytes": 24042,
+      "sha256": "604ccf6cad73fd84023f19c4a61f384557c61a70f5b629561f6b97736410c1cc"
+    },
+    {
+      "path": "assets/demos/phantom-window.webp",
+      "bytes": 67460,
+      "sha256": "cc536f9e7c4517f9bfb9b770ac865799bea824ce109c188cd2f13965253f488d"
+    },
+    {
+      "path": "assets/demos/replay-forge.webp",
+      "bytes": 38442,
+      "sha256": "3b9a53fb6c4d63b4b62c649266a99a7ec4ee6dfba1d180a11cf27a49746959df"
+    },
+    {
+      "path": "assets/demos/returnby.webp",
+      "bytes": 43064,
+      "sha256": "42c3db47032d9d9f04d88235a6090bae86d058860d72802355d98eb58707f55d"
+    },
+    {
+      "path": "assets/demos/scopesignal.webp",
+      "bytes": 28772,
+      "sha256": "d70ad1aa4b76d4e3816159311388a8a3e82e327f999b889db04114d12edb9b8b"
+    },
+    {
+      "path": "assets/demos/spire-of-octaves.webp",
+      "bytes": 78176,
+      "sha256": "65771fa26d6819b6e03d2f9d73654fac598e7f92b9f8f906e4afa8b27f97e845"
+    },
+    {
+      "path": "assets/demos/tastetable.webp",
+      "bytes": 57120,
+      "sha256": "46490c1f4fc2a2be3573d479a45896a17056afa27ac65c4042f594deb4f62217"
+    },
+    {
+      "path": "assets/demos/workflow-checks.webp",
+      "bytes": 87432,
+      "sha256": "fb1b5a86d892f268bcbdb070d254caa68c981ea1207627befac9a09b2e991b02"
+    },
+    {
+      "path": "assets/fonts/OFL-Fraunces.txt",
+      "bytes": 4391,
+      "sha256": "bdf4c22802eaf804f998195871c6b8938aac2ac14b2d78a8bd66a6f1eced833b"
+    },
+    {
+      "path": "assets/fonts/fraunces-vf-italic.woff2",
+      "bytes": 45656,
+      "sha256": "bceec2ef4d549efbc8df0194a8d5280b6a64c3e399244dffccd9ea1bd9ad6db7"
+    },
+    {
+      "path": "assets/fonts/fraunces-vf.woff2",
+      "bytes": 36620,
+      "sha256": "7f9d191d999336d3b9790afa72e1358e50a13b06d4f289341e92a311967a80f9"
+    }
+  ]
+}
