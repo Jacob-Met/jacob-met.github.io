@@ -62,7 +62,8 @@ const cdist = (a, b) => { const d = Math.abs(mod(a) - mod(b)); return Math.min(d
 let labels = null;
 {
   const im = new Image(); im.src = PR + 'labels.png';
-  im.onerror = () => { if (w === 640 && i === Math.round(mod(pos)) && !bgSampled) { stage.remove(); try { fallback('frames'); } catch (e) {} } };
+  // Pixel picking is optional; named navigation and orbit frames remain usable.
+  im.onerror = () => { labels = null; };
   im.onload = () => {
     const c = document.createElement('canvas'); c.width = im.width; c.height = im.height;
     const x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(im, 0, 0);
